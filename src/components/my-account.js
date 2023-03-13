@@ -5,7 +5,7 @@ import MyAccount from './shop-components/my-account';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
 
-const MyaccountV1 = () => {
+const MyAccountPage = () => {
     return <div>
         <Navbar />
         <PageHeader headertitle="My Account" />
@@ -15,5 +15,5 @@ const MyaccountV1 = () => {
     </div>
 }
 
-export default MyaccountV1
+export default MyAccountPage
 

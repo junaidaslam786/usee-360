@@ -58,7 +58,7 @@ class ContactForm extends Component {
 
 	let publicUrl = process.env.PUBLIC_URL+'/'
 
-    return <div className="ltn__contact-message-area mb-120 mb--100">
+    return <div className="ltn__contact-message-area mb-120">
 				<div className="container">
 				<div className="row">
 					<div className="col-lg-12">

@@ -75,7 +75,6 @@ class Navbar extends Component {
 							<ul className="go-top">
 							<li><Link to="/login">Sign in</Link></li>
 							<li><Link to="/register">Register</Link></li>
-							<li><Link to="/my-account">My Account</Link></li>
 							</ul>
 						</li>
 						</ul>
@@ -142,70 +141,6 @@ class Navbar extends Component {
 					</div>
 				</div>
 			</div>
-
-					{/* Utilize Cart Menu Start */}
-					<div id="ltn__utilize-cart-menu" className="ltn__utilize ltn__utilize-cart-menu">
-				<div className="ltn__utilize-menu-inner ltn__scrollbar">
-				<div className="ltn__utilize-menu-head">
-					<span className="ltn__utilize-menu-title">Cart</span>
-					<button className="ltn__utilize-close">×</button>
-				</div>
-				<div className="mini-cart-product-area ltn__scrollbar">
-					<div className="mini-cart-item clearfix">
-					<div className="mini-cart-img go-top">
-						<Link to="/product-details"><img src={publicUrl+"assets/img/product/1.png"} alt="Image" /></Link>
-						<span className="mini-cart-item-delete"><i className="icon-cancel" /></span>
-					</div>
-					<div className="mini-cart-info go-top">
-						<h6><Link to="/product-details">Wheel Bearing Retainer</Link></h6>
-						<span className="mini-cart-quantity">1 x $65.00</span>
-					</div>
-					</div>
-					<div className="mini-cart-item clearfix">
-					<div className="mini-cart-img go-top">
-						<Link to="/product-details"><img src={publicUrl+"assets/img/product/2.png"} alt="Image" /></Link>
-						<span className="mini-cart-item-delete"><i className="icon-cancel" /></span>
-					</div>
-					<div className="mini-cart-info go-top">
-						<h6><Link to="/product-details">Brake Conversion Kit</Link></h6>
-						<span className="mini-cart-quantity">1 x $85.00</span>
-					</div>
-					</div>
-					<div className="mini-cart-item clearfix">
-					<div className="mini-cart-img go-top">
-						<Link to="/product-details"><img src={publicUrl+"assets/img/product/3.png"} alt="Image" /></Link>
-						<span className="mini-cart-item-delete"><i className="icon-cancel" /></span>
-					</div>
-					<div className="mini-cart-info go-top">
-						<h6><Link to="/product-details">OE Replica Wheels</Link></h6>
-						<span className="mini-cart-quantity">1 x $92.00</span>
-					</div>
-					</div>
-					<div className="mini-cart-item clearfix">
-					<div className="mini-cart-img go-top">
-						<Link to="/product-details"><img src={publicUrl+"assets/img/product/4.png"} alt="Image" /></Link>
-						<span className="mini-cart-item-delete"><i className="icon-cancel" /></span>
-					</div>
-					<div className="mini-cart-info go-top">
-						<h6><Link to="/product-details">Shock Mount Insulator</Link></h6>
-						<span className="mini-cart-quantity">1 x $68.00</span>
-					</div>
-					</div>
-				</div>
-				<div className="mini-cart-footer">
-					<div className="mini-cart-sub-total">
-					<h5>Subtotal: <span>$310.00</span></h5>
-					</div>
-					<div className="btn-wrapper go-top">
-					<Link to="/cart" className="theme-btn-1 btn btn-effect-1">View Cart</Link>
-					<Link to="/cart" className="theme-btn-2 btn btn-effect-2">Checkout</Link>
-					</div>
-					<p>Free Shipping on All Orders Over $100!</p>
-				</div>
-				</div>
-			</div>
-			{/* Utilize Cart Menu End */}
-
 		</div>
         )
     }

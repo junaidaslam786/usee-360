@@ -70,7 +70,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/1.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/1.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -83,7 +83,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Rent</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -114,7 +114,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -132,7 +132,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/2.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/2.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -145,7 +145,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Sale</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -176,7 +176,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -194,7 +194,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/3.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/3.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -207,7 +207,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Rent</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -238,7 +238,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -256,7 +256,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/4.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/4.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -269,7 +269,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Rent</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -300,7 +300,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -318,7 +318,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/5.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/5.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -331,7 +331,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Rent</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -362,7 +362,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -380,7 +380,7 @@ class ShopGridV1 extends Component {
 									<div className="col-xl-6 col-sm-6 col-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/6.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/6.jpg"} alt="#" /></Link>
 										<div className="real-estate-agent">
 											<div className="agent-img">
 											<Link to="/shop"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" /></Link>
@@ -393,7 +393,7 @@ class ShopGridV1 extends Component {
 											<li className="sale-badg">For Rent</li>
 											</ul>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -424,7 +424,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -458,7 +458,7 @@ class ShopGridV1 extends Component {
 									<div className="col-lg-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/1.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/1.jpg"} alt="#" /></Link>
 										</div>
 										<div className="product-info">
 										<div className="product-badge-price">
@@ -471,7 +471,7 @@ class ShopGridV1 extends Component {
 											<span>$34,900<label>/Month</label></span>
 											</div>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -513,7 +513,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -526,7 +526,7 @@ class ShopGridV1 extends Component {
 									<div className="col-lg-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/2.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/2.jpg"} alt="#" /></Link>
 										</div>
 										<div className="product-info">
 										<div className="product-badge-price">
@@ -539,7 +539,7 @@ class ShopGridV1 extends Component {
 											<span>$34,900<label>/Month</label></span>
 											</div>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -581,7 +581,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -594,7 +594,7 @@ class ShopGridV1 extends Component {
 									<div className="col-lg-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/3.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/3.jpg"} alt="#" /></Link>
 										</div>
 										<div className="product-info">
 										<div className="product-badge-price">
@@ -607,7 +607,7 @@ class ShopGridV1 extends Component {
 											<span>$34,900<label>/Month</label></span>
 											</div>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -649,7 +649,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -662,7 +662,7 @@ class ShopGridV1 extends Component {
 									<div className="col-lg-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/4.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/4.jpg"} alt="#" /></Link>
 										</div>
 										<div className="product-info">
 										<div className="product-badge-price">
@@ -675,7 +675,7 @@ class ShopGridV1 extends Component {
 											<span>$34,900<label>/Month</label></span>
 											</div>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -717,7 +717,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -730,7 +730,7 @@ class ShopGridV1 extends Component {
 									<div className="col-lg-12">
 									<div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
 										<div className="product-img go-top">
-										<Link to="/product-details"><img src={publicUrl+"assets/img/product-3/5.jpg"} alt="#" /></Link>
+										<Link to="/property-details"><img src={publicUrl+"assets/img/product-3/5.jpg"} alt="#" /></Link>
 										</div>
 										<div className="product-info">
 										<div className="product-badge-price">
@@ -743,7 +743,7 @@ class ShopGridV1 extends Component {
 											<span>$34,900<label>/Month</label></span>
 											</div>
 										</div>
-										<h2 className="product-title go-top"><Link to="/product-details">New Apartment Nice View</Link></h2>
+										<h2 className="product-title go-top"><Link to="/property-details">New Apartment Nice View</Link></h2>
 										<div className="product-img-location go-top">
 											<ul>
 											<li>
@@ -785,7 +785,7 @@ class ShopGridV1 extends Component {
 												<i className="flaticon-heart-1" /></a>
 											</li>
 											<li className="go-top">
-												<Link to="/product-details" title="Product Details">
+												<Link to="/property-details" title="Product Details">
 												<i className="flaticon-add" />
 												</Link>
 											</li>
@@ -836,7 +836,7 @@ class ShopGridV1 extends Component {
 									<img src={publicUrl+"assets/img/product/7.png"} alt="#" />
 								</div>
 								<div className="modal-product-info go-top">
-									<h5><Link to="/product-details">Brake Conversion Kit</Link></h5>
+									<h5><Link to="/property-details">Brake Conversion Kit</Link></h5>
 									<p className="added-cart"><i className="fa fa-check-circle" />  Successfully added to your Wishlist</p>
 									<div className="btn-wrapper">
 									<Link to="/wishlist" className="theme-btn-1 btn btn-effect-1">View Wishlist</Link>
@@ -962,7 +962,7 @@ class ShopGridV1 extends Component {
 									<img src={publicUrl+"assets/img/product/1.png"} alt="#" />
 								</div>
 								<div className="modal-product-info go-top">
-									<h5 className="go-top"><Link to="/product-details">Brake Conversion Kit</Link></h5>
+									<h5 className="go-top"><Link to="/property-details">Brake Conversion Kit</Link></h5>
 									<p className="added-cart"><i className="fa fa-check-circle" />Successfully added to your Cart</p>
 									<div className="btn-wrapper">
 									<Link to="/cart" className="theme-btn-1 btn btn-effect-1">View Cart</Link>

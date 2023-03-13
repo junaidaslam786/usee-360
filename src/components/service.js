@@ -7,7 +7,7 @@ import BlogSlider from './blog-components/blog-slider-v1';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
 
-const Service_V1 = () => {
+const ServicePage = () => {
     return <div>
         <Navbar />
         <PageHeader headertitle="What We Do" subheader="Service" />
@@ -19,5 +19,5 @@ const Service_V1 = () => {
     </div>
 }
 
-export default Service_V1
+export default ServicePage
 

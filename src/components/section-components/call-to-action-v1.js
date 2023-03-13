@@ -9,7 +9,7 @@ class CallToActonV1 extends Component {
         let publicUrl = process.env.PUBLIC_URL+'/'
         let imagealt = 'image'
 
-    return <div className="ltn__call-to-action-area call-to-action-6 before-bg-bottom" >
+    	return <div className="ltn__call-to-action-area call-to-action-6 before-bg-bottom" >
 			  <div className="container">
 			    <div className="row">
 			      <div className="col-lg-12">
@@ -19,7 +19,7 @@ class CallToActonV1 extends Component {
 			            <p>We can help you realize your dream of a new home</p>
 			          </div>
 			          <div className="btn-wrapper go-top">
-			            <Link className="btn btn-effect-3 btn-white" to="/contact">Explore Properties <i className="icon-next" /></Link>
+			            <Link className="btn btn-effect-3 btn-white" to="/demo">Explore Properties <i className="icon-next" /></Link>
 			          </div>
 			        </div>
 			      </div>

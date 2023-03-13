@@ -5,7 +5,7 @@ import Register from './section-components/register';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
 
-const RegisterV1 = () => {
+const RegisterPage = () => {
     return <div>
         <Navbar />
         <PageHeader headertitle="Account" subheader="Register" />
@@ -15,5 +15,5 @@ const RegisterV1 = () => {
     </div>
 }
 
-export default RegisterV1
+export default RegisterPage
 

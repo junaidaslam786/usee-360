@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import Social from '../section-components/social';
 
 class TopBar extends Component {
 	

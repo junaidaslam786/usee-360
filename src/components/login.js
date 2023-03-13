@@ -5,7 +5,7 @@ import Login from './section-components/login';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
 
-const LoginV1 = () => {
+const LoginPage = () => {
     return <div>
         <Navbar />
         <PageHeader headertitle="Account" subheader="Login" />
@@ -15,5 +15,5 @@ const LoginV1 = () => {
     </div>
 }
 
-export default LoginV1
+export default LoginPage
 
