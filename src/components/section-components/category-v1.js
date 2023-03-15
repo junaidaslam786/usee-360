@@ -9,7 +9,7 @@ class CategoryV1 extends Component {
         let publicUrl = process.env.PUBLIC_URL+'/'
         let imagealt = 'image'
 
-    return <div className="ltn__category-area ltn__product-gutter section-bg-1--- pt-115 pb-90 go-top">
+    return <div className="ltn__category-area ltn__product-gutter section-bg-1 pt-115 pb-90 go-top">
 			  <div className="container">
 			    <div className="row">
 			      <div className="col-lg-12">

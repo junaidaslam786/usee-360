@@ -8,10 +8,14 @@ class History extends Component {
 
         let publicUrl = process.env.PUBLIC_URL+'/'
 
-    return  <div className="ltn__our-history-area pb-100">
+    return  <div className="ltn__our-history-area pb-100 pt-115">
 				<div className="container">
 				<div className="row">
 					<div className="col-lg-12">
+					<div className="section-title-area ltn__section-title-2--- text-center">
+			          <h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">Our Services</h6>
+			          <h1 className="section-title">Increase Visability in 3 Steps!</h1>
+			        </div>
 					<div className="ltn__our-history-inner">
 						<div className="ltn__tab-menu text-uppercase">
 						<div className="nav">

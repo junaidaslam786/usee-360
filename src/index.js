@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, HashRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from './components/home';
 import PropertyGrid from './components/property-grid'
 import PropertyDetails from './components/property-details'
@@ -15,7 +15,7 @@ import Register from './components/register';
 class Root extends Component {
     render() {
         return(
-                <HashRouter basename="/">
+                <BrowserRouter basename="/">
 	                <div>
 	                <Switch>
                         
@@ -31,7 +31,7 @@ class Root extends Component {
 
 	                </Switch>
 	                </div>
-                </HashRouter>
+                </BrowserRouter>
         )
     }
 }

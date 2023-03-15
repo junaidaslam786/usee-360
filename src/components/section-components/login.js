@@ -27,7 +27,7 @@ class Login extends Component {
 						<input type="text" name="email" placeholder="Email*" />
 						<input type="password" name="password" placeholder="Password*" />
 						<div className="btn-wrapper mt-0">
-							<button className="theme-btn-1 btn btn-block" type="submit">SIGN IN</button>
+							<Link to="/my-account"><button className="theme-btn-1 btn btn-block" type="submit">SIGN IN</button></Link>
 						</div>
 						<div className="go-to-btn mt-20">
 						<a href="#" title="Forgot Password?" data-bs-toggle="modal" data-bs-target="#ltn_forget_password_modal"><small>FORGOTTEN YOUR PASSWORD?</small></a>

@@ -239,7 +239,7 @@ font-family: 'Poppins', sans-serif;
   --ltn__color-3: #a3bcc0;
   --ltn__color-4: #84a2a6;
   --ltn__color-5: #5c727d;
-  --ltn__color-6: #f5dfdc;
+  --ltn__color-6: rgba(0, 200, 0, 0.1);
   /* Gradient Colors */
   --gradient-color-1: linear-gradient(
     90deg,
@@ -1929,43 +1929,43 @@ ul {
 }
 
 .bg-overlay-theme-05:before {
-  background: rgba(229, 62, 41, 0.05);
+  background: rgba(0, 200, 0, 0.05);
 }
 
 .bg-overlay-theme-10:before {
-  background: rgba(229, 62, 41, 0.1);
+  background: rgba(0, 200, 0, 0.1);
 }
 
 .bg-overlay-theme-20:before {
-  background: rgba(229, 62, 41, 0.2);
+  background: rgba(0, 200, 0, 0.2);
 }
 
 .bg-overlay-theme-30:before {
-  background: rgba(229, 62, 41, 0.3);
+  background: rgba(0, 200, 0, 0.3);
 }
 
 .bg-overlay-theme-40:before {
-  background: rgba(229, 62, 41, 0.4);
+  background: rgba(0, 200, 0, 0.4);
 }
 
 .bg-overlay-theme-50:before {
-  background: rgba(229, 62, 41, 0.5);
+  background: rgba(0, 200, 0, 0.5);
 }
 
 .bg-overlay-theme-60:before {
-  background: rgba(229, 62, 41, 0.6);
+  background: rgba(0, 200, 0, 0.6);
 }
 
 .bg-overlay-theme-70:before {
-  background: rgba(229, 62, 41, 0.7);
+  background: rgba(0, 200, 0, 0.7);
 }
 
 .bg-overlay-theme-80:before {
-  background: rgba(229, 62, 41, 0.8);
+  background: rgba(0, 200, 0, 0.8);
 }
 
 .bg-overlay-theme-90:before {
-  background: rgba(229, 62, 41, 0.9);
+  background: rgba(0, 200, 0, 0.9);
 }
 
 .bg-overlay-theme-black-05,
