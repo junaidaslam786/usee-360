@@ -1,0 +1,112 @@
+div#status_container {
+  text-align: center;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.testing_results {
+  background: #e2e2e2;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 12px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.testing_secn,
+.testing_res {
+  float: left;
+  font-size: 15px;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.testing_secn {
+  width: 50%;
+}
+
+.testing_res {
+  width: 50%;
+}
+
+.single_drow {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  width: 100%;
+  float: left;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.testing_secn {
+  font-weight: bold;
+  text-transform: uppercase;
+  border-right: 1px solid #b5b5b5;
+}
+
+span.success_msg {
+  color: #00cb04;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+span.error_msg {
+  color: red;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+p.userror {
+  color: #bd6b6b;
+  width: 100%;
+  max-width: 100%;
+  background: #ffdfdf;
+  padding: 12px;
+  font-size: 16px;
+  margin-top: 15px;
+  border-radius: 4px;
+}
+
+.logo_wrap img {
+  display: inline-block;
+  width: 169px;
+  margin: 43px 0 40px 0;
+}
+
+.vr_connect_welcome h1 {
+  font-weight: 400;
+  color: #432e3c;
+  font-size: 41px;
+  line-height: 53px;
+  margin-bottom: 24px;
+}
+
+.sidebar_avatar {
+  margin-bottom: 18px;
+}
+
+.sidebar_avatar .avatar_wrap {
+  position: relative;
+  margin: 0 auto;
+  width: 100px !important;
+  height: 100px !important;
+}
+
+.sidebar_avatar .avatar_wrap .overflow-hidden {
+  height: auto !important;
+  max-height: 100% !important;
+}
+
+.sidebar_avatar .avatar_wrap .overflow-hidden img {
+  height: auto !important;
+}
+
+.remtime {
+  margin-bottom: 10px;
+}
+
+p.palert {
+  color: red;
+}

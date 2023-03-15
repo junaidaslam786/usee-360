@@ -26,6 +26,9 @@ import CustomerRegister from './pages/customer/register';
 import CustomerLogin from './pages/customer/login';
 import CustomerAccount from './pages/customer/account';
 
+import Precall from './pages/precall';
+import Meeting from './pages/meeting';
+
 import Error from './pages/404';
 
 class Root extends Component {
@@ -59,6 +62,10 @@ class Root extends Component {
             <Route path="/customer/register" component={CustomerRegister} />
             <Route path="/customer/login" component={CustomerLogin} />
             <Route path="/customer" component={CustomerAccount} />
+
+            {/* Meeting Routes */}
+            <Route path="/meeting" component={Meeting} />
+            <Route path="/precall" component={Precall} />
 
             <Route path="*" component={Error} />
           </Switch>
