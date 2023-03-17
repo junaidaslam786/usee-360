@@ -1,7 +1,7 @@
 USEE360-Frontend:
   stage: deploy
   tags: 
-    -  backend
+    -  frontend
   environment:
     name: USEE360-Frontend
   before_script:
