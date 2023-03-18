@@ -2,20 +2,20 @@ import React from 'react';
 
 import Navbar from '../../components/global-components/navbar';
 import PageHeader from '../../components/global-components/header';
-import Account from '../../components/client-components/account';
+import Login from '../../components/customer-components/login';
 import CallToActionV1 from '../../components/section-components/call-to-action-v1';
 import Footer from '../../components/global-components/footer';
 
-function ClientAccountPage() {
+function CustomerLoginPage() {
   return (
     <div>
       <Navbar />
-      <PageHeader headertitle="My Account" />
-      <Account />
+      <PageHeader headertitle="Account" subheader="Login" />
+      <Login />
       <CallToActionV1 />
       <Footer />
     </div>
   );
 }
 
-export default ClientAccountPage;
+export default CustomerLoginPage;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class CopyRight extends Component {
   render() {
@@ -11,8 +11,7 @@ class CopyRight extends Component {
             <div className="col-md-6 col-12">
               <div className="ltn__copyright-design clearfix">
                 <p>
-                  All Rights Reserved @ Usee-360
-                  <span className="current-year" />
+                  All Rights Reserved @ Usee-360 <span className="current-year" />
                 </p>
               </div>
             </div>

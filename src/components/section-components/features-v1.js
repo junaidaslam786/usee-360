@@ -30,7 +30,7 @@ class FeaturesV1 extends Component {
                   <p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
                   <Link className="ltn__service-btn" to="/service-details">
                     Find A Home
-<i className="flaticon-right-arrow" />
+                    <i className="flaticon-right-arrow" />
                   </Link>
                 </div>
               </div>
@@ -45,7 +45,7 @@ class FeaturesV1 extends Component {
                   <p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
                   <Link className="ltn__service-btn" to="/service-details">
                     Find A Home
-<i className="flaticon-right-arrow" />
+                    <i className="flaticon-right-arrow" />
                   </Link>
                 </div>
               </div>
@@ -60,7 +60,7 @@ class FeaturesV1 extends Component {
                   <p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
                   <Link className="ltn__service-btn" to="/service-details">
                     Find A Home
-<i className="flaticon-right-arrow" />
+                    <i className="flaticon-right-arrow" />
                   </Link>
                 </div>
               </div>

@@ -30,7 +30,7 @@ class AboutV1 extends Component {
                   <h1 className="section-title">
                     The Leading Real Estate
                     Rental Marketplace
-<span>.</span>
+                    <span>.</span>
                   </h1>
                   <p>
                     Over 39,000 people work for us in more than 70 countries all over the
@@ -58,7 +58,7 @@ class AboutV1 extends Component {
                 <div className="ltn__callout bg-overlay-theme-05  mt-30">
                   <p>
                     "Enimad minim veniam quis nostrud exercitation
-<br />
+                    <br />
                     llamco laboris. Lorem ipsum dolor sit amet"
                     {' '}
                   </p>

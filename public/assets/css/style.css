@@ -271,7 +271,7 @@ font-family: 'Poppins', sans-serif;
   /* White */
   --section-bg-2: #171b2a;
   /* Black */
-  --section-bg-5: #fff2f0;
+  --section-bg-5: rgba(0, 200, 0, 0.1);
   /* White */
   --section-bg-6: #0b2c3d;
   /* Black */
@@ -5817,10 +5817,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__header-options-2 .mini-cart-icon a,
 .ltn__header-options-2 .header-wishlist {
   height: 50px;
-  width: 50px;
+  width: 150px;
   line-height: 50px;
-  background: var(--white);
-  color: var(--ltn__heading-color);
+  background: #00C800;
+  color: white;
   text-align: center;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
@@ -5831,6 +5831,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   transition: all 0.3s ease 0s;
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
+  font-size: 16px;
 }
 .ltn__header-options-2 .header-search-1:hover,
 .ltn__header-options-2 .ltn__drop-menu > ul > li > a:hover,
@@ -5861,6 +5862,15 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   background: var(--white);
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
+}
+
+.ltn__header-options-2 .ltn__drop-menu ul > li:first-child {
+  margin-right: 10px;
+}
+
+.ltn__header-options-2 .ltn__drop-menu > ul > li:first-child a {
+  color: black !important;
+  background: white !important;
 }
 
 /* ltn__drop-menu */
@@ -6599,8 +6609,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .sticky-active.ltn__sticky-bg-white .ltn__header-options-2 .header-wishlist {
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
-  background: var(--white);
-  color: var(--ltn__heading-color);
+  color: var(--white);
 }
 
 .header-contact-search {
@@ -11088,7 +11097,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   line-height: 115px;
   font-size: 45px;
   border-radius: 100%;
-  background-color: var(--section-bg-5);
+  background-color: white;
   color: var(--ltn__secondary-color);
   text-align: center;
   margin-bottom: 20px;
@@ -15984,7 +15993,7 @@ input.cart-plus-minus-box {
 ---------------------------------------------------- */
 /* car home 3 */
 .ltn__video-popup-margin {
-  margin-bottom: -180px;
+  margin-bottom: 0px;
 }
 
 /* Service page */

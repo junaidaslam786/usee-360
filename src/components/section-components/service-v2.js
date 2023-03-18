@@ -18,7 +18,7 @@ class ServiceV2 extends Component {
             </div>
           </div>
           <div className="row ltn__custom-gutter">
-            <div className="col-lg-3 col-sm-6 col-12">
+            <div className="col-lg-4 col-sm-6 col-12">
               <div className="ltn__feature-item ltn__feature-item-6">
                 <div className="ltn__feature-icon">
                   <span><i className="flaticon-apartment" /></span>
@@ -29,7 +29,7 @@ class ServiceV2 extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-lg-3 col-sm-6 col-12">
+            <div className="col-lg-4 col-sm-6 col-12">
               <div className="ltn__feature-item ltn__feature-item-6 active">
                 <div className="ltn__feature-icon">
                   <span><i className="flaticon-park" /></span>
@@ -40,24 +40,13 @@ class ServiceV2 extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-lg-3 col-sm-6 col-12">
+            <div className="col-lg-4 col-sm-6 col-12">
               <div className="ltn__feature-item ltn__feature-item-6">
                 <div className="ltn__feature-icon">
                   <span><i className="flaticon-maps-and-location" /></span>
                 </div>
                 <div className="ltn__feature-info">
                   <h4><Link to="/service-details">Atractive Location</Link></h4>
-                  <p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or incididunt ut labore.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-sm-6 col-12">
-              <div className="ltn__feature-item ltn__feature-item-6">
-                <div className="ltn__feature-icon">
-                  <span><i className="flaticon-excavator" /></span>
-                </div>
-                <div className="ltn__feature-info">
-                  <h4><Link to="/service-details">Modern Technology</Link></h4>
                   <p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or incididunt ut labore.</p>
                 </div>
               </div>

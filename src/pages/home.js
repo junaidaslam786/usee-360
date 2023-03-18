@@ -4,7 +4,7 @@ import Navbar from '../components/global-components/navbar';
 import Banner from '../components/section-components/banner';
 import SearchForm from '../components/section-components/search-form';
 import Aboutv1 from '../components/section-components/about-v1';
-import Featuresv1 from '../components/section-components/features-v1';
+import Servicev1 from '../components/section-components/service-v1';
 import ProSlider from '../components/section-components/product-slider-v1';
 import Category from '../components/section-components/category-v1';
 import History from '../components/section-components/history';
@@ -18,7 +18,7 @@ function HomePage() {
       <Banner />
       <SearchForm />
       <Aboutv1 />
-      <Featuresv1 customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---" />
+      <Servicev1 />
       <History />
       <Category />
       <ProSlider />
