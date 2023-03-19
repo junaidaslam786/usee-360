@@ -97,7 +97,7 @@ const MeetingJoin = (props) => {
   //   });
 	//}, [])
 
-  const session = OT.initSession(apiKey, sessionId);
+  const session = OT.initSession('46869314', '2_MX40Njg2OTMxNH5-MTY3OTIzNjA5MDk5Nn5aaW5aUVFXVUhFMFRiVDlJMlB3aUhIT1l-fn4');
 
   // Subscribe to a newly created stream
   session.on('streamCreated', (event) => {
@@ -129,7 +129,7 @@ const MeetingJoin = (props) => {
   });
 
   // Connect to the session
-  session.connect(token, (error) => {
+  session.connect('T1==cGFydG5lcl9pZD00Njg2OTMxNCZzaWc9NmRhMGQ3Yzk5ODU0MjUxZDMzZDUwYjBjNGIxYzUwYTU0YzVhNTE0NzpzZXNzaW9uX2lkPTJfTVg0ME5qZzJPVE14Tkg1LU1UWTNPVEl6TmpBNU1EazVObjVhYVc1YVVWRlhWVWhGTUZSaVZEbEpNbEIzYVVoSVQxbC1mbjQmY3JlYXRlX3RpbWU9MTY3OTIzNjIwOCZub25jZT0wLjY0MjY4NzU1NzU0NjUxODcmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTY3OTMyMjYwNyZjb25uZWN0aW9uX2RhdGE9Zmlyc3RuYW1lJTNEWmFrcmlhJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9', (error) => {
     if (error) {
       
     } else {
