@@ -37,7 +37,7 @@ class Login extends Component {
                       placeholder="Password*"
                     />
                     <div className="btn-wrapper mt-0">
-                      <Link to="/customer/my-account">
+                      <Link to="/customer">
                         <button
                           className="theme-btn-1 btn btn-block"
                           type="submit"
@@ -68,7 +68,10 @@ class Login extends Component {
                     check out more quickly track your orders register
                   </p>
                   <div className="btn-wrapper go-top">
-                    <Link to="/customer/register" className="theme-btn-1 btn black-btn">
+                    <Link
+                      to="/customer/register"
+                      className="theme-btn-1 btn black-btn"
+                    >
                       CREATE ACCOUNT
                     </Link>
                   </div>

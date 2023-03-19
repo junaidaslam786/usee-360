@@ -1,35 +1,38 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import {
-  BrowserRouter as Router, BrowserRouter, Route, Switch,
-} from 'react-router-dom';
+  BrowserRouter as Router,
+  BrowserRouter,
+  Route,
+  Switch,
+} from "react-router-dom";
 
-import Home from './pages/home';
-import PropertyGrid from './pages/property-grid';
-import PropertyDetails from './pages/property-details';
-import Services from './pages/services';
-import Demo from './pages/demo';
-import Contact from './pages/contact';
+import Home from "./pages/home";
+import PropertyGrid from "./pages/property-grid";
+import PropertyDetails from "./pages/property-details";
+import Services from "./pages/services";
+import Demo from "./pages/demo";
+import Contact from "./pages/contact";
 
-import HomesService from './pages/services/homes';
-import VillasService from './pages/services/villas';
-import BoatsService from './pages/services/boats';
-import VehiclesService from './pages/services/vehicles';
-import AviationService from './pages/services/aviation';
-import CommercialRetailService from './pages/services/commercial-retail';
+import HomesService from "./pages/services/homes";
+import VillasService from "./pages/services/villas";
+import BoatsService from "./pages/services/boats";
+import VehiclesService from "./pages/services/vehicles";
+import AviationService from "./pages/services/aviation";
+import CommercialRetailService from "./pages/services/commercial-retail";
 
-import AgentRegister from './pages/agent/register';
-import AgentLogin from './pages/agent/login';
-import AgentAccount from './pages/agent/account';
+import AgentRegister from "./pages/agent/register";
+import AgentLogin from "./pages/agent/login";
+import AgentAccount from "./pages/agent/account";
 
-import CustomerRegister from './pages/customer/register';
-import CustomerLogin from './pages/customer/login';
-import CustomerAccount from './pages/customer/account';
+import CustomerRegister from "./pages/customer/register";
+import CustomerLogin from "./pages/customer/login";
+import CustomerAccount from "./pages/customer/account";
 
-import Precall from './pages/precall';
-import Meeting from './pages/meeting';
+import Precall from "./pages/precall";
+import Meeting from "./pages/meeting";
 
-import Error from './pages/404';
+import Error from "./pages/404";
 
 class Root extends Component {
   render() {
@@ -77,4 +80,4 @@ class Root extends Component {
 
 export default Root;
 
-ReactDOM.render(<Root />, document.getElementById('quarter'));
+ReactDOM.render(<Root />, document.getElementById("quarter"));

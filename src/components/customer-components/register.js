@@ -57,7 +57,7 @@ class Register extends Component {
                     "create account", I consent to the privacy policy.
                   </label>
                   <div className="btn-wrapper">
-                    <Link to="/customer/my-account">
+                    <Link to="/customer">
                       <button
                         className="theme-btn-1 btn reverse-color btn-block"
                         type="submit"

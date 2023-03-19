@@ -37,7 +37,7 @@ class Login extends Component {
                       placeholder="Password*"
                     />
                     <div className="btn-wrapper mt-0">
-                      <Link to="/agent/my-account">
+                      <Link to="/agent">
                         <button
                           className="theme-btn-1 btn btn-block"
                           type="submit"

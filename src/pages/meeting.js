@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import config from '../config';
-import MeetingJoin from '../components/appointment-components/MeetingJoin';
+import config from "../config";
+import MeetingJoin from "../components/appointment-components/MeetingJoin";
 
 const Meeting = (props) => {
-  return <div>
+  return (
+    <div>
       <MeetingJoin
         apiKey={config.API_KEY}
         sessionId={config.SESSION_ID}
@@ -13,7 +14,8 @@ const Meeting = (props) => {
         opentokClientUrl="https://static.opentok.com/v2/js/opentok.min.js"
         devicePreference={props.location.state}
       />
-  </div>
-}
+    </div>
+  );
+};
 
-export default Meeting
+export default Meeting;
