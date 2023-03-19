@@ -18090,6 +18090,12 @@ input.cart-plus-minus-box {
   display: none;
 }
 
+@media only screen and (min-width: 991px) {
+  .history-step {
+    margin-top: 60px !important;
+  }
+}
+
 /* ----------------------------------------------------
     END
 ---------------------------------------------------- */

@@ -20,30 +20,27 @@ class ServiceDetails extends Component {
                 </div>
                 <p>
                   <span className="ltn__first-letter">1</span>
-                  orem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incidi dunt ut labore et dolore magna
-                  aliqua. Ut enim ad minim veniam, quis nostrud exerc itation
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-                  aute irure dolor in reprehenderit in voluptate velit esse
-                  cillum dolore eu fugiat nulla pariatur.
+                  Simply add your current property sales collateral and offer
+                  enhanced real-time guided virtual viewings to qualify your
+                  customer early, truly understand their needs and offer amazing
+                  experiences to maximise your outcomes, effectively and
+                  efficiently.
                 </p>
                 <p>
                   <span className="ltn__first-letter">2</span>
-                  orem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incidi dunt ut labore et dolore magna
-                  aliqua. Ut enim ad minim veniam, quis nostrud exerc itation
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-                  aute irure dolor in reprehenderit in voluptate velit esse
-                  cillum dolore eu fugiat nulla pariatur.
+                  Measure customer activity off-line to drive sales and
+                  listings. Our cutting edge technology allows you to use highly
+                  effective customer behavior to give you as many meaningful
+                  touch points with your customer as possible to keep sales on
+                  track.
                 </p>
                 <p>
                   <span className="ltn__first-letter">3</span>
-                  orem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incidi dunt ut labore et dolore magna
-                  aliqua. Ut enim ad minim veniam, quis nostrud exerc itation
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-                  aute irure dolor in reprehenderit in voluptate velit esse
-                  cillum dolore eu fugiat nulla pariatur.
+                  Transform your business today, embrace new customer demands to
+                  provide incredible customer and user experiences in minutes
+                  that will last a lifetime. Watch your sales process develop
+                  and adapt digitally with our award-winning platform,
+                  increasing efficiencies and completing sales faster.
                 </p>
               </div>
             </div>
@@ -60,7 +57,7 @@ class ServiceDetails extends Component {
                         </span>
                       </Link>
                     </li>
-                    <li >
+                    <li>
                       <Link to="/services/villas">
                         Villas
                         <span>

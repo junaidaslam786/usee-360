@@ -25,32 +25,26 @@ class AboutV5 extends Component {
                     About Us
                   </h6>
                   <h1 className="section-title">
-                    The Leading Real Estate Rental Marketplace
-                    <span>.</span>
+                    Usee<span>-</span>360
                   </h1>
                   <p>
-                    Over 39,000 people work for us in more than 70 countries all
-                    over the This breadth of global coverage, combined with
-                    specialist services
+                    With technology and digital transformations revolutionising
+                    industries, and the continued growth to use multiple formats
+                    to deliver seamless personalised experiences for agents,
+                    buyers and sellers now more than ever; we’ve focused on
+                    delivering a refreshing and inventive tech platform that’s
+                    capable of bringing all your assets under one roof to create
+                    the most memorable user adventures – and help drive your
+                    sales.
                   </p>
                 </div>
                 <div className="about-us-info-wrap-inner about-us-info-devide---">
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur.
+                    Simplicity, Innovation & Collaboration are at the core of
+                    our business which allows us to partner and build the very
+                    best outcomes for all, whilst delivering results and
+                    customer loyalty.
                   </p>
-                </div>
-                <div className="btn-wrapper animated">
-                  <Link
-                    to="/about"
-                    className="theme-btn-1 btn btn-effect-1 text-uppercase"
-                  >
-                    About Us
-                  </Link>
                 </div>
               </div>
             </div>
