@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import OT from '@opentok/client';
-import { cond } from 'lodash';
+import React, { useState, useEffect } from "react";
+import OT from "@opentok/client";
+import { cond } from "lodash";
 
-const MeetingJoin = (props) => {  
-  const {
-    apiKey,
-    sessionId,
-    token,
-    devicePreference
-  } = props;
+const MeetingJoin = (props) => {
+  const { apiKey, sessionId, token, devicePreference } = props;
   console.log(devicePreference);
-  OT.getDevices(function(error, devices) {
-    const audioInputDevices = devices.filter(device => device.kind === 'audioInput').map(device => {
-      return { value: device.deviceId, label: device.label} 
-    });
+  OT.getDevices(function (error, devices) {
+    const audioInputDevices = devices
+      .filter((device) => device.kind === "audioInput")
+      .map((device) => {
+        return { value: device.deviceId, label: device.label };
+      });
     console.log(audioInputDevices);
-    const videoDevices = devices.filter(device => device.kind === 'videoInput').map(device => {
-      return { value: device.deviceId, label: device.label} 
-    });
+    const videoDevices = devices
+      .filter((device) => device.kind === "videoInput")
+      .map((device) => {
+        return { value: device.deviceId, label: device.label };
+      });
     console.log(videoDevices);
   });
   // var audioInputDevices;
@@ -95,23 +94,28 @@ const MeetingJoin = (props) => {
   //       console.log('Connected to the session.');
   //     }
   //   });
-	//}, [])
+  //}, [])
 
-  const session = OT.initSession('46869314', '2_MX40Njg2OTMxNH5-MTY3OTIzNjA5MDk5Nn5aaW5aUVFXVUhFMFRiVDlJMlB3aUhIT1l-fn4');
+  const session = OT.initSession(
+    "46869314",
+    "2_MX40Njg2OTMxNH5-MTY3OTIzNjA5MDk5Nn5aaW5aUVFXVUhFMFRiVDlJMlB3aUhIT1l-fn4"
+  );
 
   // Subscribe to a newly created stream
-  session.on('streamCreated', (event) => {
+  session.on("streamCreated", (event) => {
     const subscriberOptions = {
-      insertMode: 'append',
-
+      insertMode: "append",
     };
-    session.subscribe(event.stream, 'subscriber', subscriberOptions, (error) => {
-
-    });
+    session.subscribe(
+      event.stream,
+      "subscriber",
+      subscriberOptions,
+      (error) => {}
+    );
   });
 
-  session.on('sessionDisconnected', (event) => {
-    console.log('You were disconnected from the session.', event.reason);
+  session.on("sessionDisconnected", (event) => {
+    console.log("You were disconnected from the session.", event.reason);
   });
 
   // initialize the publisher
@@ -120,29 +124,29 @@ const MeetingJoin = (props) => {
     audioFallbackEnabled: true,
     facingMode: "user",
   };
-  if(devicePreference) {
+  if (devicePreference) {
     publisherOptions.audioSource = devicePreference.audioInputDeviceId;
     publisherOptions.videoSource = devicePreference.videoDeviceId;
   }
-  const publisher = OT.initPublisher('video-stream', publisherOptions, (error) =>{
-
-  });
+  const publisher = OT.initPublisher(
+    "video-stream",
+    publisherOptions,
+    (error) => {}
+  );
 
   // Connect to the session
-  session.connect('T1==cGFydG5lcl9pZD00Njg2OTMxNCZzaWc9NmRhMGQ3Yzk5ODU0MjUxZDMzZDUwYjBjNGIxYzUwYTU0YzVhNTE0NzpzZXNzaW9uX2lkPTJfTVg0ME5qZzJPVE14Tkg1LU1UWTNPVEl6TmpBNU1EazVObjVhYVc1YVVWRlhWVWhGTUZSaVZEbEpNbEIzYVVoSVQxbC1mbjQmY3JlYXRlX3RpbWU9MTY3OTIzNjIwOCZub25jZT0wLjY0MjY4NzU1NzU0NjUxODcmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTY3OTMyMjYwNyZjb25uZWN0aW9uX2RhdGE9Zmlyc3RuYW1lJTNEWmFrcmlhJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9', (error) => {
-    if (error) {
-      
-    } else {
-      // If the connection is successful, publish the publisher to the session
-      session.publish(publisher, (error) => {
-
-      });
+  session.connect(
+    "T1==cGFydG5lcl9pZD00Njg2OTMxNCZzaWc9NmRhMGQ3Yzk5ODU0MjUxZDMzZDUwYjBjNGIxYzUwYTU0YzVhNTE0NzpzZXNzaW9uX2lkPTJfTVg0ME5qZzJPVE14Tkg1LU1UWTNPVEl6TmpBNU1EazVObjVhYVc1YVVWRlhWVWhGTUZSaVZEbEpNbEIzYVVoSVQxbC1mbjQmY3JlYXRlX3RpbWU9MTY3OTIzNjIwOCZub25jZT0wLjY0MjY4NzU1NzU0NjUxODcmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTY3OTMyMjYwNyZjb25uZWN0aW9uX2RhdGE9Zmlyc3RuYW1lJTNEWmFrcmlhJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9",
+    (error) => {
+      if (error) {
+      } else {
+        // If the connection is successful, publish the publisher to the session
+        session.publish(publisher, (error) => {});
+      }
     }
-  });
-  
-  return (
-    <div id="video-stream"></div>
   );
-}
 
-export default MeetingJoin
+  return <div id="video-stream"></div>;
+};
+
+export default MeetingJoin;

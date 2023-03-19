@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import uuid from 'uuid';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import uuid from "uuid";
 
 export default class OTSubscriber extends Component {
   constructor(props, context) {
@@ -21,7 +21,8 @@ export default class OTSubscriber extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const cast = (value, Type, defaultValue) => (value === undefined ? defaultValue : Type(value));
+    const cast = (value, Type, defaultValue) =>
+      value === undefined ? defaultValue : Type(value);
 
     const updateSubscriberProperty = (key) => {
       const previous = cast(prevProps.properties[key], Boolean, true);
@@ -31,10 +32,13 @@ export default class OTSubscriber extends Component {
       }
     };
 
-    updateSubscriberProperty('subscribeToAudio');
-    updateSubscriberProperty('subscribeToVideo');
+    updateSubscriberProperty("subscribeToAudio");
+    updateSubscriberProperty("subscribeToVideo");
 
-    if (prevState.session !== this.state.session || prevState.stream !== this.state.stream) {
+    if (
+      prevState.session !== this.state.session ||
+      prevState.stream !== this.state.stream
+    ) {
       this.destroySubscriber(prevState.session);
       this.createSubscriber();
     }
@@ -56,8 +60,8 @@ export default class OTSubscriber extends Component {
     const properties = this.props.properties || {};
     let container;
     if (properties.insertDefaultUI !== false) {
-      container = document.createElement('div');
-      container.setAttribute('class', 'OTSubscriberContainer');
+      container = document.createElement("div");
+      container.setAttribute("class", "OTSubscriberContainer");
       this.node.appendChild(container);
     }
 
@@ -65,35 +69,37 @@ export default class OTSubscriber extends Component {
     const { subscriberId } = this;
 
     const subscriber = this.state.session.subscribe(
-            this.state.stream,
-            container,
-            this.props.properties,
-            (err) => {
-              if (subscriberId !== this.subscriberId) {
-                    // Either this subscriber has been recreated or the
-                    // component unmounted so don't invoke any callbacks
-                return;
-              }
-              if (err &&
-                this.props.retry &&
-                this.state.currentRetryAttempt < (this.maxRetryAttempts - 1)) {
-                // Error during subscribe function
-                this.handleRetrySubscriber();
-                // If there is a retry action, do we want to execute the onError props function?
-                // return;
-              }
-              if (err && typeof this.props.onError === 'function') {
-                this.props.onError(err);
-              } else if (!err && typeof this.props.onSubscribe === 'function') {
-                this.props.onSubscribe();
-              }
-            },
-        );
+      this.state.stream,
+      container,
+      this.props.properties,
+      (err) => {
+        if (subscriberId !== this.subscriberId) {
+          // Either this subscriber has been recreated or the
+          // component unmounted so don't invoke any callbacks
+          return;
+        }
+        if (
+          err &&
+          this.props.retry &&
+          this.state.currentRetryAttempt < this.maxRetryAttempts - 1
+        ) {
+          // Error during subscribe function
+          this.handleRetrySubscriber();
+          // If there is a retry action, do we want to execute the onError props function?
+          // return;
+        }
+        if (err && typeof this.props.onError === "function") {
+          this.props.onError(err);
+        } else if (!err && typeof this.props.onSubscribe === "function") {
+          this.props.onSubscribe();
+        }
+      }
+    );
 
     if (
-            this.props.eventHandlers &&
-            typeof this.props.eventHandlers === 'object'
-        ) {
+      this.props.eventHandlers &&
+      typeof this.props.eventHandlers === "object"
+    ) {
       subscriber.on(this.props.eventHandlers);
     }
 
@@ -102,7 +108,7 @@ export default class OTSubscriber extends Component {
 
   handleRetrySubscriber() {
     setTimeout(() => {
-      this.setState(state => ({
+      this.setState((state) => ({
         currentRetryAttempt: state.currentRetryAttempt + 1,
         subscriber: null,
       }));
@@ -115,10 +121,10 @@ export default class OTSubscriber extends Component {
 
     if (this.state.subscriber) {
       if (
-                this.props.eventHandlers &&
-                typeof this.props.eventHandlers === 'object'
-            ) {
-        this.state.subscriber.once('destroyed', () => {
+        this.props.eventHandlers &&
+        typeof this.props.eventHandlers === "object"
+      ) {
+        this.state.subscriber.once("destroyed", () => {
           this.state.subscriber.off(this.props.eventHandlers);
         });
       }
@@ -131,7 +137,15 @@ export default class OTSubscriber extends Component {
 
   render() {
     const { className, style } = this.props;
-    return <div className={className} style={style} ref={(node) => { this.node = node; }} />;
+    return (
+      <div
+        className={className}
+        style={style}
+        ref={(node) => {
+          this.node = node;
+        }}
+      />
+    );
   }
 }
 
@@ -157,7 +171,7 @@ OTSubscriber.propTypes = {
 OTSubscriber.defaultProps = {
   stream: null,
   session: null,
-  className: '',
+  className: "",
   style: {},
   properties: {},
   retry: false,

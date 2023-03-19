@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import createSession from './createSession';
+import createSession from "./createSession";
 
 export default class OTSession extends Component {
   constructor(props) {
@@ -41,7 +41,9 @@ export default class OTSession extends Component {
       apiKey: this.props.apiKey,
       sessionId: this.props.sessionId,
       token: this.props.token,
-      onStreamsUpdated: (streams) => { this.setState({ streams }); },
+      onStreamsUpdated: (streams) => {
+        this.setState({ streams });
+      },
       onConnect: this.props.onConnect,
       onError: this.props.onError,
       options: this.props.options,
@@ -49,7 +51,7 @@ export default class OTSession extends Component {
 
     if (
       this.props.eventHandlers &&
-      typeof this.props.eventHandlers === 'object'
+      typeof this.props.eventHandlers === "object"
     ) {
       this.sessionHelper.session.on(this.props.eventHandlers);
     }
@@ -62,7 +64,7 @@ export default class OTSession extends Component {
     if (this.sessionHelper) {
       if (
         this.props.eventHandlers &&
-        typeof this.props.eventHandlers === 'object'
+        typeof this.props.eventHandlers === "object"
       ) {
         this.sessionHelper.session.off(this.props.eventHandlers);
       }

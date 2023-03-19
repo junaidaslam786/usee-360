@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import getDisplayName from 'react-display-name';
-import scriptjs from 'scriptjs';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import getDisplayName from "react-display-name";
+import scriptjs from "scriptjs";
 
-const DEFAULT_SCRIPT_URL = 'https://static.opentok.com/v2/js/opentok.min.js';
+const DEFAULT_SCRIPT_URL = "https://static.opentok.com/v2/js/opentok.min.js";
 
 /*
 This higher-order component will load the OpenTok client thru a script tag.
@@ -16,7 +16,7 @@ export default function preloadScript(InnerComponent) {
       super(props);
 
       this.state = {
-        scriptLoaded: typeof OT !== 'undefined',
+        scriptLoaded: typeof OT !== "undefined",
       };
       this.isPresent = false;
     }
@@ -42,7 +42,7 @@ export default function preloadScript(InnerComponent) {
       if (this.isPresent) {
         this.setState({ scriptLoaded: true });
       }
-    }
+    };
 
     render() {
       const { opentokClientUrl, loadingDelegate, ...restProps } = this.props;
@@ -55,7 +55,9 @@ export default function preloadScript(InnerComponent) {
     }
   }
 
-  PreloadScript.displayName = `preloadScript(${getDisplayName(InnerComponent)})`;
+  PreloadScript.displayName = `preloadScript(${getDisplayName(
+    InnerComponent
+  )})`;
   PreloadScript.propTypes = {
     opentokClientUrl: PropTypes.string,
     loadingDelegate: PropTypes.node,

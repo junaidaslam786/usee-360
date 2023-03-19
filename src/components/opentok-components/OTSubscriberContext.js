@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 // This is a wrapper class that establishes context for an OTSubscriber
 // instance.  This allows stream to be passed to the
@@ -13,9 +13,8 @@ export default class OTSubscriberContext extends Component {
   }
 
   render() {
-    return <div>{ this.props.children }</div>;
+    return <div>{this.props.children}</div>;
   }
-
 }
 
 OTSubscriberContext.propTypes = {

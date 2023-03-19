@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { OTSession, OTStreams } from '../opentok-components'
-import ConnectionStatus from './ConnectionStatus';
-import Publisher from './Publisher';
-import Subscriber from './Subscriber';
-import config from '../../config';
+import { OTSession, OTStreams } from "../opentok-components";
+import ConnectionStatus from "./ConnectionStatus";
+import Publisher from "./Publisher";
+import Subscriber from "./Subscriber";
+import config from "../../config";
 
 class App extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class App extends Component {
     console.log(props);
     this.state = {
       error: null,
-      connected: false
+      connected: false,
     };
 
     this.sessionEvents = {
@@ -21,7 +21,7 @@ class App extends Component {
       },
       sessionDisconnected: () => {
         this.setState({ connected: false });
-      }
+      },
     };
   }
 
@@ -31,7 +31,7 @@ class App extends Component {
 
   onError = (err) => {
     this.setState({ error: `Failed to connect: ${err.message}` });
-  }
+  };
 
   render() {
     return (

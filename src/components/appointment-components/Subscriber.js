@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { OTSubscriber } from '../opentok-components'
-import CheckBox from './CheckBox';
+import { OTSubscriber } from "../opentok-components";
+import CheckBox from "./CheckBox";
 
 export default class Subscriber extends Component {
   constructor(props) {
@@ -10,21 +10,21 @@ export default class Subscriber extends Component {
     this.state = {
       error: null,
       audio: true,
-      video: true
+      video: true,
     };
   }
 
   setAudio = (audio) => {
     this.setState({ audio });
-  }
+  };
 
   setVideo = (video) => {
     this.setState({ video });
-  }
+  };
 
   onError = (err) => {
     this.setState({ error: `Failed to subscribe: ${err.message}` });
-  }
+  };
 
   render() {
     return (
@@ -33,7 +33,7 @@ export default class Subscriber extends Component {
         <OTSubscriber
           properties={{
             subscribeToAudio: this.state.audio,
-            subscribeToVideo: this.state.video
+            subscribeToVideo: this.state.video,
           }}
           onError={this.onError}
           retry={true}
