@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import RTCDetect from "rtc-detect";
-import OT from "@opentok/client";
-import { cond } from "lodash";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import RTCDetect from 'rtc-detect';
+import OT from '@opentok/client';
+import './AccessTable.css';
+import { cond } from 'lodash';
 
 const AccessTable = (props) => {
+
+  const publicUrl = `${process.env.PUBLIC_URL}/`;
   const [browserStatus, setBrowserStatus] = useState(0);
   const [microphoneStatus, setMicrophoneStatus] = useState(0);
   const [cameraStatus, setCameraStatus] = useState(0);
@@ -73,111 +76,107 @@ const AccessTable = (props) => {
   }, []);
 
   return (
-    <table style={{ width: "50%" }}>
-      <tr>
-        <td>Browser</td>
-        <td>
-          {browserStatus === 0 && <p>Waiting to check...</p>}
-          {browserStatus === 1 && <p>SUCCESS</p>}
-          {browserStatus === 2 && (
-            <p>WebRTC is not supported for this device</p>
-          )}
-        </td>
-      </tr>
-      <tr>
-        <td>Microphone</td>
-        <td>
-          <select
-            value={selectedAudioInput}
-            onChange={(event) => {
-              setSelectedAudioInput(event.target.value);
-            }}
-          >
-            {audioInputOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {microphoneStatus === 0 && <p>Waiting to check...</p>}
-          {microphoneStatus === 1 && <p>SUCCESS</p>}
-          {microphoneStatus === 2 && <p>Microphone permission denied</p>}
-        </td>
-      </tr>
-      <tr>
-        <td>Camera</td>
-        <td>
-          <select
-            value={selectedVideoDevice}
-            onChange={(event) => {
-              setSelectedVideoDevice(event.target.value);
-            }}
-          >
-            {videoOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {cameraStatus === 0 && <p>Waiting to check...</p>}
-          {cameraStatus === 1 && <p>SUCCESS</p>}
-          {cameraStatus === 2 && <p>Camera permission denied</p>}
-        </td>
-      </tr>
-      <tr>
-        <td>Speaker</td>
-        <td>
-          <select
-            value={selectedAudioOutput}
-            onChange={(event) => {
-              setSelectedAudioOutput(event.target.value);
-            }}
-          >
-            {audioOutputOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {speakerStatus === 0 && <p>Waiting to check...</p>}
-          {speakerStatus === 1 && <p>SUCCESS</p>}
-          {speakerStatus === 2 && (
-            <p>Speaker/AudioOutputDevice permission denied</p>
-          )}
-        </td>
-      </tr>
-      <tr>
-        <td>Screensharing</td>
-        <td>
-          {screenSharingStatus === 0 && <p>Waiting to check...</p>}
-          {screenSharingStatus === 1 && <p>SUCCESS</p>}
-          {screenSharingStatus === 2 && (
-            <p>Screensharing is not available for this browser</p>
-          )}
-        </td>
-      </tr>
-      <tr>
-        <Link
-          to={{
-            pathname: "/meeting",
-            state: {
-              audioInputDeviceId: selectedAudioInput,
-              audioOutputDeviceId: selectedAudioOutput,
-              videoDeviceId: selectedVideoDevice,
-            },
-          }}
-        >
-          All Products
-        </Link>
-        <button
-          onClick={() => {
-            console.log("test");
-          }}
-        >
-          JOIN CALL
-        </button>
-      </tr>
-    </table>
+    <main class="main">
+      <div class="container">
+        <div class="logo_wrap text-center">
+            <center>
+              <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
+            </center>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="vr_connect_welcome">
+              <h1> Visit your new home <br/>
+                <span> from home.</span>
+              </h1>
+              <div class="sidebar_avatar ">
+                <div class="avatar_wrap">
+                  <div class="overflow-hidden">
+                    <img src="https://app.usee-360.com/public/homeasset/images/dummy.png" alt="profile photo" />
+                  </div>
+                </div>
+              </div>
+              <p>Today, you have an appointment at <span>19:16</span> with your customer, <span>saad jamil.</span>
+              </p>
+              <h3>Testing your system</h3>
+              <table style={{ "width" : "50%" }}>
+                <tr>
+                  <td>Browser</td>
+                  <td>
+                    {browserStatus === 0 && <p>Waiting to check...</p> }
+                    {browserStatus === 1 && <p>SUCCESS</p> }
+                    {browserStatus === 2 && <p>WebRTC is not supported for this device</p> }
+                  </td>
+                </tr>
+                <tr>
+                  <td>Microphone</td>
+                  <td>
+                    <select value={selectedAudioInput} onChange={(event) => {setSelectedAudioInput(event.target.value)}}>
+                      {audioInputOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {microphoneStatus === 0 && <p>Waiting to check...</p> }
+                    {microphoneStatus === 1 && <p>SUCCESS</p> }
+                    {microphoneStatus === 2 && <p>Microphone permission denied</p> }
+                  </td> 
+                </tr>
+                <tr>
+                  <td>Camera</td>
+                  <td>
+                    <select value={selectedVideoDevice} onChange={(event) => {setSelectedVideoDevice(event.target.value)}}>
+                      {videoOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {cameraStatus === 0 && <p>Waiting to check...</p> }
+                    {cameraStatus === 1 && <p>SUCCESS</p> }
+                    {cameraStatus === 2 && <p>Camera permission denied</p> }
+                  </td> 
+                </tr>
+                <tr>
+                  <td>Speaker</td>
+                  <td>
+                    <select value={selectedAudioOutput} onChange={(event) => {setSelectedAudioOutput(event.target.value)}}>
+                      {audioOutputOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {speakerStatus === 0 && <p>Waiting to check...</p> }
+                    {speakerStatus === 1 && <p>SUCCESS</p> }
+                    {speakerStatus === 2 && <p>Speaker/AudioOutputDevice permission denied</p> }
+                  </td>
+                </tr>
+                <tr>
+                  <td>Screensharing</td>
+                  <td>
+                    {screenSharingStatus === 0 && <p>Waiting to check...</p> }
+                    {screenSharingStatus === 1 && <p>SUCCESS</p> }
+                    {screenSharingStatus === 2 && <p>Screensharing is not available for this browser</p> }
+                  </td>
+                </tr>
+                <tr>
+                  <Link to={{
+                    pathname: "/meeting",
+                    state: { 
+                      audioInputDeviceId: selectedAudioInput, 
+                      audioOutputDeviceId: selectedAudioOutput,
+                      videoDeviceId: selectedVideoDevice
+                    }
+                  }}><button disabled="disabled">JOIN CALL</button></Link>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
 

@@ -2,148 +2,199 @@ import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
 import { cond } from "lodash";
 
-const MeetingJoin = (props) => {
-  const { apiKey, sessionId, token, devicePreference } = props;
-  console.log(devicePreference);
-  OT.getDevices(function (error, devices) {
-    const audioInputDevices = devices
-      .filter((device) => device.kind === "audioInput")
-      .map((device) => {
-        return { value: device.deviceId, label: device.label };
-      });
-    console.log(audioInputDevices);
-    const videoDevices = devices
-      .filter((device) => device.kind === "videoInput")
-      .map((device) => {
-        return { value: device.deviceId, label: device.label };
-      });
-    console.log(videoDevices);
-  });
-  // var audioInputDevices;
-  // var videoInputDevices;
-  // const session = OT.initSession(apiKey, sessionId);
-  // OT.getDevices(function(error, devices) {
-  //   audioInputDevices = devices.filter(function(element) {
-  //     return element.kind == "audioInput";
-  //   });
-  //   videoInputDevices = devices.filter(function(element) {
-  //     return element.kind == "videoInput";
-  //   });
-  //   const session = OT.initSession(apiKey, sessionId);
-  //   const publisherProperties = {
-  //     insertMode: "append",
-  //     audioFallbackEnabled: true,
-  //     facingMode: "user",
-  //     audioSource: audioInputDevices[0].deviceId,
-  //     videoSource: videoInputDevices[0].deviceId
-  //   };
-  //   const publisher = OT.initPublisher('video-stream', publisherProperties, function (error) {
-  //     if (error) {
-  //       console.log(error);
-  //     } else {
-  //       console.log("Publisher initialized.");
-  //     }
-  //   });
-  //   publisher.on({
-  //     accessAllowed: function (event) {
-  //       console.log(event);
-  //     },
-  //     accessDenied: function (event) {
-  //       console.log(event);
-  //     }
-  //   });
-  // });
-  // console.log(devicePreference);
+const MeetingJoin = (props) => {  
+  const {
+    apiKey,
+    sessionId,
+    token,
+    devicePreference
+  } = props;
+  const publicUrl = `${process.env.PUBLIC_URL}/`;
+  const [videoStreaming, setVideoStreaming] = useState(true);
+  const [audioStreaming, setAudioStreaming] = useState(true);
+  const [screenSharing, setScreenSharing] = useState(false);
+  const [publisher, setPublisher] = useState(null);
+  const [screenPublisher, setScreenPublisher] = useState(null);
+  const [subscriber, setSubscriber] = useState(true);
+  const [session, setSession] = useState(true);
 
-  // useEffect(()=>{
-  //   session.on({
-  //     connectionCreated: function (event) {
-  //       console.log('Connection created' + event);
-  //       console.log(event);
-  //     },
-  //     connectionDestroyed: function (event) {
-  //       console.log('Connection destroyed');
-  //       console.log(event);
-  //     },
-  //     sessionDisconnected: function sessionDisconnectHandler(event) {
-  //       // The event is defined by the SessionDisconnectEvent class
-  //       console.log('Disconnected from the session.');
-  //       if (event.reason == 'networkDisconnected') {
-  //         alert('Your network connection terminated.')
-  //       }
-  //     },
-  //     sessionReconnecting: function() {
-  //       // Display a user interface notification.
-  //     },
-  //     sessionReconnected: function() {
-  //       // Adjust user interface.
-  //     },
-  //   });
-  //   // Replace token with your own value:
-  //   session.connect(token, function(error) {
-  //     if (error) {
-  //       console.log('Unable to connect: ', error.message);
-  //     } else {
-  //       session.publish(publisher, function(error) {
-  //         if (error) {
-  //           console.log(error);
-  //         } else {
-  //           console.log('Publishing a stream.');
-  //         }
-  //       });
-  //       console.log('Connected to the session.');
-  //     }
-  //   });
-  //}, [])
+  useEffect( () => {
+    const session = OT.initSession(apiKey, sessionId);
+    setSession(session);
+    // Subscribe to a newly created stream
+    session.on({
+      streamCreated: (event) => {
+        const subscriberOptions = { insertMode: 'append' };
+        const subscriber = session.subscribe(event.stream, 'subscribers', subscriberOptions, (error) => {});
+        setSubscriber(subscriber);
+        var subscriberDisconnectedNotification = document.createElement('div');
+        subscriberDisconnectedNotification.className = 'subscriberDisconnectedNotification';
+        subscriberDisconnectedNotification.innerText =
+          'Stream has been disconnected unexpectedly. Attempting to automatically reconnect...';
+        console.log(subscriber.element);
+        subscriber.element.appendChild(subscriberDisconnectedNotification);
+        subscriber.on({
+          disconnected: function(event) {
+            subscriberDisconnectedNotification.style.visibility = 'visible';
+          },
+          connected: function(event) {
+            subscriberDisconnectedNotification.style.visibility = 'hidden';
+          }
+        });
+      },
+      connectionCreated: function (event) {
+        console.log('Connection created' + event);
+      },
+      connectionDestroyed: function (event) {
+        console.log('Connection destroyed');
+      },
+      sessionDisconnected: function sessionDisconnectHandler(event) {
+        // The event is defined by the SessionDisconnectEvent class
+        console.log('You were disconnected from the session.', event.reason);
+      },
+      sessionReconnecting: function() {
+        // Display a user interface notification.
+      },
+      sessionReconnected: function() {
+        // Adjust user interface.
+      },
+    });
 
-  const session = OT.initSession(
-    "46869314",
-    "2_MX40Njg2OTMxNH5-MTY3OTIzNjA5MDk5Nn5aaW5aUVFXVUhFMFRiVDlJMlB3aUhIT1l-fn4"
-  );
+    const msgHistory = document.querySelector('#history');
+    session.on('signal:msg', (event) => {
+      const msg = document.createElement('p');
+      msg.textContent = event.data;
+      msg.className = event.from.connectionId === session.connection.connectionId ? 'mine' : 'theirs';
+      msgHistory.appendChild(msg);
+      msg.scrollIntoView();
+    });
 
-  // Subscribe to a newly created stream
-  session.on("streamCreated", (event) => {
-    const subscriberOptions = {
+    // initialize the publisher
+    const publisherOptions = {
       insertMode: "append",
+      audioFallbackEnabled: true,
+      facingMode: "user",
+      publishVideo: true,
+      publishAudio: true,
     };
-    session.subscribe(
-      event.stream,
-      "subscriber",
-      subscriberOptions,
-      (error) => {}
-    );
-  });
-
-  session.on("sessionDisconnected", (event) => {
-    console.log("You were disconnected from the session.", event.reason);
-  });
-
-  // initialize the publisher
-  const publisherOptions = {
-    insertMode: "append",
-    audioFallbackEnabled: true,
-    facingMode: "user",
-  };
-  if (devicePreference) {
-    publisherOptions.audioSource = devicePreference.audioInputDeviceId;
-    publisherOptions.videoSource = devicePreference.videoDeviceId;
-  }
-  const publisher = OT.initPublisher(
-    "video-stream",
-    publisherOptions,
-    (error) => {}
-  );
-
-  // Connect to the session
-  session.connect(
-    "T1==cGFydG5lcl9pZD00Njg2OTMxNCZzaWc9NmRhMGQ3Yzk5ODU0MjUxZDMzZDUwYjBjNGIxYzUwYTU0YzVhNTE0NzpzZXNzaW9uX2lkPTJfTVg0ME5qZzJPVE14Tkg1LU1UWTNPVEl6TmpBNU1EazVObjVhYVc1YVVWRlhWVWhGTUZSaVZEbEpNbEIzYVVoSVQxbC1mbjQmY3JlYXRlX3RpbWU9MTY3OTIzNjIwOCZub25jZT0wLjY0MjY4NzU1NzU0NjUxODcmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTY3OTMyMjYwNyZjb25uZWN0aW9uX2RhdGE9Zmlyc3RuYW1lJTNEWmFrcmlhJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9",
-    (error) => {
-      if (error) {
-      } else {
-        // If the connection is successful, publish the publisher to the session
-        session.publish(publisher, (error) => {});
-      }
+    if(devicePreference) {
+      publisherOptions.audioSource = devicePreference.audioInputDeviceId;
+      publisherOptions.videoSource = devicePreference.videoDeviceId;
     }
+    if (OT.hasMediaProcessorSupport()) {
+      publisherOptions.videoFilter = {
+        type: 'backgroundBlur',
+        blurStrength: 'high'
+      };
+    }
+    const publisher = OT.initPublisher('publisher', publisherOptions, (error) => {
+
+    });
+    setPublisher(publisher);
+    // Connect to the session
+    session.connect(token, (error) => {
+      if (error) {
+        if (error.name === "OT_NOT_CONNECTED") {
+          //
+        } else {
+          //
+        }
+      } else {
+        console.log(publisher.element);
+        // If the connection is successful, publish the publisher to the session
+        session.publish(publisher, (error) => {
+
+        });
+      }
+    });
+    // Text chat
+    const form = document.querySelector('form');
+    const msgTxt = document.querySelector('#msgTxt');
+
+    // Send a signal once the user enters data in the form
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      session.signal({
+        type: 'msg',
+        data: msgTxt.value
+      }, (error) => {
+        if (error) {
+          //handleError(error);
+        } else {
+          msgTxt.value = '';
+        }
+      });
+    });
+  }, []);
+
+  function toggleVideo() {
+    publisher.publishVideo(!videoStreaming);
+    setVideoStreaming(!videoStreaming);
+  }
+
+  function toggleAudio() {
+    publisher.publishAudio(!audioStreaming);
+    setAudioStreaming(!audioStreaming);
+  }
+
+  function toggleScreenSharing() {
+    if(screenSharing) {
+      screenPublisher.destroy();
+      setScreenPublisher(null);
+      setScreenSharing(false);
+    } else {
+      OT.checkScreenSharingCapability(function(response) {
+        if(!response.supported || response.extensionRegistered === false) {
+          // This browser does not support screen sharing.
+        } else if (response.extensionInstalled === false) {
+          // Prompt to install the extension.
+        } else {
+          // Screen sharing is available. Publish the screen.
+          const publisher = OT.initPublisher('screen-preview',
+            {videoSource: 'screen'},
+            function(error) {
+              if (error) {
+                // Look at error.message to see what went wrong.
+              } else {
+                session.publish(publisher, function(error) {
+                  if (error) {
+                    // Look error.message to see what went wrong.
+                  }
+                });
+                setScreenSharing(true);
+                setScreenPublisher(publisher);
+              }
+            }
+          );
+
+        }
+      });
+    }
+  }
+  
+  return (
+    <>
+      <div id="">
+        <div id="publisher"></div>
+        <div id="subscribers"></div>
+        <div id="screen-preview"></div> 
+      </div>
+      <div>
+        {videoStreaming === true && <img src={`${publicUrl}assets/img/icons/video-selected.png`} onClick={() => toggleVideo()} />}
+        {videoStreaming === false && <img src={`${publicUrl}assets/img/icons/video-not-selected.png`} onClick={() => toggleVideo()} />}
+        {audioStreaming === true && <img src={`${publicUrl}assets/img/icons/mic-selected.png`} onClick={() => toggleAudio()} />}
+        {audioStreaming === false && <img src={`${publicUrl}assets/img/icons/mic-not-selected.png`} onClick={() => toggleAudio()} />}
+        {screenSharing === true && <img src={`${publicUrl}assets/img/icons/share.png`} onClick={() => toggleScreenSharing()} />}
+        {screenSharing === false && <img src={`${publicUrl}assets/img/icons/share.png`} onClick={() => toggleScreenSharing()} />}
+      </div>
+      <div id="textchat">
+         <p id="history"></p>
+         <form>
+              <input type="text" placeholder="Input your text here" id="msgTxt"></input>
+         </form>
+      </div>
+    </>
   );
 
   return <div id="video-stream"></div>;
