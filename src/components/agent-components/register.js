@@ -1,91 +1,194 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import parse from "html-react-parser";
 
-class Register extends Component {
-  render() {
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
+export default function Register() {
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [companyName, setCompanyName] = useState();
+  const [companyPosition, setCompanyPosition] = useState();
+  const [email, setEmail] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [password, setPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
 
-    return (
-      <div className="ltn__login-area pb-110">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="section-title-area text-center">
-                <h1 className="section-title">
-                  Register
-                  <br />
-                  Your Account
-                </h1>
-                <p>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  <br />
-                  Sit aliquid, Non distinctio vel iste.
-                </p>
-              </div>
+  function setToken(token) {
+    sessionStorage.setItem("agentToken", JSON.stringify(token));
+  }
+
+  async function registerUser(credentials) {
+    return fetch("https://usee360-api.invo.zone/auth/register-agent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    }).then((data) => data.json());
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const response = await registerUser({
+      firstName,
+      lastName,
+      companyName,
+      companyPosition,
+      email,
+      phoneNumber,
+      password,
+      confirmPassword,
+    });
+    if (response.token) {
+      setToken(response.token);
+      window.location = "/agent";
+    } else {
+      setError(response.message);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="ltn__login-area pb-80">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="section-title-area text-center">
+              <h1 className="section-title">
+                Register
+                <br />
+                Your Account
+              </h1>
             </div>
           </div>
-          <div className="row">
-            <div className="col-lg-6 offset-lg-3">
-              <div className="account-login-inner">
-                <form action="#" className="ltn__form-box contact-form-box">
-                  <input
-                    type="text"
-                    name="firstname"
-                    placeholder="First Name"
-                  />
-                  <input type="text" name="lastname" placeholder="Last Name" />
-                  <input type="text" name="email" placeholder="Email*" />
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password*"
-                  />
-                  <input
-                    type="password"
-                    name="confirmpassword"
-                    placeholder="Confirm Password*"
-                  />
-                  <label className="checkbox-inline">
-                    <input type="checkbox" defaultValue />
-                    &nbsp; I consent to Herboil processing my personal data in
-                    order to send personalized marketing material in accordance
-                    with the consent form and the privacy policy.
-                  </label>
-                  <label className="checkbox-inline">
-                    <input type="checkbox" defaultValue /> &nbsp; By clicking
-                    "create account", I consent to the privacy policy.
-                  </label>
-                  <div className="btn-wrapper">
-                    <Link to="/agent">
-                      <button
-                        className="theme-btn-1 btn reverse-color btn-block"
-                        type="submit"
-                      >
-                        CREATE ACCOUNT
-                      </button>
-                    </Link>
+        </div>
+        <div className="row">
+          <div className="col-lg-6 offset-lg-3">
+            <div className="account-login-inner">
+              <form
+                onSubmit={handleSubmit}
+                className="ltn__form-box contact-form-box"
+              >
+                {error ? (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
                   </div>
-                </form>
-                <div className="by-agree text-center">
-                  <p>By creating an account, you agree to our:</p>
-                  <p>
-                    <a href="#">
-                      TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY
-                      POLICY
-                    </a>
-                  </p>
-                  <div className="go-to-btn mt-50 go-top">
-                    <Link to="/agent/login">ALREADY HAVE AN ACCOUNT ?</Link>
+                ) : (
+                  ""
+                )}
+                <input
+                  type="text"
+                  name="companyname"
+                  placeholder="Company Name*"
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required
+                />
+                <div className="row">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="firstname"
+                      placeholder="First Name*"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
                   </div>
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="lastname"
+                      placeholder="Last Name*"
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  name="companyposition"
+                  placeholder="Company Position*"
+                  onChange={(e) => setCompanyPosition(e.target.value)}
+                  required
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email*"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="Phone Number*"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+                <div className="row">
+                  <div className="col-md-6">
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password*"
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="password"
+                      name="confirmpassword"
+                      placeholder="Confirm Password*"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <label className="checkbox-inline">
+                  <input type="checkbox" defaultValue />
+                  &nbsp; I consent to Herboil processing my personal data in
+                  order to send personalized marketing material in accordance
+                  with the consent form and the privacy policy.
+                </label>
+                <label className="checkbox-inline">
+                  <input type="checkbox" defaultValue /> &nbsp; By clicking
+                  "create account", I consent to the privacy policy.
+                </label>
+                <div className="btn-wrapper">
+                  <button
+                    className="theme-btn-1 btn reverse-color btn-block"
+                    type="submit"
+                  >
+                    {loading ? (
+                      <div className="lds-ring">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                    ) : (
+                      "CREATE ACCOUNT"
+                    )}
+                  </button>
+                </div>
+              </form>
+              <div className="by-agree text-center">
+                <p>By creating an account, you agree to our:</p>
+                <p>
+                  <a href="#">
+                    TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY
+                    POLICY
+                  </a>
+                </p>
+                <div className="go-to-btn mt-50 go-top">
+                  <Link to="/agent/login">ALREADY HAVE AN ACCOUNT ?</Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default Register;

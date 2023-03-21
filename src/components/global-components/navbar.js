@@ -117,30 +117,14 @@ class Navbar extends Component {
                   <div className="ltn__drop-menu user-menu">
                     <ul>
                       <li>
-                        <Link to="#">
+                        <Link to="/customer">
                           <i className="icon-user" /> Customer
                         </Link>
-                        <ul className="go-top">
-                          <li>
-                            <Link to="/customer/login">Sign in</Link>
-                          </li>
-                          <li>
-                            <Link to="/customer/register">Register</Link>
-                          </li>
-                        </ul>
                       </li>
                       <li>
-                        <Link to="#">
+                        <Link to="/agent">
                           <i className="icon-user" /> Agent
                         </Link>
-                        <ul className="go-top">
-                          <li>
-                            <Link to="/agent/login">Sign in</Link>
-                          </li>
-                          <li>
-                            <Link to="/agent/register">Register</Link>
-                          </li>
-                        </ul>
                       </li>
                     </ul>
                   </div>
@@ -227,7 +211,7 @@ class Navbar extends Component {
             <div className="ltn__utilize-buttons ltn__utilize-buttons-2">
               <ul>
                 <li>
-                  <Link to="/customer/my-account" title="My Account">
+                  <Link to="/customer">
                     <span className="utilize-btn-icon">
                       <i className="far fa-user" />
                     </span>
@@ -235,7 +219,7 @@ class Navbar extends Component {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/agent/my-account" title="My Account">
+                  <Link to="/agent">
                     <span className="utilize-btn-icon">
                       <i className="far fa-user" />
                     </span>

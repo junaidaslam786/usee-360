@@ -6,6 +6,11 @@ class MyAccount extends Component {
   render() {
     const publicUrl = `${process.env.PUBLIC_URL}/`;
 
+    function handleClick() {
+      sessionStorage.removeItem('agentToken');
+      window.location = '/agent/login';
+    }
+
     return (
       <div className="liton__wishlist-area pb-70">
         <div className="container">
@@ -42,7 +47,7 @@ class MyAccount extends Component {
                             Alerts
                             <i className="fa-solid fa-bell" />
                           </a>
-                          <a href="/agent/login">
+                          <a href="#" onClick={ handleClick }>
                             Logout
                             <i className="fas fa-sign-out-alt" />
                           </a>

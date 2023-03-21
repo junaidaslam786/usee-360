@@ -1,12 +1,25 @@
-import React from 'react';
+import React from "react";
 
-import Navbar from '../../components/global-components/navbar';
-import PageHeader from '../../components/global-components/header';
-import Login from '../../components/agent-components/login';
-import CallToActionV1 from '../../components/section-components/call-to-action-v1';
-import Footer from '../../components/global-components/footer';
+import Navbar from "../../components/global-components/navbar";
+import PageHeader from "../../components/global-components/header";
+import Login from "../../components/agent-components/login";
+import CallToActionV1 from "../../components/section-components/call-to-action-v1";
+import Footer from "../../components/global-components/footer";
+import Account from "./account";
+
+function getToken() {
+  const tokenString = sessionStorage.getItem("agentToken");
+  const userToken = JSON.parse(tokenString);
+  return userToken;
+}
 
 function AgentLoginPage() {
+  const token = getToken();
+
+  if (token) {
+    return <Account />;
+  }
+
   return (
     <div>
       <Navbar />
