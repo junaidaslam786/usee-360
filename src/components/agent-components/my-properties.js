@@ -1,9 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 export default function MyProperties() {
-  const publicUrl = `${process.env.PUBLIC_URL}/`;
-  
+  const [page, setPage] = useState(1);
+  const [list, setList] = useState([]);
+
+  const token = sessionStorage.getItem("agentToken");
+  const loadAllList = async () => {
+    let response = await fetch(
+      `https://usee360-api.invo.zone/property/list?page=${page}&size=10`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    response = await response.json();
+    if (response) {
+      setList(response.data);
+    }
+  };
+
+  useEffect(() => {
+    loadAllList();
+  }, [page]);
+
   return (
     <div className="ltn__myaccount-tab-content-inner">
       <div className="ltn__my-properties-table table-responsive">
@@ -17,188 +42,44 @@ export default function MyProperties() {
               <th scope="col">Delete</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td className="ltn__my-properties-img go-top">
-                <Link to="#">
-                  <img src={`${publicUrl}assets/img/product-3/1.jpg`} alt="#" />
-                </Link>
-              </td>
-              <td>
-                <div className="ltn__my-properties-info">
-                  <h6 className="mb-10 go-top">
-                    <Link to="#">New Apartment Nice View</Link>
-                  </h6>
-                  <small>
-                    <i className="icon-placeholder" /> Brooklyn, New York,
-                    United States
-                  </small>
-                  <div className="product-ratting">
-                    <ul>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star-half-alt" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="far fa-star" />
-                        </a>
-                      </li>
-                      <li className="review-total">
-                        {" "}
-                        <a href="#"> ( 95 Reviews )</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-              <td>Feb 22, 2022</td>
-              <td>
-                <Link to="#">Edit</Link>
-              </td>
-              <td>
-                <Link to="#">
-                  <i className="fa-solid fa-trash-can" />
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td className="ltn__my-properties-img go-top">
-                <Link to="#">
-                  <img src={`${publicUrl}assets/img/product-3/2.jpg`} alt="#" />
-                </Link>
-              </td>
-              <td>
-                <div className="ltn__my-properties-info">
-                  <h6 className="mb-10 go-top">
-                    <Link to="#">New Apartment Nice View</Link>
-                  </h6>
-                  <small>
-                    <i className="icon-placeholder" /> Brooklyn, New York,
-                    United States
-                  </small>
-                  <div className="product-ratting">
-                    <ul>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star-half-alt" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="far fa-star" />
-                        </a>
-                      </li>
-                      <li className="review-total">
-                        {" "}
-                        <a href="#"> ( 95 Reviews )</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-              <td>Feb 22, 2022</td>
-              <td>
-                <Link to="#">Edit</Link>
-              </td>
-              <td>
-                <Link to="#">
-                  <i className="fa-solid fa-trash-can" />
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td className="ltn__my-properties-img go-top">
-                <Link to="#">
-                  <img src={`${publicUrl}assets/img/product-3/3.jpg`} alt="#" />
-                </Link>
-              </td>
-              <td>
-                <div className="ltn__my-properties-info">
-                  <h6 className="mb-10 go-top">
-                    <Link to="#">New Apartment Nice View</Link>
-                  </h6>
-                  <small>
-                    <i className="icon-placeholder" /> Brooklyn, New York,
-                    United States
-                  </small>
-                  <div className="product-ratting">
-                    <ul>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fas fa-star-half-alt" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="far fa-star" />
-                        </a>
-                      </li>
-                      <li className="review-total">
-                        {" "}
-                        <a href="#"> ( 95 Reviews )</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-              <td>Feb 22, 2022</td>
-              <td>
-                <Link to="#">Edit</Link>
-              </td>
-              <td>
-                <Link to="#">
-                  <i className="fa-solid fa-trash-can" />
-                </Link>
-              </td>
-            </tr>
-          </tbody>
+          {list && list.length === 0 ? (
+            <tbody>
+              <tr>
+                <td>No Data!</td>
+              </tr>
+            </tbody>
+          ) : (
+            list.map((element) => (
+              <tbody>
+                <tr>
+                  <td className="ltn__my-properties-img go-top">
+                    <Link to="#">
+                      <img src={element?.featuredImage} alt="#" />
+                    </Link>
+                  </td>
+                  <td>
+                    <div className="ltn__my-properties-info">
+                      <h6 className="mb-10 go-top">
+                        <Link to="#">{element?.title}</Link>
+                      </h6>
+                      <small>
+                        <i className="icon-placeholder" /> {element?.address}
+                      </small>
+                    </div>
+                  </td>
+                  <td>{moment(element?.createdAt).format("MMMM d, YYYY")}</td>
+                  <td>
+                    <Link to="#">Edit</Link>
+                  </td>
+                  <td>
+                    <Link to="#">
+                      <i className="fa-solid fa-trash-can" />
+                    </Link>
+                  </td>
+                </tr>
+              </tbody>
+            ))
+          )}
         </table>
       </div>
       <div className="ltn__pagination-area text-center">
