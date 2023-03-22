@@ -165,7 +165,7 @@ const AccessTable = (props) => {
                       audioOutputDeviceId: selectedAudioOutput,
                       videoDeviceId: selectedVideoDevice
                     }
-                  }}><button disabled="disabled">JOIN CALL</button></Link>
+                  }}><button>JOIN CALL</button></Link>
                 </tr>
               </table>
             </div>
