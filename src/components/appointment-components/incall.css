@@ -1,0 +1,137 @@
+
+#main {
+  display: flex;
+}
+
+#members {
+  width: 30%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid;
+}
+
+#publisher {
+  width: 100%;
+  height: auto;
+}
+
+#publisher > div {
+  width: 100%;
+  height: auto;
+  margin: 4px auto;
+  border-radius: 25px;
+  border: 1px solid rgb(0, 0, 0)
+}
+
+#subscribers {
+  margin: 0 auto;
+  overflow-y: scroll;
+  padding: 10px;
+}
+#subscribers > div {
+  width: 100%;
+  height: auto;
+  margin: 4px;
+  border-radius: 15px;
+  border: 1px solid rgb(0, 0, 0)
+}
+
+#chatOptions {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  right: 50%;
+  transform: translate(50%, 0);
+  padding: 10px;
+  background: #00C800;
+  width: 100%;
+  z-index: 12;
+}
+
+#chatOptions img {
+  width: 30px;
+  height: auto;
+  border: 1px solid white;
+  border-radius: 50%;
+  margin: 0 10px;
+  padding: 5px;
+  background: ghostwhite
+}
+
+#chatOptions img:hover {
+  cursor: pointer;
+}
+
+#ChatIcon {
+  width: 30px;
+  height: auto;
+  border: 1px solid white;
+  border-radius: 50%;
+  margin: 0 10px;
+  padding: 5px;
+  position: fixed;
+  bottom: 10px;
+  right: 10%;
+  background: ghostwhite;
+  z-index: 12;
+  position: fixed;
+}
+
+#chatArea {
+  width: 30%;
+  height: 90vh;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  border: 1px solid;
+  border-radius: 20px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background: #00C800;
+}
+#chatArea p p {
+  margin: 3px auto;
+  background: rgb(255, 255, 255);
+  width: 90%;
+  border-radius: 5px;
+  color: #000000;
+  padding-left: 5px;
+}
+#history {
+  width: 100%;
+  height: 84%;
+}
+
+form {
+  width: 90%;
+  margin: 0 auto;
+}
+
+#msgTxt {
+  border-radius: 40px;
+}
+
+.slide-in {
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+  
+@keyframes slide-in {
+  100% { transform: translateX(0%); }
+}
+
+@-webkit-keyframes slide-in {
+  100% { -webkit-transform: translateX(0%); }
+}
+  
+@keyframes slide-out {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+@-webkit-keyframes slide-out {
+  0% { -webkit-transform: translateX(0%); }
+  100% { -webkit-transform: translateX(-100%); }
+}

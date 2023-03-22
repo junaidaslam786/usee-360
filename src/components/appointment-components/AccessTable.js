@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import RTCDetect from 'rtc-detect';
 import OT from '@opentok/client';
 import './AccessTable.css';
-import { cond } from 'lodash';
 
 const AccessTable = (props) => {
 
@@ -13,8 +12,8 @@ const AccessTable = (props) => {
   const [cameraStatus, setCameraStatus] = useState(0);
   const [speakerStatus, setSpeakerStatus] = useState(0);
   const [screenSharingStatus, setScreenSharingStatus] = useState(0);
-  const [audioInputOptions, setAudioInputOptions] = useState([]);
-  const [videoOptions, setVideoOptions] = useState([]);
+  const [audioInputOptions, setAudioInputOptions] = useState([{"label":"------------ Audio ------------"}]);
+  const [videoOptions, setVideoOptions] = useState([{"label":"------------ Video ------------"}]);
   const [audioOutputOptions, setAudioOutputOptions] = useState([]);
   const [selectedAudioInput, setSelectedAudioInput] = useState(null);
   const [selectedVideoDevice, setSelectedVideoDevice] = useState(null);
@@ -78,24 +77,21 @@ const AccessTable = (props) => {
   return (
     <main class="main">
       <div class="container">
-        <div class="logo_wrap text-center">
+        <div class="logo_wrap text-center" style={{display: 'flex', justifyContent:'space-between', alignItems:'center'}}>
             <center>
               <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
             </center>
+            <center>
+            <h1> Visit your new home <br/>
+                <span> from home.</span>
+              </h1>
+            </center>
         </div>
+
         <div class="row">
           <div class="col-12">
             <div class="vr_connect_welcome">
-              <h1> Visit your new home <br/>
-                <span> from home.</span>
-              </h1>
-              <div class="sidebar_avatar ">
-                <div class="avatar_wrap">
-                  <div class="overflow-hidden">
-                    <img src="https://app.usee-360.com/public/homeasset/images/dummy.png" alt="profile photo" />
-                  </div>
-                </div>
-              </div>
+
               <p>Today, you have an appointment at <span>19:16</span> with your customer, <span>saad jamil.</span>
               </p>
               <h3>Testing your system</h3>
@@ -138,7 +134,7 @@ const AccessTable = (props) => {
                     {cameraStatus === 2 && <p>Camera permission denied</p> }
                   </td> 
                 </tr>
-                <tr>
+                {/* <tr>
                   <td>Speaker</td>
                   <td>
                     <select value={selectedAudioOutput} onChange={(event) => {setSelectedAudioOutput(event.target.value)}}>
@@ -152,7 +148,7 @@ const AccessTable = (props) => {
                     {speakerStatus === 1 && <p>SUCCESS</p> }
                     {speakerStatus === 2 && <p>Speaker/AudioOutputDevice permission denied</p> }
                   </td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td>Screensharing</td>
                   <td>
@@ -169,7 +165,7 @@ const AccessTable = (props) => {
                       audioOutputDeviceId: selectedAudioOutput,
                       videoDeviceId: selectedVideoDevice
                     }
-                  }}><button disabled="disabled">JOIN CALL</button></Link>
+                  }}><button>JOIN CALL</button></Link>
                 </tr>
               </table>
             </div>
