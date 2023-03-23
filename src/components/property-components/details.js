@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import parse from "html-react-parser";
-
 class ShopDetails extends Component {
   render() {
     const publicUrl = `${process.env.PUBLIC_URL}/`;
@@ -12,6 +10,22 @@ class ShopDetails extends Component {
           <div className="row">
             <div className="col-lg-8 col-md-12">
               <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
+                <div className="ltn__blog-meta">
+                  <ul>
+                    <li className="ltn__blog-category">
+                      <Link to="#">Featured</Link>
+                    </li>
+                    <li className="ltn__blog-category">
+                      <Link className="bg-orange" to="#">
+                        For Rent
+                      </Link>
+                    </li>
+                    <li className="ltn__blog-date">
+                      <i className="far fa-calendar-alt" />
+                      May 19, 2021
+                    </li>
+                  </ul>
+                </div>
                 <h1>New Apartment Nice View</h1>
                 <label>
                   <span className="ltn__secondary-color">
@@ -110,7 +124,7 @@ class ShopDetails extends Component {
                 <div className="ltn__shop-details-tab-content-inner--- ltn__shop-details-tab-inner-2 ltn__product-details-review-inner mb-60">
                   <div className="ltn__comment-reply-area ltn__form-box mb-30">
                     <form action="#">
-                      <h4>Book an Appointment</h4>
+                      <h4>Make an Offer</h4>
                       <div className="input-item input-item-name ltn__custom-icon">
                         <input type="text" placeholder="Enter name...." />
                       </div>
@@ -118,7 +132,7 @@ class ShopDetails extends Component {
                         <input type="email" placeholder="Enter email...." />
                       </div>
                       <div className="input-item input-item-website ltn__custom-icon">
-                        <input type="text" placeholder="Enter date...." />
+                        <input type="text" placeholder="Enter Offer..." />
                       </div>
                       <div className="input-item input-item-textarea ltn__custom-icon">
                         <textarea

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Dashboard() {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
-  
+
   return (
     <div className="ltn__comment-area mb-50">
       <div className="ltn-author-introducing clearfix">
@@ -46,6 +46,60 @@ export default function Dashboard() {
                 </div>
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 p-2">
+          <div className="dashboard-card card-1">
+            <div className="row">
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-start">
+                <p className="card-desc-left m-0 p-0">No. of Properties</p>
+              </div>
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
+                <i class="fa-solid fa-house"></i>
+                <p className="card-desc-right m-0 p-0">27</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 p-2">
+          <div className="dashboard-card card-2">
+            <div className="row">
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-start">
+                <p className="card-desc-left m-0 p-0">Upcoming Bookings</p>
+              </div>
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
+                <i class="fa-solid fa-calendar"></i>
+                <p className="card-desc-right m-0 p-0">11</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 p-2">
+          <div className="dashboard-card card-3">
+            <div className="row">
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-start">
+                <p className="card-desc-left m-0 p-0">Properties Sold</p>
+              </div>
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
+                <i class="fa-solid fa-house"></i>
+                <p className="card-desc-right m-0 p-0">5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 p-2">
+          <div className="dashboard-card card-4">
+            <div className="row">
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-start">
+                <p className="card-desc-left m-0 p-0">Completed Bookings</p>
+              </div>
+              <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
+                <i class="fa-regular fa-calendar"></i>
+                <p className="card-desc-right m-0 p-0">18</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

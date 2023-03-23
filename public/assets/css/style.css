@@ -982,6 +982,8 @@ fieldset legend {
     input and button type focus outline disable
 ---------------------------------------------------- */
 input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
 input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus,
@@ -1007,6 +1009,8 @@ code {
     Form input box
 ---------------------------------------------------- */
 input[type="text"],
+input[type="date"],
+input[type="time"],
 input[type="email"],
 input[type="password"],
 input[type="submit"],
@@ -1027,6 +1031,8 @@ textarea {
 }
 
 input[type="text"]::-webkit-input-placeholder,
+input[type="date"]::-webkit-input-placeholder,
+input[type="time"]::-webkit-input-placeholder,
 input[type="email"]::-webkit-input-placeholder,
 input[type="password"]::-webkit-input-placeholder,
 input[type="submit"]::-webkit-input-placeholder,
@@ -1037,6 +1043,8 @@ textarea::-webkit-input-placeholder {
 }
 
 input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 textarea:focus {
@@ -9774,6 +9782,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   padding: 0;
 }
 
+.ltn__comment-reply-area form {
+  width: 100% !important;
+}
+
 .add-a-review {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -13972,6 +13984,9 @@ input.cart-plus-minus-box {
   position: relative;
   margin-top: 30px;
 }
+.ltn__form-box form {
+  width: 100% !important;
+}
 .ltn__newsletter-inner .ltn__form-box input {
   margin-bottom: 0;
   padding-right: 140px;
@@ -15867,6 +15882,10 @@ input.cart-plus-minus-box {
 /* ----------------------------------------------------
     Car Dealer Form
 ---------------------------------------------------- */
+.ltn__car-dealer-form-box {
+  width: 100% !important;
+}
+
 .ltn__car-dealer-form-tab .ltn__tab-menu {
   margin-bottom: 0;
 }
@@ -18138,6 +18157,62 @@ input.cart-plus-minus-box {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.search-btn {
+  width: 100% !important;
+}
+
+.no-data {
+  border: 0 !important;
+}
+
+.appointment-date {
+  color: #00c800;
+}
+
+.appointment-info {
+  padding-left: 25px;
+  border-left: 1px solid #D5DBDB;
+}
+
+.dashboard-card {
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.dashboard-card i {
+  font-size: 25px;
+  display: inline;
+  margin-right: 5px;
+}
+
+.dashboard-card .card-desc-left {
+  color: white;
+  font-size: 25px !important;
+}
+
+.dashboard-card .card-desc-right {
+  display: inline;
+  color: white;
+  font-size: 50px !important;
+}
+
+.dashboard-card.card-1 {
+  background-color: #89e88b;
+}
+
+.dashboard-card.card-2 {
+  background-color: #00cb04;
+}
+
+.dashboard-card.card-3 {
+  background-color: #7a5970;
+}
+
+.dashboard-card.card-4 {
+  background-color: #3e2837
 }
 
 /* ----------------------------------------------------

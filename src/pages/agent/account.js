@@ -16,9 +16,9 @@ function getToken() {
 function AgentAccountPage() {
   const token = getToken();
 
-  if (!token) {
-    return <Login />;
-  }
+  // if (!token) {
+  //   return <Login />;
+  // }
 
   return (
     <div>

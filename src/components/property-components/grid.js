@@ -94,6 +94,11 @@ class ShopGridV1 extends Component {
                               </Link>
                             </div>
                             <div className="product-info">
+                              <div className="product-badge">
+                                <ul>
+                                  <li className="sale-badg">For Rent</li>
+                                </ul>
+                              </div>
                               <h2 className="product-title go-top">
                                 <Link to="/property-details">
                                   New Apartment Nice View
@@ -175,6 +180,11 @@ class ShopGridV1 extends Component {
                               </Link>
                             </div>
                             <div className="product-info">
+                              <div className="product-badge">
+                                <ul>
+                                  <li className="sale-badg">For Rent</li>
+                                </ul>
+                              </div>
                               <h2 className="product-title go-top">
                                 <Link to="/property-details">
                                   New Apartment Nice View
@@ -256,6 +266,11 @@ class ShopGridV1 extends Component {
                               </Link>
                             </div>
                             <div className="product-info">
+                              <div className="product-badge">
+                                <ul>
+                                  <li className="sale-badg">For Sale</li>
+                                </ul>
+                              </div>
                               <h2 className="product-title go-top">
                                 <Link to="/property-details">
                                   New Apartment Nice View
@@ -337,6 +352,11 @@ class ShopGridV1 extends Component {
                               </Link>
                             </div>
                             <div className="product-info">
+                              <div className="product-badge">
+                                <ul>
+                                  <li className="sale-badg">For Rent</li>
+                                </ul>
+                              </div>
                               <h2 className="product-title go-top">
                                 <Link to="/property-details">
                                   New Apartment Nice View

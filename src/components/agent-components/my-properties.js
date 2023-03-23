@@ -6,28 +6,28 @@ export default function MyProperties() {
   const [page, setPage] = useState(1);
   const [list, setList] = useState([]);
 
-  const token = sessionStorage.getItem("agentToken");
-  const loadAllList = async () => {
-    let response = await fetch(
-      `https://usee360-api.invo.zone/property/list?page=${page}&size=10`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  // const token = sessionStorage.getItem("agentToken");
+  // const loadAllList = async () => {
+  //   let response = await fetch(
+  //     `https://usee360-api.invo.zone/property/list?page=${page}&size=10`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     }
+  //   );
     
-    response = await response.json();
-    if (response) {
-      setList(response.data);
-    }
-  };
+  //   response = await response.json();
+  //   if (response) {
+  //     setList(response.data);
+  //   }
+  // };
 
-  useEffect(() => {
-    loadAllList();
-  }, [page]);
+  // useEffect(() => {
+  //   loadAllList();
+  // }, [page]);
 
   return (
     <div className="ltn__myaccount-tab-content-inner">
@@ -45,7 +45,7 @@ export default function MyProperties() {
           {list && list.length === 0 ? (
             <tbody>
               <tr>
-                <td>No Data!</td>
+                <td className="no-data">No Data!</td>
               </tr>
             </tbody>
           ) : (

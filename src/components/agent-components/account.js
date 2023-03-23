@@ -3,6 +3,8 @@ import Dashboard from './dashboard';
 import AccoutnDetails from './account-details';
 import MyProperties from './my-properties';
 import AddProperty from './add-property';
+import Appointments from './appointments';
+import AddAppointments from "./add-appointments";
 import Alerts from './alerts';
 
 class MyAccount extends Component {
@@ -45,6 +47,14 @@ class MyAccount extends Component {
                             <i className="fa-solid fa-map-location-dot" />
                           </a>
                           <a data-bs-toggle="tab" href="#ltn_tab_1_5">
+                            Appointments
+                            <i className="fa-solid fa-clock" />
+                          </a>
+                          <a data-bs-toggle="tab" href="#ltn_tab_1_6">
+                            Add Appointments
+                            <i class="fa-solid fa-calendar-check"></i>
+                          </a>
+                          <a data-bs-toggle="tab" href="#ltn_tab_1_7">
                             Alerts
                             <i className="fa-solid fa-bell" />
                           </a>
@@ -59,6 +69,7 @@ class MyAccount extends Component {
                       <div className="tab-content">
                         <div className="tab-pane fade active show" id="ltn_tab_1_1">
                           <Dashboard />
+                          <Appointments />
                         </div>
                         <div className="tab-pane fade" id="ltn_tab_1_2">
                           <AccoutnDetails />
@@ -70,6 +81,12 @@ class MyAccount extends Component {
                           <AddProperty />
                         </div>
                         <div className="tab-pane fade" id="ltn_tab_1_5">
+                          <Appointments />
+                        </div>
+                        <div className="tab-pane fade" id="ltn_tab_1_6">
+                          <AddAppointments />
+                        </div>
+                        <div className="tab-pane fade" id="ltn_tab_1_7">
                           <Alerts />
                         </div>
                       </div>
