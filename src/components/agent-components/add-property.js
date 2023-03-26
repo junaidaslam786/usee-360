@@ -1,30 +1,69 @@
 import React, { useState, useEffect } from "react";
 
 export default function AddProperty() {
-  const [categoriesFields, setCategoriesFields] = useState([]);
+  const [categoryFields, setCategoryFields] = useState([]);
+
+  const [title, setTitle] = useState();
+  const [propertyType, setPropertyType] = useState();
+  const [propertyCategoryType, setPropertyCategoryType] = useState();
+  const [price, setPrice] = useState();
+  const [unit, setUnit] = useState();
+  const [area, setArea] = useState();
+  const [bedrooms, setBedrooms] = useState();
+  const [description, setDescription] = useState();
+  const [address, setAddress] = useState();
+  const [city, setCity] = useState();
+  const [postalCode, setPostalCode] = useState();
+  const [region, setRegion] = useState();
+  const [longitude, setLongitude] = useState();
+  const [latitude, setLatitude] = useState();
 
   const token = JSON.parse(sessionStorage.getItem("agentToken"));
-  const loadCategoriesFields = async () => {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/category/1`, {
+
+  const loadCategoryFields = async () => {
+    return fetch(`${process.env.REACT_APP_API_URL}/category/1`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    });
+    }).then((data) => data.json());
+  };
 
-    response = await response.json();
-    if (response) {
-      setCategoriesFields(response.categoryFields);
-    }
+  const createProperty = async (formData) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/property/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(formData),
+    }).then((data) => data.json());
   };
 
   useEffect(() => {
-    loadCategoriesFields();
+    const response = loadCategoryFields();
+    if (response) setCategoryFields(response.categoryFields);
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    await createProperty({
+      title,
+      price,
+      description,
+      address,
+      city,
+      postalCode,
+      region,
+      longitude,
+      latitude,
+    });
+  };
+
   return (
-    <div className="ltn__myaccount-tab-content-inner">
+    <form onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner">
       <h4 className="title-2">Property Description</h4>
       <div className="row mb-50">
         <div className="col-md-12">
@@ -33,14 +72,24 @@ export default function AddProperty() {
               Property Name - First line of address (for example: 30 Johns Road,
               SM1)
             </label>
-            <input type="text" placeholder="Property Name" />
+            <input
+              type="text"
+              placeholder="Property Name"
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-4">
           <div className="input-item">
             <label>Property Type</label>
             <div className="input-item">
-              <select className="nice-select">
+              <select
+                className="nice-select"
+                onChange={(e) => setPropertyType(e.target.value)}
+              >
+                <option selected hidden disabled>
+                  Select Property Type
+                </option>
                 <option>Apartments</option>
                 <option>Condos</option>
                 <option>Duplexes</option>
@@ -58,7 +107,13 @@ export default function AddProperty() {
           <div className="input-item">
             <label>Property Category Type</label>
             <div className="input-item">
-              <select className="nice-select">
+              <select
+                className="nice-select"
+                onChange={(e) => setPropertyCategoryType(e.target.value)}
+              >
+                <option selected hidden disabled>
+                  Select Property Category Type
+                </option>
                 <option>Rent</option>
                 <option>Sale</option>
               </select>
@@ -68,14 +123,24 @@ export default function AddProperty() {
         <div className="col-md-4">
           <div className="input-item">
             <label>Price</label>
-            <input type="text" placeholder="0,00,000" />
+            <input
+              type="text"
+              placeholder="0,00,000"
+              onChange={(e) => setPrice(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-4">
           <div className="input-item">
             <label>Unit</label>
             <div className="input-item">
-              <select className="nice-select">
+              <select
+                className="nice-select"
+                onChange={(e) => setUnit(e.target.value)}
+              >
+                <option selected hidden disabled>
+                  Select Unit
+                </option>
                 <option>sq ft</option>
                 <option>sq mt</option>
               </select>
@@ -85,14 +150,24 @@ export default function AddProperty() {
         <div className="col-md-4">
           <div className="input-item">
             <label>Area</label>
-            <input type="text" placeholder="0" />
+            <input
+              type="text"
+              placeholder="0"
+              onChange={(e) => setArea(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-4">
           <div className="input-item">
             <label>No. of bedrooms</label>
             <div className="input-item">
-              <select className="nice-select">
+              <select
+                className="nice-select"
+                onChange={(e) => setBedrooms(e.target.value)}
+              >
+                <option selected hidden disabled>
+                  Select No. of Bedrooms
+                </option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -105,7 +180,10 @@ export default function AddProperty() {
         <div className="col-md-12">
           <div className="input-item">
             <label>Description</label>
-            <textarea placeholder="Description" />
+            <textarea
+              placeholder="Description"
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -192,64 +270,64 @@ export default function AddProperty() {
       </div>
       <h4 className="title-2">Property Location</h4>
       <div className="row mb-30">
-        <div className="col-lg-12">
-          <div className="property-details-google-map mb-60">
-            <iframe
-              src="https://www.google.com/maps/embed"
-              width="100%"
-              height="100%"
-              frameBorder={0}
-              allowFullScreen
-              aria-hidden="false"
-              tabIndex={0}
+        <div className="col-md-6">
+          <div className="input-item">
+            <label>Longitude</label>
+            <input
+              type="text"
+              placeholder="Longitude"
+              onChange={(e) => setLongitude(e.target.value)}
             />
           </div>
         </div>
         <div className="col-md-6">
           <div className="input-item">
-            <label>Longitude</label>
-            <input type="text" placeholder="Longitude" />
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="input-item">
             <label>Latitude</label>
-            <input type="text" placeholder="Latitude" />
+            <input
+              type="text"
+              placeholder="Latitude"
+              onChange={(e) => setLatitude(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-6">
           <div className="input-item">
             <label>Address</label>
-            <input type="text" placeholder="Address" />
+            <input
+              type="text"
+              placeholder="Address"
+              onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-6">
           <div className="input-item">
             <label>City</label>
-            <input type="text" placeholder="City" />
+            <input
+              type="text"
+              placeholder="City"
+              onChange={(e) => setCity(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-6">
           <div className="input-item">
             <label>Postal Code</label>
-            <input type="text" placeholder="Postal Code" />
+            <input
+              type="text"
+              placeholder="Postal Code"
+              onChange={(e) => setPostalCode(e.target.value)}
+            />
           </div>
         </div>
         <div className="col-md-6">
           <div className="input-item">
             <label>Region</label>
-            <input type="text" placeholder="Region" />
-          </div>
-        </div>
-        <div className="col-md-12">
-          <div className="input-item">
-            <label>Alloted To</label>
-            <div className="input-item">
-              <select className="nice-select">
-                <option>Alex Paul</option>
-                <option>James Fauster</option>
-              </select>
-            </div>
+            <input
+              type="text"
+              placeholder="Region"
+              onChange={(e) => setRegion(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -259,6 +337,6 @@ export default function AddProperty() {
       >
         Submit
       </button>
-    </div>
+    </form>
   );
 }

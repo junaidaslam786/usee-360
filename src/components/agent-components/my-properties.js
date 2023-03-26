@@ -42,16 +42,14 @@ export default function MyProperties() {
               <th scope="col">Delete</th>
             </tr>
           </thead>
-          {list && list.length === 0 ? (
-            <tbody>
+          <tbody>
+            {list && list.length === 0 ? (
               <tr>
                 <td className="no-data">No Data!</td>
               </tr>
-            </tbody>
-          ) : (
-            list.map((element) => (
-              <tbody>
-                <tr>
+            ) : (
+              list.map((element, i) => (
+                <tr key={i}>
                   <td className="ltn__my-properties-img go-top">
                     <Link to="#">
                       <img src={element?.featuredImage} alt="#" />
@@ -77,9 +75,9 @@ export default function MyProperties() {
                     </Link>
                   </td>
                 </tr>
-              </tbody>
-            ))
-          )}
+              ))
+            )}
+          </tbody>
         </table>
       </div>
       <div className="ltn__pagination-area text-center">

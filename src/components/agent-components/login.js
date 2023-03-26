@@ -57,7 +57,6 @@ export default function Login() {
               <div className="account-login-inner">
                 <form
                   onSubmit={handleSubmit}
-                  method="GET"
                   className="ltn__form-box contact-form-box"
                 >
                   {error ? (
