@@ -52,7 +52,7 @@ class MyAccount extends Component {
                           </a>
                           <a data-bs-toggle="tab" href="#ltn_tab_1_6">
                             Add Appointments
-                            <i class="fa-solid fa-calendar-check"></i>
+                            <i className="fa-solid fa-calendar-check"></i>
                           </a>
                           <a data-bs-toggle="tab" href="#ltn_tab_1_7">
                             Alerts

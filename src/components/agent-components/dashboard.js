@@ -57,7 +57,7 @@ export default function Dashboard() {
                 <p className="card-desc-left m-0 p-0">No. of Properties</p>
               </div>
               <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
-                <i class="fa-solid fa-house"></i>
+                <i className="fa-solid fa-house"></i>
                 <p className="card-desc-right m-0 p-0">27</p>
               </div>
             </div>
@@ -70,7 +70,7 @@ export default function Dashboard() {
                 <p className="card-desc-left m-0 p-0">Upcoming Bookings</p>
               </div>
               <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
-                <i class="fa-solid fa-calendar"></i>
+                <i className="fa-solid fa-calendar"></i>
                 <p className="card-desc-right m-0 p-0">11</p>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default function Dashboard() {
                 <p className="card-desc-left m-0 p-0">Properties Sold</p>
               </div>
               <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
-                <i class="fa-solid fa-house"></i>
+                <i className="fa-solid fa-house"></i>
                 <p className="card-desc-right m-0 p-0">5</p>
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function Dashboard() {
                 <p className="card-desc-left m-0 p-0">Completed Bookings</p>
               </div>
               <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
-                <i class="fa-regular fa-calendar"></i>
+                <i className="fa-regular fa-calendar"></i>
                 <p className="card-desc-right m-0 p-0">18</p>
               </div>
             </div>

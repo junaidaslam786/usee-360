@@ -75,9 +75,9 @@ const AccessTable = (props) => {
   }, []);
 
   return (
-    <main class="main">
-      <div class="container">
-        <div class="logo_wrap text-center" style={{display: 'flex', justifyContent:'space-between', alignItems:'center'}}>
+    <main className="main">
+      <div className="container">
+        <div className="logo_wrap text-center" style={{display: 'flex', justifyContent:'space-between', alignItems:'center'}}>
             <center>
               <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
             </center>
@@ -88,9 +88,9 @@ const AccessTable = (props) => {
             </center>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <div class="vr_connect_welcome">
+        <div className="row">
+          <div className="col-12">
+            <div className="vr_connect_welcome">
 
               <p>Today, you have an appointment at <span>19:16</span> with your customer, <span>saad jamil.</span>
               </p>

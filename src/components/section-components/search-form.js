@@ -5,7 +5,7 @@ import parse from "html-react-parser";
 class SearchForm extends Component {
   render() {
     return (
-      <div className="ltn__car-dealer-form-area mt--65 mt-120 pb-115---">
+      <div className="ltn__car-dealer-form-area mt-120 mb-120">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">

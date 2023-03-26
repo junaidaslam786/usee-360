@@ -2,6 +2,7 @@ import React from 'react';
 
 import Navbar from '../../components/global-components/navbar';
 import PageHeader from '../../components/global-components/header';
+import SearchForm from '../../components/section-components/search-form';
 import ServiceDetails from '../../components/section-components/service-details';
 import Video from '../../components/section-components/video-v3';
 import Service from '../../components/section-components/service-v2';
@@ -13,6 +14,7 @@ function AviationServicePage() {
     <div>
       <Navbar />
       <PageHeader headertitle="Aviation" subheader="Service" />
+      <SearchForm />
       <ServiceDetails />
       <Video />
       <Service />

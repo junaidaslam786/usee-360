@@ -1,6 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AddProperty() {
+  const [categoriesFields, setCategoriesFields] = useState([]);
+
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const loadCategoriesFields = async () => {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/category/1`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    response = await response.json();
+    if (response) {
+      setCategoriesFields(response.categoryFields);
+    }
+  };
+
+  useEffect(() => {
+    loadCategoriesFields();
+  }, []);
+
   return (
     <div className="ltn__myaccount-tab-content-inner">
       <h4 className="title-2">Property Description</h4>

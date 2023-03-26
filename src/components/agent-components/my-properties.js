@@ -6,28 +6,28 @@ export default function MyProperties() {
   const [page, setPage] = useState(1);
   const [list, setList] = useState([]);
 
-  // const token = sessionStorage.getItem("agentToken");
-  // const loadAllList = async () => {
-  //   let response = await fetch(
-  //     `https://usee360-api.invo.zone/property/list?page=${page}&size=10`,
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     }
-  //   );
-    
-  //   response = await response.json();
-  //   if (response) {
-  //     setList(response.data);
-  //   }
-  // };
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const loadAllList = async () => {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/property/list?page=${page}&size=10`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  // useEffect(() => {
-  //   loadAllList();
-  // }, [page]);
+    response = await response.json();
+    if (response) {
+      setList(response.data);
+    }
+  };
+
+  useEffect(() => {
+    loadAllList();
+  }, [page]);
 
   return (
     <div className="ltn__myaccount-tab-content-inner">

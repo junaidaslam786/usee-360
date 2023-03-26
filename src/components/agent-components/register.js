@@ -18,7 +18,7 @@ export default function Register() {
   }
 
   async function registerUser(credentials) {
-    return fetch("https://usee360-api.invo.zone/auth/register-agent", {
+    return fetch(`${process.env.REACT_APP_API_URL}/auth/register-agent`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -12,7 +12,7 @@ export default function Login() {
   }
 
   async function loginUser(credentials) {
-    return fetch("https://usee360-api.invo.zone/auth/login", {
+    return fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
