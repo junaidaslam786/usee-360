@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
 import "./incall.css";
+const fs = require('fs');
 
 const MeetingJoin = (props) => {
   const { apiKey, sessionId, token, devicePreference } = props;
@@ -27,6 +28,19 @@ const MeetingJoin = (props) => {
           (error) => {}
         );
         setSubscriber(subscriber);
+        subscriber.on('videoElementCreated', function(event) {
+          console.log("Added");
+          var videoElement = event.element;
+          var connectionData = event.stream.connection.data;
+          console.log(connectionData);
+          if (connectionData) {
+            var username = connectionData.split('=')[1];
+            var nameElement = document.createElement('div');
+            nameElement.innerHTML = username;
+            nameElement.className = 'username';
+            videoElement.parentNode.appendChild(nameElement);
+          }
+        });
         var subscriberDisconnectedNotification = document.createElement("div");
         subscriberDisconnectedNotification.className =
           "subscriberDisconnectedNotification";
@@ -64,7 +78,23 @@ const MeetingJoin = (props) => {
     const msgHistory = document.querySelector("#history");
     session.on("signal:msg", (event) => {
       const msg = document.createElement("p");
+      // Text message
       msg.textContent = event.data;
+
+      // console.log(event.files[0])
+      // fs.copyFile('source.txt', 'destination.txt', (err) => {
+      //   if (err) throw err;
+      //   console.log('source.txt was copied to destination.txt');
+      // });
+
+      // Insert anchor tag to download uploaded file to the directory
+      // const a = document.createElement("a");
+      // const text = document.createTextNode(' Download');
+      // a.appendChild(text)
+      // a.href =`${publicUrl}assets/img/icons/chat.png`;
+      // a.download = "file.png";
+      // msg.appendChild(a)
+
       msg.className =
         event.from.connectionId === session.connection.connectionId
           ? "mine"
@@ -177,28 +207,55 @@ const MeetingJoin = (props) => {
           );
         }
       });
-      document.getElementById('screen-preview').style.width = '70%';
-      document.getElementById('screen-preview').style.height = 'auto';
+      document.getElementById("screen-preview").style.width = "70%";
+      document.getElementById("screen-preview").style.height = "auto";
     }
+  }
+
+  function getUrl(event) {
+    const files = event.target.files;
+    console.log(files[0])
+    // const response = await channel.sendImage(files[0]);
   }
 
   return (
     <>
-      <div id="main">
-        <div id="members">
+      <div id="main" className="row" style={{ margin: "0" }}>
+        <div id="members" className="col col-sm-9 col-md-3 col-lg-3 bg-sm-dark">
           <div>
             <center>
-              <img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width": "130px", "margin": "25px 0 16px 0"}} />
+              <img
+                src={`${publicUrl}assets/img/meeting-logo.png`}
+                style={{ width: "130px", margin: "25px 0 16px 0" }}
+              />
             </center>
           </div>
           <div id="publisher"></div>
           <div id="subscribers"></div>
         </div>
-        <div id="screen-preview" style={{"width": "70%"}}>
-            <iframe src="https://my.matterport.com/show/?m=1M3xw6CqvML" id="prop_tour_link" style={{"width": "100%", "height": "100%"}}></iframe>
+        <div id="screen-preview" className="col-md-9 col-lg-9">
+          <iframe
+            src="https://my.matterport.com/show/?m=1M3xw6CqvML"
+            id="prop_tour_link"
+            style={{ width: "100%", height: "100%" }}
+          ></iframe>
         </div>
       </div>
       <div id="chatOptions">
+        <div id="toggle2">
+          <img
+            id="ChatIcon2"
+            src={`${publicUrl}assets/img/icons/chat.png`}
+            onClick={() => {
+              let slider = document.getElementById("chatArea");
+
+              let isOpen = slider.classList.contains("slide-in");
+
+              slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
+            }}
+          />
+        </div>
+
         <div>
           {videoStreaming === true && (
             <img
@@ -237,33 +294,45 @@ const MeetingJoin = (props) => {
             />
           )}
         </div>
+
+        <div id="toggle">
+          <img
+            id="ChatIcon2"
+            src={`${publicUrl}assets/img/icons/chat.png`}
+            onClick={() => {
+              let slider = document.getElementById("chatArea");
+
+              let isOpen = slider.classList.contains("slide-in");
+
+              slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
+            }}
+          />
+        </div>
       </div>
       <div id="chatArea" className={"slide-out"}>
         <p id="history"></p>
-        <form>
-          <input
-            type="text"
-            placeholder="Input your text here"
-            id="msgTxt"
-          ></input>
+        <form enctype="multipart/form-data" action="">
+
+          {/* <div>
+          <img style={{position:'absolute', height:'32px', maxWidth:'32px', left:'0'}}
+            src={`${publicUrl}assets/img/icons/attach-file.png`}
+          />
+          <input type="file" id="file" name="file" onChange={getUrl} />
+          </div> */}
+
+          <input type="text" placeholder="Input your text here" id="msgTxt" />
+
+          <div>
+          <img style={{position:'absolute', height:'32px', maxWidth:'32px', right:'0'}}
+            src={`${publicUrl}assets/img/icons/send-icon.png`}
+          />
+          <input type="submit" id="submit" name="submit" />
+          </div>
+
         </form>
-      </div>
-      <div id="toggle">
-        <img
-          id="ChatIcon"
-          src={`${publicUrl}assets/img/icons/chat.png`}
-          onClick={() => {
-            let slider = document.getElementById("chatArea");
-
-            let isOpen = slider.classList.contains("slide-in");
-
-            slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
-          }}
-        />
       </div>
     </>
   );
-
 };
 
 export default MeetingJoin;

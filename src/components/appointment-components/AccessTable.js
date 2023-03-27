@@ -75,38 +75,38 @@ const AccessTable = (props) => {
   }, []);
 
   return (
-    <main className="main">
-      <div className="container">
-        <div className="logo_wrap text-center" style={{display: 'flex', justifyContent:'space-between', alignItems:'center'}}>
+    <main class="main">
+      <div class="container">
+        <div class="logo_wrap text-center">
             <center>
               <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
             </center>
             <center>
             <h1> Visit your new home <br/>
-                <span> from home.</span>
+                <span style={{color:'#00cb04'}}> from home.</span>
               </h1>
             </center>
         </div>
 
-        <div className="row">
-          <div className="col-12">
-            <div className="vr_connect_welcome">
+        <div class="row">
+          <div class="col-12">
+            <div class="vr_connect_welcome">
 
-              <p>Today, you have an appointment at <span>19:16</span> with your customer, <span>saad jamil.</span>
+              <p>Today, you have an appointment at <b>19:16</b> <br /> with your customer, <b>saad jamil.</b>
               </p>
               <h3>Testing your system</h3>
-              <table style={{ "width" : "50%" }}>
-                <tr>
-                  <td>Browser</td>
-                  <td>
+              <table className='testing_results'>
+                <tr className='single_drow'>
+                  <td className='testing_secn'>Browser</td>
+                  <td className='testing_res success_msg' id="browserresult">
                     {browserStatus === 0 && <p>Waiting to check...</p> }
                     {browserStatus === 1 && <p>SUCCESS</p> }
                     {browserStatus === 2 && <p>WebRTC is not supported for this device</p> }
                   </td>
                 </tr>
-                <tr>
-                  <td>Microphone</td>
-                  <td>
+                <tr className='single_drow'>
+                  <td className='testing_secn'>Microphone</td>
+                  <td className='testing_res success_msg' id="browserresult">
                     <select value={selectedAudioInput} onChange={(event) => {setSelectedAudioInput(event.target.value)}}>
                       {audioInputOptions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -114,14 +114,14 @@ const AccessTable = (props) => {
                         </option>
                       ))}
                     </select>
-                    {microphoneStatus === 0 && <p>Waiting to check...</p> }
+                    {/* {microphoneStatus === 0 && <p>Waiting to check...</p> }
                     {microphoneStatus === 1 && <p>SUCCESS</p> }
-                    {microphoneStatus === 2 && <p>Microphone permission denied</p> }
+                    {microphoneStatus === 2 && <p>Microphone permission denied</p> } */}
                   </td> 
                 </tr>
-                <tr>
-                  <td>Camera</td>
-                  <td>
+                <tr className='single_drow'>
+                  <td className='testing_secn'>Camera</td>
+                  <td className='testing_res success_msg' id="browserresult">
                     <select value={selectedVideoDevice} onChange={(event) => {setSelectedVideoDevice(event.target.value)}}>
                       {videoOptions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -129,12 +129,12 @@ const AccessTable = (props) => {
                         </option>
                       ))}
                     </select>
-                    {cameraStatus === 0 && <p>Waiting to check...</p> }
+                    {/* {cameraStatus === 0 && <p>Waiting to check...</p> }
                     {cameraStatus === 1 && <p>SUCCESS</p> }
-                    {cameraStatus === 2 && <p>Camera permission denied</p> }
+                    {cameraStatus === 2 && <p>Camera permission denied</p> } */}
                   </td> 
                 </tr>
-                {/* <tr>
+                {/* <tr className='single_drow'>
                   <td>Speaker</td>
                   <td>
                     <select value={selectedAudioOutput} onChange={(event) => {setSelectedAudioOutput(event.target.value)}}>
@@ -149,15 +149,15 @@ const AccessTable = (props) => {
                     {speakerStatus === 2 && <p>Speaker/AudioOutputDevice permission denied</p> }
                   </td>
                 </tr> */}
-                <tr>
-                  <td>Screensharing</td>
-                  <td>
+                <tr className='single_drow'>
+                  <td className='testing_secn'>Screensharing</td>
+                  <td className='testing_res success_msg' id="browserresult">
                     {screenSharingStatus === 0 && <p>Waiting to check...</p> }
                     {screenSharingStatus === 1 && <p>SUCCESS</p> }
                     {screenSharingStatus === 2 && <p>Screensharing is not available for this browser</p> }
                   </td>
                 </tr>
-                <tr>
+                <tr className='single_drow'>
                   <Link to={{
                     pathname: "/meeting",
                     state: { 
