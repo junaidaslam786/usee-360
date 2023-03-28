@@ -117,8 +117,8 @@ const MeetingJoin = (props) => {
     }
     if (OT.hasMediaProcessorSupport()) {
       publisherOptions.videoFilter = {
-        type: "backgroundBlur",
-        blurStrength: "high",
+        type: "backgroundReplacement",
+        backgroundImgUrl: "https://img.freepik.com/free-photo/abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background_1258-28311.jpg",
       };
     }
     const publisher = OT.initPublisher(
