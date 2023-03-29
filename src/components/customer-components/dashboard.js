@@ -18,7 +18,7 @@ export default function Dashboard() {
             />
           </div>
           <div className="author-info">
-            <h6>Agent of Property</h6>
+            <h6>Customer</h6>
             <h2>Rosalina D. William</h2>
             <div className="footer-address">
               <ul>
@@ -79,7 +79,9 @@ export default function Dashboard() {
             <div className="dashboard-card card-3">
               <div className="row">
                 <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-start">
-                  <p className="card-desc-left m-0 p-0">Properties Sold</p>
+                  <p className="card-desc-left m-0 p-0">
+                    Properties in Wishlist
+                  </p>
                 </div>
                 <div className="col-lg-6 col-md-6 col-sm-6 m-0 p-0 text-end">
                   <i className="fa-solid fa-house"></i>

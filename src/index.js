@@ -23,11 +23,22 @@ import CommercialRetailService from "./pages/services/commercial-retail";
 
 import AgentRegister from "./pages/agent/register";
 import AgentLogin from "./pages/agent/login";
-import AgentAccount from "./pages/agent/account";
+import AgentDashboard from "./pages/agent/dashboard";
+import AgentAccountDetails from "./pages/agent/account-details";
+import AgentProperties from "./pages/agent/properties";
+import AgentAddProperty from "./pages/agent/add-property";
+import AgentPropertyDetails from "./pages/agent/property-details";
+import AgentAppointments from "./pages/agent/appointments";
+import AgentAddAppointment from "./pages/agent/add-appointment";
+import AgentAlerts from "./pages/agent/alerts";
 
 import CustomerRegister from "./pages/customer/register";
 import CustomerLogin from "./pages/customer/login";
-import CustomerAccount from "./pages/customer/account";
+import CustomerDashboard from "./pages/customer/dashboard";
+import CustomerAppointments from "./pages/customer/appointments";
+import CustomerWishlist from "./pages/customer/wishlist";
+import CustomerPropertyDetails from "./pages/customer/property-details"
+import CustomerProfile from "./pages/customer/profile";
 
 import Precall from "./pages/precall";
 import Meeting from "./pages/meeting";
@@ -59,12 +70,23 @@ class Root extends Component {
             {/* Agent Routes */}
             <Route path="/agent/register" component={AgentRegister} />
             <Route path="/agent/login" component={AgentLogin} />
-            <Route path="/agent" component={AgentAccount} />
+            <Route path="/agent/dashboard" component={AgentDashboard} />
+            <Route path="/agent/account-details" component={AgentAccountDetails} />
+            <Route path="/agent/properties" component={AgentProperties} />
+            <Route path="/agent/add-property" component={AgentAddProperty} />
+            <Route path="/agent/property-details" component={AgentPropertyDetails} />
+            <Route path="/agent/appointments" component={AgentAppointments} />
+            <Route path="/agent/add-appointment" component={AgentAddAppointment} />
+            <Route path="/agent/alerts" component={AgentAlerts} />
 
             {/* Client Routes */}
             <Route path="/customer/register" component={CustomerRegister} />
             <Route path="/customer/login" component={CustomerLogin} />
-            <Route path="/customer" component={CustomerAccount} />
+            <Route path="/customer/dashboard" component={CustomerDashboard} />
+            <Route path="/customer/appointments" component={CustomerAppointments} />
+            <Route path="/customer/wishlist" component={CustomerWishlist} />
+            <Route path="/customer/property-details" component={CustomerPropertyDetails} />
+            <Route path="/customer/profile" component={CustomerProfile} />
 
             {/* Meeting Routes */}
             <Route path="/meeting" component={Meeting} />

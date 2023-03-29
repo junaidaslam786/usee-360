@@ -117,12 +117,12 @@ class Navbar extends Component {
                   <div className="ltn__drop-menu user-menu">
                     <ul>
                       <li>
-                        <Link to="/customer">
+                        <Link to="/customer/dashboard">
                           <i className="icon-user" /> Customer
                         </Link>
                       </li>
                       <li>
-                        <Link to="/agent">
+                        <Link to="/agent/dashboard">
                           <i className="icon-user" /> Agent
                         </Link>
                       </li>
@@ -211,7 +211,7 @@ class Navbar extends Component {
             <div className="ltn__utilize-buttons ltn__utilize-buttons-2">
               <ul>
                 <li>
-                  <Link to="/customer">
+                  <Link to="/customer/dashboard">
                     <span className="utilize-btn-icon">
                       <i className="far fa-user" />
                     </span>
@@ -219,7 +219,7 @@ class Navbar extends Component {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/agent">
+                  <Link to="/agent/dashboard">
                     <span className="utilize-btn-icon">
                       <i className="far fa-user" />
                     </span>

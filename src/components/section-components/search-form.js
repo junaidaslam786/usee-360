@@ -26,7 +26,7 @@ class SearchForm extends Component {
                         </div>
                         <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
                           <select className="nice-select">
-                            <option selected hidden disabled>
+                            <option defaultValue hidden disabled>
                               Type
                             </option>
                             <option>Homes</option>
@@ -35,7 +35,7 @@ class SearchForm extends Component {
                         </div>
                         <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-calendar---- col-lg-3 col-md-6">
                           <select className="nice-select">
-                            <option selected hidden disabled>
+                            <option defaultValue hidden disabled>
                               Location
                             </option>
                             <option>chicago</option>

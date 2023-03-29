@@ -1,7 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
+function getToken() {
+  const tokenString = sessionStorage.getItem("agentToken");
+  const userToken = JSON.parse(tokenString);
+  return userToken;
+}
 
 export default function Login() {
+  const token = getToken();
+  const history = useHistory();
+
+  if (token) {
+    history.goBack();
+  }
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [error, setError] = useState();
@@ -30,7 +44,7 @@ export default function Login() {
     });
     if (response.token) {
       setToken(response.token);
-      window.location = "/agent";
+      window.location = "/agent/dashboard";
     } else {
       setError(response.message);
     }
@@ -151,7 +165,7 @@ export default function Login() {
                   <div className="modal-product-item">
                     <div className="row">
                       <div className="col-12">
-                        <div className="modal-product-info text-center">
+                        <div className="modal-product-info text-center p-0">
                           <h4>FORGET PASSWORD?</h4>
                           <p className="added-cart">
                             {" "}

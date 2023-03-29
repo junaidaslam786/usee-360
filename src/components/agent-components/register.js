@@ -1,13 +1,27 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
+function getToken() {
+  const tokenString = sessionStorage.getItem("agentToken");
+  const userToken = JSON.parse(tokenString);
+  return userToken;
+}
 
 export default function Register() {
+  const token = getToken();
+  const history = useHistory();
+
+  if (token) {
+    history.goBack();
+  }
+
+  const [companyName, setCompanyName] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
-  const [companyName, setCompanyName] = useState();
   const [companyPosition, setCompanyPosition] = useState();
   const [email, setEmail] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const [error, setError] = useState();
@@ -31,18 +45,18 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     const response = await registerUser({
+      companyName,
       firstName,
       lastName,
-      companyName,
       companyPosition,
       email,
-      phoneNumber,
+      phone,
       password,
       confirmPassword,
     });
     if (response.token) {
       setToken(response.token);
-      window.location = "/agent";
+      window.location = "/agent/dashboard";
     } else {
       setError(response.message);
     }
@@ -121,8 +135,8 @@ export default function Register() {
                 <input
                   type="text"
                   name="phone"
-                  placeholder="Phone Number*"
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Phone*"
+                  onChange={(e) => setPhone(e.target.value)}
                   required
                 />
                 <div className="row">

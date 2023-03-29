@@ -18171,9 +18171,11 @@ input.cart-plus-minus-box {
   color: #00c800;
 }
 
-.appointment-info {
-  padding-left: 25px;
-  border-left: 1px solid #D5DBDB;
+@media only screen and (min-width: 768px) {
+  .appointment-info {
+    padding-left: 25px;
+    border-left: 1px solid #D5DBDB;
+  }  
 }
 
 .dashboard-card {
@@ -18213,6 +18215,29 @@ input.cart-plus-minus-box {
 
 .dashboard-card.card-4 {
   background-color: #3e2837
+}
+
+.link-active {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #00c800;
+}
+
+.property-desc {
+  padding: 50px 0;
+  border-bottom: 1px solid #CCD1D1;
+}
+
+.property-desc .col-md-2 h3 {
+  color: #00C800;
+  margin-top: 20px;
+}
+
+.property-details {
+  padding: 50px 0 0 0;
+}
+
+.property-details .col-md-5 button {
+  width: 100%;
 }
 
 /* ----------------------------------------------------
