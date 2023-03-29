@@ -4,7 +4,6 @@ import { OTSession, OTStreams } from "../opentok-components";
 import ConnectionStatus from "./ConnectionStatus";
 import Publisher from "./Publisher";
 import Subscriber from "./Subscriber";
-import config from "../../config";
 
 class App extends Component {
   constructor(props) {

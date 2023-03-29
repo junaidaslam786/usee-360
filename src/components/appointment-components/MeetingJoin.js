@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
 import "./incall.css";
+import Slideshow from "../Slideshow";
 const fs = require('fs');
 
 const MeetingJoin = (props) => {
@@ -13,8 +14,61 @@ const MeetingJoin = (props) => {
   const [screenPublisher, setScreenPublisher] = useState(null);
   const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
+  const [propertiesList, setPropertiesList] = useState([]);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [virtualTourUrl, setVirtualTourUrl] = useState(null);
+  const [virtualTourVideo, setVirtualTourVideo] = useState(null);
+  const [productImages, setProductImages] = useState([]);
+
+  //const jwtToken = JSON.parse(sessionStorage.getItem("agentToken"));
+  const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUwNDM0ZTRmLTA4NzEtNGQ0NC1hZjMzLTk2YjQ1NDQ1NTMwNCIsImVtYWlsIjoidGVzdHJlY29yZEBhZ2VudC5jb20iLCJpYXQiOjE2ODAxMDg4NzgsImV4cCI6MTY4MDEyMzI3OH0.9Kg_uXfayQ0iz0t5JdkiFLGLZqa-hkFBOebXQT9yTnA";
+
+  const getPropertiesList = async () => {
+    return fetch(`http://localhost:8000/property/list?page=1&size=1000`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((propertyData) => {
+      setPropertiesList(propertyData.data.map((property) => {
+        return { label: property.description, value: property.id };
+      }));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+    }).catch((error) => {
+      console.error("Error:", error);
+    });
+  };
+
+  const getPropertyDetail = async (property) => {
+    return fetch(`http://localhost:8000/property/${property}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((propertyData) => { 
+      setVirtualTourUrl(null);
+      setVirtualTourVideo(null);
+      setProductImages(null);
+      if(propertyData.virtualTourType === "url" && propertyData.virtualTourUrl) {
+        setVirtualTourUrl(propertyData.virtualTourUrl);
+      } else if(propertyData.virtualTourType === "video" && propertyData.virtualTourUrl) {
+        setVirtualTourVideo(propertyData.virtualTourUrl);
+      }
+      if(propertyData.productImages.length > 0) {
+        setProductImages(propertyData.productImages);
+      }
+    }).catch((error) => {
+      console.error("Error:", error);
+    });
+  };
 
   useEffect(() => {
+    const lost = getPropertiesList();
     const session = OT.initSession(apiKey, sessionId);
     setSession(session);
     // Subscribe to a newly created stream
@@ -118,7 +172,7 @@ const MeetingJoin = (props) => {
     if (OT.hasMediaProcessorSupport()) {
       publisherOptions.videoFilter = {
         type: "backgroundReplacement",
-        backgroundImgUrl: "https://img.freepik.com/free-photo/abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background_1258-28311.jpg",
+        backgroundImgUrl: "https://down-yuantu.pngtree.com/back_origin_pic/19/04/06/8f9a57466bd45aaab3c0eb710de65bd9.jpg?e=1679993637&st=YWIwNzQ0MTAxM2QxMjNhMTU5ZjA0MGQ0ZWU5MGEyNTc&n=%E2%80%94Pngtree%E2%80%94electronic+technology+website+texture+background_1065222.jpg",
       };
     }
     const publisher = OT.initPublisher(
@@ -218,6 +272,11 @@ const MeetingJoin = (props) => {
     // const response = await channel.sendImage(files[0]);
   }
 
+  async function handlePropertyChange (event) {
+    setSelectedProperty(event.target.value);
+    getPropertyDetail(event.target.value);
+  }
+
   return (
     <div id="meetingBody">
       <div id="main" className="row" style={{ margin: "0" }}>
@@ -230,15 +289,35 @@ const MeetingJoin = (props) => {
               />
             </center>
           </div>
+          <div>
+              <select class="nice-select" value={selectedProperty} onChange={(event) => {handlePropertyChange(event)}}>
+                {propertiesList.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+          </div>
           <div id="publisher"></div>
           <div id="subscribers"></div>
         </div>
         <div id="screen-preview" className="col-md-9 col-lg-9">
-          <iframe
-            src="https://my.matterport.com/show/?m=1M3xw6CqvML"
+          {virtualTourUrl && (
+            <iframe
+            src={virtualTourUrl}
             id="prop_tour_link"
             style={{ width: "100%", height: "100%" }}
           ></iframe>
+          )}
+          {virtualTourVideo && (
+            <video width="100%" height="100%" controls>
+              <source src={`http://localhost:8000/${virtualTourVideo}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
+          {productImages && (
+            <Slideshow fadeImages={productImages}/>
+          )}
         </div>
       </div>
       <div id="chatOptions">
