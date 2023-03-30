@@ -219,7 +219,7 @@ const MeetingJoin = (props) => {
   }
 
   return (
-    <>
+    <div id="meetingBody">
       <div id="main" className="row" style={{ margin: "0" }}>
         <div id="members" className="col col-sm-9 col-md-3 col-lg-3 bg-sm-dark">
           <div>
@@ -311,7 +311,7 @@ const MeetingJoin = (props) => {
       </div>
       <div id="chatArea" className={"slide-out"}>
         <p id="history"></p>
-        <form enctype="multipart/form-data" action="">
+        <form id="Chatform" enctype="multipart/form-data" action="">
 
           {/* <div>
           <img style={{position:'absolute', height:'32px', maxWidth:'32px', left:'0'}}
@@ -331,7 +331,7 @@ const MeetingJoin = (props) => {
 
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
