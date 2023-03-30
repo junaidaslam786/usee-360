@@ -27,6 +27,7 @@ import AgentDashboard from "./pages/agent/dashboard";
 import AgentAccountDetails from "./pages/agent/account-details";
 import AgentProperties from "./pages/agent/properties";
 import AgentAddProperty from "./pages/agent/add-property";
+import AgentEditProperty from "./pages/agent/edit-property";
 import AgentPropertyDetails from "./pages/agent/property-details";
 import AgentAppointments from "./pages/agent/appointments";
 import AgentAddAppointment from "./pages/agent/add-appointment";
@@ -74,6 +75,7 @@ class Root extends Component {
             <Route path="/agent/account-details" component={AgentAccountDetails} />
             <Route path="/agent/properties" component={AgentProperties} />
             <Route path="/agent/add-property" component={AgentAddProperty} />
+            <Route path="/agent/edit-property/:id" component={AgentEditProperty} />
             <Route path="/agent/property-details" component={AgentPropertyDetails} />
             <Route path="/agent/appointments" component={AgentAppointments} />
             <Route path="/agent/add-appointment" component={AgentAddAppointment} />

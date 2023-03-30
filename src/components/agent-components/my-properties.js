@@ -9,7 +9,6 @@ import Layout from "./layouts/layout";
 export default function MyProperties() {
   const [page, setPage] = useState(1);
   const [propertyIdToDelete, setPropertyIdToDelete] = useState(0);
-  const [propertyIdToEdit, setPropertyIdToEdit] = useState(0);
   const [removeReason, setRemoveReason] = useState();
   const [notes, setNotes] = useState("");
   const [list, setList] = useState([]);
@@ -54,15 +53,6 @@ export default function MyProperties() {
 
   const handleDeleteButtonClick = (id) => {
     setPropertyIdToDelete(id);
-  }
-
-  const handleEditButtonClick = (id) => {
-    setPropertyIdToEdit(id);
-  }
-
-  const handleBackButtonClick = async () => {
-    await loadAllList();
-    setPropertyIdToEdit(0);
   }
 
   const handleSubmit = async (e) => {
@@ -146,148 +136,139 @@ export default function MyProperties() {
   return (
     <Layout>
       <div className="ltn__myaccount-tab-content-inner">
-        {
-          propertyIdToEdit ? (
-            <div>
-              <button onClick={handleBackButtonClick}>Go Back</button>
-              <AddProperty id={propertyIdToEdit}/>
-            </div>
-          ) : (
-            <div className="ltn__my-properties-table table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">My Properties</th>
-                    <th scope="col" />
-                    <th scope="col">Date Added</th>
-                    <th scope="col">Actions</th>
-                    <th scope="col">Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {list && list.length === 0 ? (
-                    <tr>
-                      <td className="no-data">No Data!</td>
-                    </tr>
-                  ) : (
-                    list.map((element, i) => (
-                      <tr key={i}>
-                        <td className="ltn__my-properties-img go-top">
-                          <img src={element?.featuredImage} alt="#" />
-                        </td>
-                        <td>
-                          <div className="ltn__my-properties-info">
-                            <h6 className="mb-10 go-top">
-                              <Link to="#">{element?.title}</Link>
-                            </h6>
-                            <small>
-                              <i className="icon-placeholder" /> {element?.address}
-                            </small>
-                          </div>
-                        </td>
-                        <td>{moment(element?.createdAt).format("MMMM d, YYYY")}</td>
-                        <td>
-                          <button onClick={() => handleEditButtonClick(element.id)}>
-                            Edit
-                          </button>
-                        </td>
-                        <td>
-                          <button data-bs-toggle="modal" data-bs-target="#ltn_delete_property_modal" onClick={() => handleDeleteButtonClick(element.id)}>
-                            <i className="fa-solid fa-trash-can" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-              {/* <div className="ltn__pagination-area text-center">
-                <div className="ltn__pagination">
-                  <ul>
-                    <li>
-                      <Link to="#">
-                        <i className="fas fa-angle-double-left" />
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">1</Link>
-                    </li>
-                    <li className="active">
-                      <Link to="#">2</Link>
-                    </li>
-                    <li>
-                      <Link to="#">3</Link>
-                    </li>
-                    <li>
-                      <Link to="#">...</Link>
-                    </li>
-                    <li>
-                      <Link to="#">10</Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        <i className="fas fa-angle-double-right" />
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
-              <div className="ltn__modal-area ltn__add-to-cart-modal-area----" >
-                <div
-                  className="modal show"
-                  id="ltn_delete_property_modal"
-                  tabIndex={-1}
-                  
-                >
-                  <div className="modal-dialog modal-md" role="document">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <button
-                          type="button"
-                          className="close"
-                          data-bs-dismiss="modal"
-                          ref={closeModal}
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">×</span>
-                        </button>
+        <div className="ltn__my-properties-table table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">My Properties</th>
+                <th scope="col" />
+                <th scope="col">Date Added</th>
+                <th scope="col">Actions</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list && list.length === 0 ? (
+                <tr>
+                  <td className="no-data">No Data!</td>
+                </tr>
+              ) : (
+                list.map((element, i) => (
+                  <tr key={i}>
+                    <td className="ltn__my-properties-img go-top">
+                      <img src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`} alt="#" />
+                    </td>
+                    <td>
+                      <div className="ltn__my-properties-info">
+                        <h6 className="mb-10 go-top">
+                          <Link to="#">{element?.title}</Link>
+                        </h6>
+                        <small>
+                          <i className="icon-placeholder" /> {element?.address}
+                        </small>
                       </div>
-                      <div className="modal-body">
-                        <div className="ltn__quick-view-modal-inner">
-                          <div className="modal-product-item">
-                            <div className="row">
-                              <div className="col-12">
-                                <div className="modal-product-info text-center">
-                                  <h4>Property Removal Request</h4>
-                                  <form className="ltn__form-box" onSubmit={handleSubmit}>
-                                    <Select 
-                                      options={removeReasons} 
-                                      onChange={(e) => setRemoveReason(e)}
-                                      value={removeReason}
-                                      required
-                                    />
-                                    <textarea
-                                      placeholder="Notes"
-                                      value={notes}
-                                      onChange={(e) => setNotes(e.target.value)}
-                                    />
-                                      {
-                                        error ? (<div className="alert alert-danger" role="alert"> { error } </div>) : ""
-                                      }
-                                      {
-                                        success ? (<div className="alert alert-primary" role="alert"> { success } </div>) : ""
-                                      }
-                                    <div className="btn-wrapper mt-0">
-                                      <button
-                                        className="theme-btn-1 btn btn-full-width-2"
-                                        type="submit"
-                                      >
-                                        Send Request
-                                      </button>
-                                    </div>
-                                  </form>
+                    </td>
+                    <td>{moment(element?.createdAt).format("MMMM d, YYYY")}</td>
+                    <td>
+                      <Link to={`/agent/edit-property/${element.id}`}>
+                        Edit
+                      </Link>
+                    </td>
+                    <td>
+                      <button data-bs-toggle="modal" data-bs-target="#ltn_delete_property_modal" onClick={() => handleDeleteButtonClick(element.id)}>
+                        <i className="fa-solid fa-trash-can" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+          {/* <div className="ltn__pagination-area text-center">
+            <div className="ltn__pagination">
+              <ul>
+                <li>
+                  <Link to="#">
+                    <i className="fas fa-angle-double-left" />
+                  </Link>
+                </li>
+                <li>
+                  <Link to="#">1</Link>
+                </li>
+                <li className="active">
+                  <Link to="#">2</Link>
+                </li>
+                <li>
+                  <Link to="#">3</Link>
+                </li>
+                <li>
+                  <Link to="#">...</Link>
+                </li>
+                <li>
+                  <Link to="#">10</Link>
+                </li>
+                <li>
+                  <Link to="#">
+                    <i className="fas fa-angle-double-right" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div> */}
+          <div className="ltn__modal-area ltn__add-to-cart-modal-area----" >
+            <div
+              className="modal show"
+              id="ltn_delete_property_modal"
+              tabIndex={-1}
+              
+            >
+              <div className="modal-dialog modal-md" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <button
+                      type="button"
+                      className="close"
+                      data-bs-dismiss="modal"
+                      ref={closeModal}
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="ltn__quick-view-modal-inner">
+                      <div className="modal-product-item">
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="modal-product-info text-center">
+                              <h4>Property Removal Request</h4>
+                              <form className="ltn__form-box" onSubmit={handleSubmit}>
+                                <Select 
+                                  options={removeReasons} 
+                                  onChange={(e) => setRemoveReason(e)}
+                                  value={removeReason}
+                                  required
+                                />
+                                <textarea
+                                  placeholder="Notes"
+                                  value={notes}
+                                  onChange={(e) => setNotes(e.target.value)}
+                                />
+                                  {
+                                    error ? (<div className="alert alert-danger" role="alert"> { error } </div>) : ""
+                                  }
+                                  {
+                                    success ? (<div className="alert alert-primary" role="alert"> { success } </div>) : ""
+                                  }
+                                <div className="btn-wrapper mt-0">
+                                  <button
+                                    className="theme-btn-1 btn btn-full-width-2"
+                                    type="submit"
+                                  >
+                                    Send Request
+                                  </button>
                                 </div>
-                              </div>
+                              </form>
                             </div>
                           </div>
                         </div>
@@ -297,8 +278,8 @@ export default function MyProperties() {
                 </div>
               </div>
             </div>
-          )
-        }
+          </div>
+        </div>
       </div>
     </Layout>
   );
