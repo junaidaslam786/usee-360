@@ -23,6 +23,7 @@ import CommercialRetailService from "./pages/services/commercial-retail";
 
 import AgentRegister from "./pages/agent/register";
 import AgentLogin from "./pages/agent/login";
+import AgentResetPassword from './pages/agent/reset-password';
 import AgentDashboard from "./pages/agent/dashboard";
 import AgentAccountDetails from "./pages/agent/account-details";
 import AgentProperties from "./pages/agent/properties";
@@ -35,6 +36,7 @@ import AgentAlerts from "./pages/agent/alerts";
 
 import CustomerRegister from "./pages/customer/register";
 import CustomerLogin from "./pages/customer/login";
+import CustomerResetPassword from './pages/customer/reset-password';
 import CustomerDashboard from "./pages/customer/dashboard";
 import CustomerAppointments from "./pages/customer/appointments";
 import CustomerWishlist from "./pages/customer/wishlist";
@@ -71,6 +73,7 @@ class Root extends Component {
             {/* Agent Routes */}
             <Route path="/agent/register" component={AgentRegister} />
             <Route path="/agent/login" component={AgentLogin} />
+            <Route path="/agent/reset-password" component={AgentResetPassword} />
             <Route path="/agent/dashboard" component={AgentDashboard} />
             <Route path="/agent/account-details" component={AgentAccountDetails} />
             <Route path="/agent/properties" component={AgentProperties} />
@@ -84,6 +87,7 @@ class Root extends Component {
             {/* Client Routes */}
             <Route path="/customer/register" component={CustomerRegister} />
             <Route path="/customer/login" component={CustomerLogin} />
+            <Route path="/customer/reset-password" component={CustomerResetPassword} />
             <Route path="/customer/dashboard" component={CustomerDashboard} />
             <Route path="/customer/appointments" component={CustomerAppointments} />
             <Route path="/customer/wishlist" component={CustomerWishlist} />
