@@ -3,11 +3,10 @@ import MeetingJoin from '../components/appointment-components/MeetingJoin';
 
 const Meeting = (props) => {
 
-  const { appointment } = props;
   return (
     <div>
       <MeetingJoin
-        appointment={appointment}
+        appointmentsProps={props.location.state}
       />
     </div>
   );

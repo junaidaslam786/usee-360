@@ -3,11 +3,9 @@ import AccessTable from '../components/appointment-components/AccessTable';
 
 const Precall = (props) => {
 
-  const { appointment } = props;
-
   return <div>
     <AccessTable
-      appointment={appointment}
+      appointment={props.location.state.appointment}
     />
   </div>
 };

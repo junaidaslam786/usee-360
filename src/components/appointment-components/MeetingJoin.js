@@ -5,7 +5,14 @@ import Slideshow from "../Slideshow";
 const fs = require('fs');
 
 const MeetingJoin = (props) => {
-  const { apiKey, sessionId, token, devicePreference } = props;
+
+  const { 
+    audioInputDeviceId, 
+    audioOutputDeviceId, 
+    videoDeviceId, 
+    appointment 
+  } = props.appointmentsProps;
+
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const [videoStreaming, setVideoStreaming] = useState(true);
   const [audioStreaming, setAudioStreaming] = useState(true);
@@ -20,11 +27,10 @@ const MeetingJoin = (props) => {
   const [virtualTourVideo, setVirtualTourVideo] = useState(null);
   const [productImages, setProductImages] = useState([]);
 
-  //const jwtToken = JSON.parse(sessionStorage.getItem("agentToken"));
-  const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUwNDM0ZTRmLTA4NzEtNGQ0NC1hZjMzLTk2YjQ1NDQ1NTMwNCIsImVtYWlsIjoidGVzdHJlY29yZEBhZ2VudC5jb20iLCJpYXQiOjE2ODAxMDg4NzgsImV4cCI6MTY4MDEyMzI3OH0.9Kg_uXfayQ0iz0t5JdkiFLGLZqa-hkFBOebXQT9yTnA";
+  const jwtToken = JSON.parse(sessionStorage.getItem("agentToken"));
 
   const getPropertiesList = async () => {
-    return fetch(`http://localhost:8000/property/list?page=1&size=1000`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json", 
@@ -42,7 +48,7 @@ const MeetingJoin = (props) => {
   };
 
   const getPropertyDetail = async (property) => {
-    return fetch(`http://localhost:8000/property/${property}`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/property/${property}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json", 
@@ -67,9 +73,26 @@ const MeetingJoin = (props) => {
     });
   };
 
-  useEffect(() => {
-    const lost = getPropertiesList();
-    const session = OT.initSession(apiKey, sessionId);
+  const getSessionToken = async () => {
+    return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((tokenData) => {
+      return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+    }).catch((error) => {
+      console.error("Error:", error);
+    });
+  };
+
+  useEffect(async () => {
+    const tokToken = await getSessionToken();
+    getPropertiesList();
+    const session = OT.initSession('46869314', appointment.sessionId);
     setSession(session);
     // Subscribe to a newly created stream
     session.on({
@@ -165,14 +188,14 @@ const MeetingJoin = (props) => {
       publishVideo: true,
       publishAudio: true,
     };
-    if (devicePreference) {
-      publisherOptions.audioSource = devicePreference.audioInputDeviceId;
-      publisherOptions.videoSource = devicePreference.videoDeviceId;
+    if (audioInputDeviceId || videoDeviceId) {
+      publisherOptions.audioSource = audioInputDeviceId;
+      publisherOptions.videoSource = videoDeviceId;
     }
     if (OT.hasMediaProcessorSupport()) {
       publisherOptions.videoFilter = {
         type: "backgroundReplacement",
-        backgroundImgUrl: "https://down-yuantu.pngtree.com/back_origin_pic/19/04/06/8f9a57466bd45aaab3c0eb710de65bd9.jpg?e=1679993637&st=YWIwNzQ0MTAxM2QxMjNhMTU5ZjA0MGQ0ZWU5MGEyNTc&n=%E2%80%94Pngtree%E2%80%94electronic+technology+website+texture+background_1065222.jpg",
+        backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
       };
     }
     const publisher = OT.initPublisher(
@@ -182,7 +205,7 @@ const MeetingJoin = (props) => {
     );
     setPublisher(publisher);
     // Connect to the session
-    session.connect(token, (error) => {
+    session.connect(tokToken, (error) => {
       if (error) {
         if (error.name === "OT_NOT_CONNECTED") {
           //

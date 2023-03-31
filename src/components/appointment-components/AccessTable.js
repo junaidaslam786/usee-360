@@ -6,6 +6,8 @@ import './AccessTable.css';
 
 const AccessTable = (props) => {
 
+  const { appointment } = props;
+
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const [browserStatus, setBrowserStatus] = useState(0);
   const [microphoneStatus, setMicrophoneStatus] = useState(0);
@@ -163,7 +165,8 @@ const AccessTable = (props) => {
                     state: { 
                       audioInputDeviceId: selectedAudioInput, 
                       audioOutputDeviceId: selectedAudioOutput,
-                      videoDeviceId: selectedVideoDevice
+                      videoDeviceId: selectedVideoDevice,
+                      appointment
                     }
                   }}><button>JOIN CALL</button></Link>
                 </tr>

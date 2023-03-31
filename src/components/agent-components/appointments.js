@@ -143,7 +143,14 @@ export default function Appointments() {
                       <td>
                         <strong>Not Updated</strong>
                       </td>
-                      <td></td>
+                      <td>
+                      <Link to={{
+                        pathname: "/precall",
+                        state: { 
+                          appointment: element
+                        }
+                      }}><button>JOIN CALL</button></Link>
+                      </td>
                     </tr>
                   ))
                 )}
