@@ -1,19 +1,15 @@
 import React from 'react';
 
-import Navbar from '../../components/global-components/navbar';
+import InsideNavbar from "../../components/global-components/inside-navbar";
 import PageHeader from '../../components/global-components/header';
 import PropertyDetails from '../../components/customer-components/property-details';
-import CallToActionV1 from '../../components/section-components/call-to-action-v1';
-import Footer from '../../components/global-components/footer';
 
 function CustomerPropertyDetailsPage() {
   return (
     <div>
-      <Navbar />
+      <InsideNavbar />
       <PageHeader headertitle="Property Details" />
       <PropertyDetails />
-      <CallToActionV1 />
-      <Footer />
     </div>
   );
 }

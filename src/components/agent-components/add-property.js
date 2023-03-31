@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import axios from "axios";
-import { useDropzone } from "react-dropzone";
-import Select from "react-select";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
+import Select from 'react-select';
 import Layout from "./layouts/layout";
+import UploadPropertyImage from "./properties/upload-property-image";
+import ResponseHandler from '../global-components/respones-handler';
+import { 
+  loadPropertyTypes, loadResidentialPropertyTypes, 
+  loadCommercialPropertyTypes, loadPropertyCategoryTypes, 
+  loadPriceTypes, loadUnits, loadBedrooms 
+} from '../../constants';
 
 export default function AddProperty(props) {
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
   const [categoryFields, setCategoryFields] = useState([]);
 
   const [id, setId] = useState(null);
@@ -12,17 +20,21 @@ export default function AddProperty(props) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState();
   const [propertyType, setPropertyType] = useState("");
+  const [propertySubType, setPropertySubType] = useState("");
   const [propertyCategoryType, setPropertyCategoryType] = useState();
+  const [priceType, setPriceType] = useState();
   const [unit, setUnit] = useState();
   const [area, setArea] = useState(0);
   const [bedrooms, setBedrooms] = useState();
   const [featuredImage, setFeaturedImage] = useState(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [region, setRegion] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
+  const [propertyImages, setPropertyImages] = useState([]);
   // const [allotedToUsers, setAllotedToUsers] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
@@ -33,25 +45,9 @@ export default function AddProperty(props) {
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [propertySubTypeOptions, setPropertySubTypeOptions] = useState(null);
   // const [users, setUsers] = useState([]);
-
-  const onImagesDrop = useCallback((acceptedFiles) => {
-    console.log("onImagesDrop", acceptedFiles);
-  }, []);
-
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isFocused,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone({
-    onDrop: onImagesDrop,
-    accept: { "image/*": [] },
-  });
-
-  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const history = useHistory();
 
   const loadCategoryFields = async () => {
     return fetch(`${process.env.REACT_APP_API_URL}/category/1`, {
@@ -63,31 +59,28 @@ export default function AddProperty(props) {
     }).then((data) => data.json());
   };
 
-  const loadUsersToAllocate = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/agent/user/to-allocate`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).then((data) => data.json());
-    if (response) {
-      const formattedUsers = response.map((userDetail) => {
-        return {
-          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId,
-        };
-      });
-      // setUsers(formattedUsers);
+  // const loadUsersToAllocate = async () => {
+  //   const response = await fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   }).then((data) => data.json());
+  //   if (response) {
+  //     const formattedUsers = response.map((userDetail) => {
+  //       return {
+  //         label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+  //         value: userDetail.userId
+  //       }
+  //     });
+  //     // setUsers(formattedUsers);
 
-      return formattedUsers;
-    }
-
-    return true;
-  };
+  //     return formattedUsers;
+  //   }
+    
+  //   return true;
+  // };
 
   const loadPropertyFields = async (propertyId) => {
     return fetch(`${process.env.REACT_APP_API_URL}/property/${propertyId}`, {
@@ -97,6 +90,223 @@ export default function AddProperty(props) {
         Authorization: `Bearer ${token}`,
       },
     }).then((data) => data.json());
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!title | !price | !propertyType | !propertyCategoryType) {
+      setErrorHandler("Fill all required fields");
+      return;
+    }
+
+    let apiUrl = "create";
+    let successMsg = "Property created successfully.";
+
+    let formdata = new FormData();
+    formdata.append("title", title);
+    formdata.append("description", description);
+    formdata.append("price", price);
+    formdata.append("featuredImage", featuredImage);
+    formdata.append("address", address);
+    formdata.append("city", city);
+    formdata.append("postalCode", postalCode);
+    formdata.append("region", region);
+    formdata.append("latitude", latitude);
+    formdata.append("longitude", longitude);
+
+    let virtualTourTypeVar = virtualTourType;
+    let virtualTourUrlVar = virtualTourUrl;
+    let virtualTourVideoVar = virtualTourVideo;
+   
+    if (virtualTourTypeVar == 'video') {
+      virtualTourUrlVar = "";
+      setIsChecked(false);
+    } else if (virtualTourTypeVar == 'url') {
+      virtualTourVideoVar = "";
+      setIsChecked(false);
+    } else {
+      virtualTourTypeVar = "slideshow";
+      setVirtualTourType(virtualTourTypeVar);
+      virtualTourUrlVar = "";
+      virtualTourVideoVar = "";
+      setIsChecked(true);
+    }
+
+    formdata.append("virtualTourType", virtualTourTypeVar);
+    formdata.append("virtualTourVideo", virtualTourVideoVar);
+    formdata.append("virtualTourUrl", virtualTourUrlVar);
+
+    if (propertyType?.value) {
+      formdata.append("metaTags[1]", propertyType.value);
+      if (propertyType.value == 'commercial' && propertySubType?.value) {
+        formdata.append("metaTags[7]", propertySubType.value);
+      } else if (propertyType.value == 'residential' && propertySubType?.value) {
+        formdata.append("metaTags[6]", propertySubType.value);
+      }
+    }
+
+    if (propertyCategoryType) {
+      formdata.append("metaTags[2]", propertyCategoryType.value);
+      if (propertyCategoryType?.value === 'rent' && priceType?.value) {
+        formdata.append("metaTags[8]", priceType.value);
+      }
+    }
+
+    if (unit?.value) {
+      formdata.append("metaTags[3]", unit.value);
+    }
+
+    if (area) {
+      formdata.append("metaTags[4]", area);
+    }
+
+    if (bedrooms?.value) {
+      formdata.append("metaTags[5]", bedrooms.value);
+    }
+
+    if (id) {
+      apiUrl = "update";
+      formdata.append("productId", id);
+      successMsg = "Property updated successfully.";
+    }
+
+    // if (allotedToUsers.length > 0) {
+    //   for (let i = 0; i < allotedToUsers.length; i++) {
+    //     formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
+    //   }
+    // }
+
+    setLoading(true);
+    let formResponse = null;
+    if (apiUrl == "update") {
+      formResponse = await axios
+        .put(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response?.status !== 200) {
+            setErrorHandler(
+              "Unable to update property, please try again later"
+            );
+          }
+
+        return response.data;
+      }).catch(error => {
+        console.log('update-property-error', error);
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) { 
+          setErrorHandler(error.response.data.message);
+        } else {
+          setErrorHandler("Unable to update property, please try again later");
+        }
+      });
+    } else {
+      formResponse = await axios
+        .post(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response?.status !== 201) {
+            setErrorHandler("Unable to create property, please try again later");
+          }
+
+          console.log('create-property-response', response);
+
+          return response.data;
+        }).catch(error => {
+          console.log('create-property-error', error);
+          if (error?.response?.data?.errors) {
+            setErrorHandler(error.response.data.errors, "error", true);
+          } else if (error?.response?.data?.message) { 
+            setErrorHandler(error.response.data.message);
+          } else {
+            setErrorHandler("Unable to create property, please try again later");
+          }
+        });
+    }
+    
+    setLoading(false);
+    if (formResponse) {
+      setFeaturedImage(null);
+      setVirtualTourVideo(null);
+      setSuccessHandler(successMsg);
+      if (apiUrl === 'create') {
+        setFeaturedImagePreview(null);
+      }
+
+      setTimeout(() => {
+        if (formResponse?.id) {
+          history.push(`/agent/edit-property/${formResponse.id}`);
+        }
+      }, 3000);
+      console.log("create-property-final-response", formResponse);
+    }
+  };
+
+  const checkHandler = () => {
+    setIsChecked(!isChecked);
+  };
+
+  const vrTourUrlHandler = (e) => {
+    setVirtualTourType("url");
+    setVirtualTourUrl(e);
+  };
+
+  const vrTourVideoHandler = (e) => {
+    setVirtualTourType("video");
+    setVirtualTourVideo(e);
+  };
+
+  const setPropertyCategoryTypeHandler = (e) => {
+    setPropertyCategoryType(e);
+  };
+
+  const onFeaturedImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setFeaturedImage(event.target.files[0]);
+      setFeaturedImagePreview(URL.createObjectURL(event.target.files[0]));
+    }
+  }
+
+  const setAddressFields = (place) => {
+    place.address_components.forEach((addressPart) => {
+      if (addressPart.types.includes("postal_code"))
+        setPostalCode(addressPart.long_name);
+
+      if (addressPart.types.includes("country"))
+        setRegion(addressPart.long_name);
+
+      if (addressPart.types.includes("locality"))
+        setCity(addressPart.long_name);
+    });
+
+    setLatitude(place.geometry.location.lat());
+    setLongitude(place.geometry.location.lng());
+  };
+
+  const setErrorHandler = (msg, param = "form", fullError = false) => {
+    setErrors(fullError ? msg : [{ msg, param }])
+    setTimeout(() => {
+      setErrors([]);
+    }, 3000);
+    setSuccess("");
+  };
+
+  const setSuccessHandler = (msg) => {
+    setSuccess(msg);
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+
+    setErrors([]);
   };
 
   useEffect(() => {
@@ -179,6 +389,9 @@ export default function AddProperty(props) {
           setLatitude(response.latitude);
           setLongitude(response.longitude);
           setVirtualTourType(response.virtualTourType);
+          if (response?.featuredImage) {
+            setFeaturedImagePreview(`${process.env.REACT_APP_API_URL}/${response.featuredImage}`);
+          }
 
           if (response.virtualTourType == "slideshow") {
             setIsChecked(true);
@@ -187,21 +400,23 @@ export default function AddProperty(props) {
           }
 
           if (response.productMetaTags.length > 0) {
+            let responsePropertyType;
+            let responsePropertyCategoryType;
             response.productMetaTags.forEach((metaTag) => {
               switch (metaTag.categoryField.id) {
                 case 1:
-                  setPropertyType(
-                    loadPropertyTypes.find(
-                      (property) => property.value == metaTag.value
-                    )
+                  responsePropertyType = loadPropertyTypes.find(
+                    (property) => property.value == metaTag.value
                   );
+
+                  setPropertyType(responsePropertyType);
                   break;
                 case 2:
-                  setPropertyCategoryType(
-                    loadPropertyCategoryTypes.find(
-                      (category) => category.value == metaTag.value
-                    )
-                  );
+                  responsePropertyCategoryType = loadPropertyCategoryTypes.find(
+                    (category) => category.value == metaTag.value
+                  )
+
+                  setPropertyCategoryType(responsePropertyCategoryType);
                   break;
                 case 3:
                   setUnit(
@@ -218,8 +433,36 @@ export default function AddProperty(props) {
                     )
                   );
                   break;
+                case 6:
+                  if (responsePropertyType && responsePropertyType.value === 'residential') {
+                    setPropertySubType(loadResidentialPropertyTypes.find(
+                      (subType) => subType.value == metaTag.value
+                    ));
+                  }
+                  
+                  break;
+                case 7:
+                  if (responsePropertyType && responsePropertyType.value === 'commercial') {
+                    setPropertySubType(loadCommercialPropertyTypes.find(
+                      (subType) => subType.value == metaTag.value
+                    ));
+                  }
+
+                  break;
+                case 8:
+                  if (responsePropertyCategoryType && responsePropertyCategoryType.value === 'rent') {
+                    setPriceType(loadPriceTypes.find(
+                      (priceType) => priceType.value == metaTag.value
+                    ));
+                  }
+
+                  break;
               }
             });
+          }
+
+          if (response.productImages) {
+            setPropertyImages(response.productImages);
           }
 
           // if (response.productAllocations.length > 0) {
@@ -236,313 +479,55 @@ export default function AddProperty(props) {
     }
   }, [props.id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!title | !price | !propertyType | !propertyCategoryType) {
-      setErrorHandler("Fill all required fields");
-      return;
-    }
-
-    let apiUrl = "create";
-    let successMsg = "Property created successfully.";
-
-    let formdata = new FormData();
-    formdata.append("title", title);
-    formdata.append("description", description);
-    formdata.append("price", price);
-    formdata.append("featuredImage", featuredImage);
-    formdata.append("address", address);
-    formdata.append("city", city);
-    formdata.append("postalCode", postalCode);
-    formdata.append("region", region);
-    formdata.append("latitude", latitude);
-    formdata.append("longitude", longitude);
-
-    let virtualTourTypeVar = virtualTourType;
-    let virtualTourUrlVar = virtualTourUrl;
-    let virtualTourVideoVar = virtualTourVideo;
-    if (isChecked) {
-      virtualTourTypeVar = "slideshow";
-      setVirtualTourType(virtualTourTypeVar);
-      virtualTourUrlVar = "";
-      virtualTourVideoVar = "";
-    } else {
-      if (virtualTourType == "video") {
-        virtualTourUrlVar = "";
-      } else if (virtualTourType == "url") {
-        virtualTourVideoVar = "";
-      } else {
-        virtualTourTypeVar = "slideshow";
-        virtualTourUrlVar = "";
-        virtualTourVideoVar = "";
-      }
-    }
-
-    formdata.append("virtualTourType", virtualTourTypeVar);
-    formdata.append("virtualTourVideo", virtualTourVideoVar);
-    formdata.append("virtualTourUrl", virtualTourUrlVar);
-
-    if (propertyType) {
-      formdata.append("metaTags[1]", propertyType.value);
-    }
-
-    if (propertyCategoryType) {
-      formdata.append("metaTags[2]", propertyCategoryType.value);
-    }
-
-    if (unit) {
-      formdata.append("metaTags[3]", unit.value);
-    }
-
-    if (area) {
-      formdata.append("metaTags[4]", area);
-    }
-
-    if (bedrooms) {
-      formdata.append("metaTags[5]", bedrooms.value);
-    }
-
-    if (id) {
-      apiUrl = "update";
-      formdata.append("productId", id);
-      successMsg = "Property updated successfully.";
-    }
-
-    // if (allotedToUsers.length > 0) {
-    //   for (let i = 0; i < allotedToUsers.length; i++) {
-    //     formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
-    //   }
-    // }
-
-    setLoading(true);
-    let formResponse = null;
-    if (apiUrl == "update") {
-      formResponse = await axios
-        .put(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          if (response?.status !== 200) {
-            setErrorHandler(
-              "Unable to update property, please try again later"
-            );
-          }
-
-          console.log("update-property-response", response);
-
-          return response.data;
-        })
-        .catch((error) => {
-          console.log("update-property-error", error);
-          setErrorHandler(
-            error?.response?.data?.errors
-              ? error.response.data.errors
-              : "Unable to update property, please try again later"
-          );
-        });
-    } else {
-      formResponse = await axios
-        .post(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          if (response?.status !== 201) {
-            setErrorHandler(
-              "Unable to update property, please try again later"
-            );
-          }
-
-          console.log("create-property-response", response);
-
-          return response.data;
-        })
-        .catch((error) => {
-          console.log("create-property-error", error);
-          setErrorHandler(
-            error?.response?.data?.errors
-              ? error.response.data.errors
-              : "Unable to update property, please try again later"
-          );
-        });
-    }
-
-    setFeaturedImage(null);
-    setVirtualTourVideo(null);
-
-    setLoading(false);
-    if (formResponse) {
-      setErrors([]);
-      setSuccess(successMsg);
-      setTimeout(() => {
-        setSuccess(null);
-        if (formResponse?.id) {
-          setId(formResponse.id);
-        }
-      }, 3000);
-      console.log("create-property-final-response", formResponse);
-    }
-  };
-
-  const checkHandler = () => {
-    setIsChecked(!isChecked);
-  };
-
-  const vrTourUrlHandler = (e) => {
-    setVirtualTourType("url");
-    setVirtualTourUrl(e);
-  };
-
-  const vrTourVideoHandler = (e) => {
-    setVirtualTourType("video");
-    setVirtualTourVideo(e);
-  };
-
-  const setAddressFields = (place) => {
-    place.address_components.forEach((addressPart) => {
-      if (addressPart.types.includes("postal_code"))
-        setPostalCode(addressPart.long_name);
-
-      if (addressPart.types.includes("country"))
-        setRegion(addressPart.long_name);
-
-      if (addressPart.types.includes("locality"))
-        setCity(addressPart.long_name);
-    });
-
-    setLatitude(place.geometry.location.lat());
-    setLongitude(place.geometry.location.lng());
-  };
-
-  const loadPropertyTypes = [
-    { value: "flat/apartment", label: "Apartments" },
-    { value: "house", label: "House" },
-    { value: "bungalow", label: "Bungalow" },
-    { value: "commercial", label: "Commercial" },
-    { value: "studio", label: "Studio" },
-    { value: "room", label: "Room" },
-    { value: "residential", label: "Residential" },
-    { value: "office", label: "Office" },
-    { value: "retail", label: "Retail" },
-    { value: "leisure", label: "Leisure" },
-    { value: "hospitality", label: "Hospitality" },
-    { value: "shopping_center", label: "Shopping Center" },
-    { value: "shop", label: "Shop" },
-    { value: "store", label: "Store" },
-    { value: "hotels", label: "Hotel" },
-    { value: "club", label: "Club" },
-    { value: "restaurant", label: "Restaurant" },
-    { value: "hotel_room", label: "Hotel Room" },
-    { value: "guest_house", label: "Guest House" },
-  ];
-
-  const loadPropertyCategoryTypes = [
-    { value: "rent", label: "Rent" },
-    { value: "sale", label: "Sale" },
-  ];
-
-  const loadUnits = [
-    { value: "sq_ft", label: "sq_ft" },
-    { value: "sq_mt", label: "sq_mt" },
-  ];
-
-  const loadBedrooms = [
-    { value: "1", label: "1" },
-    { value: "2", label: "2" },
-    { value: "3", label: "3" },
-    { value: "4", label: "4" },
-    { value: "5", label: "5" },
-    { value: "6", label: "6" },
-    { value: "7", label: "7" },
-    { value: "8", label: "8" },
-    { value: "9", label: "9" },
-    { value: "10", label: "10" },
-  ];
-
-  const setErrorHandler = (msg, param = "form") => {
-    setErrors([{ msg, param }]);
-    setTimeout(() => {
-      setErrors([]);
-    }, 3000);
-    setSuccess("");
-  };
-
-  const setSuccessHandler = (msg) => {
-    setSuccess(msg);
-    setTimeout(() => {
-      setSuccess("");
-    }, 3000);
-
-    setErrors([]);
-  };
-
-  const baseStyle = {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "20px",
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: "#eeeeee",
-    borderStyle: "dashed",
-    backgroundColor: "#fafafa",
-    color: "#bdbdbd",
-    outline: "none",
-    transition: "border .24s ease-in-out",
-  };
-
-  const focusedStyle = {
-    borderColor: "#2196f3",
-  };
-
-  const acceptStyle = {
-    borderColor: "#00e676",
-  };
-
-  const rejectStyle = {
-    borderColor: "#ff1744",
-  };
-
-  const style = useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isFocused ? focusedStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {}),
-    }),
-    [isFocused, isDragAccept, isDragReject]
-  );
+  useEffect(() => {
+    setPropertySubTypeOptions(propertyType?.value == 'residential' ? loadResidentialPropertyTypes : loadCommercialPropertyTypes);
+  }, [propertyType]);
 
   return (
     <Layout>
-      <form
-        encType="multipart/form-data"
-        onSubmit={handleSubmit}
-        className="ltn__myaccount-tab-content-inner"
-      >
-        {errors
-          ? errors.map((err) => {
-              return (
-                <div
-                  className="alert alert-danger"
-                  role="alert"
-                  key={err.param}
-                >
-                  {" "}
-                  {err.msg}{" "}
-                </div>
-              );
-            })
-          : ""}
+      <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner">
+        <ResponseHandler errors={errors} success={success}/>
         <h4 className="title-2">Property Description</h4>
         <div className="row mb-50">
+          <div className="col-md-6">
+            <div className="input-item">
+              <label>Property Type *</label>
+              <div className="input-item">
+                <Select 
+                  options={loadPropertyTypes} 
+                  onChange={(e) => setPropertyType(e)}
+                  value={propertyType}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="input-item">
+              <label>Property Sub Type *</label>
+              <div className="input-item">
+                <Select 
+                  options={propertySubTypeOptions} 
+                  onChange={(e) => setPropertySubType(e)}
+                  value={propertySubType}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Property Category Type *</label>
+              <div className="input-item">
+                <Select 
+                  options={loadPropertyCategoryTypes} 
+                  onChange={(e) => setPropertyCategoryTypeHandler(e)}
+                  value={propertyCategoryType}
+                  required
+                />
+              </div>
+            </div>
+          </div>
           <div className="col-md-12">
             <div className="input-item">
               <label>
@@ -573,14 +558,28 @@ export default function AddProperty(props) {
               <label>Price *</label>
               <input
                 type="text"
-                value={price || ""}
-                placeholder="10000"
+                value={price || ''}
+                placeholder="Enter price"
                 onChange={(e) => setPrice(e.target.value)}
                 required
               />
             </div>
           </div>
-          <div className="col-md-6">
+          {
+            propertyCategoryType?.value === 'rent' && (
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Price Type</label>
+                  <Select 
+                    options={loadPriceTypes} 
+                    onChange={(e) => setPriceType(e)}
+                    value={priceType}
+                    required
+                  />
+                </div>
+              </div>
+          )}
+          <div className="col-md-12">
             <div className="input-item">
               <label>No. of bedrooms</label>
               <div className="input-item">
@@ -588,45 +587,6 @@ export default function AddProperty(props) {
                   options={loadBedrooms}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item">
-              <label>Property Type *</label>
-              <div className="input-item">
-                <Select
-                  options={loadPropertyTypes}
-                  onChange={(e) => setPropertyType(e)}
-                  value={propertyType}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item">
-              <label>Property Category Type *</label>
-              <div className="input-item">
-                <Select
-                  options={loadPropertyCategoryTypes}
-                  onChange={(e) => setPropertyCategoryType(e)}
-                  value={propertyCategoryType}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item">
-              <label>Unit</label>
-              <div className="input-item">
-                <Select
-                  options={loadUnits}
-                  onChange={(e) => setUnit(e)}
-                  value={unit}
                   required
                 />
               </div>
@@ -643,6 +603,19 @@ export default function AddProperty(props) {
               />
             </div>
           </div>
+          <div className="col-md-6">
+            <div className="input-item">
+              <label>Unit</label>
+              <div className="input-item">
+                <Select
+                  options={loadUnits}
+                  onChange={(e) => setUnit(e)}
+                  value={unit}
+                  required
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <h4 className="title-2">Featured Image</h4>
         <div className="row mb-50">
@@ -650,8 +623,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <input
                 type="file"
-                className="btn theme-btn-3 mb-10"
-                onChange={(e) => setFeaturedImage(e.target.files[0])}
+                className="btn theme-btn-3 mb-10 positionRevert"
+                onChange={onFeaturedImageChange}
               />
               <br />
               <p>
@@ -665,6 +638,17 @@ export default function AddProperty(props) {
                 <small>* Images might take longer to be processed.</small>
               </p>
             </div>
+            {
+              featuredImagePreview && (
+                <img
+                  className="featuredImageCss"
+                  src={featuredImagePreview}
+                  alt={title}
+                  width="300px"
+                />
+              )
+            }
+            
           </div>
         </div>
         <h4 className="title-2">Upload VR Tour</h4>
@@ -760,32 +744,6 @@ export default function AddProperty(props) {
               />
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={latitude}
-                onChange={(event) => {
-                  setLatitude(event.target.value);
-                }}
-                name="ltn__name"
-                placeholder="Latitude (for Google Maps)"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={longitude}
-                onChange={(event) => {
-                  setLongitude(event.target.value);
-                }}
-                name="ltn__name"
-                placeholder="Longitude (for Google Maps)"
-              />
-            </div>
-          </div>
         </div>
         {/* <div className="row">
           <div className="col-md-12">
@@ -804,70 +762,14 @@ export default function AddProperty(props) {
           </div>
         </div> */}
         <br />
-        {id ? (
+        {id && (
           <div>
-            <h4 className="title-2">Add More Images</h4>
-            <div className="row mb-50">
-              <div className="col-md-12">
-                <div {...getRootProps({ style })}>
-                  <input {...getInputProps()} />
-                  {isDragActive ? (
-                    <p>Drop the files here ...</p>
-                  ) : (
-                    <p>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <h4 className="title-2">Upload Documents</h4>
-            <div className="row mb-50">
-              <div className="col-md-8">
-                <div className="input-item">
-                  <label>Brochure</label>
-                  <input type="file" className="btn theme-btn-3 mb-10" />
-                </div>
-              </div>
-              <div className="col-md-8">
-                <div className="input-item">
-                  <label>Floor Plan</label>
-                  <input type="file" className="btn theme-btn-3 mb-10" />
-                </div>
-              </div>
-              <div className="col-md-8 mb-20">
-                <div className="input-item">
-                  <label>More Documents</label>
-                </div>
-              </div>
-            </div>
+            <UploadPropertyImage id={id} images={propertyImages} />
           </div>
-        ) : (
-          ""
         )}
-        {errors
-          ? errors.map((err) => {
-              return (
-                <div
-                  className="alert alert-danger"
-                  role="alert"
-                  key={err.param}
-                >
-                  {" "}
-                  {err.msg}{" "}
-                </div>
-              );
-            })
-          : ""}
-        {success ? (
-          <div className="alert alert-primary" role="alert">
-            {" "}
-            {success}{" "}
-          </div>
-        ) : (
-          ""
-        )}
+        <ResponseHandler errors={errors} success={success}/>
         <button
+          disabled={loading}
           type="submit"
           className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
         >

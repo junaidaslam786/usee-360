@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import ResponseHandler from '../global-components/respones-handler';
 
 function getToken() {
   const tokenString = sessionStorage.getItem("agentToken");
@@ -24,7 +25,7 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
-  const [error, setError] = useState();
+  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
 
   function setToken(token) {
@@ -58,7 +59,15 @@ export default function Register() {
       setToken(response.token);
       window.location = "/agent/dashboard";
     } else {
-      setError(response.message);
+      if (response?.errors) {
+        setErrors(response.errors);
+      } else {
+        setErrors([{ msg: "Unable to register agent, please try again later", param: "form" }])
+      }
+      
+      setTimeout(() => {
+        setErrors([]);
+      }, 3000);
     }
     setLoading(false);
   };
@@ -84,13 +93,7 @@ export default function Register() {
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
               >
-                {error ? (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                ) : (
-                  ""
-                )}
+                <ResponseHandler errors={errors}/>
                 <input
                   type="text"
                   name="companyname"
@@ -178,6 +181,14 @@ export default function Register() {
                 </div>
               </form>
               <div className="by-agree text-center">
+                <p>By creating an account, you agree to our:</p>
+                <p>
+                  <Link to={`/terms-and-conditions`}>
+                    TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY
+                    POLICY
+                  </Link>
+                </p>
+
                 <div className="go-to-btn mt-50 go-top">
                   <Link to="/agent/login">ALREADY HAVE AN ACCOUNT ?</Link>
                 </div>

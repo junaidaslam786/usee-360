@@ -13,6 +13,7 @@ import PropertyDetails from "./pages/property-details";
 import Services from "./pages/services";
 import Demo from "./pages/demo";
 import Contact from "./pages/contact";
+import Termcondition from "./pages/termcondition";
 
 import HomesService from "./pages/services/homes";
 import VillasService from "./pages/services/villas";
@@ -69,6 +70,7 @@ class Root extends Component {
             <Route path="/services/aviation" component={AviationService} />
             <Route path="/services/commercial-retail" component={CommercialRetailService} />
             <Route path="/services" component={Services} />
+            <Route path="/terms-and-conditions" component={Termcondition} />
 
             {/* Agent Routes */}
             <Route path="/agent/register" component={AgentRegister} />

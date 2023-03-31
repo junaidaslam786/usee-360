@@ -18250,3 +18250,63 @@ input.cart-plus-minus-box {
 ---------------------------------------------------- */
 
 /*# sourceMappingURL=style.css.map */
+.dropzone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #eeeeee;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border .24s ease-in-out;
+}
+
+.featuredImageCss {
+  position: absolute;
+  right: -123px;
+  top: -50px;
+  width: 350px;
+  height: 200px;
+  border: 2px solid #00C800;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.ltn__breadcrumb-area {
+  margin-bottom: 65px;
+  padding: 2px 0;
+  color: #fff;
+  background-image: none;
+  background-color: #e9ecef;
+}
+
+h1.page-title {
+  font-size: 41px;
+  line-height: 45px;
+  margin-bottom: 5px;
+}
+
+.ltn__breadcrumb-list li {
+  margin-top: 0;
+  color: #212529;
+}
+
+.companyLogoCss {
+  position: absolute;
+  /* right: -120px; */
+  top: -20px;
+  width: 250px;
+  height: 120px;
+  border: 2px solid #00C800;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.positionRevert {
+  position: revert;
+}

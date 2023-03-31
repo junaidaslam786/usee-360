@@ -3,6 +3,7 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
+import ResponseHandler from '../global-components/respones-handler';
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
@@ -181,16 +182,17 @@ export default function AddAppointment() {
 
         console.log("create-appointment-response", response);
 
-        return response.data;
-      })
-      .catch((error) => {
-        console.log("create-appointment-error", error);
-        setErrorHandler(
-          error?.response?.data?.errors
-            ? error.response.data.errors
-            : "Unable to create appointment, please try again later"
-        );
-      });
+      return response.data;
+    }).catch(error => {
+      console.log('create-appointment-error', error);
+      if (error?.response?.data?.errors) {
+        setErrorHandler(error.response.data.errors, "error", true);
+      } else if (error?.response?.data?.message) { 
+        setErrorHandler(error.response.data.message);
+      } else {
+        setErrorHandler("Unable to create appointment, please try again later");
+      }
+    });
 
     setLoading(false);
     if (formResponse) {
@@ -206,8 +208,8 @@ export default function AddAppointment() {
     }
   };
 
-  const setErrorHandler = (msg, param = "form") => {
-    setErrors([{ msg, param }]);
+  const setErrorHandler = (msg, param = "form", fullError = false) => {
+    setErrors(fullError ? msg : [{ msg, param }])
     setTimeout(() => {
       setErrors([]);
     }, 3000);
@@ -354,28 +356,7 @@ export default function AddAppointment() {
                   </div>
                 </div> */}
                 <div className="btn-wrapper">
-                  {errors
-                    ? errors.map((err) => {
-                        return (
-                          <div
-                            className="alert alert-danger"
-                            role="alert"
-                            key={err.param}
-                          >
-                            {" "}
-                            {err.msg}{" "}
-                          </div>
-                        );
-                      })
-                    : ""}
-                  {success ? (
-                    <div className="alert alert-primary" role="alert">
-                      {" "}
-                      {success}{" "}
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  <ResponseHandler errors={errors} success={success}/>
                   <button
                     type="submit"
                     className="btn theme-btn-1 btn-effect-1 text-uppercase"

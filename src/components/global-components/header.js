@@ -10,15 +10,11 @@ class Page_header extends Component {
     const Img = this.props.Img ? this.props.Img : "14.jpg";
 
     return (
-      <div
-        className={`ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image ${CustomClass}`}
-        data-bs-bg={`${publicUrl}assets/img/bg/14.jpg`}
-      >
+      <div className={`ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image ${CustomClass}`}>
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               <div className="ltn__breadcrumb-inner">
-                <h1 className="page-title">{HeaderTitle}</h1>
                 <div className="ltn__breadcrumb-list">
                   <ul>
                     <li>

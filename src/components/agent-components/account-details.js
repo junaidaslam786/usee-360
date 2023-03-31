@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
+import ResponseHandler from '../global-components/respones-handler';
 
 export default function AccountDetails() {
   const [firstName, setFirstName] = useState();
@@ -14,9 +15,12 @@ export default function AccountDetails() {
   const [city, setCity] = useState();
   const [mortgageAdvisorEmail, setMortgageAdvisorEmail] = useState();
   const [companyLogo, setCompanyLogo] = useState();
-  const [currentPassword, setCurrentPassword] = useState();
-  const [newPassword, setNewPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [profileImage, setProfileImage] = useState();
+  const [companyLogoPreview, setCompanyLogoPreview] = useState();
+  const [profileImagePreview, setProfileImagePreview] = useState();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState();
   const [success, setSuccess] = useState();
   const [error, setError] = useState();
@@ -39,14 +43,16 @@ export default function AccountDetails() {
     const jsonData = await response.json();
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
-    setCompanyPosition(jsonData.agent.companyPosition);
+    setCompanyPosition(jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : "");
     setPhoneNumber(jsonData.phoneNumber);
-    setMobileNumber(jsonData.agent.mobileNumber);
-    setCompanyName(jsonData.agent.companyName);
-    setCompanyAddress(jsonData.agent.companyAddress);
-    setZipCode(jsonData.agent.zipCode);
-    setCity(jsonData.cityName);
-    setMortgageAdvisorEmail(jsonData.agent.mortgageAdvisorEmail);
+    setMobileNumber(jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : "");
+    setCompanyName(jsonData?.agent?.companyName ? jsonData.agent.companyName : "");
+    setCompanyAddress(jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : "");
+    setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
+    setCity(jsonData?.cityName ? jsonData.cityName : "");
+    setMortgageAdvisorEmail(jsonData?.agent?.mortgageAdvisorEmail ? jsonData.agent.mortgageAdvisorEmail : "");
+    setCompanyLogoPreview(jsonData?.agent?.companyLogo ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}` : "");
+    setProfileImagePreview(jsonData?.profileImage ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}` : "");
   };
 
   const updateProfile = async (e) => {
@@ -65,6 +71,7 @@ export default function AccountDetails() {
     formdata.append("city", city);
     formdata.append("mortgageAdvisorEmail", mortgageAdvisorEmail);
     formdata.append("companyLogo", companyLogo);
+    formdata.append("profileImage", profileImage);
     
     await axios
       .put(`${process.env.REACT_APP_API_URL}/user/profile`, formdata, {
@@ -74,18 +81,20 @@ export default function AccountDetails() {
         },
       })
       .then((response) => {
-        setSuccess(response.data.message);
+        setSuccessHandler('profile', response.data.message);
         setLoading(false);
       })
       .catch((error) => {
-        setError(error.response.data.message);
+        if (error?.response?.data?.errors) {
+          setErrorHandler("profile", error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) { 
+          setErrorHandler("profile", error.response.data.message);
+        } else {
+          setErrorHandler();
+          setErrorHandler("profile", "Unable to update profile, please try again later");
+        }
         setLoading(false);
       });
-
-    setTimeout(() => {
-      setSuccess(null);
-      setError(null);
-    }, 3000);
   };
 
   const updatePassword = async (e) => {
@@ -93,7 +102,7 @@ export default function AccountDetails() {
     setLoadingPass(true);
 
     if (newPassword !== confirmPassword) {
-      setErrorPass("Password don't match");
+      setErrorHandler("password", "Password and confirm password did not match");
       setLoadingPass(false);
     } else {
       let formdata = new FormData();
@@ -112,19 +121,73 @@ export default function AccountDetails() {
           }
         )
         .then(() => {
-          setSuccessPass("Password updated successfully!");
+          setSuccessHandler('password', "Password updated successfully!");
           setLoadingPass(false);
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
         })
         .catch((error) => {
-          setErrorPass(error.response.data.message);
+          console.log('update-password-error', error);
+          if (error?.response?.data?.errors) {
+            setErrorHandler("password", error.response.data.errors, "error", true);
+          } else if (error?.response?.data?.message) { 
+            setErrorHandler("password", error.response.data.message);
+          } else {
+            setErrorHandler("password", "Unable to update password, please try again later");
+          }
           setLoadingPass(false);
         });
     }
+  };
 
-    setTimeout(() => {
-      setSuccessPass(null);
-      setErrorPass(null);
-    }, 3000);
+  const onProfileImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setProfileImage(event.target.files[0]);
+      setProfileImagePreview(URL.createObjectURL(event.target.files[0]));
+    }
+  }
+
+  const onCompanyLogoChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setCompanyLogo(event.target.files[0]);
+      setCompanyLogoPreview(URL.createObjectURL(event.target.files[0]));
+    }
+  }
+
+  const setErrorHandler = (type, msg, param = "form", fullError = false) => {
+    if (type === 'password') {
+      setErrorPass(fullError ? msg : [{ msg, param }])
+      setTimeout(() => {
+        setErrorPass([]);
+      }, 3000);
+      setSuccessPass("");
+    } else {
+      setError(fullError ? msg : [{ msg, param }])
+      setTimeout(() => {
+        setError([]);
+      }, 3000);
+      setSuccess("");
+    }
+  };
+
+  const setSuccessHandler = (type, msg) => {
+    if (type === 'password') {
+      setSuccessPass(msg);
+      setTimeout(() => {
+        setSuccessPass("");
+      }, 3000);
+
+      setErrorPass([]);
+    } else {
+      setSuccess(msg);
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+
+      setError([]);
+    }
+    
   };
 
   useEffect(() => {
@@ -138,21 +201,8 @@ export default function AccountDetails() {
         <div className="ltn__myaccount-tab-content-inner">
           <div className="ltn__form-box">
             <form onSubmit={updateProfile}>
-              {success ? (
-                <div className="alert alert-success" role="alert">
-                  {success}
-                </div>
-              ) : (
-                ""
-              )}
-              {error ? (
-                <div className="alert alert-danger" role="alert">
-                  {error}
-                </div>
-              ) : (
-                ""
-              )}
-              <div className="row">
+              <ResponseHandler errors={error} success={success}/>
+              <div className="row mb-100">
                 <div className="col-md-6">
                   <label>First Name</label>
                   <input
@@ -258,8 +308,42 @@ export default function AccountDetails() {
                   <input
                     type="file"
                     name="ltn__name"
-                    onChange={(e) => setCompanyLogo(e.target.files[0])}
+                    onChange={onCompanyLogoChange}
                   />
+                </div>
+                <div className="col-md-6">
+                  {
+                    companyLogoPreview && (
+                      <img
+                        className="companyLogoCss"
+                        src={companyLogoPreview}
+                        alt="No logo found"
+                        width="300px"
+                      />
+                    )
+                  }
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <label>Profile Image</label>
+                  <input
+                    type="file"
+                    name="ltn__name"
+                    onChange={onProfileImageChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  {
+                    profileImagePreview && (
+                      <img
+                        className="companyLogoCss"
+                        src={profileImagePreview}
+                        alt="No logo found"
+                        width="300px"
+                      />
+                    )
+                  }
                 </div>
               </div>
               <div className="btn-wrapper">
@@ -282,20 +366,7 @@ export default function AccountDetails() {
             </form>
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
-              {successPass ? (
-                <div className="alert alert-success" role="alert">
-                  {successPass}
-                </div>
-              ) : (
-                ""
-              )}
-              {errorPass ? (
-                <div className="alert alert-danger" role="alert">
-                  {errorPass}
-                </div>
-              ) : (
-                ""
-              )}
+              <ResponseHandler errors={errorPass} success={successPass}/>
               <div className="row">
                 <div className="col-md-12">
                   <label>
@@ -306,6 +377,7 @@ export default function AccountDetails() {
                     name="ltn__name"
                     placeholder="Current Password"
                     onChange={(e) => setCurrentPassword(e.target.value)}
+                    value={currentPassword}
                     required
                   />
                   <label>New password (leave blank to leave unchanged):</label>
@@ -314,6 +386,7 @@ export default function AccountDetails() {
                     name="ltn__lastname"
                     placeholder="New Password"
                     onChange={(e) => setNewPassword(e.target.value)}
+                    value={newPassword}
                     required
                   />
                   <label>Confirm new password:</label>
@@ -322,6 +395,7 @@ export default function AccountDetails() {
                     name="ltn__lastname"
                     placeholder="Confirm Password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    value={confirmPassword}
                     required
                   />
                 </div>
@@ -344,7 +418,7 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
-            <h4 className="title-2 mt-100">Embeded Code</h4>
+            {/* <h4 className="title-2 mt-100">Embeded Code</h4>
             <div className="row mb-50">
               <div className="col-lg-10">
                 <p>
@@ -355,7 +429,7 @@ export default function AccountDetails() {
               <div className="col-lg-2">
                 <button className="btn theme-btn-2">API</button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

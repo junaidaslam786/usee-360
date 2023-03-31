@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
-import AddProperty from "./add-property";
-import Select from "react-select";
+import Select from 'react-select'
 import Layout from "./layouts/layout";
 
 export default function MyProperties() {

@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
+  const [profileImage, setProfileImage] = useState();
 
   const token = JSON.parse(sessionStorage.getItem("agentToken"));
   const getUser = async () => {
@@ -24,6 +25,7 @@ export default function Dashboard() {
     setName(jsonData.firstName + " " + jsonData.lastName);
     setEmail(jsonData.email);
     setPhone(jsonData.phoneNumber);
+    setProfileImage(`${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`);
   };
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function Dashboard() {
         <div className="ltn-author-introducing clearfix">
           <div className="author-img">
             <img
-              src={publicUrl + "assets/img/blog/author.jpg"}
+              src={profileImage}
               alt="Author Image"
             />
           </div>

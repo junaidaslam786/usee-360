@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import ResponseHandler from '../global-components/respones-handler';
 
 function getToken() {
   const tokenString = sessionStorage.getItem("customerToken");
@@ -21,7 +22,7 @@ export default function Register() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
-  const [error, setError] = useState();
+  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
 
   function setToken(token) {
@@ -52,7 +53,15 @@ export default function Register() {
       setToken(response.token);
       window.location = "/customer/dashboard";
     } else {
-      setError(response.message);
+      if (response?.errors) {
+        setErrors(response.errors);
+      } else {
+        setErrors([{ msg: "Unable to register customer, please try again later", param: "form" }])
+      }
+      
+      setTimeout(() => {
+        setErrors([]);
+      }, 3000);
     }
     setLoading(false);
   };
@@ -78,13 +87,7 @@ export default function Register() {
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
               >
-                {error ? (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                ) : (
-                  ""
-                )}
+                <ResponseHandler errors={errors}/>
                 <div className="row">
                   <div className="col-md-6">
                     <input
@@ -132,16 +135,6 @@ export default function Register() {
                     />
                   </div>
                 </div>
-                <label className="checkbox-inline">
-                  <input type="checkbox" defaultValue />
-                  &nbsp; I consent to Herboil processing my personal data in
-                  order to send personalized marketing material in accordance
-                  with the consent form and the privacy policy.
-                </label>
-                <label className="checkbox-inline">
-                  <input type="checkbox" defaultValue /> &nbsp; By clicking
-                  "create account", I consent to the privacy policy.
-                </label>
                 <div className="btn-wrapper">
                   <button
                     className="theme-btn-1 btn reverse-color btn-block"
@@ -163,10 +156,10 @@ export default function Register() {
               <div className="by-agree text-center">
                 <p>By creating an account, you agree to our:</p>
                 <p>
-                  <a href="#">
+                  <Link to={`/terms-and-conditions`}>
                     TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY
                     POLICY
-                  </a>
+                  </Link>
                 </p>
                 <div className="go-to-btn mt-50 go-top">
                   <Link to="/customer/login">ALREADY HAVE AN ACCOUNT ?</Link>

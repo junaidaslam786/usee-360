@@ -46,7 +46,7 @@ export default function CompletedAppointments() {
     if (id) {
       const response = await loadAppointmentFields(id);
       console.log("response", response);
-      if (response) {
+      if (response?.id) {
         setAppointmentView({
           id: response.id,
           date: response.appointmentDate,

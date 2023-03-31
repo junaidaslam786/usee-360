@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import ResponseHandler from '../global-components/respones-handler';
+import axios from "axios";
 
 function getToken() {
   const tokenString = sessionStorage.getItem("customerToken");
@@ -16,39 +18,112 @@ export default function Login() {
     history.goBack();
   }
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [error, setError] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [resetPassErrors, setResetPassErrors] = useState([]);
   const [loading, setLoading] = useState();
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetPassSuccess, setResetPassSuccess] = useState();
 
   function setToken(token) {
     sessionStorage.setItem("customerToken", JSON.stringify(token));
   }
 
-  async function loginUser(credentials) {
-    return fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    }).then((data) => data.json());
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const response = await loginUser({
+    
+    const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, {
       email,
       password,
+      type: "customer"
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response?.status !== 200) {
+        setErrorHandler('login', "Unable to login, please try again later");
+      }
+
+      console.log('login-response', response);
+
+      return response.data;
+    }).catch(error => {
+      console.log('login-error', error);
+      if (error?.response?.data?.errors) {
+        setErrorHandler('login', error.response.data.errors, "error", true);
+      } else if (error?.response?.data?.message) { 
+        setErrorHandler('login', error.response.data.message);
+      } else {
+        setErrorHandler('login', "Unable to login, please try again later");
+      }
     });
-    if (response.token) {
-      setToken(response.token);
-      window.location = "/customer/dashboard";
-    } else {
-      setError(response.message);
-    }
     setLoading(false);
+
+    if (formResponse?.token) {
+      setToken(formResponse.token);
+      window.location = "/customer/dashboard";
+    }
+  };
+
+  const forgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    
+    const formResponse = await axios.get(`${process.env.REACT_APP_API_URL}/auth/forgot-password?email=${forgotEmail}&type=customer`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response?.status !== 200) {
+        setErrorHandler('reset', "Unable to reset password, please try again later");
+      }
+
+      console.log('reset-password-response', response);
+
+      return response.data;
+    }).catch(error => {
+      console.log('reset-password-error', error);
+      if (error?.response?.data?.errors) {
+        setErrorHandler('reset', error.response.data.errors, "error", true);
+      } else if (error?.response?.data?.message) { 
+        setErrorHandler('reset', error.response.data.message);
+      } else {
+        setErrorHandler('reset', "Unable to reset password, please try again later");
+      }
+    });
+
+    if (formResponse?.message) {
+      setSuccessHandler(formResponse.message);
+    }
+    console.log('reset-password-final-response', formResponse);
+  };
+
+  const setErrorHandler = (type = 'login', msg, param = "form", fullError = false) => {
+    if (type === 'reset') {
+      setResetPassErrors(fullError ? msg : [{ msg, param }])
+      setTimeout(() => {
+        setResetPassErrors([]);
+      }, 3000);
+      setResetPassSuccess("");
+    } else {
+      setErrors(fullError ? msg : [{ msg, param }])
+      setTimeout(() => {
+        setErrors([]);
+      }, 3000);
+    }
+  };
+
+  const setSuccessHandler = (msg) => {
+    setResetPassSuccess(msg);
+    setTimeout(() => {
+      setResetPassSuccess("");
+    }, 3000);
+
+    setResetPassErrors([]);
   };
 
   return (
@@ -73,13 +148,7 @@ export default function Login() {
                   onSubmit={handleSubmit}
                   className="ltn__form-box contact-form-box"
                 >
-                  {error ? (
-                    <div className="alert alert-danger" role="alert">
-                      {error}
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  <ResponseHandler errors={errors} />
                   <input
                     type="text"
                     name="email"
@@ -124,11 +193,6 @@ export default function Login() {
             <div className="col-lg-6">
               <div className="account-create text-center pt-50">
                 <h4>DON'T HAVE AN ACCOUNT?</h4>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  <br />
-                  Maxime mollitia, molestiae quas vel sint
-                </p>
                 <div className="btn-wrapper go-top">
                   <Link
                     to="/customer/register"
@@ -169,13 +233,15 @@ export default function Login() {
                           <h4>FORGET PASSWORD?</h4>
                           <p className="added-cart">
                             {" "}
-                            Enter you register email.
+                            Enter you registered email.
                           </p>
-                          <form action="#" className="ltn__form-box">
+                          <form onSubmit={forgotPasswordSubmit} className="ltn__form-box">
+                            <ResponseHandler errors={resetPassErrors} success={resetPassSuccess}/>
                             <input
-                              type="text"
+                              type="email"
                               name="email"
                               placeholder="Type your register email*"
+                              onChange={(e) => setForgotEmail(e.target.value)}
                             />
                             <div className="btn-wrapper mt-0">
                               <button

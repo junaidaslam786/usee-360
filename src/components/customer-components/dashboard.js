@@ -1,11 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
 import CompletedAppointments from "./appointments/completed";
 import UpcomingAppointments from "./appointments/upcoming";
 
 export default function Dashboard() {
-  const publicUrl = `${process.env.PUBLIC_URL}/`;
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [profileImage, setProfileImage] = useState("");
   const [selected, setSelected] = useState(0);
+
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const jsonData = await response.json();
+    setName(jsonData.firstName + " " + jsonData.lastName);
+    setEmail(jsonData.email);
+    setPhone(jsonData.phoneNumber);
+    setProfileImage(`${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <Layout>
@@ -13,13 +39,13 @@ export default function Dashboard() {
         <div className="ltn-author-introducing clearfix">
           <div className="author-img">
             <img
-              src={publicUrl + "assets/img/blog/author.jpg"}
+              src={profileImage}
               alt="Author Image"
             />
           </div>
           <div className="author-info">
             <h6>Customer</h6>
-            <h2>Rosalina D. William</h2>
+            <h2>{name}</h2>
             <div className="footer-address">
               <ul>
                 <li>
@@ -28,7 +54,7 @@ export default function Dashboard() {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href="tel:+0123-456789">+0123-456789</a>
+                      <a href="#">{phone}</a>
                     </p>
                   </div>
                 </li>
@@ -38,9 +64,7 @@ export default function Dashboard() {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href="mailto:example@example.com">
-                        example@example.com
-                      </a>
+                      <a href="#">{email}</a>
                     </p>
                   </div>
                 </li>
