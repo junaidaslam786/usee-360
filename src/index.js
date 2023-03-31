@@ -44,6 +44,8 @@ import CustomerWishlist from "./pages/customer/wishlist";
 import CustomerPropertyDetails from "./pages/customer/property-details"
 import CustomerProfile from "./pages/customer/profile";
 
+import LocationSearch from "./components/agent-components/location-search";
+
 import Precall from "./pages/precall";
 import Meeting from "./pages/meeting";
 
@@ -99,6 +101,9 @@ class Root extends Component {
             {/* Meeting Routes */}
             <Route path="/meeting/:id/:usertype" component={Meeting} />
             <Route path="/precall/:id/:usertype" component={Precall} />
+
+            {/* Location Search */}
+            <Route path="/location-search" component={LocationSearch} />
 
             <Route path="*" component={Error} />
           </Switch>
