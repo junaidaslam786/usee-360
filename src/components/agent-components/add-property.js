@@ -23,7 +23,7 @@ export default function AddProperty(props) {
   const [region, setRegion] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
-  const [allotedToUsers, setAllotedToUsers] = useState([]);
+  // const [allotedToUsers, setAllotedToUsers] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
   const [virtualTourType, setVirtualTourType] = useState("");
@@ -33,7 +33,7 @@ export default function AddProperty(props) {
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
 
   const onImagesDrop = useCallback(acceptedFiles => {
     console.log('onImagesDrop', acceptedFiles);
@@ -71,7 +71,7 @@ export default function AddProperty(props) {
           value: userDetail.userId
         }
       });
-      setUsers(formattedUsers);
+      // setUsers(formattedUsers);
 
       return formattedUsers;
     }
@@ -95,12 +95,12 @@ export default function AddProperty(props) {
       if (response) setCategoryFields(response.categoryFields);
     }
 
-    const fetchUsersToAllocate = async () => {
-      await loadUsersToAllocate();
-    }
+    // const fetchUsersToAllocate = async () => {
+    //   await loadUsersToAllocate();
+    // }
      
     fetchCategoryFields();
-    fetchUsersToAllocate();
+    // fetchUsersToAllocate();
 
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: 51.5072, lng: 0.1276 },
@@ -155,7 +155,7 @@ export default function AddProperty(props) {
       setId(props.id);
 
       const fetchPropertyDetails = async () => {
-        const usersArray = await loadUsersToAllocate();
+        // const usersArray = await loadUsersToAllocate();
 
         const response = await loadPropertyFields(props.id);
         if (response) {
@@ -198,13 +198,13 @@ export default function AddProperty(props) {
             }));
           }
 
-          if (response.productAllocations.length > 0) {
-            const newAllotedUsers = [];
-            response.productAllocations.forEach((productAllocation => {
-              newAllotedUsers.push(usersArray.find((user) => user.value == productAllocation.user.id));
-            }));
-            setAllotedToUsers(newAllotedUsers);
-          }
+          // if (response.productAllocations.length > 0) {
+          //   const newAllotedUsers = [];
+          //   response.productAllocations.forEach((productAllocation => {
+          //     newAllotedUsers.push(usersArray.find((user) => user.value == productAllocation.user.id));
+          //   }));
+          //   setAllotedToUsers(newAllotedUsers);
+          // }
         }
       }
       
@@ -215,7 +215,7 @@ export default function AddProperty(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title | !price | !propertyType | !propertyCategoryType | allotedToUsers.length == 0) {
+    if (!title | !price | !propertyType | !propertyCategoryType) {
       setErrorHandler("Fill all required fields");
       return;
     }
@@ -285,11 +285,11 @@ export default function AddProperty(props) {
       successMsg = "Property updated successfully.";
     }
     
-    if (allotedToUsers.length > 0) {
-      for (let i = 0; i < allotedToUsers.length; i++) {
-        formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
-      }
-    }
+    // if (allotedToUsers.length > 0) {
+    //   for (let i = 0; i < allotedToUsers.length; i++) {
+    //     formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
+    //   }
+    // }
     
     setLoading(true);
     let formResponse = null;
@@ -700,7 +700,7 @@ export default function AddProperty(props) {
             </div>
           </div>
         </div>
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-12">
             <div className="input-item">
               <label>Allotted To *</label>
@@ -715,7 +715,7 @@ export default function AddProperty(props) {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <br/>
         { id ? (
           <div>

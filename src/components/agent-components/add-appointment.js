@@ -6,10 +6,10 @@ import Layout from "./layouts/layout";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [properties, setProperties] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
+  // const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
   const [selectedAllocatedProperties, setSelectedAllocatedProperties] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -60,33 +60,33 @@ export default function AddAppointment() {
     }).then((data) => data.json());
   };
 
-  const checkAvailability = async () => {
-    if (!selectedAllocatedAgent || !time || !date) {
-      return;
-    }
+  // const checkAvailability = async () => {
+  //   if (!selectedAllocatedAgent || !time || !date) {
+  //     return;
+  //   }
 
-    await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`, 
-    {
-      "userId": selectedAllocatedAgent.value,
-      date,
-      time,
-    }, 
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-        console.log('checkAvailability-response', response);
-        if (!response || !response?.data?.success) {
-          setErrorHandler("Sorry allotted person not avaiable during the selected timeslot. Please change the timeslot.");
-        } 
-        return true;
-    }).catch(error => {
-      console.log('checkAvailability-error', error);
-      setErrorHandler("Unable to check availability, please try again later.");
-    });
-  };
+  //   await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`, 
+  //   {
+  //     "userId": selectedAllocatedAgent.value,
+  //     date,
+  //     time,
+  //   }, 
+  //   {
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`,
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then((response) => {
+  //       console.log('checkAvailability-response', response);
+  //       if (!response || !response?.data?.success) {
+  //         setErrorHandler("Sorry allotted person not avaiable during the selected timeslot. Please change the timeslot.");
+  //       } 
+  //       return true;
+  //   }).catch(error => {
+  //     console.log('checkAvailability-error', error);
+  //     setErrorHandler("Unable to check availability, please try again later.");
+  //   });
+  // };
 
   const loadOptions = (inputValue, callback) => {
     try {
@@ -152,7 +152,7 @@ export default function AddAppointment() {
       customerLastName: customerLastName,
       customerPhone: customerPhoneNumber,
       customerEmail: customerEmail,
-      allotedAgent: selectedAllocatedAgent.value
+      // allotedAgent: selectedAllocatedAgent.value
     }
 
     setLoading(true);
@@ -180,7 +180,7 @@ export default function AddAppointment() {
     if (formResponse) {
       setSuccessHandler("Appointment created successfully");
       setSelectedCustomer("");
-      setSelectedAllocatedAgent("");
+      // setSelectedAllocatedAgent("");
       setSelectedAllocatedProperties("");
       setEmail("");
       setPhone("");
@@ -208,17 +208,17 @@ export default function AddAppointment() {
   }
 
   useEffect(() => {
-    const fetchUsersToAllocate = async () => {
-      const response = await loadUsersToAllocate();
-      if (response) {
-        setUsers(response.map((userDetail) => {
-          return {
-            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-            value: userDetail.userId
-          }
-        }));
-      }
-    }
+    // const fetchUsersToAllocate = async () => {
+    //   const response = await loadUsersToAllocate();
+    //   if (response) {
+    //     setUsers(response.map((userDetail) => {
+    //       return {
+    //         label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+    //         value: userDetail.userId
+    //       }
+    //     }));
+    //   }
+    // }
 
     const fetchPropertiesToAllocate = async () => {
       const response = await loadPropertiesToAllocate();
@@ -232,19 +232,19 @@ export default function AddAppointment() {
       }
     }
 
-    fetchUsersToAllocate();
+    // fetchUsersToAllocate();
     fetchPropertiesToAllocate();
   }, []);
 
-  useEffect(() => {
-    if (selectedAllocatedAgent) {
-      const callCheckAvailability = async () => {
-        await checkAvailability();
-      }
+  // useEffect(() => {
+  //   if (selectedAllocatedAgent) {
+  //     const callCheckAvailability = async () => {
+  //       await checkAvailability();
+  //     }
 
-      callCheckAvailability();
-    }
-  }, [selectedAllocatedAgent, time]);
+  //     callCheckAvailability();
+  //   }
+  // }, [selectedAllocatedAgent, time]);
 
   return (
     <Layout>
@@ -313,7 +313,7 @@ export default function AddAppointment() {
                     <input type="text" placeholder="Customer Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required/>
                   </div>
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <div className="input-item">
                     <Select 
                       options={users} 
@@ -322,7 +322,7 @@ export default function AddAppointment() {
                       required
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="btn-wrapper">
                   {
                     errors ?
