@@ -21,7 +21,7 @@ export default function Register() {
   const [lastName, setLastName] = useState();
   const [companyPosition, setCompanyPosition] = useState();
   const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const [error, setError] = useState();
@@ -50,7 +50,7 @@ export default function Register() {
       lastName,
       companyPosition,
       email,
-      phone,
+      phoneNumber,
       password,
       confirmPassword,
     });
@@ -134,9 +134,9 @@ export default function Register() {
                 />
                 <input
                   type="text"
-                  name="phone"
-                  placeholder="Phone*"
-                  onChange={(e) => setPhone(e.target.value)}
+                  name="phoneNumber"
+                  placeholder="Phone Number*"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   required
                 />
                 <div className="row">
