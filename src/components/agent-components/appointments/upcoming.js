@@ -215,13 +215,13 @@ export default function CompletedAppointments() {
                           <div className="row">
                             <div className="col">
                               <p className="p-0 m-o">
-                                <i class="fa-regular fa-calendar"></i>{" "}
+                                <i className="fa-regular fa-calendar"></i>{" "}
                                 28/03/2023
                               </p>
                             </div>
                             <div className="col">
                               <p>
-                                <i class="fa-regular fa-clock"></i> 10:00 PM
+                                <i className="fa-regular fa-clock"></i> 10:00 PM
                               </p>
                             </div>
                           </div>
@@ -229,9 +229,9 @@ export default function CompletedAppointments() {
                         <div>
                           <h5 className="p-0 m-0">Contact Info</h5>
                           <p className="p-0 m-o">
-                            <i class="fa-regular fa-envelope"></i>{" "}
+                            <i className="fa-regular fa-envelope"></i>{" "}
                             info@usee360.com <br />
-                            <i class="fa-regular fa-address-book"></i> +1 (111)
+                            <i className="fa-regular fa-address-book"></i> +1 (111)
                             222 333
                           </p>
                         </div>

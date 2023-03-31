@@ -45,7 +45,7 @@ export default function MyWishList() {
                 <td>Feb 22, 2022</td>
                 <td>
                   <Link to="/customer/property-details">
-                    <i class="fa-solid fa-eye"></i> View
+                    <i className="fa-solid fa-eye"></i> View
                   </Link>
                 </td>
                 <td>
@@ -79,7 +79,7 @@ export default function MyWishList() {
                 <td>Feb 22, 2022</td>
                 <td>
                   <Link to="/customer/property-details">
-                    <i class="fa-solid fa-eye"></i> View
+                    <i className="fa-solid fa-eye"></i> View
                   </Link>
                 </td>
                 <td>
@@ -113,7 +113,7 @@ export default function MyWishList() {
                 <td>Feb 22, 2022</td>
                 <td>
                   <Link to="/customer/property-details">
-                    <i class="fa-solid fa-eye"></i> View
+                    <i className="fa-solid fa-eye"></i> View
                   </Link>
                 </td>
                 <td>
