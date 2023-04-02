@@ -20,6 +20,8 @@ export default function Login() {
   const [password, setPassword] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
+  const [forgotEmail, setForgotEmail] = useState();
+  const [message, setMessage] = useState();
 
   function setToken(token) {
     sessionStorage.setItem("agentToken", JSON.stringify(token));
@@ -33,6 +35,18 @@ export default function Login() {
       },
       body: JSON.stringify(credentials),
     }).then((data) => data.json());
+  }
+
+  async function forgotPassword(email) {
+    return fetch(
+      `${process.env.REACT_APP_API_URL}/auth/forgot-password?email=${email}&type=agent`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((data) => data.json());
   }
 
   const handleSubmit = async (e) => {
@@ -49,6 +63,12 @@ export default function Login() {
       setError(response.message);
     }
     setLoading(false);
+  };
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    const response = await forgotPassword(forgotEmail);
+    setMessage(response.message);
   };
 
   return (
@@ -171,11 +191,19 @@ export default function Login() {
                             {" "}
                             Enter you register email.
                           </p>
-                          <form action="#" className="ltn__form-box">
+                          <form onSubmit={submitForm} className="ltn__form-box">
+                            {message ? (
+                              <div className="alert alert-primary" role="alert">
+                                {message}
+                              </div>
+                            ) : (
+                              ""
+                            )}
                             <input
-                              type="text"
+                              type="email"
                               name="email"
                               placeholder="Type your register email*"
+                              onChange={(e) => setForgotEmail(e.target.value)}
                             />
                             <div className="btn-wrapper mt-0">
                               <button

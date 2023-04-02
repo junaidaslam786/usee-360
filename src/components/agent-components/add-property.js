@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import axios from 'axios';
-import { useDropzone } from 'react-dropzone';
-import Select from 'react-select';
+import axios from "axios";
+import { useDropzone } from "react-dropzone";
+import Select from "react-select";
 import Layout from "./layouts/layout";
 
 export default function AddProperty(props) {
@@ -29,20 +29,27 @@ export default function AddProperty(props) {
   const [virtualTourType, setVirtualTourType] = useState("");
   const [virtualTourVideo, setVirtualTourVideo] = useState("");
   const [virtualTourUrl, setVirtualTourUrl] = useState("");
-  const [isChecked, setIsChecked] = useState(false)
+  const [isChecked, setIsChecked] = useState(false);
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
   const [success, setSuccess] = useState(null);
   // const [users, setUsers] = useState([]);
 
-  const onImagesDrop = useCallback(acceptedFiles => {
-    console.log('onImagesDrop', acceptedFiles);
-  }, [])
-  
-  const {getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } = useDropzone({
+  const onImagesDrop = useCallback((acceptedFiles) => {
+    console.log("onImagesDrop", acceptedFiles);
+  }, []);
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isFocused,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
     onDrop: onImagesDrop,
-    accept: {'image/*': []}
-  })
+    accept: { "image/*": [] },
+  });
 
   const token = JSON.parse(sessionStorage.getItem("agentToken"));
 
@@ -57,25 +64,28 @@ export default function AddProperty(props) {
   };
 
   const loadUsersToAllocate = async () => {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) => data.json());
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/user/to-allocate`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ).then((data) => data.json());
     if (response) {
       const formattedUsers = response.map((userDetail) => {
         return {
           label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId
-        }
+          value: userDetail.userId,
+        };
       });
       // setUsers(formattedUsers);
 
       return formattedUsers;
     }
-    
+
     return true;
   };
 
@@ -93,12 +103,12 @@ export default function AddProperty(props) {
     const fetchCategoryFields = async () => {
       const response = await loadCategoryFields();
       if (response) setCategoryFields(response.categoryFields);
-    }
+    };
 
     // const fetchUsersToAllocate = async () => {
     //   await loadUsersToAllocate();
     // }
-     
+
     fetchCategoryFields();
     // fetchUsersToAllocate();
 
@@ -169,33 +179,47 @@ export default function AddProperty(props) {
           setLatitude(response.latitude);
           setLongitude(response.longitude);
           setVirtualTourType(response.virtualTourType);
-  
+
           if (response.virtualTourType == "slideshow") {
             setIsChecked(true);
           } else if (response.virtualTourType == "url") {
             setVirtualTourUrl(response.virtualTourUrl);
           }
-  
+
           if (response.productMetaTags.length > 0) {
-            response.productMetaTags.forEach((metaTag => {
-              switch(metaTag.categoryField.id) {
+            response.productMetaTags.forEach((metaTag) => {
+              switch (metaTag.categoryField.id) {
                 case 1:
-                  setPropertyType(loadPropertyTypes.find((property) => property.value == metaTag.value))
+                  setPropertyType(
+                    loadPropertyTypes.find(
+                      (property) => property.value == metaTag.value
+                    )
+                  );
                   break;
                 case 2:
-                  setPropertyCategoryType(loadPropertyCategoryTypes.find((category) => category.value == metaTag.value))
+                  setPropertyCategoryType(
+                    loadPropertyCategoryTypes.find(
+                      (category) => category.value == metaTag.value
+                    )
+                  );
                   break;
                 case 3:
-                  setUnit(loadUnits.find((unit) => unit.value == metaTag.value))
+                  setUnit(
+                    loadUnits.find((unit) => unit.value == metaTag.value)
+                  );
                   break;
                 case 4:
-                  setArea(metaTag.value)
+                  setArea(metaTag.value);
                   break;
                 case 5:
-                  setBedrooms(loadBedrooms.find((bedroom) => bedroom.value == metaTag.value))
+                  setBedrooms(
+                    loadBedrooms.find(
+                      (bedroom) => bedroom.value == metaTag.value
+                    )
+                  );
                   break;
               }
-            }));
+            });
           }
 
           // if (response.productAllocations.length > 0) {
@@ -206,8 +230,8 @@ export default function AddProperty(props) {
           //   setAllotedToUsers(newAllotedUsers);
           // }
         }
-      }
-      
+      };
+
       fetchPropertyDetails();
     }
   }, [props.id]);
@@ -219,9 +243,9 @@ export default function AddProperty(props) {
       setErrorHandler("Fill all required fields");
       return;
     }
-    
+
     let apiUrl = "create";
-    let successMsg = "Property created successfully."
+    let successMsg = "Property created successfully.";
 
     let formdata = new FormData();
     formdata.append("title", title);
@@ -234,7 +258,7 @@ export default function AddProperty(props) {
     formdata.append("region", region);
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
-    
+
     let virtualTourTypeVar = virtualTourType;
     let virtualTourUrlVar = virtualTourUrl;
     let virtualTourVideoVar = virtualTourVideo;
@@ -244,9 +268,9 @@ export default function AddProperty(props) {
       virtualTourUrlVar = "";
       virtualTourVideoVar = "";
     } else {
-      if (virtualTourType == 'video') {
+      if (virtualTourType == "video") {
         virtualTourUrlVar = "";
-      } else if (virtualTourType == 'url') {
+      } else if (virtualTourType == "url") {
         virtualTourVideoVar = "";
       } else {
         virtualTourTypeVar = "slideshow";
@@ -284,59 +308,71 @@ export default function AddProperty(props) {
       formdata.append("productId", id);
       successMsg = "Property updated successfully.";
     }
-    
+
     // if (allotedToUsers.length > 0) {
     //   for (let i = 0; i < allotedToUsers.length; i++) {
     //     formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
     //   }
     // }
-    
+
     setLoading(true);
     let formResponse = null;
-    if (apiUrl == 'update') {
-      formResponse = await axios.put(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, 
-        formdata, 
-        {
+    if (apiUrl == "update") {
+      formResponse = await axios
+        .put(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response?.status !== 200) {
+            setErrorHandler(
+              "Unable to update property, please try again later"
+            );
           }
-        }
-      ).then((response) => {
-        if (response?.status !== 200) {
-          setErrorHandler("Unable to update property, please try again later");
-        }
 
-        console.log('update-property-response', response);
+          console.log("update-property-response", response);
 
-        return response.data;
-      }).catch(error => {
-        console.log('update-property-error', error);
-        setErrorHandler(error?.response?.data?.errors ? error.response.data.errors : "Unable to update property, please try again later");
-      });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log("update-property-error", error);
+          setErrorHandler(
+            error?.response?.data?.errors
+              ? error.response.data.errors
+              : "Unable to update property, please try again later"
+          );
+        });
     } else {
-      formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, 
-        formdata, 
-        {
+      formResponse = await axios
+        .post(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response?.status !== 201) {
+            setErrorHandler(
+              "Unable to update property, please try again later"
+            );
           }
-        }
-      ).then((response) => {
-        if (response?.status !== 201) {
-          setErrorHandler("Unable to update property, please try again later");
-        }
 
-        console.log('create-property-response', response);
+          console.log("create-property-response", response);
 
-        return response.data;
-      }).catch(error => {
-        console.log('create-property-error', error);
-        setErrorHandler(error?.response?.data?.errors ? error.response.data.errors : "Unable to update property, please try again later");
-      });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log("create-property-error", error);
+          setErrorHandler(
+            error?.response?.data?.errors
+              ? error.response.data.errors
+              : "Unable to update property, please try again later"
+          );
+        });
     }
-    
+
     setFeaturedImage(null);
     setVirtualTourVideo(null);
 
@@ -350,39 +386,39 @@ export default function AddProperty(props) {
           setId(formResponse.id);
         }
       }, 3000);
-      console.log('create-property-final-response', formResponse);
+      console.log("create-property-final-response", formResponse);
     }
   };
 
   const checkHandler = () => {
-    setIsChecked(!isChecked)
-  }
+    setIsChecked(!isChecked);
+  };
 
   const vrTourUrlHandler = (e) => {
     setVirtualTourType("url");
     setVirtualTourUrl(e);
-  }
+  };
 
   const vrTourVideoHandler = (e) => {
     setVirtualTourType("video");
     setVirtualTourVideo(e);
-  }
+  };
 
   const setAddressFields = (place) => {
     place.address_components.forEach((addressPart) => {
-      if(addressPart.types.includes("postal_code")) 
+      if (addressPart.types.includes("postal_code"))
         setPostalCode(addressPart.long_name);
-      
-      if(addressPart.types.includes("country")) 
+
+      if (addressPart.types.includes("country"))
         setRegion(addressPart.long_name);
-      
-      if(addressPart.types.includes("locality"))
+
+      if (addressPart.types.includes("locality"))
         setCity(addressPart.long_name);
-    })
+    });
 
     setLatitude(place.geometry.location.lat());
     setLongitude(place.geometry.location.lng());
-  }
+  };
 
   const loadPropertyTypes = [
     { value: "flat/apartment", label: "Apartments" },
@@ -403,7 +439,7 @@ export default function AddProperty(props) {
     { value: "club", label: "Club" },
     { value: "restaurant", label: "Restaurant" },
     { value: "hotel_room", label: "Hotel Room" },
-    { value: "guest_house", label: "Guest House" }
+    { value: "guest_house", label: "Guest House" },
   ];
 
   const loadPropertyCategoryTypes = [
@@ -426,84 +462,92 @@ export default function AddProperty(props) {
     { value: "7", label: "7" },
     { value: "8", label: "8" },
     { value: "9", label: "9" },
-    { value: "10", label: "10" }
+    { value: "10", label: "10" },
   ];
 
   const setErrorHandler = (msg, param = "form") => {
-    setErrors([{ msg, param }])
+    setErrors([{ msg, param }]);
     setTimeout(() => {
       setErrors([]);
     }, 3000);
     setSuccess("");
-  }
+  };
 
   const setSuccessHandler = (msg) => {
-    setSuccess(msg)
+    setSuccess(msg);
     setTimeout(() => {
       setSuccess("");
     }, 3000);
-    
+
     setErrors([]);
-  }
+  };
 
   const baseStyle = {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
     borderWidth: 2,
     borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out'
-  };
-  
-  const focusedStyle = {
-    borderColor: '#2196f3'
-  };
-  
-  const acceptStyle = {
-    borderColor: '#00e676'
-  };
-  
-  const rejectStyle = {
-    borderColor: '#ff1744'
+    borderColor: "#eeeeee",
+    borderStyle: "dashed",
+    backgroundColor: "#fafafa",
+    color: "#bdbdbd",
+    outline: "none",
+    transition: "border .24s ease-in-out",
   };
 
-  const style = useMemo(() => ({
-    ...baseStyle,
-    ...(isFocused ? focusedStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isFocused,
-    isDragAccept,
-    isDragReject
-  ]);
+  const focusedStyle = {
+    borderColor: "#2196f3",
+  };
+
+  const acceptStyle = {
+    borderColor: "#00e676",
+  };
+
+  const rejectStyle = {
+    borderColor: "#ff1744",
+  };
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isFocused ? focusedStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isFocused, isDragAccept, isDragReject]
+  );
 
   return (
     <Layout>
-      <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner">
-        {
-        errors ?
-          errors.map(err => {
-            return <div className="alert alert-danger" role="alert" key={err.param}> { err.msg } </div>;
-          }
-        ) : (
-          ""
-        )
-        }
+      <form
+        encType="multipart/form-data"
+        onSubmit={handleSubmit}
+        className="ltn__myaccount-tab-content-inner"
+      >
+        {errors
+          ? errors.map((err) => {
+              return (
+                <div
+                  className="alert alert-danger"
+                  role="alert"
+                  key={err.param}
+                >
+                  {" "}
+                  {err.msg}{" "}
+                </div>
+              );
+            })
+          : ""}
         <h4 className="title-2">Property Description</h4>
         <div className="row mb-50">
           <div className="col-md-12">
             <div className="input-item">
               <label>
-                Property Name *- First line of address (for example: 30 Johns Road,
-                SM1)
+                Property Name *- First line of address (for example: 30 Johns
+                Road, SM1)
               </label>
               <input
                 type="text"
@@ -529,7 +573,7 @@ export default function AddProperty(props) {
               <label>Price *</label>
               <input
                 type="text"
-                value={price || ''}
+                value={price || ""}
                 placeholder="10000"
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -540,8 +584,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>No. of bedrooms</label>
               <div className="input-item">
-                <Select 
-                  options={loadBedrooms} 
+                <Select
+                  options={loadBedrooms}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
                   required
@@ -553,8 +597,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Property Type *</label>
               <div className="input-item">
-                <Select 
-                  options={loadPropertyTypes} 
+                <Select
+                  options={loadPropertyTypes}
                   onChange={(e) => setPropertyType(e)}
                   value={propertyType}
                   required
@@ -566,8 +610,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Property Category Type *</label>
               <div className="input-item">
-                <Select 
-                  options={loadPropertyCategoryTypes} 
+                <Select
+                  options={loadPropertyCategoryTypes}
                   onChange={(e) => setPropertyCategoryType(e)}
                   value={propertyCategoryType}
                   required
@@ -579,8 +623,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Unit</label>
               <div className="input-item">
-                <Select 
-                  options={loadUnits} 
+                <Select
+                  options={loadUnits}
                   onChange={(e) => setUnit(e)}
                   value={unit}
                   required
@@ -604,7 +648,9 @@ export default function AddProperty(props) {
         <div className="row mb-50">
           <div className="col-md-12">
             <div className="input-item">
-              <input type="file" className="btn theme-btn-3 mb-10"
+              <input
+                type="file"
+                className="btn theme-btn-3 mb-10"
                 onChange={(e) => setFeaturedImage(e.target.files[0])}
               />
               <br />
@@ -620,25 +666,38 @@ export default function AddProperty(props) {
               </p>
             </div>
           </div>
-        </div> 
+        </div>
         <h4 className="title-2">Upload VR Tour</h4>
         <div className="row mb-50">
           <div className="col-md-12">
             <div className="input-item">
-              <input type="file" className="btn theme-btn-3 mb-10" onChange={(e) => vrTourVideoHandler(e.target.files[0])}/>
+              <input
+                type="file"
+                className="btn theme-btn-3 mb-10"
+                onChange={(e) => vrTourVideoHandler(e.target.files[0])}
+              />
             </div>
           </div>
           <h5 className="mt-10">OR</h5>
           <div className="col-md-12">
             <div className="input-item">
-              <input type="text" placeholder="Property VR URL" value={virtualTourUrl} onChange={(e) => vrTourUrlHandler(e.target.value)}/>
+              <input
+                type="text"
+                placeholder="Property VR URL"
+                value={virtualTourUrl}
+                onChange={(e) => vrTourUrlHandler(e.target.value)}
+              />
             </div>
           </div>
           <div className="col-md-12 mb-30">
             <label className="checkbox-item">
-              Use the images to create a video slideshow instead of using virtual
-              tour
-              <input type="checkbox" checked={isChecked} onChange={checkHandler}/>
+              Use the images to create a video slideshow instead of using
+              virtual tour
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={checkHandler}
+              />
               <span className="checkmark" />
             </label>
           </div>
@@ -647,14 +706,14 @@ export default function AddProperty(props) {
         <div className="row">
           <div className="col-md-12">
             <div className="input-item input-item-textarea ltn__custom-icon">
-              <input 
-                type="text" 
-                value={address} 
-                onChange={(event) => setAddress(event.target.value)} 
-                id="autocomplete" 
-                name="ltn__name" 
-                placeholder="*Address" 
-                />
+              <input
+                type="text"
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+                id="autocomplete"
+                name="ltn__name"
+                placeholder="*Address"
+              />
             </div>
           </div>
           <div className="col-lg-12">
@@ -664,17 +723,41 @@ export default function AddProperty(props) {
           </div>
           <div className="col-md-6">
             <div className="input-item input-item-textarea ltn__custom-icon">
-              <input type="text" value={city} name="ltn__name" onChange={(event) => {setCity(event.target.value)}} placeholder="City" />
+              <input
+                type="text"
+                value={city}
+                name="ltn__name"
+                onChange={(event) => {
+                  setCity(event.target.value);
+                }}
+                placeholder="City"
+              />
             </div>
           </div>
           <div className="col-md-6">
             <div className="input-item input-item-textarea ltn__custom-icon">
-              <input type="text" value={postalCode} name="ltn__name" onChange={(event) => {setPostalCode(event.target.value)}} placeholder="Postal Code" />
+              <input
+                type="text"
+                value={postalCode}
+                name="ltn__name"
+                onChange={(event) => {
+                  setPostalCode(event.target.value);
+                }}
+                placeholder="Postal Code"
+              />
             </div>
           </div>
           <div className="col-md-6">
             <div className="input-item input-item-textarea ltn__custom-icon">
-              <input type="text" value={region} name="ltn__name" onChange={(event) => {setRegion(event.target.value)}} placeholder="Region" />
+              <input
+                type="text"
+                value={region}
+                name="ltn__name"
+                onChange={(event) => {
+                  setRegion(event.target.value);
+                }}
+                placeholder="Region"
+              />
             </div>
           </div>
           <div className="col-md-6">
@@ -682,7 +765,9 @@ export default function AddProperty(props) {
               <input
                 type="text"
                 value={latitude}
-                onChange={(event) => {setLatitude(event.target.value)}}
+                onChange={(event) => {
+                  setLatitude(event.target.value);
+                }}
                 name="ltn__name"
                 placeholder="Latitude (for Google Maps)"
               />
@@ -693,7 +778,9 @@ export default function AddProperty(props) {
               <input
                 type="text"
                 value={longitude}
-                onChange={(event) => {setLongitude(event.target.value)}}
+                onChange={(event) => {
+                  setLongitude(event.target.value);
+                }}
                 name="ltn__name"
                 placeholder="Longitude (for Google Maps)"
               />
@@ -716,19 +803,21 @@ export default function AddProperty(props) {
             </div>
           </div>
         </div> */}
-        <br/>
-        { id ? (
+        <br />
+        {id ? (
           <div>
             <h4 className="title-2">Add More Images</h4>
             <div className="row mb-50">
               <div className="col-md-12">
-                <div {...getRootProps({style})}>
+                <div {...getRootProps({ style })}>
                   <input {...getInputProps()} />
-                  {
-                    isDragActive ?
-                      <p>Drop the files here ...</p> :
-                      <p>Drag 'n' drop some files here, or click to select files</p>
-                  }
+                  {isDragActive ? (
+                    <p>Drop the files here ...</p>
+                  ) : (
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -749,20 +838,35 @@ export default function AddProperty(props) {
               <div className="col-md-8 mb-20">
                 <div className="input-item">
                   <label>More Documents</label>
-                
                 </div>
               </div>
             </div>
           </div>
-        ) : ""}
-        {
-          errors ?
-            errors.map(err => {
-              return <div className="alert alert-danger" role="alert" key={err.param}> { err.msg } </div>;
-            }
-          ) : ""
-        }
-        { success ? ( <div className="alert alert-primary" role="alert"> { success } </div> ) : "" }
+        ) : (
+          ""
+        )}
+        {errors
+          ? errors.map((err) => {
+              return (
+                <div
+                  className="alert alert-danger"
+                  role="alert"
+                  key={err.param}
+                >
+                  {" "}
+                  {err.msg}{" "}
+                </div>
+              );
+            })
+          : ""}
+        {success ? (
+          <div className="alert alert-primary" role="alert">
+            {" "}
+            {success}{" "}
+          </div>
+        ) : (
+          ""
+        )}
         <button
           type="submit"
           className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"

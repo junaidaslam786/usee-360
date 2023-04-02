@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Layout from "./layouts/layout";
-import CompletedAppointments from "./appointments/completed";
 import UpcomingAppointments from "./appointments/upcoming";
+//import CompletedAppointments from "./appointments/completed";
 
 export default function Dashboard() {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
-  const [selected, setSelected] = useState(0);
+  // const [selected, setSelected] = useState(0);
 
   return (
     <Layout>
@@ -103,7 +103,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="row mb-3">
+      {/* <div className="row mb-3">
         <div className="col-lg-2 col-sm-3">
           <h5>
             <a
@@ -128,7 +128,8 @@ export default function Dashboard() {
         </div>
       </div>
       {selected === 0 ? <UpcomingAppointments /> : null}
-      {selected === 1 ? <CompletedAppointments /> : null}
+      {selected === 1 ? <CompletedAppointments /> : null} */}
+      <UpcomingAppointments />
     </Layout>
   );
 }

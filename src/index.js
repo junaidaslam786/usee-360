@@ -73,7 +73,7 @@ class Root extends Component {
             {/* Agent Routes */}
             <Route path="/agent/register" component={AgentRegister} />
             <Route path="/agent/login" component={AgentLogin} />
-            <Route path="/agent/reset-password" component={AgentResetPassword} />
+            <Route path="/agent/reset-password/:token" component={AgentResetPassword} />
             <Route path="/agent/dashboard" component={AgentDashboard} />
             <Route path="/agent/account-details" component={AgentAccountDetails} />
             <Route path="/agent/properties" component={AgentProperties} />
@@ -87,7 +87,7 @@ class Root extends Component {
             {/* Client Routes */}
             <Route path="/customer/register" component={CustomerRegister} />
             <Route path="/customer/login" component={CustomerLogin} />
-            <Route path="/customer/reset-password" component={CustomerResetPassword} />
+            <Route path="/customer/reset-password/:token" component={CustomerResetPassword} />
             <Route path="/customer/dashboard" component={CustomerDashboard} />
             <Route path="/customer/appointments" component={CustomerAppointments} />
             <Route path="/customer/wishlist" component={CustomerWishlist} />

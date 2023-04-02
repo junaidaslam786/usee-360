@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
-import AddProperty from './add-property';
-import Select from 'react-select'
+import AddProperty from "./add-property";
+import Select from "react-select";
 import Layout from "./layouts/layout";
 
 export default function MyProperties() {
@@ -53,81 +53,92 @@ export default function MyProperties() {
 
   const handleDeleteButtonClick = (id) => {
     setPropertyIdToDelete(id);
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!removeReason) {
       setError("Please select reason");
       setTimeout(() => {
         setError("");
-      }, 3000)
+      }, 3000);
     } else {
       setSuccess("Removal request sending in-progress");
-      const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/property/removal-request`, 
-        {
-          "propertyId": propertyIdToDelete,
-          "reasonId": removeReason.value,
-          "reason": notes,
-        }, 
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+      const formResponse = await axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/property/removal-request`,
+          {
+            propertyId: propertyIdToDelete,
+            reasonId: removeReason.value,
+            reason: notes,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           }
-        }
-      ).then((response) => {
-        if (response?.status !== 200) {
-          setError("Unable to submit removal request property, please try again later");
-          setTimeout(() => {
-            setError("");
-          }, 3000)
-          
-          setSuccess("");
-        } else {
-          setError("");
-          setSuccess("Removal request sent successfully");
-          setTimeout(() => {
-            setList(list.filter(item => item.id !== propertyIdToDelete))
+        )
+        .then((response) => {
+          if (response?.status !== 200) {
+            setError(
+              "Unable to submit removal request property, please try again later"
+            );
+            setTimeout(() => {
+              setError("");
+            }, 3000);
+
             setSuccess("");
-            setRemoveReason("");
-            setNotes("");
-            closeModal.current.click();
-          }, 3000);
-        }
+          } else {
+            setError("");
+            setSuccess("Removal request sent successfully");
+            setTimeout(() => {
+              setList(list.filter((item) => item.id !== propertyIdToDelete));
+              setSuccess("");
+              setRemoveReason("");
+              setNotes("");
+              closeModal.current.click();
+            }, 3000);
+          }
 
-        console.log('removal-request-property-response', response);
+          console.log("removal-request-property-response", response);
 
-        return response.data;
-      }).catch(error => {
-        console.log('removal-request-property-error', error);
-        setError("Unable to submit removal request property, please try again later");
+          return response.data;
+        })
+        .catch((error) => {
+          console.log("removal-request-property-error", error);
+          setError(
+            "Unable to submit removal request property, please try again later"
+          );
           setTimeout(() => {
             setError("");
-          }, 3000)
-          
-          setSuccess("");
-      });
+          }, 3000);
 
-      console.log('removal-request-final-response', formResponse);
+          setSuccess("");
+        });
+
+      console.log("removal-request-final-response", formResponse);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchAllProperties = async () => {
       await loadAllList();
-    }
+    };
 
     const fetchRemoveReasons = async () => {
       const response = await loadRemoveReasons();
-      if (response) setRemoveReasons(response.map((reason) => {
-        return {
-          label: reason.reason,
-          value: reason.id
-        }
-      }));
-    }
+      if (response)
+        setRemoveReasons(
+          response.map((reason) => {
+            return {
+              label: reason.reason,
+              value: reason.id,
+            };
+          })
+        );
+    };
 
     fetchAllProperties();
     fetchRemoveReasons();
@@ -156,7 +167,10 @@ export default function MyProperties() {
                 list.map((element, i) => (
                   <tr key={i}>
                     <td className="ltn__my-properties-img go-top">
-                      <img src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`} alt="#" />
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
+                        alt="#"
+                      />
                     </td>
                     <td>
                       <div className="ltn__my-properties-info">
@@ -175,7 +189,11 @@ export default function MyProperties() {
                       </Link>
                     </td>
                     <td>
-                      <button data-bs-toggle="modal" data-bs-target="#ltn_delete_property_modal" onClick={() => handleDeleteButtonClick(element.id)}>
+                      <button
+                        data-bs-toggle="modal"
+                        data-bs-target="#ltn_delete_property_modal"
+                        onClick={() => handleDeleteButtonClick(element.id)}
+                      >
                         <i className="fa-solid fa-trash-can" />
                       </button>
                     </td>
@@ -215,12 +233,11 @@ export default function MyProperties() {
               </ul>
             </div>
           </div> */}
-          <div className="ltn__modal-area ltn__add-to-cart-modal-area----" >
+          <div className="ltn__modal-area ltn__add-to-cart-modal-area----">
             <div
               className="modal show"
               id="ltn_delete_property_modal"
               tabIndex={-1}
-              
             >
               <div className="modal-dialog modal-md" role="document">
                 <div className="modal-content">
@@ -242,9 +259,12 @@ export default function MyProperties() {
                           <div className="col-12">
                             <div className="modal-product-info text-center">
                               <h4>Property Removal Request</h4>
-                              <form className="ltn__form-box" onSubmit={handleSubmit}>
-                                <Select 
-                                  options={removeReasons} 
+                              <form
+                                className="ltn__form-box"
+                                onSubmit={handleSubmit}
+                              >
+                                <Select
+                                  options={removeReasons}
                                   onChange={(e) => setRemoveReason(e)}
                                   value={removeReason}
                                   required
@@ -254,12 +274,28 @@ export default function MyProperties() {
                                   value={notes}
                                   onChange={(e) => setNotes(e.target.value)}
                                 />
-                                  {
-                                    error ? (<div className="alert alert-danger" role="alert"> { error } </div>) : ""
-                                  }
-                                  {
-                                    success ? (<div className="alert alert-primary" role="alert"> { success } </div>) : ""
-                                  }
+                                {error ? (
+                                  <div
+                                    className="alert alert-danger"
+                                    role="alert"
+                                  >
+                                    {" "}
+                                    {error}{" "}
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                                {success ? (
+                                  <div
+                                    className="alert alert-primary"
+                                    role="alert"
+                                  >
+                                    {" "}
+                                    {success}{" "}
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                                 <div className="btn-wrapper mt-0">
                                   <button
                                     className="theme-btn-1 btn btn-full-width-2"

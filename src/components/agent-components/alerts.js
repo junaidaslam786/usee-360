@@ -27,7 +27,7 @@ export default function Alerts() {
   useEffect(() => {
     const fetchAllAlerts = async () => {
       await loadAllList();
-    }
+    };
 
     fetchAllAlerts();
   }, []);
@@ -36,33 +36,30 @@ export default function Alerts() {
     <Layout>
       <div className="widget ltn__popular-post-widget ltn__twitter-post-widget">
         <ul>
-          {
-            list && list.length === 0 ? (
-              <li>
-                No Data!
-              </li>
-            ) : (
-              list.map((element, i) => (
-                <li key={element.id}>
-                  <div className="popular-post-widget-item clearfix">
-                    <div className="popular-post-widget-img">
-                      <i className="fa-solid fa-bell" />
-                    </div>
-                    <div className="popular-post-widget-brief">
-                      <p dangerouslySetInnerHTML={{__html: element.text}}></p>
-                      <div className="ltn__blog-meta">
-                        <ul>
-                          <li className="ltn__blog-date">
-                            <i className="far fa-calendar-alt" />
-                            { moment.utc(element.createdAt).format("D/MM/YYYY") }
-                          </li>
-                        </ul>
-                      </div>
+          {list && list.length === 0 ? (
+            <li>No Data!</li>
+          ) : (
+            list.map((element, i) => (
+              <li key={element.id}>
+                <div className="popular-post-widget-item clearfix">
+                  <div className="popular-post-widget-img">
+                    <i className="fa-solid fa-bell" />
+                  </div>
+                  <div className="popular-post-widget-brief">
+                    <p dangerouslySetInnerHTML={{ __html: element.text }}></p>
+                    <div className="ltn__blog-meta">
+                      <ul>
+                        <li className="ltn__blog-date">
+                          <i className="far fa-calendar-alt" />
+                          {moment.utc(element.createdAt).format("D/MM/YYYY")}
+                        </li>
+                      </ul>
                     </div>
                   </div>
-                </li>
-              ))
-            )}
+                </div>
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </Layout>
