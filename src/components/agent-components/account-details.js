@@ -78,7 +78,7 @@ export default function AccountDetails() {
 
   useEffect(() => {
     getUser();
-  });
+  }, []);
 
   return (
     <Layout>
@@ -108,7 +108,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="First Name"
-                    onChange={(e) => setFirstName(e)}
+                    onChange={(e) => setFirstName(e.target.value)}
                     defaultValue={firstName}
                   />
                 </div>
@@ -118,7 +118,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Last Name"
-                    onChange={(e) => setLastName(e)}
+                    onChange={(e) => setLastName(e.target.value)}
                     defaultValue={lastName}
                   />
                 </div>
@@ -128,7 +128,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Company Position"
-                    onChange={(e) => setCompanyPosition(e)}
+                    onChange={(e) => setCompanyPosition(e.target.value)}
                     defaultValue={companyPosition}
                   />
                 </div>
@@ -138,7 +138,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Phone Number"
-                    onChange={(e) => setPhoneNumber(e)}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                     defaultValue={phoneNumber}
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Mobile Number"
-                    onChange={(e) => setMobileNumber(e)}
+                    onChange={(e) => setMobileNumber(e.target.value)}
                     defaultValue={mobileNumber}
                   />
                 </div>
@@ -158,7 +158,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Company Name"
-                    onChange={(e) => setCompanyName(e)}
+                    onChange={(e) => setCompanyName(e.target.value)}
                     defaultValue={companyName}
                   />
                 </div>
@@ -168,7 +168,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Company Address"
-                    onChange={(e) => setCompanyAddress(e)}
+                    onChange={(e) => setCompanyAddress(e.target.value)}
                     defaultValue={companyAddress}
                   />
                 </div>
@@ -178,7 +178,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Zip Code"
-                    onChange={(e) => setZipCode(e)}
+                    onChange={(e) => setZipCode(e.target.value)}
                     defaultValue={zipCode}
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="City"
-                    onChange={(e) => setCity(e)}
+                    onChange={(e) => setCity(e.target.value)}
                     defaultValue={city}
                   />
                 </div>
@@ -198,7 +198,7 @@ export default function AccountDetails() {
                     type="text"
                     name="ltn__name"
                     placeholder="Mortgage Advisor Email"
-                    onChange={(e) => setMortgageAdvisorEmail(e)}
+                    onChange={(e) => setMortgageAdvisorEmail(e.target.value)}
                     defaultValue={mortgageAdvisorEmail}
                   />
                 </div>
@@ -207,7 +207,7 @@ export default function AccountDetails() {
                   <input
                     type="file"
                     name="ltn__name"
-                    onChange={(e) => setCompanyLogo(e)}
+                    onChange={(e) => setCompanyLogo(e.target.files[0])}
                   />
                 </div>
               </div>
