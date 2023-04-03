@@ -59,13 +59,13 @@ export default function ResetPassword() {
                   ""
                 )}
                 <input
-                  type="text"
+                  type="password"
                   placeholder="New Password*"
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Confirm Password*"
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required

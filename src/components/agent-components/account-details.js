@@ -3,8 +3,6 @@ import Layout from "./layouts/layout";
 import axios from "axios";
 
 export default function AccountDetails() {
-  const [success, setSuccess] = useState();
-  const [error, setError] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [companyPosition, setCompanyPosition] = useState();
@@ -16,7 +14,15 @@ export default function AccountDetails() {
   const [city, setCity] = useState();
   const [mortgageAdvisorEmail, setMortgageAdvisorEmail] = useState();
   const [companyLogo, setCompanyLogo] = useState();
+  const [currentPassword, setCurrentPassword] = useState();
+  const [newPassword, setNewPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
   const [loading, setLoading] = useState();
+  const [success, setSuccess] = useState();
+  const [error, setError] = useState();
+  const [loadingPass, setLoadingPass] = useState();
+  const [successPass, setSuccessPass] = useState();
+  const [errorPass, setErrorPass] = useState();
 
   const token = JSON.parse(sessionStorage.getItem("agentToken"));
   const getUser = async () => {
@@ -39,6 +45,7 @@ export default function AccountDetails() {
     setCompanyName(jsonData.agent.companyName);
     setCompanyAddress(jsonData.agent.companyAddress);
     setZipCode(jsonData.agent.zipCode);
+    setCity(jsonData.cityName);
     setMortgageAdvisorEmail(jsonData.agent.mortgageAdvisorEmail);
   };
 
@@ -58,7 +65,7 @@ export default function AccountDetails() {
     formdata.append("city", city);
     formdata.append("mortgageAdvisorEmail", mortgageAdvisorEmail);
     formdata.append("companyLogo", companyLogo);
-
+    
     await axios
       .put(`${process.env.REACT_APP_API_URL}/user/profile`, formdata, {
         headers: {
@@ -74,6 +81,50 @@ export default function AccountDetails() {
         setError(error.response.data.message);
         setLoading(false);
       });
+
+    setTimeout(() => {
+      setSuccess(null);
+      setError(null);
+    }, 3000);
+  };
+
+  const updatePassword = async (e) => {
+    e.preventDefault();
+    setLoadingPass(true);
+
+    if (newPassword !== confirmPassword) {
+      setErrorPass("Password don't match");
+      setLoadingPass(false);
+    } else {
+      let formdata = new FormData();
+      formdata.append("current", currentPassword);
+      formdata.append("password", newPassword);
+
+      await axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/user/update-password`,
+          formdata,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          setSuccessPass("Password updated successfully!");
+          setLoadingPass(false);
+        })
+        .catch((error) => {
+          setErrorPass(error.response.data.message);
+          setLoadingPass(false);
+        });
+    }
+
+    setTimeout(() => {
+      setSuccessPass(null);
+      setErrorPass(null);
+    }, 3000);
   };
 
   useEffect(() => {
@@ -229,8 +280,22 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
-            <form>
-              <h4 className="title-2 mt-100">Change Password</h4>
+            <h4 className="title-2 mt-100">Change Password</h4>
+            <form onSubmit={updatePassword}>
+              {successPass ? (
+                <div className="alert alert-success" role="alert">
+                  {successPass}
+                </div>
+              ) : (
+                ""
+              )}
+              {errorPass ? (
+                <div className="alert alert-danger" role="alert">
+                  {errorPass}
+                </div>
+              ) : (
+                ""
+              )}
               <div className="row">
                 <div className="col-md-12">
                   <label>
@@ -240,18 +305,24 @@ export default function AccountDetails() {
                     type="password"
                     name="ltn__name"
                     placeholder="Current Password"
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
                   />
                   <label>New password (leave blank to leave unchanged):</label>
                   <input
                     type="password"
                     name="ltn__lastname"
                     placeholder="New Password"
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
                   />
                   <label>Confirm new password:</label>
                   <input
                     type="password"
                     name="ltn__lastname"
                     placeholder="Confirm Password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -260,7 +331,16 @@ export default function AccountDetails() {
                   type="submit"
                   className="btn theme-btn-1 btn-effect-1 text-uppercase"
                 >
-                  Save Changes
+                  {loadingPass ? (
+                    <div className="lds-ring">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </button>
               </div>
             </form>

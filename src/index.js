@@ -57,7 +57,7 @@ class Root extends Component {
             {/* Main Routes */}
             <Route exact path="/" component={Home} />
             <Route path="/property-grid" component={PropertyGrid} />
-            <Route path="/property-details" component={PropertyDetails} />
+            <Route path="/property-details/:id" component={PropertyDetails} />
             <Route path="/demo" component={Demo} />
             <Route path="/contact" component={Contact} />
 
@@ -79,7 +79,7 @@ class Root extends Component {
             <Route path="/agent/properties" component={AgentProperties} />
             <Route path="/agent/add-property" component={AgentAddProperty} />
             <Route path="/agent/edit-property/:id" component={AgentEditProperty} />
-            <Route path="/agent/property-details" component={AgentPropertyDetails} />
+            <Route path="/agent/property-details/:id" component={AgentPropertyDetails} />
             <Route path="/agent/appointments" component={AgentAppointments} />
             <Route path="/agent/add-appointment" component={AgentAddAppointment} />
             <Route path="/agent/alerts" component={AgentAlerts} />
@@ -91,7 +91,7 @@ class Root extends Component {
             <Route path="/customer/dashboard" component={CustomerDashboard} />
             <Route path="/customer/appointments" component={CustomerAppointments} />
             <Route path="/customer/wishlist" component={CustomerWishlist} />
-            <Route path="/customer/property-details" component={CustomerPropertyDetails} />
+            <Route path="/customer/property-details/:id" component={CustomerPropertyDetails} />
             <Route path="/customer/profile" component={CustomerProfile} />
 
             {/* Meeting Routes */}

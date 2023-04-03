@@ -1,23 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import Layout from "./layouts/layout";
+import axios from "axios";
 
 export default function PropertyDetails() {
-  let publicUrl = process.env.PUBLIC_URL + "/";
+  const [property, setProperty] = useState({});
+  const [propertyCategoryType, setPropertyCategoryType] = useState();
+  const [propertyType, setPropertyType] = useState();
+  const [propertyBedrooms, setPropertyBedrooms] = useState();
+  const [propertyArea, setPropertyArea] = useState();
+
+  const params = useParams();
+
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  async function loadProperty() {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/property/${params.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setProperty(response.data);
+        setPropertyCategoryType(response.data.productMetaTags[1].value);
+        setPropertyType(response.data.productMetaTags[0].value);
+        setPropertyBedrooms(response.data.productMetaTags[4].value);
+        setPropertyArea(response.data.productMetaTags[2].value);
+      });
+  }
+
+  useEffect(() => {
+    loadProperty();
+  }, []);
 
   return (
     <Layout>
       <section>
-        <img src={publicUrl + "assets/img/product-3/1.jpg"} alt="#" />
+        <img
+          src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+          alt="#"
+        />
         <div className="row property-desc">
+          <span className="ltn__blog-category pb-20">
+            <Link className="bg-orange" to="#">
+              For {propertyCategoryType}
+            </Link>
+          </span>
           <div className="col-md-10">
-            <h3>New Apartment Nice View</h3>
+            <h3>{property.title}</h3>
             <small>
-              <i className="icon-placeholder" /> Brooklyn, New York, United
-              States
+              <i className="icon-placeholder" /> {property.address}
             </small>
           </div>
           <div className="col-md-2">
-            <h3>£12000</h3>
+            <h3>${property.price}</h3>
           </div>
         </div>
         <div className="row property-details">
@@ -25,25 +62,19 @@ export default function PropertyDetails() {
             <div className="row mb-5">
               <div className="col-md-4">
                 <h5>Type</h5>
-                <p>Flat</p>
+                <p>{propertyType}</p>
               </div>
               <div className="col-md-4">
                 <h5>Bedrooms</h5>
-                <p>3</p>
+                <p>{propertyBedrooms}</p>
               </div>
               <div className="col-md-4">
                 <h5>Area</h5>
-                <p>12 ft</p>
+                <p>{propertyArea}</p>
               </div>
             </div>
             <h5>Description:</h5>
-            <p>
-              Massa tempor nec feugiat nisl pretium. Egestas fringilla phasellus
-              faucibus scelerisque eleifend donec Porta nibh venenatis cras sed
-              felis eget velit aliquet. Neque volutpat ac tincidunt vitae semper
-              quis lectus. Turpis in eu mi bibendum neque egestas congue
-              quisque.
-            </p>
+            <p>{property.description}</p>
           </div>
           <div className="col-md-5">
             <button className="btn theme-btn-1 mb-3">View Floor Plan</button>

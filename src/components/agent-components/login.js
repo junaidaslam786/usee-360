@@ -144,11 +144,6 @@ export default function Login() {
             <div className="col-lg-6">
               <div className="account-create text-center pt-50">
                 <h4>DON'T HAVE AN ACCOUNT?</h4>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  <br />
-                  Maxime mollitia, molestiae quas vel sint
-                </p>
                 <div className="btn-wrapper go-top">
                   <Link
                     to="/agent/register"

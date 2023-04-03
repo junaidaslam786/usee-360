@@ -175,7 +175,7 @@ export default function MyProperties() {
                     <td>
                       <div className="ltn__my-properties-info">
                         <h6 className="mb-10 go-top">
-                          <Link to="#">{element?.title}</Link>
+                          <Link to={`/agent/property-details/${element.id}`}>{element?.title}</Link>
                         </h6>
                         <small>
                           <i className="icon-placeholder" /> {element?.address}

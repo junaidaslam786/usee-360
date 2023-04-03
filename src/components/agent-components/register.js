@@ -159,16 +159,6 @@ export default function Register() {
                     />
                   </div>
                 </div>
-                <label className="checkbox-inline">
-                  <input type="checkbox" defaultValue />
-                  &nbsp; I consent to Herboil processing my personal data in
-                  order to send personalized marketing material in accordance
-                  with the consent form and the privacy policy.
-                </label>
-                <label className="checkbox-inline">
-                  <input type="checkbox" defaultValue /> &nbsp; By clicking
-                  "create account", I consent to the privacy policy.
-                </label>
                 <div className="btn-wrapper">
                   <button
                     className="theme-btn-1 btn reverse-color btn-block"
@@ -188,13 +178,6 @@ export default function Register() {
                 </div>
               </form>
               <div className="by-agree text-center">
-                <p>By creating an account, you agree to our:</p>
-                <p>
-                  <a href="#">
-                    TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY
-                    POLICY
-                  </a>
-                </p>
                 <div className="go-to-btn mt-50 go-top">
                   <Link to="/agent/login">ALREADY HAVE AN ACCOUNT ?</Link>
                 </div>
