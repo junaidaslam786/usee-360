@@ -159,7 +159,7 @@ const MeetingJoin = (props) => {
     session.on({
       streamCreated: (event) => {
         if(event.stream.videoType === "camera") {
-          const subscriberOptions = { insertMode: "append" };
+          const subscriberOptions = { insertMode: "append", nameDisplayMode: 'on' };
           const subscriber = session.subscribe(
             event.stream,
             "subscribers",
@@ -272,6 +272,9 @@ const MeetingJoin = (props) => {
       facingMode: "user",
       publishVideo: true,
       publishAudio: true,
+      name: userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
+      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
+      nameDisplayMode: 'on'
     };
     if (audioInputDeviceId || videoDeviceId) {
       publisherOptions.audioSource = audioInputDeviceId;
