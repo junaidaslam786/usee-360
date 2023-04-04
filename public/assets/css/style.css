@@ -18245,6 +18245,11 @@ input.cart-plus-minus-box {
   color: white !important;
 }
 
+.request-now-btn {
+  padding: 8px 22px;
+  margin-top: 28%;
+}
+
 /* ----------------------------------------------------
     END
 ---------------------------------------------------- */

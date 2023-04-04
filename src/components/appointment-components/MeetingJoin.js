@@ -1,17 +1,55 @@
 import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
+import { useHistory } from 'react-router-dom';
 import "./incall.css";
 import Slideshow from "../Slideshow";
 const fs = require('fs');
 
-const MeetingJoin = (props) => {
+function getToken(userType) {
+  let userToken = null;
+  if(userType === "agent") {
+    const tokenString = sessionStorage.getItem("agentToken");
+    userToken = JSON.parse(tokenString);
+  } else if(userType === "customer") {
+    const tokenString = sessionStorage.getItem("customerToken");
+    userToken = JSON.parse(tokenString);
+  }
 
+  return userToken;
+}
+
+const MeetingJoin = (props) => {
   const { 
     audioInputDeviceId, 
     audioOutputDeviceId, 
     videoDeviceId, 
-    appointment 
-  } = props.appointmentsProps;
+    appointment,
+    userType,
+    appointmentId
+  } = props;
+
+  const token = getToken(userType);
+  const history = useHistory();
+
+  if (!token) {
+    if(userType === "agent")
+      history.push("/agent/login");
+    else if(userType === "customer")
+      history.push("/customer/login");
+    else
+      history.push("/");
+  } else {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      if(userType === "agent"){
+        sessionStorage.removeItem("agentToken");
+        history.push("/agent/login");
+      } else if(userType === "customer") {
+        sessionStorage.removeItem("customerToken");
+        history.push("/customer/login");
+      }
+    }
+  }
 
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const [videoStreaming, setVideoStreaming] = useState(true);
@@ -19,22 +57,23 @@ const MeetingJoin = (props) => {
   const [screenSharing, setScreenSharing] = useState(false);
   const [publisher, setPublisher] = useState(null);
   const [screenPublisher, setScreenPublisher] = useState(null);
-  const [subscriber, setSubscriber] = useState(true);
+  const [subscriber, setSubscriber] = useState(true); 
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [virtualTourUrl, setVirtualTourUrl] = useState(null);
   const [virtualTourVideo, setVirtualTourVideo] = useState(null);
-  const [productImages, setProductImages] = useState([]);
-
-  const jwtToken = JSON.parse(sessionStorage.getItem("agentToken"));
+  const [productImages, setProductImages] = useState(null);
+  const [defaultImage, setDefaultImage] = useState(true);
+  const agentJWTToken = JSON.parse(sessionStorage.getItem("agentToken"));
+  const customerJWTToken = JSON.parse(sessionStorage.getItem("customerToken"));
 
   const getPropertiesList = async () => {
     return fetch(`${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json", 
-        Authorization: `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     .then((response) => response.json())
@@ -52,7 +91,7 @@ const MeetingJoin = (props) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json", 
-        Authorization: `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     .then((response) => response.json())
@@ -62,11 +101,14 @@ const MeetingJoin = (props) => {
       setProductImages(null);
       if(propertyData.virtualTourType === "url" && propertyData.virtualTourUrl) {
         setVirtualTourUrl(propertyData.virtualTourUrl);
+        setDefaultImage(false);
       } else if(propertyData.virtualTourType === "video" && propertyData.virtualTourUrl) {
         setVirtualTourVideo(propertyData.virtualTourUrl);
+        setDefaultImage(false);
       }
       if(propertyData.productImages.length > 0) {
         setProductImages(propertyData.productImages);
+        setDefaultImage(false);
       }
     }).catch((error) => {
       console.error("Error:", error);
@@ -74,65 +116,98 @@ const MeetingJoin = (props) => {
   };
 
   const getSessionToken = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json", 
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    })
-    .then((response) => response.json())
-    .then((tokenData) => {
-      return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    }).catch((error) => {
-      console.error("Error:", error);
-    });
+    if(userType === "agent") {
+      return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => response.json())
+      .then((tokenData) => {
+        return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+      }).catch((error) => {
+        console.error("Error:", error);
+      });
+    } else if(userType === "customer") {
+      return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => response.json())
+      .then((tokenData) => {
+        return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+      }).catch((error) => {
+        console.error("Error:", error);
+      });
+    }
   };
 
   useEffect(async () => {
     const tokToken = await getSessionToken();
-    getPropertiesList();
+    if(userType === "agent") { 
+      getPropertiesList();
+      getPropertyDetail(appointment.products[0].id);
+      setSelectedProperty(appointment.products[0].id);
+    }
     const session = OT.initSession('46869314', appointment.sessionId);
     setSession(session);
-    // Subscribe to a newly created stream
     session.on({
       streamCreated: (event) => {
-        const subscriberOptions = { insertMode: "append" };
-        const subscriber = session.subscribe(
-          event.stream,
-          "subscribers",
-          subscriberOptions,
-          (error) => {}
-        );
-        setSubscriber(subscriber);
-        subscriber.on('videoElementCreated', function(event) {
-          console.log("Added");
-          var videoElement = event.element;
-          var connectionData = event.stream.connection.data;
-          console.log(connectionData);
-          if (connectionData) {
-            var username = connectionData.split('=')[1];
-            var nameElement = document.createElement('div');
-            nameElement.innerHTML = username;
-            nameElement.className = 'username';
-            videoElement.parentNode.appendChild(nameElement);
-          }
-        });
-        var subscriberDisconnectedNotification = document.createElement("div");
-        subscriberDisconnectedNotification.className =
-          "subscriberDisconnectedNotification";
-        subscriberDisconnectedNotification.innerText =
-          "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
-        console.log(subscriber.element);
-        subscriber.element.appendChild(subscriberDisconnectedNotification);
-        subscriber.on({
-          disconnected: function (event) {
-            subscriberDisconnectedNotification.style.visibility = "visible";
-          },
-          connected: function (event) {
-            subscriberDisconnectedNotification.style.visibility = "hidden";
-          },
-        });
+        if(event.stream.videoType === "camera") {
+          const subscriberOptions = { insertMode: "append" };
+          const subscriber = session.subscribe(
+            event.stream,
+            "subscribers",
+            subscriberOptions,
+            (error) => {}
+          );
+          setSubscriber(subscriber);
+          subscriber.on('videoElementCreated', function(event) {
+  
+          });
+          var subscriberDisconnectedNotification = document.createElement("div");
+          subscriberDisconnectedNotification.className =
+            "subscriberDisconnectedNotification";
+          subscriberDisconnectedNotification.innerText =
+            "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
+          subscriber.element.appendChild(subscriberDisconnectedNotification);
+          subscriber.on({
+            disconnected: function (event) {
+              subscriberDisconnectedNotification.style.visibility = "visible";
+            },
+            connected: function (event) {
+              subscriberDisconnectedNotification.style.visibility = "hidden";
+            },
+          });
+        } else if(event.stream.videoType === "screen") {
+          const subscriberOptions = { insertMode: "replace", width: '100%',
+          height: '100%' };
+          setVirtualTourUrl(null);
+          setVirtualTourVideo(null);
+          setProductImages(null);
+          setDefaultImage(null);
+          const screenshareEle = document.createElement("div");
+          const screenPreview = document.getElementById("screen-preview");
+          //const ot_element = document.getElementById(`OT`)
+          console.log(event.stream)
+          screenPreview.appendChild(screenshareEle);
+          const subscriber = session.subscribe(
+            event.stream,
+            screenshareEle,
+            subscriberOptions,
+            (error) => {}
+          );
+        }
+      },
+      streamDestroyed: (event) => {
+        if(event.reason === "clientDisconnected" && event.stream.videoType === "screen"){
+          setDefaultImage(true);
+        }
       },
       connectionCreated: function (event) {
         console.log("Connection created" + event);
@@ -141,21 +216,31 @@ const MeetingJoin = (props) => {
         console.log("Connection destroyed");
       },
       sessionDisconnected: function sessionDisconnectHandler(event) {
-        // The event is defined by the SessionDisconnectEvent class
         console.log("You were disconnected from the session.", event.reason);
+        // setTimeout(function() {
+        //   session.connect(token, function(error) {
+        //     if (error) {
+        //       console.error('Failed to reconnect to the session:', error.message);
+        //     } else {
+        //       console.log('Session reconnected.');
+        //     }
+        //   });
+        // }, 5000);
       },
       sessionReconnecting: function () {
-        // Display a user interface notification.
+        console.log("Session reconn");
       },
       sessionReconnected: function () {
-        // Adjust user interface.
       },
     });
 
     const msgHistory = document.querySelector("#history");
     session.on("signal:msg", (event) => {
+      if(userType === 'customer' && event.data.includes("PROPERTY_ID")) {
+        console.log(event.data);
+        getPropertyDetail(event.data.split(':')[1]);
+      }
       const msg = document.createElement("p");
-      // Text message
       msg.textContent = event.data;
 
       // console.log(event.files[0])
@@ -192,12 +277,12 @@ const MeetingJoin = (props) => {
       publisherOptions.audioSource = audioInputDeviceId;
       publisherOptions.videoSource = videoDeviceId;
     }
-    if (OT.hasMediaProcessorSupport()) {
-      publisherOptions.videoFilter = {
-        type: "backgroundReplacement",
-        backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
-      };
-    }
+    // if (OT.hasMediaProcessorSupport()) {
+    //   publisherOptions.videoFilter = {
+    //     type: "backgroundReplacement",
+    //     backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
+    //   };
+    // }
     const publisher = OT.initPublisher(
       "publisher",
       publisherOptions,
@@ -258,16 +343,20 @@ const MeetingJoin = (props) => {
       setScreenPublisher(null);
       setScreenSharing(false);
     } else {
+      const screenshareEle = document.createElement("div");
       OT.checkScreenSharingCapability(function (response) {
         if (!response.supported || response.extensionRegistered === false) {
-          // This browser does not support screen sharing.
+          alert("This browser does not support screen sharing");
         } else if (response.extensionInstalled === false) {
           // Prompt to install the extension.
         } else {
           // Screen sharing is available. Publish the screen.
+          const screenPreview = document.getElementById("screen-preview");
+          screenPreview.appendChild(screenshareEle);
           const publisher = OT.initPublisher(
-            "screen-preview",
-            { videoSource: "screen" },
+            screenshareEle,
+            { videoSource: "screen", width: '100%',
+            height: '100%' },
             function (error) {
               if (error) {
                 // Look at error.message to see what went wrong.
@@ -282,10 +371,17 @@ const MeetingJoin = (props) => {
               }
             }
           );
+          publisher.on('streamDestroyed', function(event) {
+            if (event.stream.videoType === 'screen') {
+              setDefaultImage(true);
+            }
+          });
         }
       });
-      document.getElementById("screen-preview").style.width = "70%";
-      document.getElementById("screen-preview").style.height = "auto";
+      setVirtualTourUrl(null);
+      setVirtualTourVideo(null);
+      setProductImages(null);
+      setDefaultImage(null);
     }
   }
 
@@ -297,7 +393,20 @@ const MeetingJoin = (props) => {
 
   async function handlePropertyChange (event) {
     setSelectedProperty(event.target.value);
-    getPropertyDetail(event.target.value);
+    if(userType === "agent") {
+      session.signal(
+        {
+          type: "msg",
+          data: `PROPERTY_ID:${event.target.value}`,
+        },
+        (error) => {
+          if (error) {
+          } else {
+          }
+        }
+      );
+      getPropertyDetail(event.target.value);
+    }
   }
 
   return (
@@ -312,7 +421,7 @@ const MeetingJoin = (props) => {
               />
             </center>
           </div>
-          <div>
+          {userType === "agent" && <div>
               <select class="nice-select" value={selectedProperty} onChange={(event) => {handlePropertyChange(event)}}>
                 {propertiesList.map(option => (
                   <option key={option.value} value={option.value}>
@@ -320,7 +429,7 @@ const MeetingJoin = (props) => {
                   </option>
                 ))}
               </select>
-          </div>
+          </div>}
           <div id="publisher"></div>
           <div id="subscribers"></div>
         </div>
@@ -340,6 +449,9 @@ const MeetingJoin = (props) => {
           )}
           {productImages && (
             <Slideshow fadeImages={productImages}/>
+          )}
+          {defaultImage && (
+            <img src={`${publicUrl}assets/img/default-property.jpg`} />
           )}
         </div>
       </div>
@@ -413,7 +525,7 @@ const MeetingJoin = (props) => {
       </div>
       <div id="chatArea" className={"slide-out"}>
         <p id="history"></p>
-        <form id="Chatform" enctype="multipart/form-data" action="">
+        <form id="Chatform" encType="multipart/form-data" action="">
 
           {/* <div>
           <img style={{position:'absolute', height:'32px', maxWidth:'32px', left:'0'}}

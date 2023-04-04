@@ -97,8 +97,8 @@ class Root extends Component {
             <Route path="/customer/profile" component={CustomerProfile} />
 
             {/* Meeting Routes */}
-            <Route path="/meeting" component={Meeting} />
-            <Route path="/precall" component={Precall} />
+            <Route path="/meeting/:id/:usertype" component={Meeting} />
+            <Route path="/precall/:id/:usertype" component={Precall} />
 
             <Route path="*" component={Error} />
           </Switch>

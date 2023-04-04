@@ -1,12 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import RTCDetect from 'rtc-detect';
 import OT from '@opentok/client';
 import './AccessTable.css';
 
+function getToken(userType) {
+  let userToken = null;
+  if(userType === "agent") {
+    const tokenString = sessionStorage.getItem("agentToken");
+    userToken = JSON.parse(tokenString);
+  } else if(userType === "customer") {
+    const tokenString = sessionStorage.getItem("customerToken");
+    userToken = JSON.parse(tokenString);
+  }
+
+  return userToken;
+}
+
 const AccessTable = (props) => {
 
-  const { appointment } = props;
+  const { appointmentId, userType } = props;
+  const token = getToken(userType);
+  const history = useHistory();
+
+  if (!token) {
+    if(userType === "agent")
+      history.push("/agent/login");
+    else if(userType === "customer")
+      history.push("/customer/login");
+    else
+      history.push("/");
+  } else {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      if(userType === "agent"){
+        sessionStorage.removeItem("agentToken");
+        history.push("/agent/login");
+      } else if(userType === "customer") {
+        sessionStorage.removeItem("customerToken");
+        history.push("/customer/login");
+      }
+    }
+  }
 
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const [browserStatus, setBrowserStatus] = useState(0);
@@ -20,9 +55,37 @@ const AccessTable = (props) => {
   const [selectedAudioInput, setSelectedAudioInput] = useState(null);
   const [selectedVideoDevice, setSelectedVideoDevice] = useState(null);
   const [selectedAudioOutput, setSelectedAudioOutput] = useState(null);
+  const [appointment, setAppointment] = useState(null);
   const detect = new RTCDetect();
 
+  const getAppointmentDetail = async () => {
+    let url = '';
+    if(userType === "agent") url = `${process.env.REACT_APP_API_URL}/agent/appointment/${appointmentId}`;
+    else if(userType === "customer") url = `${process.env.REACT_APP_API_URL}/customer/appointment/${appointmentId}`;
+    else ;
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((appointmentData) => { 
+      if(appointmentData.message) {
+        alert(appointmentData.message);
+        history.push("/");
+      } else {
+        setAppointment(appointmentData);
+      }
+    }).catch((error) => {
+      console.error("Error:", error);
+      history.push("/");
+    });
+  };
+
   useEffect(() => {
+    getAppointmentDetail();
     if (detect.getAPISupported().isWebRTCSupported) {
       setBrowserStatus(1);
     } else {
@@ -94,7 +157,14 @@ const AccessTable = (props) => {
           <div className="col-12">
             <div className="vr_connect_welcome">
 
-              <p>Today, you have an appointment at <b>19:16</b> <br /> with your customer, <b>saad jamil.</b>
+              <p>You have an appointment at 
+                {appointment && appointment.appointmentTime && 
+                  <b> {appointment.appointmentTime}</b>} 
+                <br /> with
+                 {appointment && appointment.agentUser && userType === "customer" && 
+                  <b> {appointment.agentUser.firstName} {appointment.agentUser.lastName}</b>}
+                {appointment && appointment.customerUser && userType === "agent" && 
+                  <b> {appointment.customerUser.firstName} {appointment.customerUser.lastName}</b>}
               </p>
               <h3>Testing your system</h3>
               <table className='testing_results'>
@@ -161,12 +231,12 @@ const AccessTable = (props) => {
                 </tr>
                 <tr className='single_drow'>
                   <Link to={{
-                    pathname: "/meeting",
+                    pathname: `/meeting/${appointmentId}/${userType}`,
                     state: { 
                       audioInputDeviceId: selectedAudioInput, 
                       audioOutputDeviceId: selectedAudioOutput,
                       videoDeviceId: selectedVideoDevice,
-                      appointment
+                      appointment,
                     }
                   }}><button>JOIN CALL</button></Link>
                 </tr>

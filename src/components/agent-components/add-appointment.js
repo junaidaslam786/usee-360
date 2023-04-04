@@ -266,6 +266,16 @@ export default function AddAppointment() {
   //   }
   // }, [selectedAllocatedAgent, time]);
 
+  function handleButtonClick(event) {
+    const now = new Date();
+
+    // Format the date and time values to be used as input values
+    const dateValue = now.toISOString().slice(0, 10);
+    const timeValue = now.toTimeString().slice(0, 5);
+    setDate(dateValue);
+    setTime(timeValue);
+  }
+
   return (
     <Layout>
       <div>
@@ -286,7 +296,10 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-2">
+                  <button className="btn theme-btn-2 request-now-btn" onClick={handleButtonClick} >Request Now</button>
+                </div>
+                <div className="col-md-5">
                   <div className="input-item">
                     <label>Select Date *</label>
                     <input
@@ -297,7 +310,7 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-5">
                   <div className="input-item">
                     <label>Choose Time *</label>
                     <input
@@ -308,7 +321,7 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-5">
                   <div className="input-item">
                     <label>Customer Name</label>
                     <AsyncCreatableSelect

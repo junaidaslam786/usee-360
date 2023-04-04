@@ -1,12 +1,15 @@
 import React from "react";
 import AccessTable from '../components/appointment-components/AccessTable';
+import { useParams } from 'react-router-dom';
 
 const Precall = (props) => {
+  let { id, usertype } = useParams();
 
   return <div>
     <AccessTable
-      appointment={props.location.state.appointment}
-    />
+      appointmentId={id}
+      userType={usertype}
+     />
   </div>
 };
 

@@ -135,14 +135,9 @@ export default function CompletedAppointments() {
                       <strong>Not Updated</strong>
                     </td>
                     <td>
-                      <Link
-                        to={{
-                          pathname: "/precall",
-                          state: {
-                            appointment: element,
-                          },
-                        }}
-                      >
+                      <Link to={{
+                        pathname: `/precall/${element.id}/agent`,
+                      }}>
                         <button>JOIN CALL</button>
                       </Link>
                     </td>
