@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
-import CompletedAppointments from "./appointments/completed";
-import UpcomingAppointments from "./appointments/upcoming";
+import Appointments from "./appointments";
 
 export default function Dashboard() {
   const [name, setName] = useState("");
@@ -129,32 +128,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="row mb-3">
-        <div className="col-lg-2 col-sm-3">
-          <h5>
-            <a
-              className={selected === 0 ? "link-active" : null}
-              href="#"
-              onClick={() => setSelected(0)}
-            >
-              Upcoming
-            </a>
-          </h5>
-        </div>
-        <div className="col-lg-2 col-sm-3">
-          <h5>
-            <a
-              className={selected === 1 ? "link-active" : null}
-              href="#"
-              onClick={() => setSelected(1)}
-            >
-              Completed
-            </a>
-          </h5>
-        </div>
-      </div>
-      {selected === 0 ? <UpcomingAppointments /> : null}
-      {selected === 1 ? <CompletedAppointments /> : null}
+      <Appointments />
     </Layout>
   );
 }
