@@ -199,7 +199,7 @@ export default function Appointments() {
                               <div key={element.id}>
                                 <h5 className="p-0 m-0">Property: { element.title }</h5>
                                 <Link
-                                  to="/property-details"
+                                  to={`/customer/property-details/${element.id}`}
                                   className="close"
                                   data-bs-dismiss="modal"
                                   aria-label="Close"

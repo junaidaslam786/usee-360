@@ -85,7 +85,6 @@ export default function CompletedAppointments() {
                 <th scope="col" />
                 <th scope="col" />
                 <th scope="col">Actions</th>
-                <th scope="col">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -130,9 +129,6 @@ export default function CompletedAppointments() {
                       >
                         <i className="fa-solid fa-eye" /> View
                       </button>
-                    </td>
-                    <td>
-                      <strong>Not Updated</strong>
                     </td>
                     <td>
                       <Link to={{
@@ -269,7 +265,7 @@ export default function CompletedAppointments() {
                                   Property: {element.title}
                                 </h5>
                                 <Link
-                                  to="/property-details"
+                                  to={`/agent/property-details/${element.id}`}
                                   className="close"
                                   data-bs-dismiss="modal"
                                   aria-label="Close"
