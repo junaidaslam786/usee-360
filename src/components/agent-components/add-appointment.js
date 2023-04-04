@@ -297,7 +297,7 @@ export default function AddAppointment() {
                   </div>
                 </div>
                 <div className="col-md-2">
-                  <button className="btn theme-btn-2 request-now-btn" onClick={handleButtonClick} >Request Now</button>
+                  <button className="btn theme-btn-2 request-now-btn positionRevert" onClick={handleButtonClick} >Request Now</button>
                 </div>
                 <div className="col-md-5">
                   <div className="input-item">
