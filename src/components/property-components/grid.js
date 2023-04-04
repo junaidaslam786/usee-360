@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./sidebar";
 
 export default function PropertyGrid() {
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
+
   const [properties, setProperties] = useState([]);
+  const [wishlistProperties, setWishlistProperties] = useState([]);
+  const [wishlistId, setWishlistId] = useState();
+  const [wishlistTitle, setWishlistTitle] = useState();
+  const [wishlistImage, setWishlistImage] = useState();
+
+  const history = useHistory();
 
   async function loadProperties() {
     await axios
@@ -20,8 +28,45 @@ export default function PropertyGrid() {
       });
   }
 
+  async function loadWishlistProperties() {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setWishlistProperties(response.data);
+      });
+  }
+
+  async function addToWishList(ID) {
+    if (!token) {
+      history.push("/customer/login");
+    } else {
+      await axios
+        .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/add/${ID}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          const prop = properties.find(({ id }) => id === ID);
+          setWishlistId(prop.id);
+          setWishlistTitle(prop.title);
+          setWishlistImage(prop.featuredImage);
+          loadWishlistProperties();
+        });
+    }
+  }
+
   useEffect(() => {
     loadProperties();
+    if(token) {
+      loadWishlistProperties()
+    }
   }, []);
 
   return (
@@ -105,7 +150,7 @@ export default function PropertyGrid() {
                         </div>
                       ) : (
                         properties.map((element, i) => (
-                          <div className="col-xl-6 col-sm-6 col-12">
+                          <div className="col-xl-6 col-sm-6 col-12" key={i}>
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
@@ -153,33 +198,18 @@ export default function PropertyGrid() {
                                 </ul>
                                 <div className="product-hover-action">
                                   <ul>
-                                    <li>
+                                    <li className={wishlistProperties.find(({ productId }) => productId === element.id) ? "wishlist-active" : null}>
                                       <a
                                         href="#"
                                         title="Quick View"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#quick_view_modal"
-                                      >
-                                        <i className="flaticon-expand" />
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a
-                                        href="#"
-                                        title="Wishlist"
-                                        data-bs-toggle="modal"
                                         data-bs-target="#liton_wishlist_modal"
+                                        onClick={() =>
+                                          addToWishList(element.id)
+                                        }
                                       >
                                         <i className="flaticon-heart-1" />
                                       </a>
-                                    </li>
-                                    <li className="go-top">
-                                      <Link
-                                        to="/property-details"
-                                        title="Product Details"
-                                      >
-                                        <i className="flaticon-add" />
-                                      </Link>
                                     </li>
                                   </ul>
                                 </div>
@@ -220,7 +250,7 @@ export default function PropertyGrid() {
                         </div>
                       ) : (
                         properties.map((element, i) => (
-                          <div className="col-lg-12">
+                          <div className="col-lg-12" key={i}>
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
@@ -280,28 +310,13 @@ export default function PropertyGrid() {
                                         href="#"
                                         title="Quick View"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#quick_view_modal"
-                                      >
-                                        <i className="flaticon-expand" />
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a
-                                        href="#"
-                                        title="Wishlist"
-                                        data-bs-toggle="modal"
                                         data-bs-target="#liton_wishlist_modal"
+                                        onClick={() =>
+                                          addToWishList(element.id)
+                                        }
                                       >
                                         <i className="flaticon-heart-1" />
                                       </a>
-                                    </li>
-                                    <li className="go-top">
-                                      <Link
-                                        to={`/property-details/${element.id}`}
-                                        title="Product Details"
-                                      >
-                                        <i className="flaticon-add" />
-                                      </Link>
                                     </li>
                                   </ul>
                                 </div>
@@ -371,15 +386,12 @@ export default function PropertyGrid() {
                     <div className="row">
                       <div className="col-12">
                         <div className="modal-product-img">
-                          <img
-                            src={`${publicUrl}assets/img/product/7.png`}
-                            alt="#"
-                          />
+                          <img src={`${publicUrl}/${wishlistImage}`} alt="#" />
                         </div>
                         <div className="modal-product-info go-top">
                           <h5>
-                            <Link to="/property-details">
-                              New Apartment Nice View
+                            <Link to={`/property-details/${wishlistId}`}>
+                              {wishlistTitle}
                             </Link>
                           </h5>
                           <p className="added-cart">
@@ -388,92 +400,11 @@ export default function PropertyGrid() {
                           </p>
                           <div className="btn-wrapper">
                             <Link
-                              to="/"
+                              to="/customer/wishlist"
                               className="theme-btn-1 btn btn-effect-1"
                             >
                               View Wishlist
                             </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="ltn__modal-area ltn__quick-view-modal-area">
-        <div className="modal fade" id="quick_view_modal" tabIndex={-1}>
-          <div className="modal-dialog modal-lg" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="ltn__quick-view-modal-inner">
-                  <div className="modal-product-item">
-                    <div className="row">
-                      <div className="col-lg-6 col-12">
-                        <div className="modal-product-img">
-                          <img
-                            src={`${publicUrl}assets/img/product/7.png`}
-                            alt="#"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-12">
-                        <div className="modal-product-info">
-                          <h3>New Apartment Nice View</h3>
-                          <div className="product-price">
-                            <span>$34,900</span>
-                          </div>
-                          <div className="ltn__product-details-menu-2">
-                            <ul>
-                              <li>
-                                <Link
-                                  to="/property-details"
-                                  className="theme-btn-1 btn btn-effect-1"
-                                >
-                                  <span>Book a Demo</span>
-                                </Link>
-                              </li>
-                            </ul>
-                          </div>
-                          <hr />
-                          <div className="ltn__social-media">
-                            <ul>
-                              <li>Share:</li>
-                              <li>
-                                <a href="#" title="Facebook">
-                                  <i className="fab fa-facebook-f" />
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#" title="Twitter">
-                                  <i className="fab fa-twitter" />
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#" title="Linkedin">
-                                  <i className="fab fa-linkedin" />
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#" title="Instagram">
-                                  <i className="fab fa-instagram" />
-                                </a>
-                              </li>
-                            </ul>
                           </div>
                         </div>
                       </div>

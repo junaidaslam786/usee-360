@@ -18240,6 +18240,11 @@ input.cart-plus-minus-box {
   width: 100%;
 }
 
+.wishlist-active {
+  background-color: #00c800 !important;
+  color: white !important;
+}
+
 /* ----------------------------------------------------
     END
 ---------------------------------------------------- */
