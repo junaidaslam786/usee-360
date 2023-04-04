@@ -17,33 +17,57 @@ class SearchForm extends Component {
                   >
                     <div className="car-dealer-form-inner">
                       <form action="#" className="ltn__car-dealer-form-box row">
-                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
-                          <input
-                            type="text"
-                            placeholder="Search..."
-                            className="m-0"
-                          />
-                        </div>
                         <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
                           <select className="nice-select">
-                            <option defaultValue hidden disabled>
-                              Type
-                            </option>
                             <option>Homes</option>
                             <option>Villas</option>
                           </select>
                         </div>
-                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-calendar---- col-lg-3 col-md-6">
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
                           <select className="nice-select">
-                            <option defaultValue hidden disabled>
-                              Location
-                            </option>
-                            <option>chicago</option>
-                            <option>London</option>
-                            <option>Los Angeles</option>
-                            <option>New York</option>
-                            <option>New Jersey</option>
+                            <option>Commercial</option>
+                            <option>Residential</option>
                           </select>
+                        </div>
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                          <select className="nice-select">
+                            <option selected hidden disabled>
+                              No. of Bedrooms
+                            </option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                        </div>
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                          <input
+                            type="text"
+                            placeholder="Minimum Price"
+                            className="m-0"
+                          />
+                        </div>
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                          <input
+                            type="text"
+                            placeholder="Maximum Price"
+                            className="m-0"
+                          />
+                        </div>
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                          <input
+                            type="text"
+                            placeholder="Property Name"
+                            className="m-0"
+                          />
+                        </div>
+                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                          <input
+                            type="text"
+                            placeholder="Location Name"
+                            className="m-0"
+                          />
                         </div>
                         <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
                           <div className="btn-wrapper mt-0 go-top">

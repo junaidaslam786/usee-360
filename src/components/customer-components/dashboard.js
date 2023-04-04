@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
-import Appointments from "./appointments";
+import Appointments from "./appointments/upcoming";
 
 export default function Dashboard() {
   const [name, setName] = useState("");

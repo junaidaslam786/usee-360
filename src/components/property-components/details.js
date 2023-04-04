@@ -103,23 +103,11 @@ export default function PropertyDetails() {
               <span className="property-details">
                 <span className="row">
                   <span className="col-md-5">
-                    <button className="btn theme-btn-1 mb-3">
-                      View Floor Plan
-                    </button>
-                    <button className="btn theme-btn-3 mb-3">
-                      View Brochure
-                    </button>
+                    <button className="btn theme-btn-1 mb-3">View Floor Plan</button>
+                    <button className="btn theme-btn-3 mb-3">View Brochure</button>
                     <button className="btn theme-btn-1 mb-3">View Map</button>
                     <button className="btn theme-btn-3 mb-3">View Tour</button>
-                    <button className="btn theme-btn-1 mb-3">
-                      Remove From Wishlist
-                    </button>
-                    <button className="btn theme-btn-3 mb-3">
-                      Mortgage Calculator
-                    </button>
-                    <button className="btn theme-btn-1 mb-3">
-                      Make An Offer
-                    </button>
+                    <button className="btn theme-btn-1 mb-3">Make An Offer</button>
                   </span>
                 </span>
               </span>

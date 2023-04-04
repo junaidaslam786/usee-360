@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import parse from "html-react-parser";
 
 class BannerV3 extends Component {
   render() {
     const publicUrl = `${process.env.PUBLIC_URL}/`;
-    const imagealt = "image";
 
     return (
       <div className="ltn__slider-area ltn__slider-3  section-bg-2">
@@ -33,10 +31,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/demo"
+                            to="/services/homes"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Book A Free Demo
+                            Homes
                           </Link>
                         </div>
                       </div>
@@ -69,10 +67,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/demo"
+                            to="/services/homes"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Book A Free Demo
+                            Homes
                           </Link>
                         </div>
                       </div>
@@ -105,10 +103,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/demo"
+                            to="/services/homes"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Book A Free Demo
+                            Homes
                           </Link>
                         </div>
                       </div>
