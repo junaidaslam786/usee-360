@@ -238,8 +238,8 @@ const MeetingJoin = (props) => {
     const msgHistory = document.querySelector("#history");
     session.on("signal:msg", (event) => {
       if(userType === 'customer' && event.data.includes("PROPERTY_ID")) {
-        console.log(event.data);
         getPropertyDetail(event.data.split(':')[1]);
+      } else if(userType === 'agent' && event.data.includes("PROPERTY_ID")) {
       } else {
         const msg = document.createElement("p");
         msg.textContent = `${event.data}`;
