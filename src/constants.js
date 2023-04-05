@@ -62,6 +62,12 @@ export const OFFER_STATUS = {
     REJECTED: "rejected",
 }
 
+export const VIRTUAL_TOUR_TYPE = {
+    VIDEO: "video",
+    URL: "url",
+    SLIDESHOW: "slideshow"
+}
+
 export const SNAG_LIST = [
     { value: "wall_ceiling", label: "Wall & Ceiling Painting" },
     { value: "wall_floor", label: "Wall, Floor & Skirting Tiles" },

@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
+import { loadPropertyTypes, loadPropertyCategoryTypes, loadBedrooms, loadUnits, VIRTUAL_TOUR_TYPE } from "../../constants";
+import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
-  const publicUrl = `${process.env.PUBLIC_URL}/`;
-
   const [property, setProperty] = useState({});
   const [propertyCategoryType, setPropertyCategoryType] = useState();
   const [propertyType, setPropertyType] = useState();
   const [propertyBedrooms, setPropertyBedrooms] = useState();
   const [propertyArea, setPropertyArea] = useState();
+  const [propertyUnit, setPropertyUnit] = useState();
+  const [agentImage, setAgentImage] = useState();
+  const [agentName, setAgentName] = useState();
+  const [propertyImages, setPropertyImages] = useState([]);
 
   const params = useParams();
 
@@ -23,10 +27,40 @@ export default function PropertyDetails() {
       })
       .then((response) => {
         setProperty(response.data);
-        setPropertyCategoryType(response.data.productMetaTags[1].value);
-        setPropertyType(response.data.productMetaTags[0].value);
-        setPropertyBedrooms(response.data.productMetaTags[4].value);
-        setPropertyArea(response.data.productMetaTags[2].value);
+        response.data.productMetaTags.forEach((metaTag) => {
+          switch (metaTag.categoryField.id) {
+            case 1:
+              setPropertyType(loadPropertyTypes.find(
+                (property) => property.value == metaTag.value
+              ));
+              break;
+            case 2:
+              setPropertyCategoryType(loadPropertyCategoryTypes.find(
+                (category) => category.value == metaTag.value
+              ));
+              break;
+            case 3:
+              setPropertyUnit(
+                loadUnits.find((unit) => unit.value == metaTag.value)
+              );
+              break;
+            case 4:
+              setPropertyArea(metaTag.value);
+              break;
+            case 5:
+              setPropertyBedrooms(
+                loadBedrooms.find(
+                  (bedroom) => bedroom.value == metaTag.value
+                )
+              );
+              break;
+          }
+        });
+        setAgentImage(response.data.user.profileImage);
+        setAgentName(`${response.data.user.firstName} ${response.data.user.lastName}`);
+        if(response?.data?.productImages?.length > 0) {
+          setPropertyImages(response.data.productImages);
+        }
       });
   }
 
@@ -41,15 +75,21 @@ export default function PropertyDetails() {
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
               <div className="ltn__blog-meta">
+                {
+                  propertyImages ? (
+                    <Slideshow fadeImages={propertyImages}/>
+                  ) : (
+                    <img
+                      className="mb-50"
+                      src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+                      alt="#"
+                    />
+                  )
+                }
                 <ul>
-                  <img
-                    className="mb-50"
-                    src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-                    alt="#"
-                  />
                   <li className="ltn__blog-category">
                     <Link className="bg-orange" to="#">
-                      For {propertyCategoryType}
+                      For { propertyCategoryType?.label || "" }
                     </Link>
                   </li>
                   <li className="ltn__blog-date">
@@ -65,7 +105,7 @@ export default function PropertyDetails() {
                 </span>{" "}
                 {property.address}
               </label>
-              <h2 className="mb-50">${property.price}</h2>
+              <h2 className="mb-50">{property.price}</h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>
@@ -76,7 +116,7 @@ export default function PropertyDetails() {
                       <i className="flaticon-double-bed" />
                       <div>
                         <h6>Type</h6>
-                        <small>{propertyType}</small>
+                        <small>{propertyType?.label || ""}</small>
                       </div>
                     </div>
                   </li>
@@ -85,7 +125,7 @@ export default function PropertyDetails() {
                       <i className="flaticon-double-bed" />
                       <div>
                         <h6>Bedrooms</h6>
-                        <small>{propertyBedrooms}</small>
+                        <small>{propertyBedrooms?.label || ""}</small>
                       </div>
                     </div>
                   </li>
@@ -94,7 +134,16 @@ export default function PropertyDetails() {
                       <i className="flaticon-double-bed" />
                       <div>
                         <h6>Area</h6>
-                        <small>{propertyArea}</small>
+                        <small>{propertyArea || ""}</small>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="property-detail-feature-list-item">
+                      <i className="flaticon-double-bed" />
+                      <div>
+                        <h6>Unit</h6>
+                        <small>{propertyUnit?.label || ""}</small>
                       </div>
                     </div>
                   </li>
@@ -103,62 +152,38 @@ export default function PropertyDetails() {
               <span className="property-details">
                 <span className="row">
                   <span className="col-md-5">
-                    <button className="btn theme-btn-1 mb-3">View Floor Plan</button>
+                    {
+                      (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
+                        <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3">View Tour</a>
+                      )
+                    }
+                    {/* <button className="btn theme-btn-1 mb-3">View Floor Plan</button>
                     <button className="btn theme-btn-3 mb-3">View Brochure</button>
-                    <button className="btn theme-btn-1 mb-3">View Map</button>
-                    <button className="btn theme-btn-3 mb-3">View Tour</button>
-                    <button className="btn theme-btn-1 mb-3">Make An Offer</button>
+                    <button className="btn theme-btn-1 mb-3">View Map</button>*/}
                   </span>
                 </span>
               </span>
-              {/* <div className="ltn__shop-details-tab-content-inner--- ltn__shop-details-tab-inner-2 ltn__product-details-review-inner mb-60">
-                <div className="ltn__comment-reply-area ltn__form-box mb-30">
-                  <form action="#">
-                    <h4>Make an Offer</h4>
-                    <div className="input-item input-item-name ltn__custom-icon">
-                      <input type="text" placeholder="Enter name...." />
-                    </div>
-                    <div className="input-item input-item-email ltn__custom-icon">
-                      <input type="email" placeholder="Enter email...." />
-                    </div>
-                    <div className="input-item input-item-website ltn__custom-icon">
-                      <input type="text" placeholder="Enter Offer..." />
-                    </div>
-                    <div className="input-item input-item-textarea ltn__custom-icon">
-                      <textarea
-                        placeholder="Enter message...."
-                        defaultValue=""
-                      />
-                    </div>
-                    <label className="mb-0">
-                      <input type="checkbox" name="agree" /> Save my name,
-                      email, and website in this browser for the next time I
-                      comment.
-                    </label>
-                    <div className="btn-wrapper">
-                      <button
-                        className="btn theme-btn-1 btn-effect-1 text-uppercase"
-                        type="submit"
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div> */}
+              {
+                (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO) && (
+                  <div className="property-detail-feature-list clearfix mb-45">
+                    <video width="100%" height="100%" controls>
+                      <source src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )
+              }
             </div>
           </div>
           <div className="col-lg-4">
             <aside className="sidebar ltn__shop-sidebar ltn__right-sidebar---">
-              {/* Author Widget */}
               <div className="widget ltn__author-widget">
                 <div className="ltn__author-widget-inner text-center">
                   <img
-                    src={`${publicUrl}assets/img/blog/author.jpg`}
+                    src={`${process.env.REACT_APP_API_URL}/${agentImage}`}
                     alt="Image"
                   />
-                  <h5>Rosalina D. Willaimson</h5>
-                  <small>Real Estate Agent</small>
+                  <h5>{ agentName }</h5>
                 </div>
               </div>
             </aside>

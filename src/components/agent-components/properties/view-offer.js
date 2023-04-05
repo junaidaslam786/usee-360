@@ -241,7 +241,7 @@ export default function ViewOffer(props) {
                 <table className="table">
                     <thead>
                         <tr>
-                        <th scope="col">Agent</th>
+                        <th scope="col">Customer</th>
                         <th scope="col"/>
                         <th scope="col">Amount</th>
                         <th scope="col">Notes</th>

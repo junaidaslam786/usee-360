@@ -1,37 +1,79 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import ResponseHandler from '../global-components/respones-handler';
+import { useHistory } from "react-router-dom";
 
 export default function ResetPassword() {
   const params = useParams();
 
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
-  const [message, setMessage] = useState();
+  const [errors, setErrors] = useState([]);
+  const [success, setSuccess] = useState();
   const [loading, setLoading] = useState();
-
-  async function resetPassword(credentials) {
-    return fetch(`${process.env.REACT_APP_API_URL}/auth/reset-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    }).then((data) => data.json());
-  }
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     setLoading(true);
-    const response = await resetPassword({
+    const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/reset-password`, {
       token: params.token,
       type: "agent",
       password,
       confirmPassword,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response?.status !== 200) {
+        setErrorHandler("Unable to reset password, please try again later");
+      }
+
+      console.log('reset-password-response', response);
+
+      return response.data;
+    }).catch(error => {
+      console.log('reset-password-error', error);
+      if (error?.response?.data?.errors) {
+        setErrorHandler(error.response.data.errors, "error", true);
+      } else if (error?.response?.data?.message) { 
+        setErrorHandler(error.response.data.message);
+      } else {
+        setErrorHandler("Unable to reset password, please try again later");
+      }
     });
-    if (response) {
-      setMessage(response.message);
-      setLoading(false);
+
+    setLoading(false);
+    if (formResponse?.message) {
+      setSuccessHandler(formResponse.message);
+      setPassword("");
+      setConfirmPassword("");
+      setTimeout(() => {
+        history.push("/agent/login");
+      }, 1000);
     }
+    console.log('reset-password-final-response', formResponse);
+  };
+
+  const setErrorHandler = (msg, param = "form", fullError = false) => {
+    setErrors(fullError ? msg : [{ msg, param }])
+    setTimeout(() => {
+      setErrors([]);
+    }, 3000);
+    setSuccess("");
+  };
+
+  const setSuccessHandler = (msg) => {
+    setSuccess(msg);
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+
+    setErrors([]);
   };
 
   return (
@@ -51,13 +93,7 @@ export default function ResetPassword() {
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
               >
-                {message ? (
-                  <div className="alert alert-primary" role="alert">
-                    {message}
-                  </div>
-                ) : (
-                  ""
-                )}
+                <ResponseHandler errors={errors} success={success}/>
                 <input
                   type="password"
                   placeholder="New Password*"

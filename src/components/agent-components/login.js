@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
@@ -25,6 +25,7 @@ export default function Login() {
   const [loading, setLoading] = useState();
   const [forgotEmail, setForgotEmail] = useState("");
   const [resetPassSuccess, setResetPassSuccess] = useState();
+  const closeModal = useRef(null);
 
   function setToken(token) {
     localStorage.setItem("agentToken", JSON.stringify(token));
@@ -99,6 +100,10 @@ export default function Login() {
 
     if (formResponse?.message) {
       setSuccessHandler(formResponse.message);
+      setForgotEmail("");
+      setTimeout(() => {
+        closeModal.current.click();
+      }, 1000);
     }
     console.log('reset-password-final-response', formResponse);
   };
@@ -217,6 +222,7 @@ export default function Login() {
             <div className="modal-content">
               <div className="modal-header">
                 <button
+                  ref={closeModal}
                   type="button"
                   className="close"
                   data-bs-dismiss="modal"
@@ -243,6 +249,7 @@ export default function Login() {
                               name="email"
                               placeholder="Type your register email*"
                               onChange={(e) => setForgotEmail(e.target.value)}
+                              value={forgotEmail}
                             />
                             <div className="btn-wrapper mt-0">
                               <button
