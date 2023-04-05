@@ -41,7 +41,7 @@ export const loadPriceTypes = [
 export const loadUnits = [
     { value: "sq_ft", label: "sq_ft" },
     { value: "sq_mt", label: "sq_mt" },
-  ];
+];
 
 export const loadBedrooms = [
     { value: "1", label: "1" },
@@ -54,4 +54,23 @@ export const loadBedrooms = [
     { value: "8", label: "8" },
     { value: "9", label: "9" },
     { value: "10", label: "10" },
+];
+
+export const OFFER_STATUS = {
+    PENDING: "pending",
+    ACCEPTED: "accepted",
+    REJECTED: "rejected",
+}
+
+export const SNAG_LIST = [
+    { value: "wall_ceiling", label: "Wall & Ceiling Painting" },
+    { value: "wall_floor", label: "Wall, Floor & Skirting Tiles" },
+    { value: "wallpaper", label: "Wallpaper" },
+    { value: "floor_carpet", label: "Floor Carpet" },
+    { value: "wooden_floor", label: "Wooden Flooring & Skirting" },
+    { value: "ceiling", label: "Ceiling" },
+    { value: "gypsum_false_ceiling", label: "Gypsum False Ceiling Boards & Tiles" },
+    { value: "doors", label: "Doors" },
+    { value: "sliding_doors", label: "Sliding Doors &amp; Windows" },
+    { value: "ironmongeries", label: "Ironmongeries" },
 ];

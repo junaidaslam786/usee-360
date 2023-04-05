@@ -18315,3 +18315,7 @@ h1.page-title {
 .positionRevert {
   position: revert;
 }
+
+.modal-dialog-large {
+  min-width: 1080px !important;
+}

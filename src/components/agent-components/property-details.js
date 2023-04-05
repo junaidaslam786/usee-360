@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Layout from "./layouts/layout";
 import axios from "axios";
+import ViewOffer from "./properties/view-offer";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -77,12 +78,14 @@ export default function PropertyDetails() {
             <p>{property.description}</p>
           </div>
           <div className="col-md-5">
-            <button className="btn theme-btn-1 mb-3">View Floor Plan</button>
-            <button className="btn theme-btn-3 mb-3">View Brochure</button>
-            <button className="btn theme-btn-1 mb-3">View Map</button>
-            <button className="btn theme-btn-3 mb-3">View Tour</button>
-            <button className="btn theme-btn-1 mb-3">Make An Offer</button>
+            {/* <button className="btn theme-btn-1 mb-3">View Floor Plan</button> */}
+            {/* <button className="btn theme-btn-3 mb-3">View Brochure</button> */}
+            {/* <button className="btn theme-btn-1 mb-3">View Map</button> */}
+            {/* <button className="btn theme-btn-3 mb-3">View Tour</button> */}
           </div>
+        </div>
+        <div className="row property-details">
+          <ViewOffer property={property} />
         </div>
       </section>
     </Layout>

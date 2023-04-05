@@ -71,7 +71,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="row p-2 mb-5">
+        {/* <div className="row p-2 mb-5">
           <div className="col-md-6 p-2">
             <div className="dashboard-card card-1">
               <div className="row">
@@ -126,7 +126,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <Appointments />
     </Layout>
