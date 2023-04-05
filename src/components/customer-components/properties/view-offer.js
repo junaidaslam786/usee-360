@@ -25,7 +25,7 @@ export default function ViewOffer(props) {
     const [isApprovedByCustomer, setIsApprovedByCustomer] = useState(false);
     const history = useHistory();
 
-    const token = JSON.parse(sessionStorage.getItem("customerToken"));
+    const token = JSON.parse(localStorage.getItem("customerToken"));
 
     const makeOfferSubmit = async (e) => {
         e.preventDefault();

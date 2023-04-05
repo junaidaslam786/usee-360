@@ -24,7 +24,7 @@ export default function ViewOffer(props) {
     const closeModal = useRef(null);
     const history = useHistory();
 
-    const token = JSON.parse(sessionStorage.getItem("agentToken"));
+    const token = JSON.parse(localStorage.getItem("agentToken"));
 
     const updateOfferStatus = async (formData) => {
         const responseHandlerType = formData.status === OFFER_STATUS.REJECTED ? "reject" : "offer";
