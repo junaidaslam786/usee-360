@@ -20,6 +20,10 @@ export default function Sidebar() {
         Appointments
         <i className="fa-solid fa-clock" />
       </Link>
+      <Link to="/customer/add-appointment">
+        Add Appointments
+        <i className="fa-solid fa-calendar-check"></i>
+      </Link>
       <Link to="/customer/wishlist">
         My Wishlist
         <i className="fa-solid fa-list" />

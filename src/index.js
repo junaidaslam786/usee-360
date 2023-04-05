@@ -42,6 +42,7 @@ import CustomerLogin from "./pages/customer/login";
 import CustomerResetPassword from "./pages/customer/reset-password";
 import CustomerDashboard from "./pages/customer/dashboard";
 import CustomerAppointments from "./pages/customer/appointments";
+import CustomerAddAppointment from "./pages/customer/add-appointment";
 import CustomerWishlist from "./pages/customer/wishlist";
 import CustomerPropertyDetails from "./pages/customer/property-details";
 import CustomerProfile from "./pages/customer/profile";
@@ -116,10 +117,8 @@ class Root extends Component {
               component={CustomerResetPassword}
             />
             <Route path="/customer/dashboard" component={CustomerDashboard} />
-            <Route
-              path="/customer/appointments"
-              component={CustomerAppointments}
-            />
+            <Route path="/customer/appointments" component={CustomerAppointments} />
+            <Route path="/customer/add-appointment" component={CustomerAddAppointment} />
             <Route path="/customer/wishlist" component={CustomerWishlist} />
             <Route
               path="/customer/property-details/:id"
