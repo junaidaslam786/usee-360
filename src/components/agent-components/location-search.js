@@ -9,6 +9,7 @@ export default function LocationSearch() {
   const [active, setActive] = useState(true);
   const [circle, setCirle] = useState(null);
   const [polygon, setPolygon] = useState(null);
+  const [properties, setProperties] = useState([]);
 
   let map;
 
@@ -116,6 +117,7 @@ export default function LocationSearch() {
       .then((data) => data.json())
       .then((data) => {
         if (data.length > 0) {
+          setProperties(data);
           data.map((property) => {
             const position = {
               lat: parseFloat(property.latitude),
@@ -128,7 +130,7 @@ export default function LocationSearch() {
               { width: 40, height: 40 }
             );
             marker.addListener("click", function () {
-              window.location = `${process.env.REACT_APP_API_URL}/property-details/${property.id}`;
+              window.open(`${process.env.PUBLIC_URL}/property-details/${property.id}`, "_blank");
             });
           });
         }
@@ -231,17 +233,17 @@ export default function LocationSearch() {
         <img src={`${process.env.PUBLIC_URL}/assets/img/logo.png`} id="sideabar-logo" alt="Logo" height="80" />
         <p>You can search the properties in a specific area by drawing shapes on maps. </p>
         <div className="scrollable">
-          <div className="content-box">
-          <img
-            src={`${process.env.REACT_APP_API_URL}/properties/images/1680113934672_312615154_5798981606831459_1734927025076406518_n.jpeg`}
-            alt="#"
-            className="featured-image-style"
-          />
-          </div>
-          <div className="content-box">Content Box 2</div>
-          <div className="content-box">Content Box 3</div>
-          <div className="content-box">Content Box 4</div>
-          <div className="content-box">Content Box 5</div>
+          {properties && properties.length > 0 && (
+            properties.map((element, i) => 
+              <div className="content-box">
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
+                  alt="#"
+                />
+                
+              </div>
+            ))
+          }
         </div>
         {/* <ol>
           <li>By drawing shapes on maps</li>

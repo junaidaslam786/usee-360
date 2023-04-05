@@ -429,7 +429,7 @@ const MeetingJoin = (props) => {
             </center>
           </div>
           {userType === "agent" && <div>
-              <select class="nice-select" value={selectedProperty} onChange={(event) => {handlePropertyChange(event)}}>
+              <select class="nice-select w-100 select-margin" value={selectedProperty} onChange={(event) => {handlePropertyChange(event)}}>
                 {propertiesList.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
