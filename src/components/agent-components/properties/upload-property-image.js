@@ -4,7 +4,7 @@ import axios from 'axios';
 import ResponseHandler from '../../global-components/respones-handler';
 
 export default function UploadPropertyImage(props) {
-    const token = JSON.parse(sessionStorage.getItem("agentToken"));
+    const token = JSON.parse(localStorage.getItem("agentToken"));
     const [propertyImages, setPropertyImages] = useState([]);
     const [uploadErrors, setUploadErrors] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState("");

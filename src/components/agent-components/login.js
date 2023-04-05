@@ -5,7 +5,7 @@ import ResponseHandler from '../global-components/respones-handler';
 import axios from "axios";
 
 function getToken() {
-  const tokenString = sessionStorage.getItem("agentToken");
+  const tokenString = localStorage.getItem("agentToken");
   const userToken = JSON.parse(tokenString);
   return userToken;
 }
@@ -27,7 +27,7 @@ export default function Login() {
   const [resetPassSuccess, setResetPassSuccess] = useState();
 
   function setToken(token) {
-    sessionStorage.setItem("agentToken", JSON.stringify(token));
+    localStorage.setItem("agentToken", JSON.stringify(token));
   }
 
   const handleSubmit = async (e) => {

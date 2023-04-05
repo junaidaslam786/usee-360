@@ -12,7 +12,7 @@ import {
 } from '../../constants';
 
 export default function AddProperty(props) {
-  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const token = JSON.parse(localStorage.getItem("agentToken"));
   const [categoryFields, setCategoryFields] = useState([]);
 
   const [id, setId] = useState(null);
