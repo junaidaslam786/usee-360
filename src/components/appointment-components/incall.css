@@ -13,30 +13,23 @@
   border-right: 2px solid;
 }
 
-#publisher {
+/* #publisher {
   width: 100%;
   height: auto;
-}
+} */
 
 #publisher>div {
-  width: 100%;
-  height: auto;
-  margin: 4px auto;
-  border-radius: 25px;
-  border: 1px solid rgb(0, 0, 0)
-}
+  border-radius: 10px;
+} 
 
 #subscribers {
   margin: 0 auto;
   overflow-y: scroll;
-  padding: 10px;
+  padding-top: 10px;
 }
 
 #subscribers>div {
-  width: 100%;
-  height: auto;
-  margin: 4px;
-  border-radius: 15px;
+  border-radius: 10px;
   border: 1px solid rgb(0, 0, 0)
 }
 
@@ -99,7 +92,7 @@
 
 #chatArea p p {
   margin: 3px auto;
-  background: rgb(0 0 0 / 17%);
+  background: rgb(241 215 215 / 17%);
   width: 90%;
   border-radius: 5px;
   color: #ffffff;
@@ -215,4 +208,23 @@
 
 .select-margin {
   margin-bottom: 10px;
+  background: #00C800;
+  font-weight: bold;
+  color: #fff;
+  font-size: 15px;
+}
+
+.download-file-link {
+  display: inline-block;
+  background-color: #7c8c91;
+  color: white;
+  padding: 3px;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.download-file-link:hover {
+  background-color: #005a7e;
 }

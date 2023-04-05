@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
 import { useHistory } from 'react-router-dom';
 import "./incall.css";
+import axios from 'axios';
 import Slideshow from "../Slideshow";
 const fs = require('fs');
 
@@ -160,7 +161,8 @@ const MeetingJoin = (props) => {
     session.on({
       streamCreated: (event) => {
         if(event.stream.videoType === "camera") {
-          const subscriberOptions = { insertMode: "append", nameDisplayMode: 'on' };
+          const subscriberOptions = { insertMode: "append", nameDisplayMode: 'on', width: '100%',
+          height: '250px' };
           const subscriber = session.subscribe(
             event.stream,
             "subscribers",
@@ -240,24 +242,23 @@ const MeetingJoin = (props) => {
       if(userType === 'customer' && event.data.includes("PROPERTY_ID")) {
         getPropertyDetail(event.data.split(':')[1]);
       } else if(userType === 'agent' && event.data.includes("PROPERTY_ID")) {
+      } else if(event.data.includes("::")) {
+        const msg = document.createElement("p");
+        const content = event.data.split("::");
+        msg.textContent = `${content[0]}: `;
+        const a = document.createElement("a");
+        a.classList.add("download-file-link");
+        a.setAttribute("target", "_blank");
+        const text = document.createTextNode(content[1].split("/")[1]);
+        a.appendChild(text)
+        a.href =`${process.env.REACT_APP_API_URL}/${content[1]}`;
+        a.download = content[1].split("/")[1];
+        msg.appendChild(a);
+        msgHistory.appendChild(msg);
+        msg.scrollIntoView();
       } else {
         const msg = document.createElement("p");
-        msg.textContent = `${event.data}`;
-  
-        // console.log(event.files[0])
-        // fs.copyFile('source.txt', 'destination.txt', (err) => {
-        //   if (err) throw err;
-        //   console.log('source.txt was copied to destination.txt');
-        // });
-  
-        // Insert anchor tag to download uploaded file to the directory
-        // const a = document.createElement("a");
-        // const text = document.createTextNode(' Download');
-        // a.appendChild(text)
-        // a.href =`${publicUrl}assets/img/icons/chat.png`;
-        // a.download = "file.png";
-        // msg.appendChild(a)
-  
+        msg.textContent = `${event.data}`;  
         msg.className =
           event.from.connectionId === session.connection.connectionId
             ? "mine"
@@ -276,7 +277,9 @@ const MeetingJoin = (props) => {
       publishAudio: true,
       name: userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
       `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
-      nameDisplayMode: 'on'
+      nameDisplayMode: 'on',
+      width: '100%',
+      height: '250px'
     };
     if (audioInputDeviceId || videoDeviceId) {
       publisherOptions.audioSource = audioInputDeviceId;
@@ -317,7 +320,7 @@ const MeetingJoin = (props) => {
       event.preventDefault();
 
       const name = userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
-      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`
+      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
       session.signal(
         {
           type: "msg",
@@ -392,10 +395,39 @@ const MeetingJoin = (props) => {
     }
   }
 
-  function getUrl(event) {
+  async function getUrl(event) {
     const files = event.target.files;
-    console.log(files[0])
-    // const response = await channel.sendImage(files[0]);
+    let formdata = new FormData();
+    formdata.append("featuredImage", files[0]);
+    const formResponse = await axios
+        .put(`${process.env.REACT_APP_API_URL}/home/property/chat-attachment`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response?.status !== 200) {
+            ;
+          }
+
+        return response.data;
+      }).catch(error => {
+        console.log(error);
+      });
+    const name = userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
+      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+    session.signal(
+      {
+        type: "msg",
+        data: `${name}::${formResponse}`,
+      },
+      (error) => {
+        if (error) {
+          //handleError(error);
+        } else {
+        }
+      }
+    );
   }
 
   async function handlePropertyChange (event) {
@@ -534,12 +566,12 @@ const MeetingJoin = (props) => {
         <p id="history"></p>
         <form id="Chatform" encType="multipart/form-data" action="">
 
-          {/* <div>
+          <div>
           <img style={{position:'absolute', height:'32px', maxWidth:'32px', left:'0'}}
             src={`${publicUrl}assets/img/icons/attach-file.png`}
           />
           <input type="file" id="file" name="file" onChange={getUrl} />
-          </div> */}
+          </div>
 
           <input type="text" placeholder="Input your text here" id="msgTxt" />
 
