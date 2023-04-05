@@ -21,7 +21,7 @@ export default function AddAppointment() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState();
 
-  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const token = JSON.parse(localStorage.getItem("agentToken"));
 
   const loadCustomers = async (searchQuery) => {
     let response = await fetch(

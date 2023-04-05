@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Sidebar from "../sidebar";
 
 function getToken() {
-  const tokenString = sessionStorage.getItem("agentToken");
+  const tokenString = localStorage.getItem("agentToken");
   const userToken = JSON.parse(tokenString);
   return userToken;
 }
@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      sessionStorage.removeItem("agentToken");
+      localStorage.removeItem("agentToken");
       history.push("/agent/login");
     }
   }

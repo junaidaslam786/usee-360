@@ -28,7 +28,7 @@ export default function AccountDetails() {
   const [successPass, setSuccessPass] = useState();
   const [errorPass, setErrorPass] = useState();
 
-  const token = JSON.parse(sessionStorage.getItem("agentToken"));
+  const token = JSON.parse(localStorage.getItem("agentToken"));
   const getUser = async () => {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/user/profile`,

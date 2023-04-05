@@ -6,7 +6,7 @@ export default function Sidebar() {
   const history = useHistory();
 
   function handleClick() {
-    sessionStorage.removeItem("agentToken");
+    localStorage.removeItem("agentToken");
     history.push("/agent/login");
   }
 
