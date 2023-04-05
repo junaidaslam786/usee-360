@@ -20,6 +20,17 @@ export default function SearchForm() {
   const [maxPrice, setMaxPrice] = useState();
   const [lat, setLat] = useState();
   const [lng, setLng] = useState();
+  const [showLink, setShowLink] = useState(false);
+
+  const handleFocus = () => {
+    setShowLink(true);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowLink(false);
+    }, 300);
+  };
 
   const autocomplete = new window.google.maps.places.Autocomplete(
     document.getElementById("autocomplete")
@@ -122,7 +133,20 @@ export default function SearchForm() {
                           onChange={(event) => setAddress(event.target.value)}
                           placeholder="Location Name"
                           className="m-0"
+                          onFocus={handleFocus} 
+                          onBlur={handleBlur}
                         />
+                        {(showLink &&
+                          <Link
+                            to={{
+                              pathname: "/location-search",
+                            }}
+                            className="draw-on-map"
+                          >
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            Search by drawing on map
+                          </Link>
+                        )}
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <input
