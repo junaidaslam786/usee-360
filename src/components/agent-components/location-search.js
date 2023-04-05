@@ -18,8 +18,8 @@ export default function LocationSearch() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          //const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-          const currentLocation = { lat: 37.7749, lng: -122.4194 };
+          const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+          //const currentLocation = { lat: 37.7749, lng: -122.4194 };
           setCenter(currentLocation);
           map.setCenter(currentLocation);
           setCenterAddress(await reverseGeocode(geocoder, currentLocation));
@@ -227,12 +227,12 @@ export default function LocationSearch() {
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <img src={`${process.env.PUBLIC_URL}/assets/img/logo.png`} id="sideabar-logo" alt="Logo" height="80" />
-        <p>You can search the properties in a specific area in two ways: </p>
-        <ol>
+        <p>You can search the properties in a specific area by drawing shapes on maps. </p>
+        {/* <ol>
           <li>By drawing shapes on maps</li>
-          <li>By selecting a center point and radius</li>
-        </ol>
-        <input
+          <li>By selecting a center point and radius</li> 
+        </ol> */}
+        {/* <input
           type="text"
           value={centerAddress}
           name="ltn__name"
@@ -252,7 +252,7 @@ export default function LocationSearch() {
             placeholder="Radius"
           />
           <button onClick={drawCircle}>Draw Cricle</button>
-        </div>
+        </div> */}
       </div>
       <div id="map"></div>
     </div>
