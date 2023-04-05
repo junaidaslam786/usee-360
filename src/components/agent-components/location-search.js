@@ -93,7 +93,7 @@ export default function LocationSearch() {
         );
         setPolygon(drawnPolygon);
         searchByPolygon(drawnPolygon);
-        map.setOptions({ draggableCursor: "grab" });
+        drawingManager.setDrawingMode(null);
       }
     );
 
@@ -127,7 +127,9 @@ export default function LocationSearch() {
               "assets/img/icons/property-marker.png",
               { width: 40, height: 40 }
             );
-            marker.addListener("click", function () {});
+            marker.addListener("click", function () {
+              window.location = `${process.env.REACT_APP_API_URL}/property-details/${property.id}`;
+            });
           });
         }
       })
@@ -228,6 +230,19 @@ export default function LocationSearch() {
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <img src={`${process.env.PUBLIC_URL}/assets/img/logo.png`} id="sideabar-logo" alt="Logo" height="80" />
         <p>You can search the properties in a specific area by drawing shapes on maps. </p>
+        <div className="scrollable">
+          <div className="content-box">
+          <img
+            src={`${process.env.REACT_APP_API_URL}/properties/images/1680113934672_312615154_5798981606831459_1734927025076406518_n.jpeg`}
+            alt="#"
+            className="featured-image-style"
+          />
+          </div>
+          <div className="content-box">Content Box 2</div>
+          <div className="content-box">Content Box 3</div>
+          <div className="content-box">Content Box 4</div>
+          <div className="content-box">Content Box 5</div>
+        </div>
         {/* <ol>
           <li>By drawing shapes on maps</li>
           <li>By selecting a center point and radius</li> 
