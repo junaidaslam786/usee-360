@@ -18,16 +18,18 @@ function getToken(userType) {
 }
 
 const AccessTable = (props) => {
+  console.log(props);
 
   const { appointmentId, userType } = props;
   const token = getToken(userType);
+  console.log(token);
   const history = useHistory();
 
   if (!token) {
     if(userType === "agent")
-      history.push("/agent/login");
+      history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
     else if(userType === "customer")
-      history.push("/customer/login");
+      history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
     else
       history.push("/");
   } else {
@@ -35,10 +37,10 @@ const AccessTable = (props) => {
     if (decodedJwt.exp * 1000 < Date.now()) {
       if(userType === "agent"){
         localStorage.removeItem("agentToken");
-        history.push("/agent/login");
+        history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
       } else if(userType === "customer") {
         localStorage.removeItem("customerToken");
-        history.push("/customer/login");
+        history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
       }
     }
   }
@@ -85,7 +87,7 @@ const AccessTable = (props) => {
   };
 
   useEffect(() => {
-    getAppointmentDetail();
+    if(token) getAppointmentDetail();
     if (detect.getAPISupported().isWebRTCSupported) {
       setBrowserStatus(1);
     } else {

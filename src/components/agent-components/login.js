@@ -65,7 +65,8 @@ export default function Login() {
 
     if (formResponse?.token) {
       setToken(formResponse.token);
-      window.location = "/agent/dashboard";
+      const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || "/agent/dashboard";
+      window.location = returnUrl;
     }
   };
 

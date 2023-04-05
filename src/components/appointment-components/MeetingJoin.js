@@ -33,9 +33,9 @@ const MeetingJoin = (props) => {
 
   if (!token) {
     if(userType === "agent")
-      history.push("/agent/login");
+      history.push("/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname));
     else if(userType === "customer")
-      history.push("/customer/login");
+      history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
     else
       history.push("/");
   } else {
@@ -43,10 +43,10 @@ const MeetingJoin = (props) => {
     if (decodedJwt.exp * 1000 < Date.now()) {
       if(userType === "agent"){
         localStorage.removeItem("agentToken");
-        history.push("/agent/login");
+        history.push("/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname));
       } else if(userType === "customer") {
         localStorage.removeItem("customerToken");
-        history.push("/customer/login");
+        history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
       }
     }
   }
@@ -99,6 +99,7 @@ const MeetingJoin = (props) => {
       setVirtualTourUrl(null);
       setVirtualTourVideo(null);
       setProductImages(null);
+      setDefaultImage(true);
       if(propertyData.virtualTourType === "url" && propertyData.virtualTourUrl) {
         setVirtualTourUrl(propertyData.virtualTourUrl);
         setDefaultImage(false);
@@ -239,30 +240,31 @@ const MeetingJoin = (props) => {
       if(userType === 'customer' && event.data.includes("PROPERTY_ID")) {
         console.log(event.data);
         getPropertyDetail(event.data.split(':')[1]);
+      } else {
+        const msg = document.createElement("p");
+        msg.textContent = `${event.data}`;
+  
+        // console.log(event.files[0])
+        // fs.copyFile('source.txt', 'destination.txt', (err) => {
+        //   if (err) throw err;
+        //   console.log('source.txt was copied to destination.txt');
+        // });
+  
+        // Insert anchor tag to download uploaded file to the directory
+        // const a = document.createElement("a");
+        // const text = document.createTextNode(' Download');
+        // a.appendChild(text)
+        // a.href =`${publicUrl}assets/img/icons/chat.png`;
+        // a.download = "file.png";
+        // msg.appendChild(a)
+  
+        msg.className =
+          event.from.connectionId === session.connection.connectionId
+            ? "mine"
+            : "theirs";
+        msgHistory.appendChild(msg);
+        msg.scrollIntoView();
       }
-      const msg = document.createElement("p");
-      msg.textContent = event.data;
-
-      // console.log(event.files[0])
-      // fs.copyFile('source.txt', 'destination.txt', (err) => {
-      //   if (err) throw err;
-      //   console.log('source.txt was copied to destination.txt');
-      // });
-
-      // Insert anchor tag to download uploaded file to the directory
-      // const a = document.createElement("a");
-      // const text = document.createTextNode(' Download');
-      // a.appendChild(text)
-      // a.href =`${publicUrl}assets/img/icons/chat.png`;
-      // a.download = "file.png";
-      // msg.appendChild(a)
-
-      msg.className =
-        event.from.connectionId === session.connection.connectionId
-          ? "mine"
-          : "theirs";
-      msgHistory.appendChild(msg);
-      msg.scrollIntoView();
     });
 
     // initialize the publisher
@@ -314,10 +316,12 @@ const MeetingJoin = (props) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
+      const name = userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
+      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`
       session.signal(
         {
           type: "msg",
-          data: msgTxt.value,
+          data: `${name}: ${msgTxt.value}`,
         },
         (error) => {
           if (error) {
