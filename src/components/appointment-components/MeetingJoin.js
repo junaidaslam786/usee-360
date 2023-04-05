@@ -8,10 +8,10 @@ const fs = require('fs');
 function getToken(userType) {
   let userToken = null;
   if(userType === "agent") {
-    const tokenString = localStorage.getItem("agentToken");
+    const tokenString = sessionStorage.getItem("agentToken");
     userToken = JSON.parse(tokenString);
   } else if(userType === "customer") {
-    const tokenString = localStorage.getItem("customerToken");
+    const tokenString = sessionStorage.getItem("customerToken");
     userToken = JSON.parse(tokenString);
   }
 
@@ -42,10 +42,10 @@ const MeetingJoin = (props) => {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
       if(userType === "agent"){
-        localStorage.removeItem("agentToken");
+        sessionStorage.removeItem("agentToken");
         history.push("/agent/login");
       } else if(userType === "customer") {
-        localStorage.removeItem("customerToken");
+        sessionStorage.removeItem("customerToken");
         history.push("/customer/login");
       }
     }
@@ -65,8 +65,8 @@ const MeetingJoin = (props) => {
   const [virtualTourVideo, setVirtualTourVideo] = useState(null);
   const [productImages, setProductImages] = useState(null);
   const [defaultImage, setDefaultImage] = useState(true);
-  const agentJWTToken = JSON.parse(localStorage.getItem("agentToken"));
-  const customerJWTToken = JSON.parse(localStorage.getItem("customerToken"));
+  const agentJWTToken = JSON.parse(sessionStorage.getItem("agentToken"));
+  const customerJWTToken = JSON.parse(sessionStorage.getItem("customerToken"));
 
   const getPropertiesList = async () => {
     return fetch(`${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`, {

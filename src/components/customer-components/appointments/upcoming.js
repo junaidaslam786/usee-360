@@ -8,7 +8,7 @@ export default function Appointments() {
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
 
   const loadAllList = async () => {
     let response = await fetch(

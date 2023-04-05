@@ -16,7 +16,7 @@ export default function MyProperties() {
   const [removeReasons, setRemoveReasons] = useState([]);
   const closeModal = useRef(null);
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
   const loadAllList = async () => {
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/property/list?page=${page}&size=10`,

@@ -6,7 +6,7 @@ export default function Sidebar() {
   const history = useHistory();
 
   function handleClick() {
-    localStorage.removeItem("customerToken");
+    sessionStorage.removeItem("customerToken");
     history.push("/customer/login");
   }
 

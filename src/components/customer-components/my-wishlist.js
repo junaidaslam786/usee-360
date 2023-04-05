@@ -7,7 +7,7 @@ import Layout from "./layouts/layout";
 export default function MyWishlist() {
   const [list, setList] = useState([]);
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
   const loadAllList = async () => {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {

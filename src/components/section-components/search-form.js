@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   loadResidentialPropertyTypes,
@@ -7,7 +7,6 @@ import {
 } from "../../constants";
 
 export default function SearchForm() {
-  
   const [address, setAddress] = useState();
   const [types, setTypes] = useState([]);
   const [flag, setFlag] = useState(false);

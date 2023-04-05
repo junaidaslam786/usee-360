@@ -17,7 +17,7 @@ export default function PropertyGrid() {
   // } = location.state;
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
 
   const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);

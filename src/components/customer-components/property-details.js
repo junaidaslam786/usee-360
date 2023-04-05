@@ -13,7 +13,7 @@ export default function PropertyDetails() {
 
   const params = useParams();
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = JSON.parse(sessionStorage.getItem("customerToken"));
   async function loadProperty() {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/property/${params.id}`, {

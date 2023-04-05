@@ -9,7 +9,7 @@ export default function CompletedAppointments() {
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
 
   const loadAllList = async () => {
     let response = await fetch(

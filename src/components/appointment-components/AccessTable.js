@@ -7,10 +7,10 @@ import './AccessTable.css';
 function getToken(userType) {
   let userToken = null;
   if(userType === "agent") {
-    const tokenString = localStorage.getItem("agentToken");
+    const tokenString = sessionStorage.getItem("agentToken");
     userToken = JSON.parse(tokenString);
   } else if(userType === "customer") {
-    const tokenString = localStorage.getItem("customerToken");
+    const tokenString = sessionStorage.getItem("customerToken");
     userToken = JSON.parse(tokenString);
   }
 
@@ -34,10 +34,10 @@ const AccessTable = (props) => {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
       if(userType === "agent"){
-        localStorage.removeItem("agentToken");
+        sessionStorage.removeItem("agentToken");
         history.push("/agent/login");
       } else if(userType === "customer") {
-        localStorage.removeItem("customerToken");
+        sessionStorage.removeItem("customerToken");
         history.push("/customer/login");
       }
     }

@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
 
 function getToken() {
-  const tokenString = localStorage.getItem("agentToken");
+  const tokenString = sessionStorage.getItem("agentToken");
   const userToken = JSON.parse(tokenString);
   return userToken;
 }
@@ -29,7 +29,7 @@ export default function Register() {
   const [loading, setLoading] = useState();
 
   function setToken(token) {
-    localStorage.setItem("agentToken", JSON.stringify(token));
+    sessionStorage.setItem("agentToken", JSON.stringify(token));
   }
 
   async function registerUser(credentials) {

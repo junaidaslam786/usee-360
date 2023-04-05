@@ -4,7 +4,7 @@ import moment from "moment";
 
 export default function Alerts() {
   const [list, setList] = useState([]);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = JSON.parse(sessionStorage.getItem("agentToken"));
 
   const loadAllList = async () => {
     let response = await fetch(
