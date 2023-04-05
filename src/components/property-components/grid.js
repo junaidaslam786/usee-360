@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./sidebar";
 
 export default function PropertyGrid() {
+  // const location = useLocation();
+  // const {
+  //   propertyCategory,
+  //   propertyCategoryType,
+  //   propertyType,
+  //   rooms,
+  //   lat,
+  //   lng,
+  //   minPrice,
+  //   maxPrice,
+  // } = location.state;
+
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = JSON.parse(sessionStorage.getItem("customerToken"));
 
@@ -13,6 +25,7 @@ export default function PropertyGrid() {
   const [wishlistTitle, setWishlistTitle] = useState();
   const [wishlistImage, setWishlistImage] = useState();
 
+  const toggleButton = useRef(null);
   const history = useHistory();
 
   async function loadProperties() {
@@ -57,6 +70,7 @@ export default function PropertyGrid() {
           setWishlistId(prop.id);
           setWishlistTitle(prop.title);
           setWishlistImage(prop.featuredImage);
+          toggleButton.current.click();
           loadWishlistProperties();
         });
     }
@@ -64,8 +78,8 @@ export default function PropertyGrid() {
 
   useEffect(() => {
     loadProperties();
-    if(token) {
-      loadWishlistProperties()
+    if (token) {
+      loadWishlistProperties();
     }
   }, []);
 
@@ -102,21 +116,8 @@ export default function PropertyGrid() {
                     <div className="short-by text-center">
                       <select className="nice-select">
                         <option>Default Sorting</option>
-                        <option>Sort by popularity</option>
-                        <option>Sort by new arrivals</option>
                         <option>Sort by price: low to high</option>
                         <option>Sort by price: high to low</option>
-                      </select>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="short-by text-center">
-                      <select className="nice-select">
-                        <option>Per Page: 12</option>
-                        <option>Per Page: 20</option>
-                        <option>Per Page: 30</option>
-                        <option>Per Page: 50</option>
-                        <option>Per Page: 100</option>
                       </select>
                     </div>
                   </li>
@@ -198,12 +199,19 @@ export default function PropertyGrid() {
                                 </ul>
                                 <div className="product-hover-action">
                                   <ul>
-                                    <li className={wishlistProperties.find(({ productId }) => productId === element.id) ? "wishlist-active" : null}>
+                                    <li
+                                      className={
+                                        wishlistProperties.find(
+                                          ({ productId }) =>
+                                            productId === element.id
+                                        )
+                                          ? "wishlist-active"
+                                          : null
+                                      }
+                                    >
                                       <a
                                         href="#"
                                         title="Quick View"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#liton_wishlist_modal"
                                         onClick={() =>
                                           addToWishList(element.id)
                                         }
@@ -309,8 +317,6 @@ export default function PropertyGrid() {
                                       <a
                                         href="#"
                                         title="Quick View"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#liton_wishlist_modal"
                                         onClick={() =>
                                           addToWishList(element.id)
                                         }
@@ -365,6 +371,12 @@ export default function PropertyGrid() {
           </div>
         </div>
       </div>
+
+      <a
+        ref={toggleButton}
+        data-bs-toggle="modal"
+        data-bs-target="#liton_wishlist_modal"
+      ></a>
 
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="liton_wishlist_modal" tabIndex={-1}>

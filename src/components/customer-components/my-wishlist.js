@@ -61,7 +61,7 @@ export default function MyWishlist() {
                   <tr key={i}>
                     <td className="ltn__my-properties-img go-top">
                       <img
-                        src={`${process.env.REACT_APP_API_URL}/${element.product.featuredImage}`}
+                        src={`${process.env.REACT_APP_API_URL}/${element?.product?.featuredImage}`}
                         alt="#"
                       />
                     </td>
@@ -69,23 +69,23 @@ export default function MyWishlist() {
                       <div className="ltn__my-properties-info">
                         <h6 className="mb-10 go-top">
                           <Link
-                            to={`/customer/property-details/${element.product.id}`}
+                            to={`/customer/property-details/${element?.product?.id}`}
                           >
-                            {element.product.title}
+                            {element?.product?.title}
                           </Link>
                         </h6>
                         <small>
                           <i className="icon-placeholder" />{" "}
-                          {element.product.address}
+                          {element?.product?.address}
                         </small>
                       </div>
                     </td>
                     <td>
-                      {moment(element.product.createdAt).format("MMMM d, YYYY")}
+                      {moment(element?.product?.createdAt).format("MMMM d, YYYY")}
                     </td>
                     <td>
                       <button
-                        onClick={() => removeFromWishlist(element.product.id)}
+                        onClick={() => removeFromWishlist(element?.product?.id)}
                       >
                         <i className="fa-solid fa-trash-can" />
                       </button>
