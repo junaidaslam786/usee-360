@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import "./location-search.css";
 
 export default function LocationSearch() {
@@ -14,6 +16,8 @@ export default function LocationSearch() {
 
   let map;
   let newMarkers = [];
+  let drawingManager;
+  const history = useHistory();
 
   useEffect(() => {
     const google = window.google;
@@ -58,7 +62,11 @@ export default function LocationSearch() {
       infowindow.open(map);
     });
 
-    const drawingManager = new google.maps.drawing.DrawingManager({
+      if (drawingManager != null) {
+        drawingManager.setMap(null);
+      }
+
+      drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
@@ -237,6 +245,10 @@ export default function LocationSearch() {
     searchByCircle();
   }
 
+  function handleLogoClick() {
+    history.push("/services/homes");
+  }
+
   return (
     <div className="map-container">
       <div style={{ position: "relative", zIndex: "999" }}>
@@ -253,6 +265,8 @@ export default function LocationSearch() {
           id="sideabar-logo"
           alt="Logo"
           height="80"
+          onClick={handleLogoClick}
+          style={{"cursor": "pointer"}}
         />
         <p>
           You can search the properties in a specific area by drawing shapes on
