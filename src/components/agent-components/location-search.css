@@ -50,12 +50,12 @@ body {
 .sidebarforsearch p {
   margin-bottom: 0;
   width: 97%;
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .isActive {
   left: 0;
-  box-shadow: 0 5px 14px 0 rgba(38, 38, 55, 0.15);
+  box-shadow: 0 5px 14px 0 rgba(38,38,55,.15);
 }
 
 button.open-button {
@@ -69,7 +69,7 @@ button.open-button {
   border: 2px solid #ffffff;
   border-radius: 5px;
   box-shadow: 0px 0px 40px black;
-  background: #00c864;
+  background:  #00C864;
   color: #fff;
   transition: all 0.3s ease-in-out;
 }
@@ -82,12 +82,12 @@ button.closed-button {
 .sidebar-search {
   width: 100%;
 }
-.sidebar-search input {
+.sidebar-search input{
   width: 70%;
 }
 
 .sidebar-search button {
-  background: #00c864;
+  background:  #00C864;
   color: #fff;
   border: 2px solid #0e7746;
 }
@@ -101,49 +101,18 @@ button.closed-button {
 }
 
 .scrollable {
-  padding: 20px 10px;
-  width: 100%;
+  padding-top: 20px;
 }
 
-.scrollable .content-box {
-  overflow: hidden;
+.content-box {
+  padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  display: flex;
-  flex-direction: column;
 }
 
-.scrollable .content-box .featured-image-style {
-  max-width: 100%;
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  object-position: center;
-  cursor: pointer;
-}
-.scrollable .content-box .content {
-  padding: 15px;
-}
-.scrollable .content-box .content .description:hover {
-  color: var(--ltn__secondary-color);
-  cursor: pointer;
-}
-
-.scrollable .content-box .flaticon-pin {
-  color: var(--ltn__secondary-color);
-}
-.scrollable .content-box .location {
-  font-size: 14px;
-}
-
-.scrollable .content-box .product-info-bottom {
-  border-top: 1px solid;
-  border-color: var(--border-color-1);
-  padding: 15px;
-}
-.scrollable .content-box .product-info-bottom .product-price {
-  color: var(--ltn__secondary-color);
+.featured-image-style {
+  max-width: 30%;
 }
 
 .gm-style-iw-t {
