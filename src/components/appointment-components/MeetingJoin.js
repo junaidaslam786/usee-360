@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import OT from "@opentok/client";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import "./incall.css";
-import axios from 'axios';
+import axios from "axios";
 import Slideshow from "../Slideshow";
-const fs = require('fs');
+const fs = require("fs");
 
 function getToken(userType) {
   let userToken = null;
-  if(userType === "agent") {
+  if (userType === "agent") {
     const tokenString = localStorage.getItem("agentToken");
     userToken = JSON.parse(tokenString);
-  } else if(userType === "customer") {
+  } else if (userType === "customer") {
     const tokenString = localStorage.getItem("customerToken");
     userToken = JSON.parse(tokenString);
   }
@@ -20,34 +20,44 @@ function getToken(userType) {
 }
 
 const MeetingJoin = (props) => {
-  const { 
-    audioInputDeviceId, 
-    audioOutputDeviceId, 
-    videoDeviceId, 
+  const {
+    audioInputDeviceId,
+    audioOutputDeviceId,
+    videoDeviceId,
     appointment,
     userType,
-    appointmentId
+    appointmentId,
   } = props;
 
   const token = getToken(userType);
   const history = useHistory();
 
   if (!token) {
-    if(userType === "agent")
-      history.push("/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname));
-    else if(userType === "customer")
-      history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
-    else
-      history.push("/");
+    if (userType === "agent")
+      history.push(
+        "/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname)
+      );
+    else if (userType === "customer")
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    else history.push("/");
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      if(userType === "agent"){
+      if (userType === "agent") {
         localStorage.removeItem("agentToken");
-        history.push("/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname));
-      } else if(userType === "customer") {
+        history.push(
+          "/agent/login?returnUrl=" +
+            encodeURIComponent(window.location.pathname)
+        );
+      } else if (userType === "customer") {
         localStorage.removeItem("customerToken");
-        history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
+        history.push(
+          "/customer/login?returnUrl=" +
+            encodeURIComponent(window.location.pathname)
+        );
       }
     }
   }
@@ -58,7 +68,7 @@ const MeetingJoin = (props) => {
   const [screenSharing, setScreenSharing] = useState(false);
   const [publisher, setPublisher] = useState(null);
   const [screenPublisher, setScreenPublisher] = useState(null);
-  const [subscriber, setSubscriber] = useState(true); 
+  const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -70,99 +80,124 @@ const MeetingJoin = (props) => {
   const customerJWTToken = JSON.parse(localStorage.getItem("customerToken"));
 
   const getPropertiesList = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => response.json())
-    .then((propertyData) => {
-      setPropertiesList(propertyData.data.map((property) => {
-        return { label: property.description, value: property.id };
-      }));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-    }).catch((error) => {
-      console.error("Error:", error);
-    });
+    return fetch(
+      `${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((propertyData) => {
+        setPropertiesList(
+          propertyData.data.map((property) => {
+            return { label: property.description, value: property.id };
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   const getPropertyDetail = async (property) => {
     return fetch(`${process.env.REACT_APP_API_URL}/property/${property}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((response) => response.json())
-    .then((propertyData) => { 
-      setVirtualTourUrl(null);
-      setVirtualTourVideo(null);
-      setProductImages(null);
-      setDefaultImage(true);
-      if(propertyData.virtualTourType === "url" && propertyData.virtualTourUrl) {
-        setVirtualTourUrl(propertyData.virtualTourUrl);
-        setDefaultImage(false);
-      } else if(propertyData.virtualTourType === "video" && propertyData.virtualTourUrl) {
-        setVirtualTourVideo(propertyData.virtualTourUrl);
-        setDefaultImage(false);
-      }
-      if(propertyData.productImages.length > 0) {
-        setProductImages(propertyData.productImages);
-        setDefaultImage(false);
-      }
-    }).catch((error) => {
-      console.error("Error:", error);
-    });
+      .then((response) => response.json())
+      .then((propertyData) => {
+        setVirtualTourUrl(null);
+        setVirtualTourVideo(null);
+        setProductImages(null);
+        setDefaultImage(true);
+        if (
+          propertyData.virtualTourType === "url" &&
+          propertyData.virtualTourUrl
+        ) {
+          setVirtualTourUrl(propertyData.virtualTourUrl);
+          setDefaultImage(false);
+        } else if (
+          propertyData.virtualTourType === "video" &&
+          propertyData.virtualTourUrl
+        ) {
+          setVirtualTourVideo(propertyData.virtualTourUrl);
+          setDefaultImage(false);
+        }
+        if (propertyData.productImages.length > 0) {
+          setProductImages(propertyData.productImages);
+          setDefaultImage(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   const getSessionToken = async () => {
-    if(userType === "agent") {
-      return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json", 
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => response.json())
-      .then((tokenData) => {
-        return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-      }).catch((error) => {
-        console.error("Error:", error);
-      });
-    } else if(userType === "customer") {
-      return fetch(`${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json", 
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => response.json())
-      .then((tokenData) => {
-        return tokenData.token;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-      }).catch((error) => {
-        console.error("Error:", error);
-      });
+    if (userType === "agent") {
+      return fetch(
+        `${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((tokenData) => {
+          return tokenData.token;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else if (userType === "customer") {
+      return fetch(
+        `${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((tokenData) => {
+          return tokenData.token;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
   useEffect(async () => {
     const tokToken = await getSessionToken();
-    if(userType === "agent") { 
+    if (userType === "agent") {
       getPropertiesList();
       getPropertyDetail(appointment.products[0].id);
       setSelectedProperty(appointment.products[0].id);
     }
-    const session = OT.initSession('46869314', appointment.sessionId);
+    const session = OT.initSession("46869314", appointment.sessionId);
     setSession(session);
     session.on({
       streamCreated: (event) => {
-        if(event.stream.videoType === "camera") {
-          const subscriberOptions = { insertMode: "append", nameDisplayMode: 'on', width: '100%',
-          height: '250px' };
+        if (event.stream.videoType === "camera") {
+          const subscriberOptions = {
+            insertMode: "append",
+            nameDisplayMode: "on",
+            width: "100%",
+            height: "250px",
+          };
           const subscriber = session.subscribe(
             event.stream,
             "subscribers",
@@ -170,10 +205,9 @@ const MeetingJoin = (props) => {
             (error) => {}
           );
           setSubscriber(subscriber);
-          subscriber.on('videoElementCreated', function(event) {
-  
-          });
-          var subscriberDisconnectedNotification = document.createElement("div");
+          subscriber.on("videoElementCreated", function (event) {});
+          var subscriberDisconnectedNotification =
+            document.createElement("div");
           subscriberDisconnectedNotification.className =
             "subscriberDisconnectedNotification";
           subscriberDisconnectedNotification.innerText =
@@ -187,9 +221,12 @@ const MeetingJoin = (props) => {
               subscriberDisconnectedNotification.style.visibility = "hidden";
             },
           });
-        } else if(event.stream.videoType === "screen") {
-          const subscriberOptions = { insertMode: "replace", width: '100%',
-          height: '100%' };
+        } else if (event.stream.videoType === "screen") {
+          const subscriberOptions = {
+            insertMode: "replace",
+            width: "100%",
+            height: "100%",
+          };
           setVirtualTourUrl(null);
           setVirtualTourVideo(null);
           setProductImages(null);
@@ -197,7 +234,7 @@ const MeetingJoin = (props) => {
           const screenshareEle = document.createElement("div");
           const screenPreview = document.getElementById("screen-preview");
           //const ot_element = document.getElementById(`OT`)
-          console.log(event.stream)
+          console.log(event.stream);
           screenPreview.appendChild(screenshareEle);
           const subscriber = session.subscribe(
             event.stream,
@@ -208,7 +245,10 @@ const MeetingJoin = (props) => {
         }
       },
       streamDestroyed: (event) => {
-        if(event.reason === "clientDisconnected" && event.stream.videoType === "screen"){
+        if (
+          event.reason === "clientDisconnected" &&
+          event.stream.videoType === "screen"
+        ) {
           setDefaultImage(true);
         }
       },
@@ -233,16 +273,15 @@ const MeetingJoin = (props) => {
       sessionReconnecting: function () {
         console.log("Session reconn");
       },
-      sessionReconnected: function () {
-      },
+      sessionReconnected: function () {},
     });
 
     const msgHistory = document.querySelector("#history");
     session.on("signal:msg", (event) => {
-      if(userType === 'customer' && event.data.includes("PROPERTY_ID")) {
-        getPropertyDetail(event.data.split(':')[1]);
-      } else if(userType === 'agent' && event.data.includes("PROPERTY_ID")) {
-      } else if(event.data.includes("::")) {
+      if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
+        getPropertyDetail(event.data.split(":")[1]);
+      } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
+      } else if (event.data.includes("::")) {
         const msg = document.createElement("p");
         const content = event.data.split("::");
         msg.textContent = `${content[0]}: `;
@@ -250,15 +289,15 @@ const MeetingJoin = (props) => {
         a.classList.add("download-file-link");
         a.setAttribute("target", "_blank");
         const text = document.createTextNode(content[1].split("/")[1]);
-        a.appendChild(text)
-        a.href =`${process.env.REACT_APP_API_URL}/${content[1]}`;
+        a.appendChild(text);
+        a.href = `${process.env.REACT_APP_API_URL}/${content[1]}`;
         a.download = content[1].split("/")[1];
         msg.appendChild(a);
         msgHistory.appendChild(msg);
         msg.scrollIntoView();
       } else {
         const msg = document.createElement("p");
-        msg.textContent = `${event.data}`;  
+        msg.textContent = `${event.data}`;
         msg.className =
           event.from.connectionId === session.connection.connectionId
             ? "mine"
@@ -275,11 +314,13 @@ const MeetingJoin = (props) => {
       facingMode: "user",
       publishVideo: true,
       publishAudio: true,
-      name: userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
-      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
-      nameDisplayMode: 'on',
-      width: '100%',
-      height: '250px'
+      name:
+        userType === "customer"
+          ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+          : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
+      nameDisplayMode: "on",
+      width: "100%",
+      height: "250px",
     };
     if (audioInputDeviceId || videoDeviceId) {
       publisherOptions.audioSource = audioInputDeviceId;
@@ -319,8 +360,10 @@ const MeetingJoin = (props) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const name = userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
-      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+      const name =
+        userType === "customer"
+          ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+          : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
       session.signal(
         {
           type: "msg",
@@ -365,8 +408,7 @@ const MeetingJoin = (props) => {
           screenPreview.appendChild(screenshareEle);
           const publisher = OT.initPublisher(
             screenshareEle,
-            { videoSource: "screen", width: '100%',
-            height: '100%' },
+            { videoSource: "screen", width: "100%", height: "100%" },
             function (error) {
               if (error) {
                 // Look at error.message to see what went wrong.
@@ -381,8 +423,8 @@ const MeetingJoin = (props) => {
               }
             }
           );
-          publisher.on('streamDestroyed', function(event) {
-            if (event.stream.videoType === 'screen') {
+          publisher.on("streamDestroyed", function (event) {
+            if (event.stream.videoType === "screen") {
               setDefaultImage(true);
             }
           });
@@ -400,22 +442,28 @@ const MeetingJoin = (props) => {
     let formdata = new FormData();
     formdata.append("featuredImage", files[0]);
     const formResponse = await axios
-        .put(`${process.env.REACT_APP_API_URL}/home/property/chat-attachment`, formdata, {
+      .put(
+        `${process.env.REACT_APP_API_URL}/home/property/chat-attachment`,
+        formdata,
+        {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        })
-        .then((response) => {
-          if (response?.status !== 200) {
-            ;
-          }
+        }
+      )
+      .then((response) => {
+        if (response?.status !== 200) {
+        }
 
         return response.data;
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.log(error);
       });
-    const name = userType === "customer" ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}` : 
-      `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+    const name =
+      userType === "customer"
+        ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+        : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
     session.signal(
       {
         type: "msg",
@@ -430,9 +478,9 @@ const MeetingJoin = (props) => {
     );
   }
 
-  async function handlePropertyChange (event) {
+  async function handlePropertyChange(event) {
     setSelectedProperty(event.target.value);
-    if(userType === "agent") {
+    if (userType === "agent") {
       session.signal(
         {
           type: "msg",
@@ -460,35 +508,53 @@ const MeetingJoin = (props) => {
               />
             </center>
           </div>
-          {userType === "agent" && <div>
-              <select class="nice-select w-100 select-margin" value={selectedProperty} onChange={(event) => {handlePropertyChange(event)}}>
-                {propertiesList.map(option => (
+          {userType === "agent" && (
+            <div>
+              <select
+                class="nice-select w-100 select-margin"
+                value={selectedProperty}
+                onChange={(event) => {
+                  handlePropertyChange(event);
+                }}
+              >
+                {propertiesList.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
-          </div>}
+            </div>
+          )}
           <div id="publisher"></div>
           <div id="subscribers"></div>
         </div>
-        <div id="screen-preview" className="col-md-9 col-lg-9">
+        <div
+          id="screen-preview"
+          className="col-md-9 col-lg-9 px-0"
+          style={{
+            backgroundImage: `linear-gradient(
+              rgba(0, 0, 0, 0.85), 
+              rgba(0, 0, 0, 0.85)
+            ),url(${publicUrl}assets/img/default-property.jpg)`,
+          }}
+        >
           {virtualTourUrl && (
             <iframe
-            src={virtualTourUrl}
-            id="prop_tour_link"
-            style={{ width: "100%", height: "100%" }}
-          ></iframe>
+              src={virtualTourUrl}
+              id="prop_tour_link"
+              style={{ width: "100%", height: "100%" }}
+            ></iframe>
           )}
           {virtualTourVideo && (
             <video width="100%" height="100%" controls>
-              <source src={`http://localhost:8000/${virtualTourVideo}`} type="video/mp4" />
+              <source
+                src={`http://localhost:8000/${virtualTourVideo}`}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           )}
-          {productImages && (
-            <Slideshow fadeImages={productImages}/>
-          )}
+          {productImages && <Slideshow fadeImages={productImages} />}
           {defaultImage && (
             <img src={`${publicUrl}assets/img/default-property.jpg`} />
           )}
@@ -565,23 +631,33 @@ const MeetingJoin = (props) => {
       <div id="chatArea" className={"slide-out"}>
         <p id="history"></p>
         <form id="Chatform" encType="multipart/form-data" action="">
-
           <div>
-          <img style={{position:'absolute', height:'32px', maxWidth:'32px', left:'0'}}
-            src={`${publicUrl}assets/img/icons/attach-file.png`}
-          />
-          <input type="file" id="file" name="file" onChange={getUrl} />
+            <img
+              style={{
+                position: "absolute",
+                height: "32px",
+                maxWidth: "32px",
+                left: "0",
+              }}
+              src={`${publicUrl}assets/img/icons/attach-file.png`}
+            />
+            <input type="file" id="file" name="file" onChange={getUrl} />
           </div>
 
           <input type="text" placeholder="Input your text here" id="msgTxt" />
 
           <div>
-          <img style={{position:'absolute', height:'32px', maxWidth:'32px', right:'0'}}
-            src={`${publicUrl}assets/img/icons/send-icon.png`}
-          />
-          <input type="submit" id="submit" name="submit" />
+            <img
+              style={{
+                position: "absolute",
+                height: "32px",
+                maxWidth: "32px",
+                right: "0",
+              }}
+              src={`${publicUrl}assets/img/icons/send-icon.png`}
+            />
+            <input type="submit" id="submit" name="submit" />
           </div>
-
         </form>
       </div>
     </div>
