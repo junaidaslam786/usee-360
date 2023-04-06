@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./sidebar";
+import { DEFAULT_CURRENCY, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS } from "../../constants";
 
 export default function PropertyGrid() {
   // const location = useLocation();
@@ -74,6 +75,57 @@ export default function PropertyGrid() {
           loadWishlistProperties();
         });
     }
+  }
+
+  function loadPropertyMetaData(property, type) {
+    let metaData = "";
+    let metaTag;
+    if (property?.productMetaTags?.length > 0) {
+      switch(type) {
+        case "categoryType":
+          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 2);
+          if (metaTag) {
+            metaData = PROPERTY_CATEGORY_TYPES.find(
+              (property) => property.value == metaTag.value
+            );
+            metaData = metaData?.label ? metaData.label : "Rent";
+          } else {
+            metaData = "Rent";
+          }
+          
+          break;
+       
+        case "unit":
+          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 3);
+          if (metaTag) {
+            metaData = UNITS.find(
+              (property) => property.value == metaTag.value
+            );
+            metaData = metaData?.label ? metaData.label : "Square Ft";
+          } else {
+            metaData = "Square Ft";
+          }
+          break;
+
+        case "area":
+          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 4);
+          metaData = metaTag ? metaTag.value : 0;
+          break;
+
+        case "bedroom":
+          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 5);
+          if (metaTag) {
+            metaData = BEDROOMS.find(
+              (property) => property.value == metaTag.value
+            );
+            metaData = metaData?.label ? metaData.label : "No";
+          } else {
+            metaData = "No";
+          }
+          break;
+      }
+    }
+    return metaData;
   }
 
   useEffect(() => {
@@ -165,7 +217,7 @@ export default function PropertyGrid() {
                               <div className="product-info">
                                 <div className="product-badge">
                                   <ul>
-                                    <li className="sale-badg">For Rent</li>
+                                    <li className="sale-badg">For {loadPropertyMetaData(element, "categoryType")}</li>
                                   </ul>
                                 </div>
                                 <h2 className="product-title go-top">
@@ -183,20 +235,20 @@ export default function PropertyGrid() {
                                     </li>
                                   </ul>
                                 </div>
-                                <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
-                                  <li>
-                                    <span>3 </span>
-                                    Bed
-                                  </li>
-                                  <li>
-                                    <span>2 </span>
-                                    Bath
-                                  </li>
-                                  <li>
-                                    <span>3450 </span>
-                                    Square Ft
-                                  </li>
-                                </ul>
+                                {
+                                  (element?.productMetaTags?.length > 0) && (
+                                    <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
+                                      <li>
+                                        <span>{loadPropertyMetaData(element, "bedroom")} </span>
+                                        Bed
+                                      </li>
+                                      <li>
+                                        <span>{loadPropertyMetaData(element, "area")} </span>
+                                        {loadPropertyMetaData(element, "unit")}
+                                      </li>
+                                    </ul>
+                                  )
+                                }
                                 <div className="product-hover-action">
                                   <ul>
                                     <li
@@ -224,7 +276,7 @@ export default function PropertyGrid() {
                               </div>
                               <div className="product-info-bottom">
                                 <div className="product-price">
-                                  <span>${element.price}</span>
+                                  <span>{DEFAULT_CURRENCY} {element.price}</span>
                                 </div>
                               </div>
                             </div>
@@ -273,11 +325,11 @@ export default function PropertyGrid() {
                                 <div className="product-badge-price">
                                   <div className="product-badge">
                                     <ul>
-                                      <li className="sale-badg">For Rent</li>
+                                      <li className="sale-badg">For {loadPropertyMetaData(element, "categoryType")}</li>
                                     </ul>
                                   </div>
                                   <div className="product-price">
-                                    <span>${element.price}</span>
+                                    <span>{DEFAULT_CURRENCY} {element.price}</span>
                                   </div>
                                 </div>
                                 <h2 className="product-title go-top">
@@ -297,16 +349,12 @@ export default function PropertyGrid() {
                                 </div>
                                 <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
                                   <li>
-                                    <span>3 </span>
+                                  <span>{loadPropertyMetaData(element, "bedroom")} </span>
                                     Bed
                                   </li>
                                   <li>
-                                    <span>2 </span>
-                                    Bath
-                                  </li>
-                                  <li>
-                                    <span>3450 </span>
-                                    Square Ft
+                                    <span>{loadPropertyMetaData(element, "area")} </span>
+                                    {loadPropertyMetaData(element, "unit")}
                                   </li>
                                 </ul>
                               </div>

@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import {
-  loadPropertyTypes,
-  loadPropertyCategoryTypes,
-  loadBedrooms,
-  loadUnits,
-  VIRTUAL_TOUR_TYPE,
-} from "../../constants";
+import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -21,6 +15,7 @@ export default function PropertyDetails() {
   const [agentImage, setAgentImage] = useState();
   const [agentName, setAgentName] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
+  const [propertyDocuments, setPropertyDocuments] = useState([]);
 
   const params = useParams();
 
@@ -36,22 +31,18 @@ export default function PropertyDetails() {
         response.data.productMetaTags.forEach((metaTag) => {
           switch (metaTag.categoryField.id) {
             case 1:
-              setPropertyType(
-                loadPropertyTypes.find(
-                  (property) => property.value == metaTag.value
-                )
-              );
+              setPropertyType(PROPERTY_TYPES.find(
+                (property) => property.value == metaTag.value
+              ));
               break;
             case 2:
-              setPropertyCategoryType(
-                loadPropertyCategoryTypes.find(
-                  (category) => category.value == metaTag.value
-                )
-              );
+              setPropertyCategoryType(PROPERTY_CATEGORY_TYPES.find(
+                (category) => category.value == metaTag.value
+              ));
               break;
             case 3:
               setPropertyUnit(
-                loadUnits.find((unit) => unit.value == metaTag.value)
+                UNITS.find((unit) => unit.value == metaTag.value)
               );
               break;
             case 4:
@@ -59,7 +50,9 @@ export default function PropertyDetails() {
               break;
             case 5:
               setPropertyBedrooms(
-                loadBedrooms.find((bedroom) => bedroom.value == metaTag.value)
+                BEDROOMS.find(
+                  (bedroom) => bedroom.value == metaTag.value
+                )
               );
               break;
           }
@@ -70,6 +63,9 @@ export default function PropertyDetails() {
         );
         if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);
+        }
+        if (response?.data?.productDocuments?.length > 0) {
+          setPropertyDocuments(response.data.productDocuments);
         }
       });
   }
@@ -113,7 +109,7 @@ export default function PropertyDetails() {
                 </span>{" "}
                 {property.address}
               </label>
-              <h2 className="mb-50">{property.price}</h2>
+              <h2 className="mb-50">{DEFAULT_CURRENCY} {property.price}</h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>
@@ -157,32 +153,19 @@ export default function PropertyDetails() {
                   </li>
                 </ul>
               </div>
-              <span className="property-details">
-                <span className="row">
-                  <span className="col-md-5">
-                    {property?.virtualTourType &&
-                      property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
-                        <a
-                          href={property.virtualTourUrl}
-                          target="_blank"
-                          className="btn theme-btn-3 mb-3"
-                        >
-                          View Tour
-                        </a>
-                      )}
-                  </span>
-                </span>
-              </span>
               {property?.virtualTourType &&
                 property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
-                  <div className="property-detail-feature-list clearfix mb-45">
-                    <video width="100%" height="100%" controls>
-                      <source
-                        src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
+                  <div>
+                    <h4 className="title-2">Features</h4>
+                    <div className="property-detail-feature-list clearfix mb-45">
+                      <video width="100%" height="100%" controls>
+                        <source
+                          src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`}
+                          type="video/mp4"
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
                   </div>
                 )}
             </div>
@@ -199,13 +182,18 @@ export default function PropertyDetails() {
                 </div>
               </div>
               <div>
-                <button className="btn theme-btn-1 mb-3 w-100">
-                  View Floor Plan
-                </button>
-                <button className="btn theme-btn-3 mb-3 w-100">
-                  View Brochure
-                </button>
-                <button className="btn theme-btn-3 mb-3 w-100">View Map</button>
+                {
+                  propertyDocuments && (
+                    propertyDocuments.map((element, index) => (
+                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3 w-100">View {element.title}</a>
+                    )
+                  ))
+                }
+                {
+                  (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
+                    <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3 w-100">View Tour</a>
+                  )
+                }
               </div>
             </aside>
           </div>

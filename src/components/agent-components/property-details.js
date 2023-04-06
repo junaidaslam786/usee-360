@@ -3,13 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ViewOffer from "./properties/view-offer";
-import {
-  loadPropertyTypes,
-  loadPropertyCategoryTypes,
-  loadBedrooms,
-  loadUnits,
-  VIRTUAL_TOUR_TYPE,
-} from "../../constants";
+import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -20,6 +14,7 @@ export default function PropertyDetails() {
   const [propertyArea, setPropertyArea] = useState();
   const [propertyUnit, setPropertyUnit] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
+  const [propertyDocuments, setPropertyDocuments] = useState([]);
 
   const params = useParams();
 
@@ -37,22 +32,18 @@ export default function PropertyDetails() {
         response.data.productMetaTags.forEach((metaTag) => {
           switch (metaTag.categoryField.id) {
             case 1:
-              setPropertyType(
-                loadPropertyTypes.find(
-                  (property) => property.value == metaTag.value
-                )
-              );
+              setPropertyType(PROPERTY_TYPES.find(
+                (property) => property.value == metaTag.value
+              ));
               break;
             case 2:
-              setPropertyCategoryType(
-                loadPropertyCategoryTypes.find(
-                  (category) => category.value == metaTag.value
-                )
-              );
+              setPropertyCategoryType(PROPERTY_CATEGORY_TYPES.find(
+                (category) => category.value == metaTag.value
+              ));
               break;
             case 3:
               setPropertyUnit(
-                loadUnits.find((unit) => unit.value == metaTag.value)
+                UNITS.find((unit) => unit.value == metaTag.value)
               );
               break;
             case 4:
@@ -60,7 +51,9 @@ export default function PropertyDetails() {
               break;
             case 5:
               setPropertyBedrooms(
-                loadBedrooms.find((bedroom) => bedroom.value == metaTag.value)
+                BEDROOMS.find(
+                  (bedroom) => bedroom.value == metaTag.value
+                )
               );
               break;
           }
@@ -68,6 +61,10 @@ export default function PropertyDetails() {
 
         if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);
+        }
+
+        if (response?.data?.productDocuments?.length > 0) {
+          setPropertyDocuments(response.data.productDocuments);
         }
       });
   }
@@ -79,11 +76,17 @@ export default function PropertyDetails() {
   return (
     <Layout>
       <section>
-        <img
-          src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-          className="detail-feature-image"
-          alt="#"
-        />
+        {
+          propertyImages ? (
+            <Slideshow fadeImages={propertyImages}/>
+          ) : (
+            <img
+              className="detail-feature-image"
+              src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+              alt="#"
+            />
+          )
+        }
         <div className="row property-desc">
           <span className="ltn__blog-category pb-20">
             <Link className="bg-orange" to="#">
@@ -97,7 +100,7 @@ export default function PropertyDetails() {
             </small>
           </div>
           <div className="col-md-2">
-            <h3>{property.price}</h3>
+            <h3>{DEFAULT_CURRENCY} {property.price}</h3>
           </div>
         </div>
         <div className="row property-details">
@@ -126,18 +129,18 @@ export default function PropertyDetails() {
             </div>
           </div>
           <div className="col-md-5">
-            {/* <button className="btn theme-btn-1 mb-3">View Floor Plan</button> */}
-            {/* <button className="btn theme-btn-3 mb-3">View Brochure</button> */}
-            {property?.virtualTourType &&
-              property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
-                <a
-                  href={property.virtualTourUrl}
-                  target="_blank"
-                  className="btn theme-btn-3 mb-3"
-                >
-                  View Tour
-                </a>
-              )}
+            {
+              propertyDocuments && (
+                propertyDocuments.map((element, index) => (
+                  <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3">View {element.title}</a>
+                )
+              ))
+            }
+            {
+              (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
+                <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3">View Tour</a>
+              )
+            }
           </div>
         </div>
         {property?.virtualTourType &&

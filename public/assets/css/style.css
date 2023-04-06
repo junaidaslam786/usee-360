@@ -2743,6 +2743,10 @@ ul {
   margin-left: 30px;
 }
 
+.ml-20 {
+  margin-left: 20px;
+}
+
 .pl-70 {
   padding-left: 70px;
 }
@@ -18336,4 +18340,11 @@ h1.page-title {
 
 .draw-on-map i {
   margin-right: 10px;
+}
+
+.text-highlight {
+  color: var(--ltn__secondary-color);
+}
+.text-highlight:hover {
+  color: var(--white);
 }

@@ -1,15 +1,17 @@
-export const loadPropertyTypes = [
+export const DEFAULT_CURRENCY = "AED";
+
+export const PROPERTY_TYPES = [
     { value: "commercial", label: "Commercial" },
     { value: "residential", label: "Residential" },
 ];
 
-export const loadPropertyCategoryTypes = [
+export const PROPERTY_CATEGORY_TYPES = [
     { value: "rent", label: "Rent" },
     { value: "sale", label: "Sale" },
 ];
 
 
-export const loadResidentialPropertyTypes = [
+export const RESIDENTIAL_PROPERTY = [
     { value: "apartment", label: "Apartments" },
     { value: "house", label: "House" },
     { value: "bungalow", label: "Bungalow" },
@@ -20,7 +22,7 @@ export const loadResidentialPropertyTypes = [
     { value: "cottage", label: "Cottage" },
 ];
 
-export const loadCommercialPropertyTypes = [
+export const COMMERCIAL_PROPERTY = [
     { value: "office", label: "Office" },
     { value: "retail", label: "Retail" },
     { value: "shopping_center", label: "Shopping Center" },
@@ -32,18 +34,18 @@ export const loadCommercialPropertyTypes = [
     { value: "hotel_room", label: "Hotel Room" },
 ];
 
-export const loadPriceTypes = [
+export const PRICE_TYPE = [
     { value: "weekly", label: "weekly" },
     { value: "monthly", label: "monthly" },
     { value: "yearly", label: "yearly" },
 ];
 
-export const loadUnits = [
-    { value: "sq_ft", label: "sq_ft" },
-    { value: "sq_mt", label: "sq_mt" },
+export const UNITS = [
+    { value: "sq_ft", label: "Square Ft" },
+    { value: "sq_mt", label: "Square Mt" },
 ];
 
-export const loadBedrooms = [
+export const BEDROOMS = [
     { value: "1", label: "1" },
     { value: "2", label: "2" },
     { value: "3", label: "3" },
@@ -77,6 +79,14 @@ export const SNAG_LIST = [
     { value: "ceiling", label: "Ceiling" },
     { value: "gypsum_false_ceiling", label: "Gypsum False Ceiling Boards & Tiles" },
     { value: "doors", label: "Doors" },
-    { value: "sliding_doors", label: "Sliding Doors &amp; Windows" },
+    { value: "sliding_doors", label: "Sliding Doors & Windows" },
     { value: "ironmongeries", label: "Ironmongeries" },
+];
+
+export const JOB_TITLE = [
+    { value: "developer", label: "Developer" },
+    { value: "state_person", label: "State Person" },
+    { value: "real_estate_agent", label: "Real Estate Agent" },
+    { value: "freelance_agent", label: "Freelance Agent" },
+    { value: "landlord", label: "Landlord" },
 ];

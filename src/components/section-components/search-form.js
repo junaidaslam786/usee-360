@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  loadResidentialPropertyTypes,
-  loadCommercialPropertyTypes,
-  loadBedrooms,
+  RESIDENTIAL_PROPERTY,
+  COMMERCIAL_PROPERTY,
+  BEDROOMS,
 } from "../../constants";
 
 export default function SearchForm() {
@@ -51,11 +51,11 @@ export default function SearchForm() {
   function handleChange(value) {
     setPropertyCategoryType(value);
     if (value == "Commercial") {
-      setTypes(loadCommercialPropertyTypes);
+      setTypes(COMMERCIAL_PROPERTY);
       setFlag(false);
     } else if (value == "Residential") {
-      setTypes(loadResidentialPropertyTypes);
-      setBedrooms(loadBedrooms);
+      setTypes(RESIDENTIAL_PROPERTY);
+      setBedrooms(BEDROOMS);
       setFlag(true);
     }
   }

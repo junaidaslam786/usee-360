@@ -4,16 +4,13 @@ import axios from "axios";
 import Select from "react-select";
 import Layout from "./layouts/layout";
 import UploadPropertyImage from "./properties/upload-property-image";
-import ResponseHandler from "../global-components/respones-handler";
-import {
-  loadPropertyTypes,
-  loadResidentialPropertyTypes,
-  loadCommercialPropertyTypes,
-  loadPropertyCategoryTypes,
-  loadPriceTypes,
-  loadUnits,
-  loadBedrooms,
-} from "../../constants";
+// import UploadPropertyDocument from "./properties/upload-property-document";
+import ResponseHandler from '../global-components/respones-handler';
+import { 
+  PROPERTY_TYPES, RESIDENTIAL_PROPERTY, 
+  COMMERCIAL_PROPERTY, PROPERTY_CATEGORY_TYPES, 
+  PRICE_TYPE, UNITS, BEDROOMS 
+} from '../../constants';
 
 export default function AddProperty(props) {
   const token = JSON.parse(localStorage.getItem("agentToken"));
@@ -39,6 +36,7 @@ export default function AddProperty(props) {
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [propertyImages, setPropertyImages] = useState([]);
+  // const [propertyDocuments, setPropertyDocuments] = useState([]);
   // const [allotedToUsers, setAllotedToUsers] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
@@ -284,6 +282,11 @@ export default function AddProperty(props) {
     setPropertyCategoryType(e);
   };
 
+  const setPropertyTypeHandler = (e) => {
+    setPropertyType(e);
+    setPropertySubType("");
+  };
+
   const onFeaturedImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setFeaturedImage(event.target.files[0]);
@@ -417,19 +420,20 @@ export default function AddProperty(props) {
           }
 
           if (response.productMetaTags.length > 0) {
+            response.productMetaTags.sort((a,b) => a.categoryField.id - b.categoryField.id);
             let responsePropertyType;
             let responsePropertyCategoryType;
             response.productMetaTags.forEach((metaTag) => {
               switch (metaTag.categoryField.id) {
                 case 1:
-                  responsePropertyType = loadPropertyTypes.find(
+                  responsePropertyType = PROPERTY_TYPES.find(
                     (property) => property.value == metaTag.value
                   );
 
                   setPropertyType(responsePropertyType);
                   break;
                 case 2:
-                  responsePropertyCategoryType = loadPropertyCategoryTypes.find(
+                  responsePropertyCategoryType = PROPERTY_CATEGORY_TYPES.find(
                     (category) => category.value == metaTag.value
                   );
 
@@ -437,7 +441,7 @@ export default function AddProperty(props) {
                   break;
                 case 3:
                   setUnit(
-                    loadUnits.find((unit) => unit.value == metaTag.value)
+                    UNITS.find((unit) => unit.value == metaTag.value)
                   );
                   break;
                 case 4:
@@ -445,47 +449,32 @@ export default function AddProperty(props) {
                   break;
                 case 5:
                   setBedrooms(
-                    loadBedrooms.find(
+                    BEDROOMS.find(
                       (bedroom) => bedroom.value == metaTag.value
                     )
                   );
                   break;
                 case 6:
-                  if (
-                    responsePropertyType &&
-                    responsePropertyType.value === "residential"
-                  ) {
-                    setPropertySubType(
-                      loadResidentialPropertyTypes.find(
-                        (subType) => subType.value == metaTag.value
-                      )
-                    );
+                  if (responsePropertyType && responsePropertyType.value === 'residential') {
+                    setPropertySubType(RESIDENTIAL_PROPERTY.find(
+                      (subType) => subType.value == metaTag.value
+                    ));
                   }
 
                   break;
                 case 7:
-                  if (
-                    responsePropertyType &&
-                    responsePropertyType.value === "commercial"
-                  ) {
-                    setPropertySubType(
-                      loadCommercialPropertyTypes.find(
-                        (subType) => subType.value == metaTag.value
-                      )
-                    );
+                  if (responsePropertyType && responsePropertyType.value === 'commercial') {
+                    setPropertySubType(COMMERCIAL_PROPERTY.find(
+                      (subType) => subType.value == metaTag.value
+                    ));
                   }
 
                   break;
                 case 8:
-                  if (
-                    responsePropertyCategoryType &&
-                    responsePropertyCategoryType.value === "rent"
-                  ) {
-                    setPriceType(
-                      loadPriceTypes.find(
-                        (priceType) => priceType.value == metaTag.value
-                      )
-                    );
+                  if (responsePropertyCategoryType && responsePropertyCategoryType.value === 'rent') {
+                    setPriceType(PRICE_TYPE.find(
+                      (priceType) => priceType.value == metaTag.value
+                    ));
                   }
 
                   break;
@@ -496,6 +485,10 @@ export default function AddProperty(props) {
           if (response.productImages) {
             setPropertyImages(response.productImages);
           }
+
+          // if (response.productDocuments) {
+          //   setPropertyDocuments(response.productDocuments);
+          // }
 
           // if (response.productAllocations.length > 0) {
           //   const newAllotedUsers = [];
@@ -512,31 +505,23 @@ export default function AddProperty(props) {
   }, [props.id]);
 
   useEffect(() => {
-    setPropertySubTypeOptions(
-      propertyType?.value == "residential"
-        ? loadResidentialPropertyTypes
-        : loadCommercialPropertyTypes
-    );
+    setPropertySubTypeOptions(propertyType?.value == 'residential' ? RESIDENTIAL_PROPERTY : COMMERCIAL_PROPERTY);
   }, [propertyType]);
 
   return (
     <Layout>
-      <form
-        encType="multipart/form-data"
-        onSubmit={handleSubmit}
-        className="ltn__myaccount-tab-content-inner"
-      >
-        <ResponseHandler errors={errors} success={success} />
+      <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner mb-50">
+        <ResponseHandler errors={errors} success={success}/>
         <h4 className="title-2">Property Description</h4>
         <div className="row mb-50">
           <div className="col-md-6">
             <div className="input-item">
               <label>Property Type *</label>
               <div className="input-item">
-                <Select
+                <Select 
                   className="react-select"
-                  options={loadPropertyTypes}
-                  onChange={(e) => setPropertyType(e)}
+                  options={PROPERTY_TYPES} 
+                  onChange={(e) => setPropertyTypeHandler(e)}
                   value={propertyType}
                   required
                 />
@@ -561,9 +546,9 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Property Category Type *</label>
               <div className="input-item">
-                <Select
+                <Select 
                   className="react-select"
-                  options={loadPropertyCategoryTypes}
+                  options={PROPERTY_CATEGORY_TYPES} 
                   onChange={(e) => setPropertyCategoryTypeHandler(e)}
                   value={propertyCategoryType}
                   required
@@ -608,19 +593,20 @@ export default function AddProperty(props) {
               />
             </div>
           </div>
-          {propertyCategoryType?.value === "rent" && (
-            <div className="col-md-12">
-              <div className="input-item">
-                <label>Price Type</label>
-                <Select
-                  className="react-select"
-                  options={loadPriceTypes}
-                  onChange={(e) => setPriceType(e)}
-                  value={priceType}
-                  required
-                />
+          {
+            propertyCategoryType?.value === 'rent' && (
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Price Type</label>
+                  <Select 
+                    className="react-select"
+                    options={PRICE_TYPE} 
+                    onChange={(e) => setPriceType(e)}
+                    value={priceType}
+                    required
+                  />
+                </div>
               </div>
-            </div>
           )}
           <div className="col-md-12">
             <div className="input-item">
@@ -628,7 +614,7 @@ export default function AddProperty(props) {
               <div className="input-item">
                 <Select
                   className="react-select"
-                  options={loadBedrooms}
+                  options={BEDROOMS}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
                   required
@@ -653,7 +639,7 @@ export default function AddProperty(props) {
               <div className="input-item">
                 <Select
                   className="react-select"
-                  options={loadUnits}
+                  options={UNITS}
                   onChange={(e) => setUnit(e)}
                   value={unit}
                   required
@@ -804,12 +790,8 @@ export default function AddProperty(props) {
           </div>
         </div> */}
         <br />
-        {id && (
-          <div>
-            <UploadPropertyImage id={id} images={propertyImages} />
-          </div>
-        )}
-        <ResponseHandler errors={errors} success={success} />
+        
+        <ResponseHandler errors={errors} success={success}/>
         <button
           disabled={loading}
           type="submit"
@@ -827,6 +809,12 @@ export default function AddProperty(props) {
           )}
         </button>
       </form>
+      {id && (
+        <div className="row mb-50">
+          <UploadPropertyImage id={id} images={propertyImages} />
+          {/* <UploadPropertyDocument id={id} documents={propertyDocuments} /> */}
+        </div>
+      )}
     </Layout>
   );
 }

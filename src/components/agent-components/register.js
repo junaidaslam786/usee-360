@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
+import { JOB_TITLE } from "../../constants";
+import Select from 'react-select';
 
 function getToken() {
   const tokenString = localStorage.getItem("agentToken");
@@ -21,6 +23,8 @@ export default function Register() {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [companyPosition, setCompanyPosition] = useState();
+  const [jobTitle, setJobTitle] = useState();
+  const [licenseNo, setLicenseNo] = useState();
   const [email, setEmail] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
@@ -54,6 +58,8 @@ export default function Register() {
       phoneNumber,
       password,
       confirmPassword,
+      jobTitle: jobTitle?.value ? jobTitle.value : "",
+      licenseNo
     });
     if (response.token) {
       setToken(response.token);
@@ -121,20 +127,47 @@ export default function Register() {
                     />
                   </div>
                 </div>
-                <input
-                  type="text"
-                  name="companyposition"
-                  placeholder="Company Position*"
-                  onChange={(e) => setCompanyPosition(e.target.value)}
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email*"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <div className="row">
+                  <div className="col-md-12">
+                    <input
+                      type="text"
+                      name="companyposition"
+                      placeholder="Company Position*"
+                      onChange={(e) => setCompanyPosition(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row mb-30">
+                  <div className="col-md-12">
+                    <Select 
+                      options={JOB_TITLE} 
+                      onChange={(e) => setJobTitle(e)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                  <input
+                      type="text"
+                      name="licenseNo"
+                      placeholder="License or Registration #"
+                      onChange={(e) => setLicenseNo(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email*"
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
                 <input
                   type="text"
                   name="phoneNumber"

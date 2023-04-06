@@ -84,6 +84,7 @@ export default function UploadPropertyImage(props) {
                 currentImages.splice(deletedFileIndex, 1);
 
                 setPropertyImages(currentImages);
+                setSuccessHandler(response.data.message);
                 return response.data;
             }).catch(error => {
                 console.log('delete-image-error', error);
