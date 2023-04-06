@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import axios from 'axios';
-import Select from 'react-select';
+import axios from "axios";
+import Select from "react-select";
 import Layout from "./layouts/layout";
 import UploadPropertyImage from "./properties/upload-property-image";
-import ResponseHandler from '../global-components/respones-handler';
-import { 
-  loadPropertyTypes, loadResidentialPropertyTypes, 
-  loadCommercialPropertyTypes, loadPropertyCategoryTypes, 
-  loadPriceTypes, loadUnits, loadBedrooms 
-} from '../../constants';
+import ResponseHandler from "../global-components/respones-handler";
+import {
+  loadPropertyTypes,
+  loadResidentialPropertyTypes,
+  loadCommercialPropertyTypes,
+  loadPropertyCategoryTypes,
+  loadPriceTypes,
+  loadUnits,
+  loadBedrooms,
+} from "../../constants";
 
 export default function AddProperty(props) {
   const token = JSON.parse(localStorage.getItem("agentToken"));
@@ -78,7 +82,7 @@ export default function AddProperty(props) {
 
   //     return formattedUsers;
   //   }
-    
+
   //   return true;
   // };
 
@@ -118,11 +122,11 @@ export default function AddProperty(props) {
     let virtualTourTypeVar = virtualTourType;
     let virtualTourUrlVar = virtualTourUrl;
     let virtualTourVideoVar = virtualTourVideo;
-   
-    if (virtualTourTypeVar == 'video') {
+
+    if (virtualTourTypeVar == "video") {
       virtualTourUrlVar = "";
       setIsChecked(false);
-    } else if (virtualTourTypeVar == 'url') {
+    } else if (virtualTourTypeVar == "url") {
       virtualTourVideoVar = "";
       setIsChecked(false);
     } else {
@@ -139,16 +143,19 @@ export default function AddProperty(props) {
 
     if (propertyType?.value) {
       formdata.append("metaTags[1]", propertyType.value);
-      if (propertyType.value == 'commercial' && propertySubType?.value) {
+      if (propertyType.value == "commercial" && propertySubType?.value) {
         formdata.append("metaTags[7]", propertySubType.value);
-      } else if (propertyType.value == 'residential' && propertySubType?.value) {
+      } else if (
+        propertyType.value == "residential" &&
+        propertySubType?.value
+      ) {
         formdata.append("metaTags[6]", propertySubType.value);
       }
     }
 
     if (propertyCategoryType) {
       formdata.append("metaTags[2]", propertyCategoryType.value);
-      if (propertyCategoryType?.value === 'rent' && priceType?.value) {
+      if (propertyCategoryType?.value === "rent" && priceType?.value) {
         formdata.append("metaTags[8]", priceType.value);
       }
     }
@@ -194,17 +201,20 @@ export default function AddProperty(props) {
             );
           }
 
-        return response.data;
-      }).catch(error => {
-        console.log('update-property-error', error);
-        if (error?.response?.data?.errors) {
-          setErrorHandler(error.response.data.errors, "error", true);
-        } else if (error?.response?.data?.message) { 
-          setErrorHandler(error.response.data.message);
-        } else {
-          setErrorHandler("Unable to update property, please try again later");
-        }
-      });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log("update-property-error", error);
+          if (error?.response?.data?.errors) {
+            setErrorHandler(error.response.data.errors, "error", true);
+          } else if (error?.response?.data?.message) {
+            setErrorHandler(error.response.data.message);
+          } else {
+            setErrorHandler(
+              "Unable to update property, please try again later"
+            );
+          }
+        });
     } else {
       formResponse = await axios
         .post(`${process.env.REACT_APP_API_URL}/property/${apiUrl}`, formdata, {
@@ -215,30 +225,35 @@ export default function AddProperty(props) {
         })
         .then((response) => {
           if (response?.status !== 201) {
-            setErrorHandler("Unable to create property, please try again later");
+            setErrorHandler(
+              "Unable to create property, please try again later"
+            );
           }
 
-          console.log('create-property-response', response);
+          console.log("create-property-response", response);
 
           return response.data;
-        }).catch(error => {
-          console.log('create-property-error', error);
+        })
+        .catch((error) => {
+          console.log("create-property-error", error);
           if (error?.response?.data?.errors) {
             setErrorHandler(error.response.data.errors, "error", true);
-          } else if (error?.response?.data?.message) { 
+          } else if (error?.response?.data?.message) {
             setErrorHandler(error.response.data.message);
           } else {
-            setErrorHandler("Unable to create property, please try again later");
+            setErrorHandler(
+              "Unable to create property, please try again later"
+            );
           }
         });
     }
-    
+
     setLoading(false);
     if (formResponse) {
       setFeaturedImage(null);
       setVirtualTourVideo(null);
       setSuccessHandler(successMsg);
-      if (apiUrl === 'create') {
+      if (apiUrl === "create") {
         setFeaturedImagePreview(null);
       }
 
@@ -274,7 +289,7 @@ export default function AddProperty(props) {
       setFeaturedImage(event.target.files[0]);
       setFeaturedImagePreview(URL.createObjectURL(event.target.files[0]));
     }
-  }
+  };
 
   const setAddressFields = (place) => {
     place.address_components.forEach((addressPart) => {
@@ -293,7 +308,7 @@ export default function AddProperty(props) {
   };
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {
-    setErrors(fullError ? msg : [{ msg, param }])
+    setErrors(fullError ? msg : [{ msg, param }]);
     setTimeout(() => {
       setErrors([]);
     }, 3000);
@@ -390,7 +405,9 @@ export default function AddProperty(props) {
           setLongitude(response.longitude);
           setVirtualTourType(response.virtualTourType);
           if (response?.featuredImage) {
-            setFeaturedImagePreview(`${process.env.REACT_APP_API_URL}/${response.featuredImage}`);
+            setFeaturedImagePreview(
+              `${process.env.REACT_APP_API_URL}/${response.featuredImage}`
+            );
           }
 
           if (response.virtualTourType == "slideshow") {
@@ -414,7 +431,7 @@ export default function AddProperty(props) {
                 case 2:
                   responsePropertyCategoryType = loadPropertyCategoryTypes.find(
                     (category) => category.value == metaTag.value
-                  )
+                  );
 
                   setPropertyCategoryType(responsePropertyCategoryType);
                   break;
@@ -434,26 +451,41 @@ export default function AddProperty(props) {
                   );
                   break;
                 case 6:
-                  if (responsePropertyType && responsePropertyType.value === 'residential') {
-                    setPropertySubType(loadResidentialPropertyTypes.find(
-                      (subType) => subType.value == metaTag.value
-                    ));
+                  if (
+                    responsePropertyType &&
+                    responsePropertyType.value === "residential"
+                  ) {
+                    setPropertySubType(
+                      loadResidentialPropertyTypes.find(
+                        (subType) => subType.value == metaTag.value
+                      )
+                    );
                   }
-                  
+
                   break;
                 case 7:
-                  if (responsePropertyType && responsePropertyType.value === 'commercial') {
-                    setPropertySubType(loadCommercialPropertyTypes.find(
-                      (subType) => subType.value == metaTag.value
-                    ));
+                  if (
+                    responsePropertyType &&
+                    responsePropertyType.value === "commercial"
+                  ) {
+                    setPropertySubType(
+                      loadCommercialPropertyTypes.find(
+                        (subType) => subType.value == metaTag.value
+                      )
+                    );
                   }
 
                   break;
                 case 8:
-                  if (responsePropertyCategoryType && responsePropertyCategoryType.value === 'rent') {
-                    setPriceType(loadPriceTypes.find(
-                      (priceType) => priceType.value == metaTag.value
-                    ));
+                  if (
+                    responsePropertyCategoryType &&
+                    responsePropertyCategoryType.value === "rent"
+                  ) {
+                    setPriceType(
+                      loadPriceTypes.find(
+                        (priceType) => priceType.value == metaTag.value
+                      )
+                    );
                   }
 
                   break;
@@ -480,21 +512,30 @@ export default function AddProperty(props) {
   }, [props.id]);
 
   useEffect(() => {
-    setPropertySubTypeOptions(propertyType?.value == 'residential' ? loadResidentialPropertyTypes : loadCommercialPropertyTypes);
+    setPropertySubTypeOptions(
+      propertyType?.value == "residential"
+        ? loadResidentialPropertyTypes
+        : loadCommercialPropertyTypes
+    );
   }, [propertyType]);
 
   return (
     <Layout>
-      <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner">
-        <ResponseHandler errors={errors} success={success}/>
+      <form
+        encType="multipart/form-data"
+        onSubmit={handleSubmit}
+        className="ltn__myaccount-tab-content-inner"
+      >
+        <ResponseHandler errors={errors} success={success} />
         <h4 className="title-2">Property Description</h4>
         <div className="row mb-50">
           <div className="col-md-6">
             <div className="input-item">
               <label>Property Type *</label>
               <div className="input-item">
-                <Select 
-                  options={loadPropertyTypes} 
+                <Select
+                  className="react-select"
+                  options={loadPropertyTypes}
                   onChange={(e) => setPropertyType(e)}
                   value={propertyType}
                   required
@@ -506,8 +547,9 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Property Sub Type *</label>
               <div className="input-item">
-                <Select 
-                  options={propertySubTypeOptions} 
+                <Select
+                  className="react-select"
+                  options={propertySubTypeOptions}
                   onChange={(e) => setPropertySubType(e)}
                   value={propertySubType}
                   required
@@ -519,8 +561,9 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Property Category Type *</label>
               <div className="input-item">
-                <Select 
-                  options={loadPropertyCategoryTypes} 
+                <Select
+                  className="react-select"
+                  options={loadPropertyCategoryTypes}
                   onChange={(e) => setPropertyCategoryTypeHandler(e)}
                   value={propertyCategoryType}
                   required
@@ -558,32 +601,33 @@ export default function AddProperty(props) {
               <label>Price *</label>
               <input
                 type="text"
-                value={price || ''}
+                value={price || ""}
                 placeholder="Enter price"
                 onChange={(e) => setPrice(e.target.value)}
                 required
               />
             </div>
           </div>
-          {
-            propertyCategoryType?.value === 'rent' && (
-              <div className="col-md-12">
-                <div className="input-item">
-                  <label>Price Type</label>
-                  <Select 
-                    options={loadPriceTypes} 
-                    onChange={(e) => setPriceType(e)}
-                    value={priceType}
-                    required
-                  />
-                </div>
+          {propertyCategoryType?.value === "rent" && (
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Price Type</label>
+                <Select
+                  className="react-select"
+                  options={loadPriceTypes}
+                  onChange={(e) => setPriceType(e)}
+                  value={priceType}
+                  required
+                />
               </div>
+            </div>
           )}
           <div className="col-md-12">
             <div className="input-item">
               <label>No. of bedrooms</label>
               <div className="input-item">
                 <Select
+                  className="react-select"
                   options={loadBedrooms}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
@@ -608,6 +652,7 @@ export default function AddProperty(props) {
               <label>Unit</label>
               <div className="input-item">
                 <Select
+                  className="react-select"
                   options={loadUnits}
                   onChange={(e) => setUnit(e)}
                   value={unit}
@@ -638,17 +683,14 @@ export default function AddProperty(props) {
                 <small>* Images might take longer to be processed.</small>
               </p>
             </div>
-            {
-              featuredImagePreview && (
-                <img
-                  className="featuredImageCss"
-                  src={featuredImagePreview}
-                  alt={title}
-                  width="300px"
-                />
-              )
-            }
-            
+            {featuredImagePreview && (
+              <img
+                className="featuredImageCss"
+                src={featuredImagePreview}
+                alt={title}
+                width="300px"
+              />
+            )}
           </div>
         </div>
         <h4 className="title-2">Upload VR Tour</h4>
@@ -767,7 +809,7 @@ export default function AddProperty(props) {
             <UploadPropertyImage id={id} images={propertyImages} />
           </div>
         )}
-        <ResponseHandler errors={errors} success={success}/>
+        <ResponseHandler errors={errors} success={success} />
         <button
           disabled={loading}
           type="submit"

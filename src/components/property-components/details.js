@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { loadPropertyTypes, loadPropertyCategoryTypes, loadBedrooms, loadUnits, VIRTUAL_TOUR_TYPE } from "../../constants";
+import {
+  loadPropertyTypes,
+  loadPropertyCategoryTypes,
+  loadBedrooms,
+  loadUnits,
+  VIRTUAL_TOUR_TYPE,
+} from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -30,14 +36,18 @@ export default function PropertyDetails() {
         response.data.productMetaTags.forEach((metaTag) => {
           switch (metaTag.categoryField.id) {
             case 1:
-              setPropertyType(loadPropertyTypes.find(
-                (property) => property.value == metaTag.value
-              ));
+              setPropertyType(
+                loadPropertyTypes.find(
+                  (property) => property.value == metaTag.value
+                )
+              );
               break;
             case 2:
-              setPropertyCategoryType(loadPropertyCategoryTypes.find(
-                (category) => category.value == metaTag.value
-              ));
+              setPropertyCategoryType(
+                loadPropertyCategoryTypes.find(
+                  (category) => category.value == metaTag.value
+                )
+              );
               break;
             case 3:
               setPropertyUnit(
@@ -49,16 +59,16 @@ export default function PropertyDetails() {
               break;
             case 5:
               setPropertyBedrooms(
-                loadBedrooms.find(
-                  (bedroom) => bedroom.value == metaTag.value
-                )
+                loadBedrooms.find((bedroom) => bedroom.value == metaTag.value)
               );
               break;
           }
         });
         setAgentImage(response.data.user.profileImage);
-        setAgentName(`${response.data.user.firstName} ${response.data.user.lastName}`);
-        if(response?.data?.productImages?.length > 0) {
+        setAgentName(
+          `${response.data.user.firstName} ${response.data.user.lastName}`
+        );
+        if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);
         }
       });
@@ -75,21 +85,19 @@ export default function PropertyDetails() {
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
               <div className="ltn__blog-meta">
-                {
-                  propertyImages ? (
-                    <Slideshow fadeImages={propertyImages}/>
-                  ) : (
-                    <img
-                      className="mb-50"
-                      src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-                      alt="#"
-                    />
-                  )
-                }
+                {propertyImages ? (
+                  <Slideshow fadeImages={propertyImages} />
+                ) : (
+                  <img
+                    className="mb-50 detail-feature-image"
+                    src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+                    alt="#"
+                  />
+                )}
                 <ul>
                   <li className="ltn__blog-category">
                     <Link className="bg-orange" to="#">
-                      For { propertyCategoryType?.label || "" }
+                      For {propertyCategoryType?.label || ""}
                     </Link>
                   </li>
                   <li className="ltn__blog-date">
@@ -152,27 +160,31 @@ export default function PropertyDetails() {
               <span className="property-details">
                 <span className="row">
                   <span className="col-md-5">
-                    {
-                      (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
-                        <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3">View Tour</a>
-                      )
-                    }
-                    {/* <button className="btn theme-btn-1 mb-3">View Floor Plan</button>
-                    <button className="btn theme-btn-3 mb-3">View Brochure</button>
-                    <button className="btn theme-btn-1 mb-3">View Map</button>*/}
+                    {property?.virtualTourType &&
+                      property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
+                        <a
+                          href={property.virtualTourUrl}
+                          target="_blank"
+                          className="btn theme-btn-3 mb-3"
+                        >
+                          View Tour
+                        </a>
+                      )}
                   </span>
                 </span>
               </span>
-              {
-                (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO) && (
+              {property?.virtualTourType &&
+                property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
                   <div className="property-detail-feature-list clearfix mb-45">
                     <video width="100%" height="100%" controls>
-                      <source src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`} type="video/mp4" />
+                      <source
+                        src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`}
+                        type="video/mp4"
+                      />
                       Your browser does not support the video tag.
                     </video>
                   </div>
-                )
-              }
+                )}
             </div>
           </div>
           <div className="col-lg-4">
@@ -183,8 +195,17 @@ export default function PropertyDetails() {
                     src={`${process.env.REACT_APP_API_URL}/${agentImage}`}
                     alt="Image"
                   />
-                  <h5>{ agentName }</h5>
+                  <h5>{agentName}</h5>
                 </div>
+              </div>
+              <div>
+                <button className="btn theme-btn-1 mb-3 w-100">
+                  View Floor Plan
+                </button>
+                <button className="btn theme-btn-3 mb-3 w-100">
+                  View Brochure
+                </button>
+                <button className="btn theme-btn-3 mb-3 w-100">View Map</button>
               </div>
             </aside>
           </div>

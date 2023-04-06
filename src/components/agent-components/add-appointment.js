@@ -3,7 +3,7 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
-import ResponseHandler from '../global-components/respones-handler';
+import ResponseHandler from "../global-components/respones-handler";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
@@ -182,17 +182,20 @@ export default function AddAppointment() {
 
         console.log("create-appointment-response", response);
 
-      return response.data;
-    }).catch(error => {
-      console.log('create-appointment-error', error);
-      if (error?.response?.data?.errors) {
-        setErrorHandler(error.response.data.errors, "error", true);
-      } else if (error?.response?.data?.message) { 
-        setErrorHandler(error.response.data.message);
-      } else {
-        setErrorHandler("Unable to create appointment, please try again later");
-      }
-    });
+        return response.data;
+      })
+      .catch((error) => {
+        console.log("create-appointment-error", error);
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) {
+          setErrorHandler(error.response.data.message);
+        } else {
+          setErrorHandler(
+            "Unable to create appointment, please try again later"
+          );
+        }
+      });
 
     setLoading(false);
     if (formResponse) {
@@ -209,7 +212,7 @@ export default function AddAppointment() {
   };
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {
-    setErrors(fullError ? msg : [{ msg, param }])
+    setErrors(fullError ? msg : [{ msg, param }]);
     setTimeout(() => {
       setErrors([]);
     }, 3000);
@@ -288,6 +291,7 @@ export default function AddAppointment() {
                   <div className="input-item">
                     <label>Select Property *</label>
                     <Select
+                      className="react-select"
                       isMulti
                       options={properties}
                       onChange={(e) => setSelectedAllocatedProperties(e)}
@@ -297,7 +301,12 @@ export default function AddAppointment() {
                   </div>
                 </div>
                 <div className="col-md-2">
-                  <button className="btn theme-btn-2 request-now-btn positionRevert" onClick={handleButtonClick} >Request Now</button>
+                  <button
+                    className="btn theme-btn-2 request-now-btn positionRevert"
+                    onClick={handleButtonClick}
+                  >
+                    Request Now
+                  </button>
                 </div>
                 <div className="col-md-5">
                   <div className="input-item">
@@ -369,7 +378,7 @@ export default function AddAppointment() {
                   </div>
                 </div> */}
                 <div className="btn-wrapper">
-                  <ResponseHandler errors={errors} success={success}/>
+                  <ResponseHandler errors={errors} success={success} />
                   <button
                     type="submit"
                     className="btn theme-btn-1 btn-effect-1 text-uppercase"

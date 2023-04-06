@@ -3,7 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ViewOffer from "./properties/view-offer";
-import { loadPropertyTypes, loadPropertyCategoryTypes, loadBedrooms, loadUnits, VIRTUAL_TOUR_TYPE } from "../../constants";
+import {
+  loadPropertyTypes,
+  loadPropertyCategoryTypes,
+  loadBedrooms,
+  loadUnits,
+  VIRTUAL_TOUR_TYPE,
+} from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -31,14 +37,18 @@ export default function PropertyDetails() {
         response.data.productMetaTags.forEach((metaTag) => {
           switch (metaTag.categoryField.id) {
             case 1:
-              setPropertyType(loadPropertyTypes.find(
-                (property) => property.value == metaTag.value
-              ));
+              setPropertyType(
+                loadPropertyTypes.find(
+                  (property) => property.value == metaTag.value
+                )
+              );
               break;
             case 2:
-              setPropertyCategoryType(loadPropertyCategoryTypes.find(
-                (category) => category.value == metaTag.value
-              ));
+              setPropertyCategoryType(
+                loadPropertyCategoryTypes.find(
+                  (category) => category.value == metaTag.value
+                )
+              );
               break;
             case 3:
               setPropertyUnit(
@@ -50,15 +60,13 @@ export default function PropertyDetails() {
               break;
             case 5:
               setPropertyBedrooms(
-                loadBedrooms.find(
-                  (bedroom) => bedroom.value == metaTag.value
-                )
+                loadBedrooms.find((bedroom) => bedroom.value == metaTag.value)
               );
               break;
           }
         });
 
-        if(response?.data?.productImages?.length > 0) {
+        if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);
         }
       });
@@ -73,12 +81,13 @@ export default function PropertyDetails() {
       <section>
         <img
           src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+          className="detail-feature-image"
           alt="#"
         />
         <div className="row property-desc">
           <span className="ltn__blog-category pb-20">
             <Link className="bg-orange" to="#">
-            For { propertyCategoryType?.label || "" }
+              For {propertyCategoryType?.label || ""}
             </Link>
           </span>
           <div className="col-md-10">
@@ -112,28 +121,37 @@ export default function PropertyDetails() {
               </div>
             </div>
             <h5>Description:</h5>
-            <div><p>{property.description}</p></div>
+            <div>
+              <p>{property.description}</p>
+            </div>
           </div>
           <div className="col-md-5">
             {/* <button className="btn theme-btn-1 mb-3">View Floor Plan</button> */}
             {/* <button className="btn theme-btn-3 mb-3">View Brochure</button> */}
-            {
-              (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
-                <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3">View Tour</a>
-              )
-            }
+            {property?.virtualTourType &&
+              property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
+                <a
+                  href={property.virtualTourUrl}
+                  target="_blank"
+                  className="btn theme-btn-3 mb-3"
+                >
+                  View Tour
+                </a>
+              )}
           </div>
         </div>
-        {
-          (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO) && (
+        {property?.virtualTourType &&
+          property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
             <div className="property-detail-feature-list clearfix mb-45">
               <video width="100%" height="100%" controls>
-                <source src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`} type="video/mp4" />
+                <source
+                  src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`}
+                  type="video/mp4"
+                />
                 Your browser does not support the video tag.
               </video>
             </div>
-          )
-        }
+          )}
         <div className="row property-details">
           <ViewOffer property={property} />
         </div>

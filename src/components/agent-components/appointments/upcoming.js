@@ -85,6 +85,7 @@ export default function CompletedAppointments() {
                 <th scope="col" />
                 <th scope="col" />
                 <th scope="col">Actions</th>
+                <th scope="col" />
               </tr>
             </thead>
             <tbody>
@@ -131,10 +132,12 @@ export default function CompletedAppointments() {
                       </button>
                     </td>
                     <td>
-                      <Link to={{
-                        pathname: `/precall/${element.id}/agent`,
-                      }}>
-                        <button>JOIN CALL</button>
+                      <Link
+                        to={{
+                          pathname: `/precall/${element.id}/agent`,
+                        }}
+                      >
+                        <button className="py-2">JOIN CALL</button>
                       </Link>
                     </td>
                   </tr>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
-import Select from 'react-select'
+import Select from "react-select";
 import Layout from "./layouts/layout";
 
 export default function MyProperties() {
@@ -174,7 +174,9 @@ export default function MyProperties() {
                     <td>
                       <div className="ltn__my-properties-info">
                         <h6 className="mb-10 go-top">
-                          <Link to={`/agent/property-details/${element.id}`}>{element?.title}</Link>
+                          <Link to={`/agent/property-details/${element.id}`}>
+                            {element?.title}
+                          </Link>
                         </h6>
                         <small>
                           <i className="icon-placeholder" /> {element?.address}
@@ -263,6 +265,7 @@ export default function MyProperties() {
                                 onSubmit={handleSubmit}
                               >
                                 <Select
+                                  className="react-select"
                                   options={removeReasons}
                                   onChange={(e) => setRemoveReason(e)}
                                   value={removeReason}

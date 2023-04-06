@@ -168,10 +168,18 @@
   object-fit: cover;
   object-position: center;
   background-size: cover;
-  /* background-color: #1c1c1c; */
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+#screen-preview iframe,
+#screen-preview video {
+  max-height: calc(100% - 100px);
+  max-width: 100%;
 }
 
 @keyframes slide-in {
