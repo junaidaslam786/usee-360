@@ -23,35 +23,6 @@ export default function AddAppointment() {
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
-  const loadCustomers = async (searchQuery) => {
-    let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/list-customer?q=${searchQuery}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseResult = await response.json();
-    if (responseResult) {
-      setCustomers(responseResult);
-      return responseResult;
-    }
-  };
-
-  const loadUsersToAllocate = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) => data.json());
-  };
-
   const loadPropertiesToAllocate = async () => {
     return fetch(`${process.env.REACT_APP_API_URL}/home/property/list`, {
       method: "POST",
@@ -89,23 +60,6 @@ export default function AddAppointment() {
   //   });
   // };
 
-  const loadOptions = (inputValue, callback) => {
-    try {
-      setTimeout(async () => {
-        const response = await loadCustomers(inputValue);
-        const options = response.map((customer) => {
-          return {
-            value: customer.id,
-            label: `${customer.firstName} ${customer.lastName}`,
-          };
-        });
-        callback(options);
-      }, 1000);
-    } catch (error) {
-      console.log("errorInFilterCustomer", error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -135,7 +89,7 @@ export default function AddAppointment() {
     }
 
     const formData = {
-      properties: selectedAllocatedProperties.map((property) => property.value),
+      property: selectedAllocatedProperties.value,
       appointmentDate: date,
       appointmentTime: time,
       customerId: customerId,
@@ -149,7 +103,7 @@ export default function AddAppointment() {
     setLoading(true);
     const formResponse = await axios
       .post(
-        `${process.env.REACT_APP_API_URL}/agent/appointment/create`,
+        `${process.env.REACT_APP_API_URL}/customer/appointment/create`,
         formData,
         {
           headers: {
@@ -271,7 +225,7 @@ export default function AddAppointment() {
                   <div className="input-item">
                     <label>Select Property *</label>
                     <Select
-                      isMulti
+                      isMulti={false}
                       options={properties}
                       onChange={(e) => setSelectedAllocatedProperties(e)}
                       value={selectedAllocatedProperties}
