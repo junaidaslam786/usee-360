@@ -121,13 +121,13 @@ export default function LocationSearch() {
       .then((data) => data.json())
       .then((data) => {
         setProperties([]);
+        if(markers.length > 0) {
+          markers.map((marker) => {
+            marker.setMap(null);
+          })
+        }
         if (data.length > 0) {
           setProperties(data);
-          if(markers.length > 0) {
-            markers.map((marker) => {
-              marker.setMap(null);
-            })
-          }
           let newMarkers = [];
           data.map((property) => {
             const position = {
