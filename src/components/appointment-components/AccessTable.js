@@ -56,6 +56,7 @@ const AccessTable = (props) => {
   const [selectedVideoDevice, setSelectedVideoDevice] = useState(null);
   const [selectedAudioOutput, setSelectedAudioOutput] = useState(null);
   const [appointment, setAppointment] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const detect = new RTCDetect();
 
   const getAppointmentDetail = async () => {
@@ -121,6 +122,7 @@ const AccessTable = (props) => {
           setAudioOutputOptions(audioOutputDevices);
           setSelectedAudioOutput(audioOutputDevices[0].value);
           setSpeakerStatus(1);
+          setButtonDisabled(false);
         });
       })
       .catch((error) => {
@@ -238,7 +240,7 @@ const AccessTable = (props) => {
                       videoDeviceId: selectedVideoDevice,
                       appointment,
                     }
-                  }}><button>JOIN CALL</button></Link>
+                  }}><button disabled={buttonDisabled}>JOIN CALL</button></Link>
                 </tr>
               </table>
             </div>
