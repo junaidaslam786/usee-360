@@ -49,20 +49,13 @@ export default function SearchForm() {
 
   function handleChange(value) {
     setPropertyCategoryType(value);
-    if (value == "Commercial") {
+    if (value == "commercial") {
       setTypes(COMMERCIAL_PROPERTY);
       setFlag(false);
-    } else if (value == "Residential") {
+    } else if (value == "residential") {
       setTypes(RESIDENTIAL_PROPERTY);
       setBedrooms(BEDROOMS);
-      if (value == "commercial") {
-        setTypes(loadCommercialPropertyTypes);
-        setFlag(false);
-      } else if (value == "residential") {
-        setTypes(loadResidentialPropertyTypes);
-        setBedrooms(loadBedrooms);
-        setFlag(true);
-      }
+      setFlag(true);
     }
   }
 
