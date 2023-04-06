@@ -10,6 +10,7 @@ export default function LocationSearch() {
   const [circle, setCirle] = useState(null);
   const [polygon, setPolygon] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [markers, setMarkers] = useState([]);
 
   let map;
 
@@ -119,8 +120,15 @@ export default function LocationSearch() {
     })
       .then((data) => data.json())
       .then((data) => {
+        setProperties([]);
         if (data.length > 0) {
           setProperties(data);
+          if(markers.length > 0) {
+            markers.map((marker) => {
+              marker.setMap(null);
+            })
+          }
+          let newMarkers = [];
           data.map((property) => {
             const position = {
               lat: parseFloat(property.latitude),
@@ -131,7 +139,8 @@ export default function LocationSearch() {
               position,
               "assets/img/icons/property-marker.png",
               { width: 40, height: 40 }
-            );
+            ); 
+            newMarkers.push(marker);
             marker.addListener("click", function () {
               window.open(
                 `${process.env.PUBLIC_URL}/property-details/${property.id}`,
@@ -139,6 +148,7 @@ export default function LocationSearch() {
               );
             });
           });
+          setMarkers(newMarkers);
         }
       })
       .catch((error) => {
