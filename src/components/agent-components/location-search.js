@@ -19,7 +19,10 @@ export default function LocationSearch() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+          const currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
           //const currentLocation = { lat: 37.7749, lng: -122.4194 };
           setCenter(currentLocation);
           map.setCenter(currentLocation);
@@ -130,7 +133,10 @@ export default function LocationSearch() {
               { width: 40, height: 40 }
             );
             marker.addListener("click", function () {
-              window.open(`${process.env.PUBLIC_URL}/property-details/${property.id}`, "_blank");
+              window.open(
+                `${process.env.PUBLIC_URL}/property-details/${property.id}`,
+                "_blank"
+              );
             });
           });
         }
@@ -225,25 +231,50 @@ export default function LocationSearch() {
   return (
     <div className="map-container">
       <div style={{ position: "relative", zIndex: "999" }}>
-        <button className={`open-button ${active ? "" : "closed-button"}`} onClick={handleActive}>
+        <button
+          className={`open-button ${active ? "" : "closed-button"}`}
+          onClick={handleActive}
+        >
           {active ? "Close Search" : "Open Search"}
         </button>
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
-        <img src={`${process.env.PUBLIC_URL}/assets/img/logo.png`} id="sideabar-logo" alt="Logo" height="80" />
-        <p>You can search the properties in a specific area by drawing shapes on maps. </p>
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/img/logo.png`}
+          id="sideabar-logo"
+          alt="Logo"
+          height="80"
+        />
+        <p>
+          You can search the properties in a specific area by drawing shapes on
+          maps.{" "}
+        </p>
         <div className="scrollable">
-          {properties && properties.length > 0 && (
-            properties.map((element, i) => 
+          {properties &&
+            properties.length > 0 &&
+            properties.map((element, i) => (
               <div className="content-box">
                 <img
                   src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
                   alt="#"
+                  className="featured-image-style"
                 />
-                
+                <div className="content">
+                  <h6 className="description mb-2">
+                    SLS Dubai Hotel & Residences
+                  </h6>
+                  <span className="location">
+                    <i class="flaticon-pin"></i> Marasi Dr - Business Bay -
+                    Dubai - United Arab Emirates
+                  </span>
+                </div>
+                <div class="product-info-bottom">
+                  <div class="product-price">
+                    <span>$3000.444</span>
+                  </div>
+                </div>
               </div>
-            ))
-          }
+            ))}
         </div>
         {/* <ol>
           <li>By drawing shapes on maps</li>
