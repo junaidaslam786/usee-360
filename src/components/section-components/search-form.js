@@ -7,7 +7,6 @@ import {
 } from "../../constants";
 
 export default function SearchForm() {
-  
   const [address, setAddress] = useState();
   const [types, setTypes] = useState([]);
   const [flag, setFlag] = useState(false);
@@ -56,7 +55,14 @@ export default function SearchForm() {
     } else if (value == "Residential") {
       setTypes(RESIDENTIAL_PROPERTY);
       setBedrooms(BEDROOMS);
-      setFlag(true);
+      if (value == "commercial") {
+        setTypes(loadCommercialPropertyTypes);
+        setFlag(false);
+      } else if (value == "residential") {
+        setTypes(loadResidentialPropertyTypes);
+        setBedrooms(loadBedrooms);
+        setFlag(true);
+      }
     }
   }
 
@@ -74,58 +80,67 @@ export default function SearchForm() {
                   <div className="car-dealer-form-inner">
                     <form action="#" className="ltn__car-dealer-form-box row">
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                        <label>Property Category</label>
                         <select
                           className="nice-select"
                           onChange={(e) => setPropertyCategory(e.target.value)}
                         >
-                          <option selected hidden disabled>
+                          <option selected disabled>
                             Property Category
                           </option>
-                          <option>Sale</option>
-                          <option>Rent</option>
+                          <option value={"sale"}>Sale</option>
+                          <option value={"rent"}>Rent</option>
                         </select>
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                        <label>Property Category Type</label>
                         <select
                           className="nice-select"
                           onChange={(e) => handleChange(e.target.value)}
                         >
-                          <option selected hidden disabled>
+                          <option selected disabled>
                             Property Category Type
                           </option>
-                          <option>Commercial</option>
-                          <option>Residential</option>
+                          <option value={"commercial"}>Commercial</option>
+                          <option value={"residential"}>Residential</option>
                         </select>
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                        <label>Property Type</label>
                         <select
                           className="nice-select"
                           onChange={(e) => setPropertyType(e.target.value)}
                         >
-                          <option selected hidden disabled>
+                          <option selected disabled>
                             Property Type
                           </option>
                           {types.map((element) => (
-                            <option>{element.label}</option>
+                            <option value={element.value}>
+                              {element.label}
+                            </option>
                           ))}
                         </select>
                       </div>
                       {flag ? (
                         <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
+                          <label>No. of Bedrooms</label>
                           <select
                             className="nice-select"
                             onChange={(e) => setRooms(e.target.value)}
                           >
-                            <option selected hidden disabled>
+                            <option selected disabled>
                               No. of Bedrooms
                             </option>
                             {bedrooms.map((element) => (
-                              <option>{element.label}</option>
+                              <option value={element.value}>
+                                {element.label}
+                              </option>
                             ))}
                           </select>
                         </div>
                       ) : null}
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                        <label>Location</label>
                         <input
                           type="text"
                           id="autocomplete"
@@ -133,22 +148,26 @@ export default function SearchForm() {
                           onChange={(event) => setAddress(event.target.value)}
                           placeholder="Location Name"
                           className="m-0"
-                          onFocus={handleFocus} 
+                          onFocus={handleFocus}
                           onBlur={handleBlur}
                         />
-                        {(showLink &&
+                        {showLink && (
                           <Link
                             to={{
                               pathname: "/location-search",
                             }}
                             className="draw-on-map"
                           >
-                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <i
+                              className="fa fa-map-marker"
+                              aria-hidden="true"
+                            ></i>
                             Search by drawing on map
                           </Link>
                         )}
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                        <label>Minimum Price</label>
                         <input
                           type="text"
                           placeholder="Minimum Price"
@@ -157,6 +176,7 @@ export default function SearchForm() {
                         />
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                        <label>Maximum Price</label>
                         <input
                           type="text"
                           placeholder="Maximum Price"
@@ -165,7 +185,7 @@ export default function SearchForm() {
                         />
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
-                        <div className="btn-wrapper mt-0 go-top">
+                        <div className="btn-wrapper mt-0 go-top pt-1">
                           <Link
                             to={{
                               pathname: "/property-grid",
@@ -173,14 +193,14 @@ export default function SearchForm() {
                                 propertyCategory,
                                 propertyCategoryType,
                                 propertyType,
-                                rooms,
+                                rooms: parseInt(rooms),
                                 lat,
                                 lng,
-                                minPrice,
-                                maxPrice,
+                                minPrice: parseInt(minPrice),
+                                maxPrice: parseInt(maxPrice),
                               },
                             }}
-                            className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn"
+                            className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
                           >
                             Find Now
                           </Link>

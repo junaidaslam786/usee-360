@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "./sidebar";
-import { DEFAULT_CURRENCY, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS } from "../../constants";
+import {
+  DEFAULT_CURRENCY,
+  PROPERTY_CATEGORY_TYPES,
+  BEDROOMS,
+  UNITS,
+} from "../../constants";
 
 export default function PropertyGrid() {
-  // const location = useLocation();
-  // const {
-  //   propertyCategory,
-  //   propertyCategoryType,
-  //   propertyType,
-  //   rooms,
-  //   lat,
-  //   lng,
-  //   minPrice,
-  //   maxPrice,
-  // } = location.state;
+  const [propertyCategoryFilter, setPropertyCategory] = useState();
+  const [propertyCategoryTypeFilter, setPropertyCategoryType] = useState();
+  const [latFilter, setLatFilter] = useState();
+  const [lngFilter, setLngFilter] = useState();
+  const [roomsFilter, setRooms] = useState();
+  const [sortFilter, setSortFilter] = useState();
+  const [address, setAddress] = useState();
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = JSON.parse(localStorage.getItem("customerToken"));
@@ -27,15 +27,93 @@ export default function PropertyGrid() {
   const [wishlistImage, setWishlistImage] = useState();
 
   const toggleButton = useRef(null);
+  const price = useRef(null);
   const history = useHistory();
+  const location = useLocation();
 
-  async function loadProperties() {
+  async function loadProperties(search) {
+    let payload = {
+      page: 1,
+      size: 50,
+    };
+
+    if (location.state) {
+      const {
+        propertyCategory,
+        propertyCategoryType,
+        propertyType,
+        rooms,
+        lat,
+        lng,
+        minPrice,
+        maxPrice,
+      } = location.state;
+
+      if (propertyCategory) {
+        payload.propertyCategory = propertyCategory;
+      }
+      if (propertyCategoryType) {
+        payload.propertyCategoryType = propertyCategoryType;
+      }
+      if (propertyType) {
+        payload.propertyType = propertyType;
+      }
+      if (rooms) {
+        payload.rooms = rooms;
+      }
+      if (lat) {
+        payload.lat = lat;
+      }
+      if (lng) {
+        payload.lng = lng;
+      }
+      if (minPrice) {
+        payload.minPrice = minPrice;
+      }
+      if (maxPrice) {
+        payload.maxPrice = maxPrice;
+      }
+    }
+
+    if (search == "filter") {
+      if (propertyCategoryFilter) {
+        payload.propertyCategory = propertyCategoryFilter;
+      }
+
+      if (propertyCategoryTypeFilter) {
+        payload.propertyCategoryType = propertyCategoryTypeFilter;
+      }
+
+      if (roomsFilter) {
+        payload.rooms = parseInt(roomsFilter);
+      }
+
+      let arr = price.current.value.split(" - ");
+      payload.minPrice = parseInt(arr[0]);
+      payload.maxPrice = parseInt(arr[1]);
+    }
+
+    if (search == "location") {
+      if (latFilter) {
+        payload.lat = latFilter;
+      }
+
+      if (lngFilter) {
+        payload.lng = lngFilter;
+      }
+    }
+
+    if (search == "sort") {
+      if (sortFilter) {
+        payload.sort = ["price", sortFilter];
+      }
+    }
+
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/home/property/list`, {
+      .post(`${process.env.REACT_APP_API_URL}/home/property/list`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ page: 1, size: 10 }),
       })
       .then((response) => {
         setProperties(response.data.data);
@@ -81,9 +159,11 @@ export default function PropertyGrid() {
     let metaData = "";
     let metaTag;
     if (property?.productMetaTags?.length > 0) {
-      switch(type) {
+      switch (type) {
         case "categoryType":
-          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 2);
+          metaTag = property.productMetaTags.find(
+            (meta) => meta.categoryField.id === 2
+          );
           if (metaTag) {
             metaData = PROPERTY_CATEGORY_TYPES.find(
               (property) => property.value == metaTag.value
@@ -92,11 +172,13 @@ export default function PropertyGrid() {
           } else {
             metaData = "Rent";
           }
-          
+
           break;
-       
+
         case "unit":
-          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 3);
+          metaTag = property.productMetaTags.find(
+            (meta) => meta.categoryField.id === 3
+          );
           if (metaTag) {
             metaData = UNITS.find(
               (property) => property.value == metaTag.value
@@ -108,12 +190,16 @@ export default function PropertyGrid() {
           break;
 
         case "area":
-          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 4);
+          metaTag = property.productMetaTags.find(
+            (meta) => meta.categoryField.id === 4
+          );
           metaData = metaTag ? metaTag.value : 0;
           break;
 
         case "bedroom":
-          metaTag = property.productMetaTags.find((meta) => meta.categoryField.id === 5);
+          metaTag = property.productMetaTags.find(
+            (meta) => meta.categoryField.id === 5
+          );
           if (metaTag) {
             metaData = BEDROOMS.find(
               (property) => property.value == metaTag.value
@@ -127,6 +213,22 @@ export default function PropertyGrid() {
     }
     return metaData;
   }
+
+  const autocomplete = new window.google.maps.places.Autocomplete(
+    document.getElementById("autocomplete")
+  );
+
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) {
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    setAddress(place.formatted_address);
+    setLatFilter(place.geometry.location.lat());
+    setLngFilter(place.geometry.location.lng());
+  });
 
   useEffect(() => {
     loadProperties();
@@ -166,10 +268,22 @@ export default function PropertyGrid() {
                   </li>
                   <li>
                     <div className="short-by text-center">
-                      <select className="nice-select">
-                        <option>Default Sorting</option>
-                        <option>Sort by price: low to high</option>
-                        <option>Sort by price: high to low</option>
+                      <select
+                        className="nice-select"
+                        onChange={(e) => {
+                          setSortFilter(e.target.value);
+                          loadProperties("sort");
+                        }}
+                      >
+                        <option selected disabled>
+                          Default Sorting
+                        </option>
+                        <option value={"ASC"}>
+                          Sort by price: low to high
+                        </option>
+                        <option value={"DESC"}>
+                          Sort by price: high to low
+                        </option>
                       </select>
                     </div>
                   </li>
@@ -185,13 +299,23 @@ export default function PropertyGrid() {
                       <div className="col-lg-12">
                         {/* Search Widget */}
                         <div className="ltn__search-widget mb-30">
-                          <form action="#">
+                          <form>
                             <input
                               type="text"
                               name="search"
-                              placeholder="Search your keyword..."
+                              id="autocomplete"
+                              placeholder="Search Location..."
+                              value={address}
+                              onChange={(event) =>
+                                setAddress(event.target.value)
+                              }
                             />
-                            <button type="submit">
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                loadProperties("location");
+                              }}
+                            >
                               <i className="fas fa-search" />
                             </button>
                           </form>
@@ -217,7 +341,13 @@ export default function PropertyGrid() {
                               <div className="product-info">
                                 <div className="product-badge">
                                   <ul>
-                                    <li className="sale-badg">For {loadPropertyMetaData(element, "categoryType")}</li>
+                                    <li className="sale-badg">
+                                      For{" "}
+                                      {loadPropertyMetaData(
+                                        element,
+                                        "categoryType"
+                                      )}
+                                    </li>
                                   </ul>
                                 </div>
                                 <h2 className="product-title go-top">
@@ -235,20 +365,25 @@ export default function PropertyGrid() {
                                     </li>
                                   </ul>
                                 </div>
-                                {
-                                  (element?.productMetaTags?.length > 0) && (
-                                    <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
-                                      <li>
-                                        <span>{loadPropertyMetaData(element, "bedroom")} </span>
-                                        Bed
-                                      </li>
-                                      <li>
-                                        <span>{loadPropertyMetaData(element, "area")} </span>
-                                        {loadPropertyMetaData(element, "unit")}
-                                      </li>
-                                    </ul>
-                                  )
-                                }
+                                {element?.productMetaTags?.length > 0 && (
+                                  <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
+                                    <li>
+                                      <span>
+                                        {loadPropertyMetaData(
+                                          element,
+                                          "bedroom"
+                                        )}{" "}
+                                      </span>
+                                      Bed
+                                    </li>
+                                    <li>
+                                      <span>
+                                        {loadPropertyMetaData(element, "area")}{" "}
+                                      </span>
+                                      {loadPropertyMetaData(element, "unit")}
+                                    </li>
+                                  </ul>
+                                )}
                                 <div className="product-hover-action">
                                   <ul>
                                     <li
@@ -276,7 +411,9 @@ export default function PropertyGrid() {
                               </div>
                               <div className="product-info-bottom">
                                 <div className="product-price">
-                                  <span>{DEFAULT_CURRENCY} {element.price}</span>
+                                  <span>
+                                    {DEFAULT_CURRENCY} {element.price}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -325,11 +462,19 @@ export default function PropertyGrid() {
                                 <div className="product-badge-price">
                                   <div className="product-badge">
                                     <ul>
-                                      <li className="sale-badg">For {loadPropertyMetaData(element, "categoryType")}</li>
+                                      <li className="sale-badg">
+                                        For{" "}
+                                        {loadPropertyMetaData(
+                                          element,
+                                          "categoryType"
+                                        )}
+                                      </li>
                                     </ul>
                                   </div>
                                   <div className="product-price">
-                                    <span>{DEFAULT_CURRENCY} {element.price}</span>
+                                    <span>
+                                      {DEFAULT_CURRENCY} {element.price}
+                                    </span>
                                   </div>
                                 </div>
                                 <h2 className="product-title go-top">
@@ -349,11 +494,15 @@ export default function PropertyGrid() {
                                 </div>
                                 <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
                                   <li>
-                                  <span>{loadPropertyMetaData(element, "bedroom")} </span>
+                                    <span>
+                                      {loadPropertyMetaData(element, "bedroom")}{" "}
+                                    </span>
                                     Bed
                                   </li>
                                   <li>
-                                    <span>{loadPropertyMetaData(element, "area")} </span>
+                                    <span>
+                                      {loadPropertyMetaData(element, "area")}{" "}
+                                    </span>
                                     {loadPropertyMetaData(element, "unit")}
                                   </li>
                                 </ul>
@@ -415,7 +564,144 @@ export default function PropertyGrid() {
                 </div>
               </div> */}
             </div>
-            <Sidebar />
+            <div className="col-lg-4  mb-100">
+              <aside className="sidebar ltn__shop-sidebar">
+                <h3 className="mb-10">Advance Filters</h3>
+                <div className="widget ltn__menu-widget">
+                  <h4 className="ltn__widget-title">Property Category</h4>
+                  <ul>
+                    <div
+                      onChange={(e) => {
+                        setPropertyCategory(e.target.value);
+                      }}
+                    >
+                      <li>
+                        <label className="checkbox-item">
+                          Rent
+                          <input
+                            type="radio"
+                            name="propertyCategory"
+                            value="rent"
+                          />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          Sale
+                          <input
+                            type="radio"
+                            name="propertyCategory"
+                            value="sale"
+                          />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                    </div>
+                  </ul>
+                  <hr />
+                  <h4 className="ltn__widget-title">Property Category Type</h4>
+                  <ul>
+                    <div
+                      onChange={(e) => {
+                        setPropertyCategoryType(e.target.value);
+                      }}
+                    >
+                      <li>
+                        <label className="checkbox-item">
+                          Commercial
+                          <input
+                            type="radio"
+                            name="propertyCategoryType"
+                            value="commercial"
+                          />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          Residential
+                          <input
+                            type="radio"
+                            name="propertyCategoryType"
+                            value="residential"
+                          />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                    </div>
+                  </ul>
+                  <hr />
+                  <div className="widget--- ltn__price-filter-widget">
+                    <h4 className="ltn__widget-title ltn__widget-title-border---">
+                      Filter by price
+                    </h4>
+                    <div className="price_filter">
+                      <div className="price_slider_amount">
+                        <input
+                          type="text"
+                          className="amount"
+                          name="price"
+                          ref={price}
+                          placeholder="Add Your Price"
+                        />
+                      </div>
+                      <div className="slider-range" />
+                    </div>
+                  </div>
+                  <hr />
+                  <h4 className="ltn__widget-title">Bedrooms</h4>
+                  <ul>
+                    <div
+                      onChange={(e) => {
+                        setRooms(e.target.value);
+                      }}
+                    >
+                      <li>
+                        <label className="checkbox-item">
+                          Single
+                          <input type="radio" name="bedrooms" value="1" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          Double
+                          <input type="radio" name="bedrooms" value="2" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          Up To 3
+                          <input type="radio" name="bedrooms" value="3" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          Up To 5
+                          <input type="radio" name="bedrooms" value="5" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                    </div>
+                  </ul>
+                </div>
+              </aside>
+              <button
+                className="mt-4 btn theme-btn-1"
+                onClick={() => loadProperties("filter")}
+              >
+                Submit
+              </button>
+              <button
+                className="mt-4 btn theme-btn-2"
+                onClick={() => loadProperties()}
+              >
+                Reset
+              </button>
+            </div>
           </div>
         </div>
       </div>

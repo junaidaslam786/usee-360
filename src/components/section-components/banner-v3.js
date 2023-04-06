@@ -31,10 +31,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/services/homes"
+                            to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Homes
+                            Properties
                           </Link>
                         </div>
                       </div>
@@ -67,10 +67,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/services/homes"
+                            to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Homes
+                            Properties
                           </Link>
                         </div>
                       </div>
@@ -103,10 +103,10 @@ class BannerV3 extends Component {
                         </h1>
                         <div className="btn-wrapper animated go-top">
                           <Link
-                            to="/services/homes"
+                            to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Homes
+                            Properties
                           </Link>
                         </div>
                       </div>

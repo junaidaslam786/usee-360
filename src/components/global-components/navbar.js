@@ -74,15 +74,14 @@ class Navbar extends Component {
                             <Link to="/services">Services</Link>
                             <ul>
                               <li>
-                                <Link to="/services/homes">Usee-360 Homes</Link>
-                              </li>
-                              <li>
-                                <Link to="/services/villas">
-                                  Usee-360 Villas
+                                <Link to="/services/properties">
+                                  Usee-360 Properties
                                 </Link>
                               </li>
                               <li>
-                                <Link to="/services/boats">Usee-360 Boats</Link>
+                                <Link to="/services/yachts">
+                                  Usee-360 Yachts
+                                </Link>
                               </li>
                               <li>
                                 <Link to="/services/vehicles">
@@ -92,11 +91,6 @@ class Navbar extends Component {
                               <li>
                                 <Link to="/services/aviation">
                                   Usee-360 Aviation
-                                </Link>
-                              </li>
-                              <li>
-                                <Link to="/services/commercial-retail">
-                                  Usee-360 Commercial Retail
                                 </Link>
                               </li>
                             </ul>
@@ -179,24 +173,16 @@ class Navbar extends Component {
                   <Link to="/services">Services</Link>
                   <ul className="sub-menu">
                     <li>
-                      <Link to="/services/homes">Usee-360 Homes</Link>
+                      <Link to="/services/properties">Usee-360 Properties</Link>
                     </li>
                     <li>
-                      <Link to="/services/villas">Usee-360 Villas</Link>
-                    </li>
-                    <li>
-                      <Link to="/services/boats">Usee-360 Boats</Link>
+                      <Link to="/services/yachts">Usee-360 Yachts</Link>
                     </li>
                     <li>
                       <Link to="/services/vehicles">Usee-360 Vehicles</Link>
                     </li>
                     <li>
                       <Link to="/services/aviation">Usee-360 Aviation</Link>
-                    </li>
-                    <li>
-                      <Link to="/services/commercial-retail">
-                        Usee-360 Commercial Retail
-                      </Link>
                     </li>
                   </ul>
                 </li>

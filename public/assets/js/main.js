@@ -1788,15 +1788,15 @@
           --------------------------------------------------------- */
           $( ".slider-range" ).slider({
               range: true,
-              min: 50,
-              max: 5000,
-              values: [ 50, 1500 ],
+              min: 500,
+              max: 500000,
+              values: [ 500, 500000 ],
               slide: function( event, ui ) {
-                  $( ".amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+                  $( ".amount" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
               }
           });
-          $( ".amount" ).val( "$" + $( ".slider-range" ).slider( "values", 0 ) +
-          " - $" + $( ".slider-range" ).slider( "values", 1 ) ); 
+          $( ".amount" ).val($( ".slider-range" ).slider( "values", 0 ) +
+          " - " + $( ".slider-range" ).slider( "values", 1 ) );
   
   
           /* --------------------------------------------------------

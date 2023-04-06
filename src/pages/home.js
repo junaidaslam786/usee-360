@@ -4,7 +4,6 @@ import Navbar from '../components/global-components/navbar';
 import Banner from '../components/section-components/banner-v3';
 import Aboutv1 from '../components/section-components/about-v1';
 import Servicev1 from '../components/section-components/service-v1';
-import ProSlider from '../components/section-components/product-slider-v2';
 import Category from '../components/section-components/category-v1';
 import History from '../components/section-components/history';
 import CallToActionV1 from '../components/section-components/call-to-action-v1';
@@ -19,7 +18,6 @@ function HomePage() {
       <Servicev1 />
       <History />
       <Category />
-      <ProSlider />
       <CallToActionV1 />
       <Footer />
     </div>

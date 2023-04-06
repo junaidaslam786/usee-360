@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import parse from "html-react-parser";
 
 class ServiceDetails extends Component {
   render() {
@@ -50,24 +49,16 @@ class ServiceDetails extends Component {
                 <div className="widget-2 ltn__menu-widget ltn__menu-widget-2 text-uppercase">
                   <ul className="go-top">
                     <li className="active">
-                      <Link to="/services/homes">
-                        Homes
+                      <Link to="/services/properties">
+                        Properties
                         <span>
                           <i className="fas fa-arrow-right" />
                         </span>
                       </Link>
                     </li>
                     <li>
-                      <Link to="/services/villas">
-                        Villas
-                        <span>
-                          <i className="fas fa-arrow-right" />
-                        </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/services/boats">
-                        Boats
+                      <Link to="/services/yachts">
+                        Yachts
                         <span>
                           <i className="fas fa-arrow-right" />
                         </span>
@@ -84,14 +75,6 @@ class ServiceDetails extends Component {
                     <li>
                       <Link to="/services/aviation">
                         Aviation
-                        <span>
-                          <i className="fas fa-arrow-right" />
-                        </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/services/commercial-retail">
-                        Commercial Retail
                         <span>
                           <i className="fas fa-arrow-right" />
                         </span>

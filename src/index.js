@@ -17,12 +17,10 @@ import Demo from "./pages/demo";
 import Contact from "./pages/contact";
 import Termcondition from "./pages/termcondition";
 
-import HomesService from "./pages/services/homes";
-import VillasService from "./pages/services/villas";
-import BoatsService from "./pages/services/boats";
+import PropertiesService from "./pages/services/properties";
+import YachtsService from "./pages/services/yachts";
 import VehiclesService from "./pages/services/vehicles";
 import AviationService from "./pages/services/aviation";
-import CommercialRetailService from "./pages/services/commercial-retail";
 
 import AgentRegister from "./pages/agent/register";
 import AgentLogin from "./pages/agent/login";
@@ -68,15 +66,11 @@ class Root extends Component {
             <Route path="/contact" component={Contact} />
 
             {/* Services Routes */}
-            <Route path="/services/homes" component={HomesService} />
-            <Route path="/services/villas" component={VillasService} />
-            <Route path="/services/boats" component={BoatsService} />
+            <Route path="/services/properties" component={PropertiesService} />
+            <Route path="/services/yachts" component={YachtsService} />
             <Route path="/services/vehicles" component={VehiclesService} />
             <Route path="/services/aviation" component={AviationService} />
-            <Route
-              path="/services/commercial-retail"
-              component={CommercialRetailService}
-            />
+            
             <Route path="/services" component={Services} />
             <Route path="/terms-and-conditions" component={Termcondition} />
 

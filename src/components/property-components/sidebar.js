@@ -12,7 +12,7 @@ class Sidebar extends Component {
               <li>
                 <label className="checkbox-item">
                   Rent
-                  <input type="checkbox" defaultChecked="checked" />
+                  <input type="checkbox" />
                   <span className="checkmark" />
                 </label>
               </li>
@@ -30,7 +30,7 @@ class Sidebar extends Component {
               <li>
                 <label className="checkbox-item">
                   Commercial
-                  <input type="checkbox" defaultChecked="checked" />
+                  <input type="checkbox" />
                   <span className="checkmark" />
                 </label>
               </li>
@@ -65,7 +65,7 @@ class Sidebar extends Component {
               <li>
                 <label className="checkbox-item">
                   Single
-                  <input type="checkbox" defaultChecked="checked" />
+                  <input type="checkbox" />
                   <span className="checkmark" />
                 </label>
               </li>
