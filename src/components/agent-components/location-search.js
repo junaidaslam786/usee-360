@@ -261,16 +261,15 @@ export default function LocationSearch() {
                 />
                 <div className="content">
                   <h6 className="description mb-2">
-                    SLS Dubai Hotel & Residences
+                    {element.title}
                   </h6>
                   <span className="location">
-                    <i class="flaticon-pin"></i> Marasi Dr - Business Bay -
-                    Dubai - United Arab Emirates
+                    <i class="flaticon-pin"></i> {element.address}
                   </span>
                 </div>
                 <div class="product-info-bottom">
                   <div class="product-price">
-                    <span>$3000.444</span>
+                    <span>${element.price}</span>
                   </div>
                 </div>
               </div>

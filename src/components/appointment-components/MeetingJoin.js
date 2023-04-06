@@ -33,31 +33,28 @@ const MeetingJoin = (props) => {
   const history = useHistory();
 
   if (!token) {
-    if (userType === "agent")
-      history.push(
-        "/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname)
-      );
-    else if (userType === "customer")
-      history.push(
-        "/customer/login?returnUrl=" +
-          encodeURIComponent(window.location.pathname)
-      );
-    else history.push("/");
+    if(userType === "agent"){
+      history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
+    }
+    else if(userType === "customer"){
+      history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
+    }
+    else{
+      history.push("/");
+    }
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      if (userType === "agent") {
+      if(userType === "agent"){
         localStorage.removeItem("agentToken");
-        history.push(
-          "/agent/login?returnUrl=" +
-            encodeURIComponent(window.location.pathname)
-        );
-      } else if (userType === "customer") {
+        history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
+      }
+      else if(userType === "customer"){
         localStorage.removeItem("customerToken");
-        history.push(
-          "/customer/login?returnUrl=" +
-            encodeURIComponent(window.location.pathname)
-        );
+        history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
+      }
+      else{
+        history.push("/");
       }
     }
   }
@@ -94,7 +91,7 @@ const MeetingJoin = (props) => {
       .then((propertyData) => {
         setPropertiesList(
           propertyData.data.map((property) => {
-            return { label: property.description, value: property.id };
+            return { label: property.title, value: property.id };
           })
         );
       })
@@ -234,7 +231,6 @@ const MeetingJoin = (props) => {
           const screenshareEle = document.createElement("div");
           const screenPreview = document.getElementById("screen-preview");
           //const ot_element = document.getElementById(`OT`)
-          console.log(event.stream);
           screenPreview.appendChild(screenshareEle);
           const subscriber = session.subscribe(
             event.stream,
@@ -347,7 +343,6 @@ const MeetingJoin = (props) => {
           //
         }
       } else {
-        console.log(publisher.element);
         // If the connection is successful, publish the publisher to the session
         session.publish(publisher, (error) => {});
       }

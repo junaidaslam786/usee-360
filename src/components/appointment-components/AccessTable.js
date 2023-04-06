@@ -18,11 +18,9 @@ function getToken(userType) {
 }
 
 const AccessTable = (props) => {
-  console.log(props);
 
   const { appointmentId, userType } = props;
   const token = getToken(userType);
-  console.log(token);
   const history = useHistory();
 
   if (!token) {
