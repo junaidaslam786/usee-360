@@ -265,7 +265,7 @@ export default function MyProperties() {
                                 onSubmit={handleSubmit}
                               >
                                 <Select
-                                  className="react-select"
+                                  classNamePrefix="custom-select"
                                   options={removeReasons}
                                   onChange={(e) => setRemoveReason(e)}
                                   value={removeReason}

@@ -519,7 +519,7 @@ export default function AddProperty(props) {
               <label>Property Type *</label>
               <div className="input-item">
                 <Select 
-                  className="react-select"
+                  classNamePrefix="custom-select"
                   options={PROPERTY_TYPES} 
                   onChange={(e) => setPropertyTypeHandler(e)}
                   value={propertyType}
@@ -533,7 +533,7 @@ export default function AddProperty(props) {
               <label>Property Sub Type *</label>
               <div className="input-item">
                 <Select
-                  className="react-select"
+                  classNamePrefix="custom-select"
                   options={propertySubTypeOptions}
                   onChange={(e) => setPropertySubType(e)}
                   value={propertySubType}
@@ -547,7 +547,7 @@ export default function AddProperty(props) {
               <label>Property Category Type *</label>
               <div className="input-item">
                 <Select 
-                  className="react-select"
+                  classNamePrefix="custom-select"
                   options={PROPERTY_CATEGORY_TYPES} 
                   onChange={(e) => setPropertyCategoryTypeHandler(e)}
                   value={propertyCategoryType}
@@ -599,7 +599,7 @@ export default function AddProperty(props) {
                 <div className="input-item">
                   <label>Price Type</label>
                   <Select 
-                    className="react-select"
+                    classNamePrefix="custom-select"
                     options={PRICE_TYPE} 
                     onChange={(e) => setPriceType(e)}
                     value={priceType}
@@ -613,7 +613,7 @@ export default function AddProperty(props) {
               <label>No. of bedrooms</label>
               <div className="input-item">
                 <Select
-                  className="react-select"
+                  classNamePrefix="custom-select"
                   options={BEDROOMS}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
@@ -638,7 +638,7 @@ export default function AddProperty(props) {
               <label>Unit</label>
               <div className="input-item">
                 <Select
-                  className="react-select"
+                  classNamePrefix="custom-select"
                   options={UNITS}
                   onChange={(e) => setUnit(e)}
                   value={unit}

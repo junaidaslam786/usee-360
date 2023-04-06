@@ -291,7 +291,7 @@ export default function AddAppointment() {
                   <div className="input-item">
                     <label>Select Property *</label>
                     <Select
-                      className="react-select"
+                      classNamePrefix="custom-select"
                       isMulti
                       options={properties}
                       onChange={(e) => setSelectedAllocatedProperties(e)}

@@ -180,7 +180,7 @@ export default function CompletedAppointments() {
       </div>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
-          <div className="modal-dialog modal-md" role="document">
+          <div className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <button
@@ -200,6 +200,8 @@ export default function CompletedAppointments() {
                         <h4 className="mb-5">
                           Booking # {appointmentView?.id || "N/A"}
                         </h4>
+                      </div>
+                      <div className="col-lg-6">
                         <div>
                           <h5 className="p-0 m-0">Customer Name</h5>
                           <p className="p-0 m-o">
@@ -214,7 +216,7 @@ export default function CompletedAppointments() {
                           />
                         </div>
                         <div>
-                          <h5 className="p-0 m-0">Booking Time</h5>
+                          <h5 className="p-0 m-0 mt-2">Booking Time</h5>
                           <div className="row">
                             <div className="col">
                               <p className="p-0 m-o">
@@ -248,6 +250,8 @@ export default function CompletedAppointments() {
                             {appointmentView?.customerPhone || "N/A"}
                           </p>
                         </div>
+                      </div>
+                      <div className="col-lg-6">
                         <div>
                           <h5 className="p-0 m-0">Agent Name</h5>
                           <p className="p-0 m-o">
@@ -264,7 +268,7 @@ export default function CompletedAppointments() {
                         {appointmentView?.properties
                           ? appointmentView?.properties.map((element, i) => (
                               <div key={element.id}>
-                                <h5 className="p-0 m-0">
+                                <h5 className="p-0 m-0 my-2">
                                   Property: {element.title}
                                 </h5>
                                 <Link

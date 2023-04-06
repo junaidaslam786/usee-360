@@ -5831,7 +5831,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   height: 50px;
   width: 150px;
   line-height: 50px;
-  background: #00C800;
+  background: #00c800;
   color: white;
   text-align: center;
   -webkit-box-pack: center;
@@ -10114,6 +10114,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__product-list-view .ltn__product-item .product-img {
   max-width: 40%;
   float: left;
+  width: 100%;
+  object-fit: cover;
 }
 
 .ltn__product-list-view .ltn__product-item .product-info {
@@ -18138,7 +18140,7 @@ input.cart-plus-minus-box {
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #fff transparent transparent transparent;
-  top: 25%;  
+  top: 25%;
   left: 32%;
 }
 
@@ -18178,8 +18180,8 @@ input.cart-plus-minus-box {
 @media only screen and (min-width: 768px) {
   .appointment-info {
     padding-left: 25px;
-    border-left: 1px solid #D5DBDB;
-  }  
+    border-left: 1px solid #d5dbdb;
+  }
 }
 
 .dashboard-card {
@@ -18218,7 +18220,7 @@ input.cart-plus-minus-box {
 }
 
 .dashboard-card.card-4 {
-  background-color: #3e2837
+  background-color: #3e2837;
 }
 
 .link-active {
@@ -18228,11 +18230,11 @@ input.cart-plus-minus-box {
 
 .property-desc {
   padding: 50px 0;
-  border-bottom: 1px solid #CCD1D1;
+  border-bottom: 1px solid #ccd1d1;
 }
 
 .property-desc .col-md-2 h3 {
-  color: #00C800;
+  color: #00c800;
   margin-top: 20px;
 }
 
@@ -18272,16 +18274,13 @@ input.cart-plus-minus-box {
   background-color: #fafafa;
   color: #bdbdbd;
   outline: none;
-  transition: border .24s ease-in-out;
+  transition: border 0.24s ease-in-out;
 }
 
 .featuredImageCss {
-  position: absolute;
-  right: -123px;
-  top: -50px;
   width: 350px;
   height: 200px;
-  border: 2px solid #00C800;
+  border: 2px solid #00c800;
   border-radius: 5px;
   padding: 2px;
 }
@@ -18306,14 +18305,16 @@ h1.page-title {
 }
 
 .companyLogoCss {
-  position: absolute;
+  /* position: absolute; */
   /* right: -120px; */
-  top: -20px;
+  /* top: -20px; */
   width: 250px;
-  height: 120px;
-  border: 2px solid #00C800;
+  height: 250px;
+  border: 2px solid #00c800;
   border-radius: 5px;
   padding: 2px;
+  object-fit: cover;
+  object-position: top;
 }
 
 .positionRevert {

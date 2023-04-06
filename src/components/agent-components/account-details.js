@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
-import ResponseHandler from '../global-components/respones-handler';
+import ResponseHandler from "../global-components/respones-handler";
 
 export default function AccountDetails() {
   const [firstName, setFirstName] = useState();
@@ -43,16 +43,36 @@ export default function AccountDetails() {
     const jsonData = await response.json();
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
-    setCompanyPosition(jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : "");
+    setCompanyPosition(
+      jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
+    );
     setPhoneNumber(jsonData.phoneNumber);
-    setMobileNumber(jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : "");
-    setCompanyName(jsonData?.agent?.companyName ? jsonData.agent.companyName : "");
-    setCompanyAddress(jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : "");
+    setMobileNumber(
+      jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
+    );
+    setCompanyName(
+      jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
+    );
+    setCompanyAddress(
+      jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
+    );
     setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
     setCity(jsonData?.cityName ? jsonData.cityName : "");
-    setMortgageAdvisorEmail(jsonData?.agent?.mortgageAdvisorEmail ? jsonData.agent.mortgageAdvisorEmail : "");
-    setCompanyLogoPreview(jsonData?.agent?.companyLogo ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}` : "");
-    setProfileImagePreview(jsonData?.profileImage ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}` : "");
+    setMortgageAdvisorEmail(
+      jsonData?.agent?.mortgageAdvisorEmail
+        ? jsonData.agent.mortgageAdvisorEmail
+        : ""
+    );
+    setCompanyLogoPreview(
+      jsonData?.agent?.companyLogo
+        ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
+        : ""
+    );
+    setProfileImagePreview(
+      jsonData?.profileImage
+        ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
+        : ""
+    );
   };
 
   const updateProfile = async (e) => {
@@ -72,7 +92,7 @@ export default function AccountDetails() {
     formdata.append("mortgageAdvisorEmail", mortgageAdvisorEmail);
     formdata.append("companyLogo", companyLogo);
     formdata.append("profileImage", profileImage);
-    
+
     await axios
       .put(`${process.env.REACT_APP_API_URL}/user/profile`, formdata, {
         headers: {
@@ -81,17 +101,20 @@ export default function AccountDetails() {
         },
       })
       .then((response) => {
-        setSuccessHandler('profile', response.data.message);
+        setSuccessHandler("profile", response.data.message);
         setLoading(false);
       })
       .catch((error) => {
         if (error?.response?.data?.errors) {
           setErrorHandler("profile", error.response.data.errors, "error", true);
-        } else if (error?.response?.data?.message) { 
+        } else if (error?.response?.data?.message) {
           setErrorHandler("profile", error.response.data.message);
         } else {
           setErrorHandler();
-          setErrorHandler("profile", "Unable to update profile, please try again later");
+          setErrorHandler(
+            "profile",
+            "Unable to update profile, please try again later"
+          );
         }
         setLoading(false);
       });
@@ -102,7 +125,10 @@ export default function AccountDetails() {
     setLoadingPass(true);
 
     if (newPassword !== confirmPassword) {
-      setErrorHandler("password", "Password and confirm password did not match");
+      setErrorHandler(
+        "password",
+        "Password and confirm password did not match"
+      );
       setLoadingPass(false);
     } else {
       let formdata = new FormData();
@@ -121,20 +147,28 @@ export default function AccountDetails() {
           }
         )
         .then(() => {
-          setSuccessHandler('password', "Password updated successfully!");
+          setSuccessHandler("password", "Password updated successfully!");
           setLoadingPass(false);
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
         })
         .catch((error) => {
-          console.log('update-password-error', error);
+          console.log("update-password-error", error);
           if (error?.response?.data?.errors) {
-            setErrorHandler("password", error.response.data.errors, "error", true);
-          } else if (error?.response?.data?.message) { 
+            setErrorHandler(
+              "password",
+              error.response.data.errors,
+              "error",
+              true
+            );
+          } else if (error?.response?.data?.message) {
             setErrorHandler("password", error.response.data.message);
           } else {
-            setErrorHandler("password", "Unable to update password, please try again later");
+            setErrorHandler(
+              "password",
+              "Unable to update password, please try again later"
+            );
           }
           setLoadingPass(false);
         });
@@ -146,24 +180,24 @@ export default function AccountDetails() {
       setProfileImage(event.target.files[0]);
       setProfileImagePreview(URL.createObjectURL(event.target.files[0]));
     }
-  }
+  };
 
   const onCompanyLogoChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setCompanyLogo(event.target.files[0]);
       setCompanyLogoPreview(URL.createObjectURL(event.target.files[0]));
     }
-  }
+  };
 
   const setErrorHandler = (type, msg, param = "form", fullError = false) => {
-    if (type === 'password') {
-      setErrorPass(fullError ? msg : [{ msg, param }])
+    if (type === "password") {
+      setErrorPass(fullError ? msg : [{ msg, param }]);
       setTimeout(() => {
         setErrorPass([]);
       }, 3000);
       setSuccessPass("");
     } else {
-      setError(fullError ? msg : [{ msg, param }])
+      setError(fullError ? msg : [{ msg, param }]);
       setTimeout(() => {
         setError([]);
       }, 3000);
@@ -172,7 +206,7 @@ export default function AccountDetails() {
   };
 
   const setSuccessHandler = (type, msg) => {
-    if (type === 'password') {
+    if (type === "password") {
       setSuccessPass(msg);
       setTimeout(() => {
         setSuccessPass("");
@@ -187,7 +221,6 @@ export default function AccountDetails() {
 
       setError([]);
     }
-    
   };
 
   useEffect(() => {
@@ -201,7 +234,7 @@ export default function AccountDetails() {
         <div className="ltn__myaccount-tab-content-inner">
           <div className="ltn__form-box">
             <form onSubmit={updateProfile}>
-              <ResponseHandler errors={error} success={success}/>
+              <ResponseHandler errors={error} success={success} />
               <div className="row mb-100">
                 <div className="col-md-6">
                   <label>First Name</label>
@@ -303,7 +336,7 @@ export default function AccountDetails() {
                     defaultValue={mortgageAdvisorEmail}
                   />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-6 my-3">
                   <label>Company Logo</label>
                   <input
                     type="file"
@@ -311,21 +344,19 @@ export default function AccountDetails() {
                     onChange={onCompanyLogoChange}
                   />
                 </div>
-                <div className="col-md-6">
-                  {
-                    companyLogoPreview && (
-                      <img
-                        className="companyLogoCss"
-                        src={companyLogoPreview}
-                        alt="No logo found"
-                        width="300px"
-                      />
-                    )
-                  }
+                <div className="col-md-6 my-3">
+                  {companyLogoPreview && (
+                    <img
+                      className="companyLogoCss"
+                      src={companyLogoPreview}
+                      alt="No logo found"
+                      width="300px"
+                    />
+                  )}
                 </div>
               </div>
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6 my-3">
                   <label>Profile Image</label>
                   <input
                     type="file"
@@ -333,17 +364,15 @@ export default function AccountDetails() {
                     onChange={onProfileImageChange}
                   />
                 </div>
-                <div className="col-md-6">
-                  {
-                    profileImagePreview && (
-                      <img
-                        className="companyLogoCss"
-                        src={profileImagePreview}
-                        alt="No logo found"
-                        width="300px"
-                      />
-                    )
-                  }
+                <div className="col-md-6 my-3">
+                  {profileImagePreview && (
+                    <img
+                      className="companyLogoCss"
+                      src={profileImagePreview}
+                      alt="No logo found"
+                      width="300px"
+                    />
+                  )}
                 </div>
               </div>
               <div className="btn-wrapper">
@@ -366,7 +395,7 @@ export default function AccountDetails() {
             </form>
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
-              <ResponseHandler errors={errorPass} success={successPass}/>
+              <ResponseHandler errors={errorPass} success={successPass} />
               <div className="row">
                 <div className="col-md-12">
                   <label>
