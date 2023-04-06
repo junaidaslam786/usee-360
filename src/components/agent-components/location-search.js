@@ -13,6 +13,7 @@ export default function LocationSearch() {
   const [markers, setMarkers] = useState([]);
 
   let map;
+  let newMarkers = [];
 
   useEffect(() => {
     const google = window.google;
@@ -110,7 +111,6 @@ export default function LocationSearch() {
       .getPath()
       .getArray()
       .map((point) => `${point.lng()} ${point.lat()}`);
-    console.log(polygonCoords);
     fetch(`${process.env.REACT_APP_API_URL}/home/property/search-polygon`, {
       method: "POST",
       body: JSON.stringify({ coordinates: polygonCoords }),
@@ -121,14 +121,14 @@ export default function LocationSearch() {
       .then((data) => data.json())
       .then((data) => {
         setProperties([]);
-        if(markers.length > 0) {
-          markers.map((marker) => {
+        if(newMarkers.length > 0) {
+          newMarkers.map((marker) => {
             marker.setMap(null);
           })
         }
+        newMarkers = [];
         if (data.length > 0) {
           setProperties(data);
-          let newMarkers = [];
           data.map((property) => {
             const position = {
               lat: parseFloat(property.latitude),
@@ -148,7 +148,6 @@ export default function LocationSearch() {
               );
             });
           });
-          setMarkers(newMarkers);
         }
       })
       .catch((error) => {
