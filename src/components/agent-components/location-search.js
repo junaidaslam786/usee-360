@@ -246,7 +246,7 @@ export default function LocationSearch() {
   }
 
   function handleLogoClick() {
-    history.push("/services/homes");
+    history.push("/services/properties");
   }
 
   return (
