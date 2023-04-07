@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import ResponseHandler from '../global-components/respones-handler';
+import ResponseHandler from "../global-components/respones-handler";
 import { JOB_TITLE } from "../../constants";
-import Select from 'react-select';
+import Select from "react-select";
 
 function getToken() {
   const tokenString = localStorage.getItem("agentToken");
@@ -59,7 +59,7 @@ export default function Register() {
       password,
       confirmPassword,
       jobTitle: jobTitle?.value ? jobTitle.value : "",
-      licenseNo
+      licenseNo,
     });
     if (response.token) {
       setToken(response.token);
@@ -68,9 +68,14 @@ export default function Register() {
       if (response?.errors) {
         setErrors(response.errors);
       } else {
-        setErrors([{ msg: "Unable to register agent, please try again later", param: "form" }])
+        setErrors([
+          {
+            msg: "Unable to register agent, please try again later",
+            param: "form",
+          },
+        ]);
       }
-      
+
       setTimeout(() => {
         setErrors([]);
       }, 3000);
@@ -99,7 +104,7 @@ export default function Register() {
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
               >
-                <ResponseHandler errors={errors}/>
+                <ResponseHandler errors={errors} />
                 <input
                   type="text"
                   name="companyname"
@@ -140,8 +145,10 @@ export default function Register() {
                 </div>
                 <div className="row mb-30">
                   <div className="col-md-12">
-                    <Select 
-                      options={JOB_TITLE} 
+                    <Select
+                      className="mb-0"
+                      classNamePrefix="custom-select"
+                      options={JOB_TITLE}
                       onChange={(e) => setJobTitle(e)}
                       required
                     />
@@ -149,7 +156,7 @@ export default function Register() {
                 </div>
                 <div className="row">
                   <div className="col-md-12">
-                  <input
+                    <input
                       type="text"
                       name="licenseNo"
                       placeholder="License or Registration #"

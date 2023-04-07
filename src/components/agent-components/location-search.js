@@ -62,11 +62,11 @@ export default function LocationSearch() {
       infowindow.open(map);
     });
 
-      if (drawingManager != null) {
-        drawingManager.setMap(null);
-      }
+    if (drawingManager != null) {
+      drawingManager.setMap(null);
+    }
 
-      drawingManager = new google.maps.drawing.DrawingManager({
+    drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
@@ -129,10 +129,10 @@ export default function LocationSearch() {
       .then((data) => data.json())
       .then((data) => {
         setProperties([]);
-        if(newMarkers.length > 0) {
+        if (newMarkers.length > 0) {
           newMarkers.map((marker) => {
             marker.setMap(null);
-          })
+          });
         }
         newMarkers = [];
         if (data.length > 0) {
@@ -147,7 +147,7 @@ export default function LocationSearch() {
               position,
               "assets/img/icons/property-marker.png",
               { width: 40, height: 40 }
-            ); 
+            );
             newMarkers.push(marker);
             marker.addListener("click", function () {
               window.open(
@@ -266,7 +266,7 @@ export default function LocationSearch() {
           alt="Logo"
           height="80"
           onClick={handleLogoClick}
-          style={{"cursor": "pointer"}}
+          style={{ cursor: "pointer" }}
         />
         <p>
           You can search the properties in a specific area by drawing shapes on
@@ -283,15 +283,13 @@ export default function LocationSearch() {
                   className="featured-image-style"
                 />
                 <div className="content">
-                  <h6 className="description mb-2">
-                    {element.title}
-                  </h6>
+                  <h6 className="description mb-2">{element.title}</h6>
                   <span className="location">
-                    <i class="flaticon-pin"></i> {element.address}
+                    <i className="flaticon-pin"></i> {element.address}
                   </span>
                 </div>
-                <div class="product-info-bottom">
-                  <div class="product-price">
+                <div className="product-info-bottom">
+                  <div className="product-price">
                     <span>${element.price}</span>
                   </div>
                 </div>
@@ -325,6 +323,9 @@ export default function LocationSearch() {
         </div> */}
       </div>
       <div id="map"></div>
+      <div className="map-search-buttons">
+        <button className="btn theme-btn-3 reset py-2">Reset</button>
+      </div>
     </div>
   );
 }

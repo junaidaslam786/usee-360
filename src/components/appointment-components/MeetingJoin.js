@@ -33,27 +33,34 @@ const MeetingJoin = (props) => {
   const history = useHistory();
 
   if (!token) {
-    if(userType === "agent"){
-      history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
-    }
-    else if(userType === "customer"){
-      history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
-    }
-    else{
+    if (userType === "agent") {
+      history.push(
+        "/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname)
+      );
+    } else if (userType === "customer") {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
       history.push("/");
     }
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      if(userType === "agent"){
+      if (userType === "agent") {
         localStorage.removeItem("agentToken");
-        history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
-      }
-      else if(userType === "customer"){
+        history.push(
+          "/agent/login?returnUrl=" +
+            encodeURIComponent(window.location.pathname)
+        );
+      } else if (userType === "customer") {
         localStorage.removeItem("customerToken");
-        history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
-      }
-      else{
+        history.push(
+          "/customer/login?returnUrl=" +
+            encodeURIComponent(window.location.pathname)
+        );
+      } else {
         history.push("/");
       }
     }
@@ -506,7 +513,7 @@ const MeetingJoin = (props) => {
           {userType === "agent" && (
             <div>
               <select
-                class="nice-select w-100 select-margin"
+                className="nice-select w-100 select-margin"
                 value={selectedProperty}
                 onChange={(event) => {
                   handlePropertyChange(event);
@@ -549,7 +556,9 @@ const MeetingJoin = (props) => {
               Your browser does not support the video tag.
             </video>
           )}
-          {productImages?.length > 0 && <Slideshow fadeImages={productImages} />}
+          {productImages?.length > 0 && (
+            <Slideshow fadeImages={productImages} />
+          )}
           {defaultImage && (
             <img src={`${publicUrl}assets/img/default-property.jpg`} />
           )}
@@ -570,43 +579,40 @@ const MeetingJoin = (props) => {
           />
         </div>
 
-        <div>
+        <div className="d-flex align-items-center">
           {videoStreaming === true && (
-            <img
-              src={`${publicUrl}assets/img/icons/video-selected.png`}
-              onClick={() => toggleVideo()}
-            />
+            <span className="video-icon" onClick={() => toggleVideo()}>
+              <i class="fa-solid fa-video"></i>
+            </span>
           )}
           {videoStreaming === false && (
-            <img
-              src={`${publicUrl}assets/img/icons/video-not-selected.png`}
-              onClick={() => toggleVideo()}
-            />
+            <span className="video-icon" onClick={() => toggleVideo()}>
+              <i class="fa-solid fa-video-slash"></i>
+            </span>
           )}
           {audioStreaming === true && (
-            <img
-              src={`${publicUrl}assets/img/icons/mic-selected.png`}
-              onClick={() => toggleAudio()}
-            />
+            <span className="video-icon" onClick={() => toggleAudio()}>
+              <i class="fa-solid fa-microphone"></i>
+            </span>
           )}
           {audioStreaming === false && (
-            <img
-              src={`${publicUrl}assets/img/icons/mic-not-selected.png`}
-              onClick={() => toggleAudio()}
-            />
+            <span className="video-icon" onClick={() => toggleAudio()}>
+              <i class="fa-solid fa-microphone-slash"></i>
+            </span>
           )}
           {screenSharing === true && (
-            <img
-              src={`${publicUrl}assets/img/icons/share.png`}
-              onClick={() => toggleScreenSharing()}
-            />
+            <span className="video-icon" onClick={() => toggleScreenSharing()}>
+              <i class="fa-solid fa-laptop"></i>
+            </span>
           )}
           {screenSharing === false && (
-            <img
-              src={`${publicUrl}assets/img/icons/share.png`}
-              onClick={() => toggleScreenSharing()}
-            />
+            <span className="video-icon" onClick={() => toggleScreenSharing()}>
+              <i class="fa-solid fa-laptop"></i>
+            </span>
           )}
+          <span className="video-icon end-call">
+            <i class="fa-solid fa-phone-slash"></i>
+          </span>
         </div>
 
         <div id="toggle">

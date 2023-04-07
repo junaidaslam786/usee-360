@@ -68,7 +68,7 @@ export default function Sidebar() {
         Alerts
         <span className="position-relative">
           <i className="fa-solid fa-bell" />
-          <span class="badge rounded-pill bg-danger alert-badge">{ count }</span>
+          <span class="badge rounded-pill bg-danger alert-badge">{count}</span>
         </span>
       </NavLink>
       <a onClick={handleClick} href="#">
