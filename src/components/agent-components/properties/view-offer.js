@@ -258,7 +258,7 @@ export default function ViewOffer(props) {
                             list.map((element, i) => (
                                 <tr key={i}>
                                     <td className="ltn__my-properties-img go-top">
-                                        { element.user.firstName } { element.user.firstName }
+                                        { element.user.firstName } { element.user.lastName }
                                     </td>
                                     <td></td>
                                     <td>{ element.amount }</td>
