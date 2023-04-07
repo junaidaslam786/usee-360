@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
@@ -16,6 +16,9 @@ export default function PropertyDetails() {
   const [agentName, setAgentName] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
+
+  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const history = useHistory();
 
   const params = useParams();
 
@@ -68,6 +71,17 @@ export default function PropertyDetails() {
           setPropertyDocuments(response.data.productDocuments);
         }
       });
+  }
+
+  async function makeOfferHandler() {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
+      history.push(`/customer/property-details/${params.id}`);
+    }
   }
 
   useEffect(() => {
@@ -182,6 +196,7 @@ export default function PropertyDetails() {
                 </div>
               </div>
               <div>
+                <a onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</a>
                 {
                   propertyDocuments && (
                     propertyDocuments.map((element, index) => (

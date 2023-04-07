@@ -135,7 +135,10 @@ export default function PropertyGrid() {
 
   async function addToWishList(ID) {
     if (!token) {
-      history.push("/customer/login");
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
     } else {
       await axios
         .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/add/${ID}`, {
@@ -157,7 +160,10 @@ export default function PropertyGrid() {
 
   async function removeWishList(ID) {
     if (!token) {
-      history.push("/customer/login");
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
     } else {
       await axios
         .delete(`${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`, {
