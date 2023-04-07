@@ -38,7 +38,10 @@ export default function Sidebar() {
       </NavLink>
       <NavLink to="/agent/alerts">
         Alerts
-        <i className="fa-solid fa-bell" />
+        <span className="position-relative">
+          <i className="fa-solid fa-bell" />
+          <span class="badge rounded-pill bg-danger alert-badge">2</span>
+        </span>
       </NavLink>
       <a onClick={handleClick} href="#">
         Logout

@@ -186,7 +186,7 @@ export default function AddAppointment() {
           );
         }
 
-        console.log("create-appointment-response", response);
+        // console.log("create-appointment-response", response);
 
         return response.data;
       })
@@ -213,7 +213,6 @@ export default function AddAppointment() {
       setPhone("");
       setDate("");
       setTime("");
-      console.log("create-property-final-response", formResponse);
     }
   };
 
@@ -306,16 +305,16 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-2">
+                <div className="col-md-4">
                   <button
                     type="button"
-                    className="btn theme-btn-2 request-now-btn positionRevert"
+                    className="btn theme-btn-2 request-now-btn"
                     onClick={handleButtonClick}
                   >
                     Request Now
                   </button>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-4">
                   <div className="input-item">
                     <label>Select Date *</label>
                     <input
@@ -326,7 +325,7 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-4">
                   <div className="input-item">
                     <label>Choose Time *</label>
                     <input
@@ -337,7 +336,7 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-6">
                   <div className="input-item">
                     <label>Customer Name</label>
                     <AsyncCreatableSelect
@@ -389,7 +388,7 @@ export default function AddAppointment() {
                   <ResponseHandler errors={errors} success={success} />
                   <button
                     type="submit"
-                    className="btn theme-btn-1 btn-effect-1 text-uppercase positionRevert"
+                    className="btn theme-btn-1 btn-effect-1 text-uppercase"
                   >
                     {loading ? (
                       <div className="lds-ring">

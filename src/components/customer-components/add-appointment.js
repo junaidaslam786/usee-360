@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
-import ResponseHandler from '../global-components/respones-handler';
+import ResponseHandler from "../global-components/respones-handler";
 
 export default function AddAppointment() {
   const [properties, setProperties] = useState([]);
@@ -56,19 +56,22 @@ export default function AddAppointment() {
           );
         }
 
-        console.log("create-appointment-response", response);
+        // console.log("create-appointment-response", response);
 
-      return response.data;
-    }).catch(error => {
-      console.log('create-appointment-error', error);
-      if (error?.response?.data?.errors) {
-        setErrorHandler(error.response.data.errors, "error", true);
-      } else if (error?.response?.data?.message) { 
-        setErrorHandler(error.response.data.message);
-      } else {
-        setErrorHandler("Unable to create appointment, please try again later");
-      }
-    });
+        return response.data;
+      })
+      .catch((error) => {
+        console.log("create-appointment-error", error);
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) {
+          setErrorHandler(error.response.data.message);
+        } else {
+          setErrorHandler(
+            "Unable to create appointment, please try again later"
+          );
+        }
+      });
 
     setLoading(false);
     if (formResponse) {
@@ -76,12 +79,11 @@ export default function AddAppointment() {
       setSelectedAllocatedProperties("");
       setDate("");
       setTime("");
-      console.log("create-property-final-response", formResponse);
     }
   };
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {
-    setErrors(fullError ? msg : [{ msg, param }])
+    setErrors(fullError ? msg : [{ msg, param }]);
     setTimeout(() => {
       setErrors([]);
     }, 3000);
@@ -100,7 +102,6 @@ export default function AddAppointment() {
   useEffect(() => {
     const fetchPropertiesToAllocate = async () => {
       const response = await loadPropertiesToAllocate();
-      console.log(response);
       if (response) {
         setProperties(
           response.data.map((property) => {
@@ -147,10 +148,16 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <button type="button" className="btn theme-btn-2 request-now-btn positionRevert" onClick={handleButtonClick} >Request Now</button>
+                <div className="col-md-4">
+                  <button
+                    type="button"
+                    className="btn theme-btn-2 request-now-btn"
+                    onClick={handleButtonClick}
+                  >
+                    Request Now
+                  </button>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-4">
                   <div className="input-item">
                     <label>Select Date *</label>
                     <input
@@ -161,7 +168,7 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-4">
                   <div className="input-item">
                     <label>Choose Time *</label>
                     <input
@@ -173,10 +180,10 @@ export default function AddAppointment() {
                   </div>
                 </div>
                 <div className="btn-wrapper">
-                  <ResponseHandler errors={errors} success={success}/>
+                  <ResponseHandler errors={errors} success={success} />
                   <button
                     type="submit"
-                    className="btn theme-btn-1 btn-effect-1 text-uppercase positionRevert"
+                    className="btn theme-btn-1 btn-effect-1 text-uppercase"
                   >
                     {loading ? (
                       <div className="lds-ring">

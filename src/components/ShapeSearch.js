@@ -3,7 +3,6 @@ import GoogleMapReact from "google-map-react";
 import { DrawingManager } from "react-google-maps";
 
 const ShapeSearch = ({ apiKey }) => {
-  console.log(apiKey);
   const [polygon, setPolygon] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const mapRef = useRef(null);

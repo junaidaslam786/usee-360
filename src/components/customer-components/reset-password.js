@@ -33,7 +33,7 @@ export default function ResetPassword() {
         setErrorHandler("Unable to reset password, please try again later");
       }
 
-      console.log('reset-password-response', response);
+      // console.log('reset-password-response', response);
 
       return response.data;
     }).catch(error => {
@@ -56,7 +56,6 @@ export default function ResetPassword() {
         history.push("/customer/login");
       }, 1000);
     }
-    console.log('reset-password-final-response', formResponse);
   };
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {

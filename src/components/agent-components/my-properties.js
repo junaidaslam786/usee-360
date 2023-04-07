@@ -101,7 +101,7 @@ export default function MyProperties() {
             }, 3000);
           }
 
-          console.log("removal-request-property-response", response);
+          // console.log("removal-request-property-response", response);
 
           return response.data;
         })

@@ -46,7 +46,7 @@ export default function ViewOffer(props) {
                 setErrorHandler('offer', "Unable to make offer, please try again later");
             }
 
-            console.log('offer-response', response);
+            // console.log('offer-response', response);
 
             return response.data;
         }).catch(error => {
@@ -133,7 +133,7 @@ export default function ViewOffer(props) {
                 setErrorHandler('snag', "Unable to update snag list, please try again later");
             }
 
-            console.log('snag-response', response);
+            // console.log('snag-response', response);
 
             return response.data;
         }).catch(error => {

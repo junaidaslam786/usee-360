@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
 export default function Sidebar() {
@@ -12,26 +12,26 @@ export default function Sidebar() {
 
   return (
     <div className="nav">
-      <Link to="/customer/dashboard">
+      <NavLink to="/customer/dashboard">
         Dashboard
         <i className="fas fa-home" />
-      </Link>
-      <Link to="/customer/appointments">
+      </NavLink>
+      <NavLink to="/customer/appointments">
         Appointments
         <i className="fa-solid fa-clock" />
-      </Link>
-      <Link to="/customer/add-appointment">
+      </NavLink>
+      <NavLink to="/customer/add-appointment">
         Add Appointments
         <i className="fa-solid fa-calendar-check"></i>
-      </Link>
-      <Link to="/customer/wishlist">
+      </NavLink>
+      <NavLink to="/customer/wishlist">
         My Wishlist
         <i className="fa-solid fa-list" />
-      </Link>
-      <Link to="/customer/profile">
+      </NavLink>
+      <NavLink to="/customer/profile">
         My Profile
         <i className="fas fa-user" />
-      </Link>
+      </NavLink>
       <a onClick={handleClick} href="#">
         Logout
         <i className="fas fa-sign-out-alt" />

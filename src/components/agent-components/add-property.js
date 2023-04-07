@@ -228,7 +228,7 @@ export default function AddProperty(props) {
             );
           }
 
-          console.log("create-property-response", response);
+          // console.log("create-property-response", response);
 
           return response.data;
         })
@@ -260,7 +260,6 @@ export default function AddProperty(props) {
           history.push(`/agent/edit-property/${formResponse.id}`);
         }
       }, 3000);
-      console.log("create-property-final-response", formResponse);
     }
   };
 

@@ -39,7 +39,7 @@ export default function ViewOffer(props) {
                 setErrorHandler(responseHandlerType, "Unable to update offer status, please try again later");
             }
 
-            console.log('update-offer-response', response);
+            // console.log('update-offer-response', response);
 
             return response.data;
         }).catch(error => {

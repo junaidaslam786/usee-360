@@ -49,7 +49,7 @@ export default function Login() {
         setErrorHandler('login', "Unable to login, please try again later");
       }
 
-      console.log('login-response', response);
+      // console.log('login-response', response);
 
       return response.data;
     }).catch(error => {
@@ -84,7 +84,7 @@ export default function Login() {
         setErrorHandler('reset', "Unable to reset password, please try again later");
       }
 
-      console.log('reset-password-response', response);
+      // console.log('reset-password-response', response);
 
       return response.data;
     }).catch(error => {
@@ -105,7 +105,6 @@ export default function Login() {
         closeModal.current.click();
       }, 1000);
     }
-    console.log('reset-password-final-response', formResponse);
   };
 
   const setErrorHandler = (type = 'login', msg, param = "form", fullError = false) => {

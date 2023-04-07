@@ -10,7 +10,6 @@ export default function UploadPropertyImage(props) {
     const [uploadSuccess, setUploadSuccess] = useState("");
 
     const onImagesDrop = useCallback(async (acceptedFiles) => {
-        console.log('acceptedFiles', acceptedFiles);
         const formData = new FormData();
         acceptedFiles.forEach((file) => {
             formData.append("files", file);
@@ -34,7 +33,7 @@ export default function UploadPropertyImage(props) {
                     setErrorHandler("Unable to upload images, please try again later");
                 }
 
-                console.log('upload-image-response', response);
+                // console.log('upload-image-response', response);
                 setSuccessHandler("Images uploaded successfully");
 
                 setPropertyImages(response.data);

@@ -44,7 +44,6 @@ export default function Appointments() {
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
       const response = await loadAppointmentFields(id);
-      console.log("response", response);
       if (response) {
         setAppointmentView({
           id: response.id,

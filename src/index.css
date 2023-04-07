@@ -103,6 +103,7 @@
   overflow: hidden;
   font-family: var(--ltn__body-font);
   border-color: var(--border-color-9) !important;
+  z-index: 99 !important;
 }
 
 .custom-select__menu-list {
@@ -125,4 +126,17 @@
 .custom-select__option:hover {
   background-color: var(--ltn__secondary-color) !important;
   color: var(--ltn__primary-color);
+}
+
+.request-now-btn {
+  margin-top: 28px !important;
+  height: 65px;
+  width: 100%;
+  z-index: 1;
+}
+
+.alert-badge {
+  position: absolute;
+  top: -6px;
+  right: -12px;
 }
