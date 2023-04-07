@@ -4,7 +4,7 @@ import axios from "axios";
 import Select from "react-select";
 import Layout from "./layouts/layout";
 import UploadPropertyImage from "./properties/upload-property-image";
-// import UploadPropertyDocument from "./properties/upload-property-document";
+import UploadPropertyDocument from "./properties/upload-property-document";
 import ResponseHandler from '../global-components/respones-handler';
 import { 
   PROPERTY_TYPES, RESIDENTIAL_PROPERTY, 
@@ -36,7 +36,7 @@ export default function AddProperty(props) {
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [propertyImages, setPropertyImages] = useState([]);
-  // const [propertyDocuments, setPropertyDocuments] = useState([]);
+  const [propertyDocuments, setPropertyDocuments] = useState([]);
   // const [allotedToUsers, setAllotedToUsers] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
@@ -485,9 +485,9 @@ export default function AddProperty(props) {
             setPropertyImages(response.productImages);
           }
 
-          // if (response.productDocuments) {
-          //   setPropertyDocuments(response.productDocuments);
-          // }
+          if (response.productDocuments) {
+            setPropertyDocuments(response.productDocuments);
+          }
 
           // if (response.productAllocations.length > 0) {
           //   const newAllotedUsers = [];
@@ -811,7 +811,7 @@ export default function AddProperty(props) {
       {id && (
         <div className="row mb-50">
           <UploadPropertyImage id={id} images={propertyImages} />
-          {/* <UploadPropertyDocument id={id} documents={propertyDocuments} /> */}
+          <UploadPropertyDocument id={id} documents={propertyDocuments} />
         </div>
       )}
     </Layout>
