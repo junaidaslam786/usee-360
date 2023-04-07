@@ -81,7 +81,7 @@ export default function PropertyDetails() {
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
               <div className="ltn__blog-meta">
-                {propertyImages ? (
+                {propertyImages?.length > 0 ? (
                   <Slideshow fadeImages={propertyImages} />
                 ) : (
                   <img

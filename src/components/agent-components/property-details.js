@@ -77,7 +77,7 @@ export default function PropertyDetails() {
     <Layout>
       <section>
         {
-          propertyImages ? (
+          propertyImages?.length > 0 ? (
             <Slideshow fadeImages={propertyImages}/>
           ) : (
             <img

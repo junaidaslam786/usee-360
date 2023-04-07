@@ -549,7 +549,7 @@ const MeetingJoin = (props) => {
               Your browser does not support the video tag.
             </video>
           )}
-          {productImages && <Slideshow fadeImages={productImages} />}
+          {productImages?.length > 0 && <Slideshow fadeImages={productImages} />}
           {defaultImage && (
             <img src={`${publicUrl}assets/img/default-property.jpg`} />
           )}
