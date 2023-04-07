@@ -185,201 +185,203 @@ const MeetingJoin = (props) => {
   };
 
   useEffect(async () => {
-    const tokToken = await getSessionToken();
-    if (userType === "agent") {
-      getPropertiesList();
-      getPropertyDetail(appointment.products[0].id);
-      setSelectedProperty(appointment.products[0].id);
-    }
-    const session = OT.initSession("46869314", appointment.sessionId);
-    setSession(session);
-    session.on({
-      streamCreated: (event) => {
-        if (event.stream.videoType === "camera") {
-          const subscriberOptions = {
-            insertMode: "append",
-            nameDisplayMode: "on",
-            width: "100%",
-            height: "250px",
-          };
-          const subscriber = session.subscribe(
-            event.stream,
-            "subscribers",
-            subscriberOptions,
-            (error) => {}
-          );
-          setSubscriber(subscriber);
-          subscriber.on("videoElementCreated", function (event) {});
-          var subscriberDisconnectedNotification =
-            document.createElement("div");
-          subscriberDisconnectedNotification.className =
-            "subscriberDisconnectedNotification";
-          subscriberDisconnectedNotification.innerText =
-            "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
-          subscriber.element.appendChild(subscriberDisconnectedNotification);
-          subscriber.on({
-            disconnected: function (event) {
-              subscriberDisconnectedNotification.style.visibility = "visible";
-            },
-            connected: function (event) {
-              subscriberDisconnectedNotification.style.visibility = "hidden";
-            },
-          });
-        } else if (event.stream.videoType === "screen") {
-          const subscriberOptions = {
-            insertMode: "replace",
-            width: "100%",
-            height: "100%",
-          };
-          setVirtualTourUrl(null);
-          setVirtualTourVideo(null);
-          setProductImages(null);
-          setDefaultImage(null);
-          const screenshareEle = document.createElement("div");
-          const screenPreview = document.getElementById("screen-preview");
-          //const ot_element = document.getElementById(`OT`)
-          screenPreview.appendChild(screenshareEle);
-          const subscriber = session.subscribe(
-            event.stream,
-            screenshareEle,
-            subscriberOptions,
-            (error) => {}
-          );
-        }
-      },
-      streamDestroyed: (event) => {
-        if (
-          event.reason === "clientDisconnected" &&
-          event.stream.videoType === "screen"
-        ) {
-          setDefaultImage(true);
-        }
-      },
-      connectionCreated: function (event) {
-        console.log("Connection created" + event);
-      },
-      connectionDestroyed: function (event) {
-        console.log("Connection destroyed");
-      },
-      sessionDisconnected: function sessionDisconnectHandler(event) {
-        console.log("You were disconnected from the session.", event.reason);
-        // setTimeout(function() {
-        //   session.connect(token, function(error) {
-        //     if (error) {
-        //       console.error('Failed to reconnect to the session:', error.message);
-        //     } else {
-        //       console.log('Session reconnected.');
-        //     }
-        //   });
-        // }, 5000);
-      },
-      sessionReconnecting: function () {
-        console.log("Session reconn");
-      },
-      sessionReconnected: function () {},
-    });
-
-    const msgHistory = document.querySelector("#history");
-    session.on("signal:msg", (event) => {
-      if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
-        getPropertyDetail(event.data.split(":")[1]);
-      } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
-      } else if (event.data.includes("::")) {
-        const msg = document.createElement("p");
-        const content = event.data.split("::");
-        msg.textContent = `${content[0]}: `;
-        const a = document.createElement("a");
-        a.classList.add("download-file-link");
-        a.setAttribute("target", "_blank");
-        const text = document.createTextNode(content[1].split("/")[1]);
-        a.appendChild(text);
-        a.href = `${process.env.REACT_APP_API_URL}/${content[1]}`;
-        a.download = content[1].split("/")[1];
-        msg.appendChild(a);
-        msgHistory.appendChild(msg);
-        msg.scrollIntoView();
-      } else {
-        const msg = document.createElement("p");
-        msg.textContent = `${event.data}`;
-        msg.className =
-          event.from.connectionId === session.connection.connectionId
-            ? "mine"
-            : "theirs";
-        msgHistory.appendChild(msg);
-        msg.scrollIntoView();
+    if(token) {
+      const tokToken = await getSessionToken();
+      if (userType === "agent") {
+        getPropertiesList();
+        getPropertyDetail(appointment.products[0].id);
+        setSelectedProperty(appointment.products[0].id);
       }
-    });
-
-    // initialize the publisher
-    const publisherOptions = {
-      insertMode: "append",
-      audioFallbackEnabled: true,
-      facingMode: "user",
-      publishVideo: true,
-      publishAudio: true,
-      name:
-        userType === "customer"
-          ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-          : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
-      nameDisplayMode: "on",
-      width: "100%",
-      height: "250px",
-    };
-    if (audioInputDeviceId || videoDeviceId) {
-      publisherOptions.audioSource = audioInputDeviceId;
-      publisherOptions.videoSource = videoDeviceId;
-    }
-    // if (OT.hasMediaProcessorSupport()) {
-    //   publisherOptions.videoFilter = {
-    //     type: "backgroundReplacement",
-    //     backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
-    //   };
-    // }
-    const publisher = OT.initPublisher(
-      "publisher",
-      publisherOptions,
-      (error) => {}
-    );
-    setPublisher(publisher);
-    // Connect to the session
-    session.connect(tokToken, (error) => {
-      if (error) {
-        if (error.name === "OT_NOT_CONNECTED") {
-          //
-        } else {
-          //
-        }
-      } else {
-        // If the connection is successful, publish the publisher to the session
-        session.publish(publisher, (error) => {});
-      }
-    });
-    // Text chat
-    const form = document.querySelector("form");
-    const msgTxt = document.querySelector("#msgTxt");
-
-    // Send a signal once the user enters data in the form
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const name =
-        userType === "customer"
-          ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-          : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
-      session.signal(
-        {
-          type: "msg",
-          data: `${name}: ${msgTxt.value}`,
-        },
-        (error) => {
-          if (error) {
-            //handleError(error);
-          } else {
-            msgTxt.value = "";
+      const session = OT.initSession("46869314", appointment.sessionId);
+      setSession(session);
+      session.on({
+        streamCreated: (event) => {
+          if (event.stream.videoType === "camera") {
+            const subscriberOptions = {
+              insertMode: "append",
+              nameDisplayMode: "on",
+              width: "100%",
+              height: "250px",
+            };
+            const subscriber = session.subscribe(
+              event.stream,
+              "subscribers",
+              subscriberOptions,
+              (error) => {}
+            );
+            setSubscriber(subscriber);
+            subscriber.on("videoElementCreated", function (event) {});
+            var subscriberDisconnectedNotification =
+              document.createElement("div");
+            subscriberDisconnectedNotification.className =
+              "subscriberDisconnectedNotification";
+            subscriberDisconnectedNotification.innerText =
+              "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
+            subscriber.element.appendChild(subscriberDisconnectedNotification);
+            subscriber.on({
+              disconnected: function (event) {
+                subscriberDisconnectedNotification.style.visibility = "visible";
+              },
+              connected: function (event) {
+                subscriberDisconnectedNotification.style.visibility = "hidden";
+              },
+            });
+          } else if (event.stream.videoType === "screen") {
+            const subscriberOptions = {
+              insertMode: "replace",
+              width: "100%",
+              height: "100%",
+            };
+            setVirtualTourUrl(null);
+            setVirtualTourVideo(null);
+            setProductImages(null);
+            setDefaultImage(null);
+            const screenshareEle = document.createElement("div");
+            const screenPreview = document.getElementById("screen-preview");
+            //const ot_element = document.getElementById(`OT`)
+            screenPreview.appendChild(screenshareEle);
+            const subscriber = session.subscribe(
+              event.stream,
+              screenshareEle,
+              subscriberOptions,
+              (error) => {}
+            );
           }
+        },
+        streamDestroyed: (event) => {
+          if (
+            event.reason === "clientDisconnected" &&
+            event.stream.videoType === "screen"
+          ) {
+            setDefaultImage(true);
+          }
+        },
+        connectionCreated: function (event) {
+          console.log("Connection created" + event);
+        },
+        connectionDestroyed: function (event) {
+          console.log("Connection destroyed");
+        },
+        sessionDisconnected: function sessionDisconnectHandler(event) {
+          console.log("You were disconnected from the session.", event.reason);
+          // setTimeout(function() {
+          //   session.connect(token, function(error) {
+          //     if (error) {
+          //       console.error('Failed to reconnect to the session:', error.message);
+          //     } else {
+          //       console.log('Session reconnected.');
+          //     }
+          //   });
+          // }, 5000);
+        },
+        sessionReconnecting: function () {
+          console.log("Session reconn");
+        },
+        sessionReconnected: function () {},
+      });
+
+      const msgHistory = document.querySelector("#history");
+      session.on("signal:msg", (event) => {
+        if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
+          getPropertyDetail(event.data.split(":")[1]);
+        } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
+        } else if (event.data.includes("::")) {
+          const msg = document.createElement("p");
+          const content = event.data.split("::");
+          msg.textContent = `${content[0]}: `;
+          const a = document.createElement("a");
+          a.classList.add("download-file-link");
+          a.setAttribute("target", "_blank");
+          const text = document.createTextNode(content[1].split("/")[1]);
+          a.appendChild(text);
+          a.href = `${process.env.REACT_APP_API_URL}/${content[1]}`;
+          a.download = content[1].split("/")[1];
+          msg.appendChild(a);
+          msgHistory.appendChild(msg);
+          msg.scrollIntoView();
+        } else {
+          const msg = document.createElement("p");
+          msg.textContent = `${event.data}`;
+          msg.className =
+            event.from.connectionId === session.connection.connectionId
+              ? "mine"
+              : "theirs";
+          msgHistory.appendChild(msg);
+          msg.scrollIntoView();
         }
+      });
+
+      // initialize the publisher
+      const publisherOptions = {
+        insertMode: "append",
+        audioFallbackEnabled: true,
+        facingMode: "user",
+        publishVideo: true,
+        publishAudio: true,
+        name:
+          userType === "customer"
+            ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+            : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
+        nameDisplayMode: "on",
+        width: "100%",
+        height: "250px",
+      };
+      if (audioInputDeviceId || videoDeviceId) {
+        publisherOptions.audioSource = audioInputDeviceId;
+        publisherOptions.videoSource = videoDeviceId;
+      }
+      // if (OT.hasMediaProcessorSupport()) {
+      //   publisherOptions.videoFilter = {
+      //     type: "backgroundReplacement",
+      //     backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
+      //   };
+      // }
+      const publisher = OT.initPublisher(
+        "publisher",
+        publisherOptions,
+        (error) => {}
       );
-    });
+      setPublisher(publisher);
+      // Connect to the session
+      session.connect(tokToken, (error) => {
+        if (error) {
+          if (error.name === "OT_NOT_CONNECTED") {
+            //
+          } else {
+            //
+          }
+        } else {
+          // If the connection is successful, publish the publisher to the session
+          session.publish(publisher, (error) => {});
+        }
+      });
+      // Text chat
+      const form = document.querySelector("form");
+      const msgTxt = document.querySelector("#msgTxt");
+
+      // Send a signal once the user enters data in the form
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const name =
+          userType === "customer"
+            ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+            : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+        session.signal(
+          {
+            type: "msg",
+            data: `${name}: ${msgTxt.value}`,
+          },
+          (error) => {
+            if (error) {
+              //handleError(error);
+            } else {
+              msgTxt.value = "";
+            }
+          }
+        );
+      });
+    }
   }, []);
 
   function toggleVideo() {

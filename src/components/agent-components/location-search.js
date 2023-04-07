@@ -5,7 +5,7 @@ import "./location-search.css";
 
 export default function LocationSearch() {
   const [mapstate, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 37.7749, lng: -122.4194 });
+  const [center, setCenter] = useState({ lat: 24.466667, lng: 54.366669 });
   const [centerAddress, setCenterAddress] = useState(null);
   const [radius, setRadius] = useState(300);
   const [active, setActive] = useState(true);
@@ -16,7 +16,7 @@ export default function LocationSearch() {
 
   let map;
   let newMarkers = [];
-  let drawingManager;
+  let centerMarker = null;
   const history = useHistory();
 
   useEffect(() => {
@@ -25,15 +25,12 @@ export default function LocationSearch() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          //const currentLocation = { lat: 37.7749, lng: -122.4194 };
+          //const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, };
+          const currentLocation = { lat: 24.466667, lng: 54.366669 };
           setCenter(currentLocation);
           map.setCenter(currentLocation);
           setCenterAddress(await reverseGeocode(geocoder, currentLocation));
-          addMarkerOnMap(
+          centerMarker = addMarkerOnMap(
             map,
             currentLocation,
             "assets/img/icons/map-marker.png",
@@ -52,6 +49,23 @@ export default function LocationSearch() {
     });
     setMap(map);
 
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      document.getElementById("autocomplete")
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);
+
+      centerMarker.setPosition(place.geometry.location);
+    });
+
     map.addListener("click", function (event) {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
@@ -62,11 +76,7 @@ export default function LocationSearch() {
       infowindow.open(map);
     });
 
-    if (drawingManager != null) {
-      drawingManager.setMap(null);
-    }
-
-    drawingManager = new google.maps.drawing.DrawingManager({
+    const drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
@@ -272,6 +282,18 @@ export default function LocationSearch() {
           You can search the properties in a specific area by drawing shapes on
           maps.{" "}
         </p>
+        <br/>
+        <p>Move center to your desired location</p>
+        <input
+          type="text"
+          value={centerAddress}
+          name="ltn__name"
+          id="autocomplete"
+          onChange={(event) => {
+            setCenterAddress(event.target.value);
+          }}
+          placeholder="Center your location"
+        />
         <div className="scrollable">
           {properties &&
             properties.length > 0 &&
@@ -300,16 +322,7 @@ export default function LocationSearch() {
           <li>By drawing shapes on maps</li>
           <li>By selecting a center point and radius</li> 
         </ol> */}
-        {/* <input
-          type="text"
-          value={centerAddress}
-          name="ltn__name"
-          onChange={(event) => {
-            setCenterAddress(event.target.value);
-          }}
-          placeholder="Center your location"
-        />
-        <div className="sidebar-search">
+         {/*<div className="sidebar-search">
           <input
             type="number"
             value={radius}

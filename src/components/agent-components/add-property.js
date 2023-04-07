@@ -340,7 +340,7 @@ export default function AddProperty(props) {
     // fetchUsersToAllocate();
 
     const map = new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 51.5072, lng: 0.1276 },
+      center: { lat: 24.466667, lng: 54.366669 },
       zoom: 13,
     });
 
