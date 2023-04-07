@@ -155,6 +155,23 @@ export default function PropertyGrid() {
     }
   }
 
+  async function removeWishList(ID) {
+    if (!token) {
+      history.push("/customer/login");
+    } else {
+      await axios
+        .delete(`${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          loadWishlistProperties();
+        });
+    }
+  }
+
   function loadPropertyMetaData(property, type) {
     let metaData = "";
     let metaTag;
@@ -400,7 +417,7 @@ export default function PropertyGrid() {
                                         href="#"
                                         title="Quick View"
                                         onClick={() =>
-                                          addToWishList(element.id)
+                                          { wishlistProperties.find(({ productId }) => productId === element.id) ? removeWishList(element.id) : addToWishList(element.id) }
                                         }
                                       >
                                         <i className="flaticon-heart-1" />
@@ -510,12 +527,21 @@ export default function PropertyGrid() {
                               <div className="product-info-bottom">
                                 <div className="product-hover-action">
                                   <ul>
-                                    <li>
+                                    <li
+                                      className={
+                                        wishlistProperties.find(
+                                          ({ productId }) =>
+                                            productId === element.id
+                                        )
+                                          ? "wishlist-active"
+                                          : null
+                                      }
+                                    >
                                       <a
                                         href="#"
                                         title="Quick View"
                                         onClick={() =>
-                                          addToWishList(element.id)
+                                          { wishlistProperties.find(({ productId }) => productId === element.id) ? removeWishList(element.id) : addToWishList(element.id) }
                                         }
                                       >
                                         <i className="flaticon-heart-1" />
