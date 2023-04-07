@@ -10,14 +10,14 @@ class TermAndCondition extends Component {
               <li><strong>INTRODUCTION</strong>
               <ul>
               <li><strong>Who we are</strong>. We are Usee Technologies Limited a company incorporated in England and Wales with company number 12599923 whose registered office is c/o 123 Wellington Road South, Stockport, Cheshire, SK1 3TH. Our registered VAT number is [TBC].</li>
-              <li><strong>How to contact us</strong>. You can contact us by telephoning our customer service team by emailing us at <a href="hello@u-seehomes.com">hello@u-seehomes.com</a>.</li>
+              <li><strong>How to contact us</strong>. You can contact us by telephoning our customer service team by emailing us at <a href="info@usee-360.com">info@usee-360.com</a>.</li>
               <li><strong>How we may contact you</strong>. If we have to contact you we will do so by telephone or by writing to you at the email address or postal address you provided to us in your order.</li>
               <li><strong>“Writing” includes emails</strong>. When we use the words “writing” or “written” in these terms, this includes emails.</li>
               </ul>
               </li>
               <li><strong>OUR</strong> <strong>TERMS</strong>
               <ul>
-              <li><strong>What these terms cover</strong>. These terms and conditions (“<strong>terms</strong>”) set out the terms on which we provide access to our U-See mobile application (“<strong>our app</strong>”) and our website <a href="www.u-seehomes.com">www.u-seehomes.com</a>(the term “<strong>our site</strong>” refers to the website and our app) which you use or through which you access our services.</li>
+              <li><strong>What these terms cover</strong>. These terms and conditions (“<strong>terms</strong>”) set out the terms on which we provide access to our U-See mobile application (“<strong>our app</strong>”) and our website <a href="https://usee360-frontend.invo.zone/">https://usee360-frontend.invo.zone/</a>(the term “<strong>our site</strong>” refers to the website and our app) which you use or through which you access our services.</li>
               <li><strong>Why you should read them</strong>. Please read these terms carefully before you use our site or our services. These terms tell you who we are, and other important information. If you think that there is a mistake in these terms, please contact us to discuss.</li>
               <li><strong>Acceptance of these terms</strong>. By using our site, you confirm that you accept these terms and that you agree to comply with them. If you do not agree to these terms, you must not use our site or order any products through our site. We recommend that you print a copy of these terms for future reference.</li>
               <li><strong>There are other terms that may apply to you</strong>. Our Privacy Policy and our Cookie Policy also apply to your use of our site and our use of your personal information. Our Privacy Policy and Cookie Policy are incorporated into these terms.</li>
@@ -40,9 +40,9 @@ class TermAndCondition extends Component {
               </li>
               <li>YOUR ACCOUNT AND THE TERM OF OUR AGREEMENT WITH YOU
                 <ul>
-                  <li><strong>Setting up an account.</strong> In order to allow your properties to be viewed through our site, you will need to set up an account with us. You can do this&nbsp; <a href="https://app.u-seehomes.com/register">here</a></li>
+                  <li><strong>Setting up an account.</strong> In order to allow your properties to be viewed through our site, you will need to set up an account with us. You can do this&nbsp; <a href="https://usee360-frontend.invo.zone/customer/register">here</a></li>
                   <li><strong></strong> The agreement between us will be for a minimum period of twelve (12) months. Once that period has run you may terminate your agreement with us on not less than 6 months written notice.</li>
-                  <li><strong>You must keep your account details safe.</strong> If you choose, or you are provided with, a user identification code, password or any other piece of information as part of our security procedures, you must treat such information as confidential. You must not disclose it to any third party. If you know or suspect that anyone other than you knows your user identification code or password, you must promptly notify us at <a href="mailto:hello@u-seehomes.com">hello@u-seehomes.com</a>.</li>
+                  <li><strong>You must keep your account details safe.</strong> If you choose, or you are provided with, a user identification code, password or any other piece of information as part of our security procedures, you must treat such information as confidential. You must not disclose it to any third party. If you know or suspect that anyone other than you knows your user identification code or password, you must promptly notify us at <a href="mailto:info@usee-360.com">info@usee-360.com</a>.</li>
                   <li><strong>We may disable your account.</strong> We have the right to disable any user identification code or password, whether chosen by you or allocated by us, at any time, if in our reasonable opinion</li>
                   <li><strong>Direct debit payments.</strong> You agree to set up a direct debit payment with us to make the payments you have agreed to pay to us under this agreement.</li>
                 </ul>
@@ -79,7 +79,7 @@ class TermAndCondition extends Component {
               <li>USER CONTENT AND REVIEWS
                 <ul>
                   <li><strong>User-generated</strong> <strong>content is not approved by us.</strong> Our site may include information and materials uploaded by other users of the site, including reviews from other users. This information and these materials have not been verified or approved by us. The views expressed by other users on our site do not represent our views or values.</li>
-                  <li><strong>How to complain about content uploaded by other users. </strong>If you wish to complain about content uploaded by other users please contact us at <a href="hello@u-seehomes.com">hello@u-seehomes.com</a>.</li>
+                  <li><strong>How to complain about content uploaded by other users. </strong>If you wish to complain about content uploaded by other users please contact us at <a href="info@usee-360.com">info@usee-360.com</a>.</li>
                   <li><strong>You must comply with our content standards.</strong> Whenever you make use of a feature that allows you to upload content to our site, such content must be accurate (where it states facts), be genuinely held (where it states opinions and must comply with the law applicable in England and Wales and in any country from which it is posted and must be a genuine representation of the property to be viewed in each case. The content must not:</li>
                 </ul>
               </li>

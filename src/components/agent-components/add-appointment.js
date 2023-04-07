@@ -109,8 +109,13 @@ export default function AddAppointment() {
 
   const selectedCustomerHandler = (e) => {
     setSelectedCustomer(e);
-    setEmail("");
-    setPhone("");
+    if (!email) {
+      setEmail("");
+    }
+
+    if (!phone) {
+      setPhone("");
+    }
 
     const currentCustomer = customers.find(
       (customer) => customer.id == e.value
@@ -129,6 +134,10 @@ export default function AddAppointment() {
     let customerEmail = "";
     let customerPhoneNumber = "";
     let customerId = "";
+
+    customerEmail = email;
+    customerPhoneNumber = phone;
+
     const customer = customers.find(
       (customer) => (customer.id = selectedCustomer.value)
     );
@@ -144,9 +153,6 @@ export default function AddAppointment() {
       if (customerName.length >= 2) {
         customerLastName = customerName[1];
       }
-
-      customerEmail = email;
-      customerPhoneNumber = phone;
     }
 
     const formData = {
@@ -302,6 +308,7 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-2">
                   <button
+                    type="button"
                     className="btn theme-btn-2 request-now-btn positionRevert"
                     onClick={handleButtonClick}
                   >
@@ -334,6 +341,7 @@ export default function AddAppointment() {
                   <div className="input-item">
                     <label>Customer Name</label>
                     <AsyncCreatableSelect
+                      classNamePrefix="custom-select"
                       cacheOptions
                       loadOptions={loadOptions}
                       defaultOptions={[]}
@@ -381,7 +389,7 @@ export default function AddAppointment() {
                   <ResponseHandler errors={errors} success={success} />
                   <button
                     type="submit"
-                    className="btn theme-btn-1 btn-effect-1 text-uppercase"
+                    className="btn theme-btn-1 btn-effect-1 text-uppercase positionRevert"
                   >
                     {loading ? (
                       <div className="lds-ring">
