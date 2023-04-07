@@ -1,14 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
 export default function Sidebar() {
+  const [count, setCount] = useState();
   const history = useHistory();
+  const token = JSON.parse(localStorage.getItem("agentToken"));
 
   function handleClick() {
     localStorage.removeItem("agentToken");
     history.push("/agent/login");
   }
+
+  const loadAlertCount = async () => {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/alert/unread-count`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    response = await response.json();
+    if (response) {
+      setCount(response);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAlertCount = async () => {
+      await loadAlertCount();
+    };
+
+    fetchAlertCount();
+  }, []);
 
   return (
     <div className="nav">
@@ -40,7 +68,7 @@ export default function Sidebar() {
         Alerts
         <span className="position-relative">
           <i className="fa-solid fa-bell" />
-          <span class="badge rounded-pill bg-danger alert-badge">2</span>
+          <span class="badge rounded-pill bg-danger alert-badge">{ count }</span>
         </span>
       </NavLink>
       <a onClick={handleClick} href="#">
