@@ -18,7 +18,7 @@ export default function AddAppointment() {
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
   const loadPropertiesToAllocate = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/home/property/list`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/home/property/list?page=1&size=100`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
