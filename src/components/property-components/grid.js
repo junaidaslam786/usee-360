@@ -185,7 +185,7 @@ export default function PropertyGrid() {
             metaData = PROPERTY_CATEGORY_TYPES.find(
               (property) => property.value == metaTag.value
             );
-            metaData = metaData?.label ? metaData.label : "Rent";
+            metaData = metaData?.value === "sale" ? "Buy" : "Rent";
           } else {
             metaData = "Rent";
           }
@@ -614,7 +614,7 @@ export default function PropertyGrid() {
                       </li>
                       <li>
                         <label className="checkbox-item">
-                          Sale
+                          Buy
                           <input
                             type="radio"
                             name="propertyCategory"
@@ -626,7 +626,7 @@ export default function PropertyGrid() {
                     </div>
                   </ul>
                   <hr />
-                  <h4 className="ltn__widget-title">Property Category Type</h4>
+                  <h4 className="ltn__widget-title">Type</h4>
                   <ul>
                     <div
                       onChange={(e) => {

@@ -73,26 +73,23 @@ export default function SearchForm() {
                   <div className="car-dealer-form-inner">
                     <form action="#" className="ltn__car-dealer-form-box row">
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                        <label>Property Category</label>
+                        <label>I'm looking to</label>
                         <select
                           className="nice-select"
                           onChange={(e) => setPropertyCategory(e.target.value)}
                         >
-                          <option selected disabled>
-                            Property Category
-                          </option>
-                          <option value={"sale"}>Sale</option>
+                          <option value={"sale"}>Buy</option>
                           <option value={"rent"}>Rent</option>
                         </select>
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                        <label>Property Category Type</label>
+                        <label>Property Category</label>
                         <select
                           className="nice-select"
                           onChange={(e) => handleChange(e.target.value)}
                         >
                           <option selected disabled>
-                            Property Category Type
+                            Category
                           </option>
                           <option value={"commercial"}>Commercial</option>
                           <option value={"residential"}>Residential</option>
@@ -105,7 +102,7 @@ export default function SearchForm() {
                           onChange={(e) => setPropertyType(e.target.value)}
                         >
                           <option selected disabled>
-                            Property Type
+                            Type
                           </option>
                           {types.map((element) => (
                             <option value={element.value}>

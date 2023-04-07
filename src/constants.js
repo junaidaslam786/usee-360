@@ -85,7 +85,6 @@ export const SNAG_LIST = [
 
 export const JOB_TITLE = [
     { value: "developer", label: "Developer" },
-    { value: "state_person", label: "State Person" },
     { value: "real_estate_agent", label: "Real Estate Agent" },
     { value: "freelance_agent", label: "Freelance Agent" },
     { value: "landlord", label: "Landlord" },
