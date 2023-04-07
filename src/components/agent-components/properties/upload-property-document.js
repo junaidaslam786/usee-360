@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import axios from 'axios';
 import ResponseHandler from '../../global-components/respones-handler';
+import { useHistory } from 'react-router';
 
 export default function UploadPropertyDocument(props) {
     const token = JSON.parse(localStorage.getItem("agentToken"));
@@ -9,6 +10,7 @@ export default function UploadPropertyDocument(props) {
     const [uploadErrors, setUploadErrors] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState("");
     const [loading, setLoading] = useState();
+    const history = useHistory();
 
     const handleAddDocument = () => {
         setNewDocuments([...newDocuments, { title: '', file: null }])
@@ -91,6 +93,9 @@ export default function UploadPropertyDocument(props) {
             }
         }
         setLoading(false);
+        setTimeout(() => {
+            history.go(0);
+        }, 1000);
     }
 
     const handleFileDelete = async (fileId) => {
@@ -204,7 +209,7 @@ export default function UploadPropertyDocument(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <input type="file" className="btn theme-btn-3 w-100" key={Date.now()} onChange={(event) => handleFileChange(index, event) }/>
+                                    <input type="file" className="btn theme-btn-3 w-100" onChange={(event) => handleFileChange(index, event) }/>
                                 </div>
                                 {
                                     index === newDocuments.length - 1 && (

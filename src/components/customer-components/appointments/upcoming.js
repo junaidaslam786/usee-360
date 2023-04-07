@@ -50,11 +50,11 @@ export default function Appointments() {
           date: response.appointmentDate,
           time: response.appointmentTime,
           customerName: `${response.customerUser.firstName} ${response.customerUser.lastName}`,
-          customerEmail: response.customerUser.email,
-          customerPhone: response.customerUser.phoneNumber,
           customerPic: `${process.env.REACT_APP_API_URL}/${response.customerUser.profileImage}`,
           agentName: `${response.agentUser.firstName} ${response.agentUser.lastName}`,
           agentPic: `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`,
+          agentEmail: response.agentUser.email,
+          agentPhone: response.agentUser.phoneNumber,
           properties: response.products,
         });
         openViewModal.current.click();
@@ -149,7 +149,7 @@ export default function Appointments() {
       </div>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
-          <div className="modal-dialog modal-md" role="document">
+          <div className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <button
@@ -169,6 +169,8 @@ export default function Appointments() {
                         <h4 className="mb-5">
                           Booking # {appointmentView?.id || "N/A"}
                         </h4>
+                      </div>
+                      <div className="col-lg-6">
                         <div>
                           <h5 className="p-0 m-0">Agent Name</h5>
                           <p className="p-0 m-o">
@@ -183,7 +185,7 @@ export default function Appointments() {
                           />
                         </div>
                         <div>
-                          <h5 className="p-0 m-0">Booking Time</h5>
+                        <h5 className="p-0 m-0 mt-2">Booking Time</h5>
                           <div className="row">
                             <div className="col">
                               <p className="p-0 m-o">
@@ -211,13 +213,13 @@ export default function Appointments() {
                           <h5 className="p-0 m-0">Contact Info</h5>
                           <p className="p-0 m-o">
                             <i className="fa-regular fa-envelope"></i>{" "}
-                            {appointmentView?.customerEmail || "N/A"}
+                            {appointmentView?.agentEmail || "N/A"}
                             <br />
                             <i className="fa-regular fa-address-book"></i>{" "}
-                            {appointmentView?.customerPhone || "N/A"}
+                            {appointmentView?.agentPhone || "N/A"}
                           </p>
                         </div>
-                        <div>
+                        <div className="col-lg-6">
                           <h5 className="p-0 m-0">Customer Name</h5>
                           <p className="p-0 m-o">
                             {appointmentView?.customerName || "N/A"}
@@ -233,7 +235,7 @@ export default function Appointments() {
                         {appointmentView?.properties
                           ? appointmentView?.properties.map((element, i) => (
                               <div key={element.id}>
-                                <h5 className="p-0 m-0">
+                                <h5 className="p-0 m-0 my-2">
                                   Property: {element.title}
                                 </h5>
                                 <Link
