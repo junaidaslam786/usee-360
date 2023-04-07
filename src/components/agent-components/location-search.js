@@ -314,6 +314,12 @@ export default function LocationSearch() {
                   <div className="product-price">
                     <span>${element.price}</span>
                   </div>
+                  <div className="product-price">
+                    <button className="btn theme-btn-2 request-now-btn" onClick={() => {window.open(
+                    `${process.env.PUBLIC_URL}/property-details/${element.id}`,
+                    "_blank"
+                  );}}>Open Details</button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -336,9 +342,9 @@ export default function LocationSearch() {
         </div> */}
       </div>
       <div id="map"></div>
-      <div className="map-search-buttons">
+      {/* <div className="map-search-buttons">
         <button className="btn theme-btn-3 reset py-2">Reset</button>
-      </div>
+      </div> */}
     </div>
   );
 }

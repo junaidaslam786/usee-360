@@ -190,7 +190,7 @@ const MeetingJoin = (props) => {
       if (userType === "agent") {
         getPropertiesList();
         getPropertyDetail(appointment.products[0].id);
-        setSelectedProperty(appointment.products[0].id);
+        //setSelectedProperty(appointment.products[0].id);
       }
       const session = OT.initSession("46869314", appointment.sessionId);
       setSession(session);
@@ -264,6 +264,7 @@ const MeetingJoin = (props) => {
         },
         sessionDisconnected: function sessionDisconnectHandler(event) {
           console.log("You were disconnected from the session.", event.reason);
+          history.push("/");
           // setTimeout(function() {
           //   session.connect(token, function(error) {
           //     if (error) {
@@ -392,6 +393,10 @@ const MeetingJoin = (props) => {
   function toggleAudio() {
     publisher.publishAudio(!audioStreaming);
     setAudioStreaming(!audioStreaming);
+  }
+
+  function leaveSession() {
+    session.disconnect();
   }
 
   function toggleScreenSharing() {
@@ -583,38 +588,38 @@ const MeetingJoin = (props) => {
 
         <div className="d-flex align-items-center">
           {videoStreaming === true && (
-            <span className="video-icon" onClick={() => toggleVideo()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
               <i class="fa-solid fa-video"></i>
             </span>
           )}
           {videoStreaming === false && (
-            <span className="video-icon" onClick={() => toggleVideo()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
               <i class="fa-solid fa-video-slash"></i>
             </span>
           )}
           {audioStreaming === true && (
-            <span className="video-icon" onClick={() => toggleAudio()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
               <i class="fa-solid fa-microphone"></i>
             </span>
           )}
           {audioStreaming === false && (
-            <span className="video-icon" onClick={() => toggleAudio()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
               <i class="fa-solid fa-microphone-slash"></i>
             </span>
           )}
           {screenSharing === true && (
-            <span className="video-icon" onClick={() => toggleScreenSharing()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
               <i class="fa-solid fa-laptop"></i>
             </span>
           )}
           {screenSharing === false && (
-            <span className="video-icon" onClick={() => toggleScreenSharing()}>
+            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
               <i class="fa-solid fa-laptop"></i>
             </span>
           )}
-          <span className="video-icon end-call">
+          {/* <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => leaveSession()}>
             <i class="fa-solid fa-phone-slash"></i>
-          </span>
+          </span> */}
         </div>
 
         <div id="toggle">
