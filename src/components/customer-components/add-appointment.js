@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
@@ -18,12 +17,15 @@ export default function AddAppointment() {
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
   const loadPropertiesToAllocate = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/home/property/list?page=1&size=100`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((data) => data.json());
+    return await axios.post(`${process.env.REACT_APP_API_URL}/home/property/list`, {
+        page: 1,
+        size: 100
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => response.data);
   };
 
   const handleSubmit = async (e) => {
