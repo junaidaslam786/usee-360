@@ -341,7 +341,7 @@ export default function AddProperty(props) {
 
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: 24.466667, lng: 54.366669 },
-      zoom: 13,
+      zoom: 17,
     });
 
     setMap(map);
@@ -368,7 +368,7 @@ export default function AddProperty(props) {
       setAddress(place.formatted_address);
       setAddressFields(place);
       map.setCenter(place.geometry.location);
-      map.setZoom(13);
+      map.setZoom(17);
 
       marker.setPosition(place.geometry.location);
     });
