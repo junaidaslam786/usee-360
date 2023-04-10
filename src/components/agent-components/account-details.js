@@ -447,7 +447,7 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
-            {/* <h4 className="title-2 mt-100">Embeded Code</h4>
+            <h4 className="title-2 mt-100">Embeded Code</h4>
             <div className="row mb-50">
               <div className="col-lg-10">
                 <p>
@@ -456,9 +456,49 @@ export default function AccountDetails() {
                 </p>
               </div>
               <div className="col-lg-2">
-                <button className="btn theme-btn-2">API</button>
+                <button
+                  className="btn theme-btn-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ltn_api_code_modal"
+                >
+                  API
+                </button>
               </div>
-            </div> */}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="ltn__modal-area ltn__add-to-cart-modal-area">
+        <div className="modal fade" id="ltn_api_code_modal" tabIndex={-1}>
+          <div className="modal-dialog modal-md" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="ltn__quick-view-modal-inner">
+                  <div className="modal-product-item">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="modal-product-info text-center p-0">
+                          <h4>Embeded Code</h4>
+                          <form className="ltn__form-box mt-50">
+                            <textarea>{ `<!-- useepopupcode--><link rel="stylesheet" href="${process.env.REACT_APP_PUBLIC_URL}/script/usee-agent-popup.css?v=107"><div id="usee_prop_list_dn"><button type="button" style="font-size: 15px; color:#00CB04; background: #ffffff; border: 2px solid #00CB04" class="usee_btn grn-line-btn usee-popup-trigger_" data-popup-trigger="usee_agent_model">Book a guided U-See Virtual Tour</button><div class="usee_agent_website_model" data-popup-modal="usee_agent_model"><div id="usee_agent_website_popup" class="u-see-agent-website-popup_ shadow"><span class="usee_popup__close">X</span> <iframe class="usee-agent-popup-iframe" src="${process.env.REACT_APP_PUBLIC_URL}/iframe/property-grid" width="100%" height="100%" frameborder="0"></iframe> </div></div></div><div class="usee-bg-popup-overlay_"></div><script src="${process.env.REACT_APP_PUBLIC_URL}/script/useeapi.js?ver=2"></script><!-- usee popupcodeends-->` }</textarea>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

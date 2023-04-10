@@ -1,23 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
 import axios from "axios";
 
-function getToken() {
-  const tokenString = localStorage.getItem("customerToken");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
-}
-
 export default function Login() {
-  const token = getToken();
-  const history = useHistory();
-
-  if (token) {
-    history.goBack();
-  }
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);

@@ -1,27 +1,7 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import Sidebar from "../sidebar";
 
-function getToken() {
-  const tokenString = localStorage.getItem("customerToken");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
-}
-
 const Layout = ({ children }) => {
-  const token = getToken();
-  const history = useHistory();
-
-  if (!token) {
-    history.push("/customer/login");
-  } else {
-    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-    if (decodedJwt.exp * 1000 < Date.now()) {
-      localStorage.removeItem("customerToken");
-      history.push("/customer/login");
-    }
-  }
-
   return (
     <div className="liton__wishlist-area pb-70">
       <div className="container">

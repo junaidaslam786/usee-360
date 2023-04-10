@@ -1,24 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import ResponseHandler from "../global-components/respones-handler";
 import { JOB_TITLE } from "../../constants";
 import Select from "react-select";
 
-function getToken() {
-  const tokenString = localStorage.getItem("agentToken");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
-}
-
 export default function Register() {
-  const token = getToken();
-  const history = useHistory();
-
-  if (token) {
-    history.goBack();
-  }
-
   const [companyName, setCompanyName] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();

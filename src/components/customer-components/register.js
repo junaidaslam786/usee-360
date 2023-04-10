@@ -1,22 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
 
-function getToken() {
-  const tokenString = localStorage.getItem("customerToken");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
-}
-
 export default function Register() {
-  const token = getToken();
-  const history = useHistory();
-
-  if (token) {
-    history.goBack();
-  }
-
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();

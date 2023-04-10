@@ -5,6 +5,7 @@ import {
   BrowserRouter,
   Route,
   Switch,
+  Redirect
 } from "react-router-dom";
 
 import "./index.css";
@@ -45,12 +46,41 @@ import CustomerWishlist from "./pages/customer/wishlist";
 import CustomerPropertyDetails from "./pages/customer/property-details";
 import CustomerProfile from "./pages/customer/profile";
 
+import IframePropertyGrid from "./pages/iframe/property-grid";
+import IframePropertyDetails from "./pages/iframe/property-details";
+
 import LocationSearch from "./components/agent-components/location-search";
 
 import Precall from "./pages/precall";
 import Meeting from "./pages/meeting";
 
 import Error from "./pages/404";
+
+function AgentRoute({ component: Component, ...restOfProps }) {
+  const isAuthenticated = localStorage.getItem("agentToken");
+
+  return (
+    <Route
+      {...restOfProps}
+      render={(props) =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/agent/login" />
+      }
+    />
+  );
+}
+
+function CustomerRoute({ component: Component, ...restOfProps }) {
+  const isAuthenticated = localStorage.getItem("customerToken");
+
+  return (
+    <Route
+      {...restOfProps}
+      render={(props) =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/customer/login" />
+      }
+    />
+  );
+}
 
 class Root extends Component {
   render() {
@@ -64,61 +94,43 @@ class Root extends Component {
             <Route path="/property-details/:id" component={PropertyDetails} />
             <Route path="/demo" component={Demo} />
             <Route path="/contact" component={Contact} />
+            <Route path="/terms-and-conditions" component={Termcondition} />
 
             {/* Services Routes */}
             <Route path="/services/properties" component={PropertiesService} />
             <Route path="/services/yachts" component={YachtsService} />
             <Route path="/services/vehicles" component={VehiclesService} />
             <Route path="/services/aviation" component={AviationService} />
-            
             <Route path="/services" component={Services} />
-            <Route path="/terms-and-conditions" component={Termcondition} />
 
             {/* Agent Routes */}
             <Route path="/agent/register" component={AgentRegister} />
             <Route path="/agent/login" component={AgentLogin} />
-            <Route
-              path="/agent/reset-password/:token"
-              component={AgentResetPassword}
-            />
-            <Route path="/agent/dashboard" component={AgentDashboard} />
-            <Route
-              path="/agent/account-details"
-              component={AgentAccountDetails}
-            />
-            <Route path="/agent/properties" component={AgentProperties} />
-            <Route path="/agent/add-property" component={AgentAddProperty} />
-            <Route
-              path="/agent/edit-property/:id"
-              component={AgentEditProperty}
-            />
-            <Route
-              path="/agent/property-details/:id"
-              component={AgentPropertyDetails}
-            />
-            <Route path="/agent/appointments" component={AgentAppointments} />
-            <Route
-              path="/agent/add-appointment"
-              component={AgentAddAppointment}
-            />
-            <Route path="/agent/alerts" component={AgentAlerts} />
+            <Route path="/agent/reset-password/:token" component={AgentResetPassword} />
+
+            {/* Agent Protected Routes */}
+            <AgentRoute path="/agent/dashboard" component={AgentDashboard} />
+            <AgentRoute path="/agent/account-details" component={AgentAccountDetails} />
+            <AgentRoute path="/agent/properties" component={AgentProperties} />
+            <AgentRoute path="/agent/add-property" component={AgentAddProperty} />
+            <AgentRoute path="/agent/edit-property/:id" component={AgentEditProperty} />
+            <AgentRoute path="/agent/property-details/:id" component={AgentPropertyDetails} />
+            <AgentRoute path="/agent/appointments" component={AgentAppointments} />
+            <AgentRoute path="/agent/add-appointment" component={AgentAddAppointment} />
+            <AgentRoute path="/agent/alerts" component={AgentAlerts} />
 
             {/* Client Routes */}
             <Route path="/customer/register" component={CustomerRegister} />
             <Route path="/customer/login" component={CustomerLogin} />
-            <Route
-              path="/customer/reset-password/:token"
-              component={CustomerResetPassword}
-            />
-            <Route path="/customer/dashboard" component={CustomerDashboard} />
-            <Route path="/customer/appointments" component={CustomerAppointments} />
-            <Route path="/customer/add-appointment" component={CustomerAddAppointment} />
-            <Route path="/customer/wishlist" component={CustomerWishlist} />
-            <Route
-              path="/customer/property-details/:id"
-              component={CustomerPropertyDetails}
-            />
-            <Route path="/customer/profile" component={CustomerProfile} />
+            <Route path="/customer/reset-password/:token" component={CustomerResetPassword} />
+
+            {/* Client Protected Routes */}
+            <CustomerRoute path="/customer/dashboard" component={CustomerDashboard} />
+            <CustomerRoute path="/customer/appointments" component={CustomerAppointments} />
+            <CustomerRoute path="/customer/add-appointment" component={CustomerAddAppointment} />
+            <CustomerRoute path="/customer/wishlist" component={CustomerWishlist} />
+            <CustomerRoute path="/customer/property-details/:id" component={CustomerPropertyDetails} />
+            <CustomerRoute path="/customer/profile" component={CustomerProfile} />
 
             {/* Meeting Routes */}
             <Route path="/meeting/:id/:usertype" component={Meeting} />
@@ -126,6 +138,10 @@ class Root extends Component {
 
             {/* Location Search */}
             <Route path="/location-search" component={LocationSearch} />
+
+            {/* Iframe Routes */}
+            <Route path="/iframe/property-grid" component={IframePropertyGrid} />
+            <Route path="/iframe/property-details/:id" component={IframePropertyDetails} />
 
             <Route path="*" component={Error} />
           </Switch>
