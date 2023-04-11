@@ -15,6 +15,7 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  const [jobTitlePlaceHolder, setJobTitlePlaceHolder] = useState("License or Registration #");
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
 
@@ -68,6 +69,13 @@ export default function Register() {
     }
     setLoading(false);
   };
+
+  const jobTitleHandler = (e) => {
+    setJobTitle(e);
+    if (e.value === "landlord") {
+      setJobTitlePlaceHolder("Deed title");
+    }
+  }
 
   return (
     <div className="ltn__login-area pb-80">
@@ -135,7 +143,8 @@ export default function Register() {
                       className="mb-0"
                       classNamePrefix="custom-select"
                       options={JOB_TITLE}
-                      onChange={(e) => setJobTitle(e)}
+                      onChange={(e) => jobTitleHandler(e)}
+                      value={jobTitle}
                       required
                     />
                   </div>
@@ -145,7 +154,7 @@ export default function Register() {
                     <input
                       type="text"
                       name="licenseNo"
-                      placeholder="License or Registration #"
+                      placeholder=""
                       onChange={(e) => setLicenseNo(e.target.value)}
                     />
                   </div>

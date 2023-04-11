@@ -48,6 +48,8 @@ export default function AddProperty(props) {
   const [marker, setMarker] = useState(null);
   const [success, setSuccess] = useState(null);
   const [propertySubTypeOptions, setPropertySubTypeOptions] = useState(null);
+  const [deedTitle, setDeedTitle] = useState("");
+  const [userJobTitle, setUserJobTitle] = useState("");
   // const [users, setUsers] = useState([]);
   const history = useHistory();
 
@@ -59,6 +61,23 @@ export default function AddProperty(props) {
         Authorization: `Bearer ${token}`,
       },
     }).then((data) => data.json());
+  };
+
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const jsonData = await response.json();
+    if (jsonData?.agent?.jobTitle) {
+      setUserJobTitle(jsonData.agent.jobTitle);
+    }
   };
 
   // const loadUsersToAllocate = async () => {
@@ -116,6 +135,7 @@ export default function AddProperty(props) {
     formdata.append("region", region);
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
+    formdata.append("deedTitle", setDeedTitle);
 
     let virtualTourTypeVar = virtualTourType;
     let virtualTourUrlVar = virtualTourUrl;
@@ -168,6 +188,10 @@ export default function AddProperty(props) {
 
     if (bedrooms?.value) {
       formdata.append("metaTags[5]", bedrooms.value);
+    }
+
+    if (deedTitle) {
+      formdata.append("metaTags[9]", deedTitle);
     }
 
     if (id) {
@@ -332,10 +356,15 @@ export default function AddProperty(props) {
       if (response) setCategoryFields(response.categoryFields);
     };
 
+    const fetchUserFields = async () => {
+      await getUser();
+    };
+
     // const fetchUsersToAllocate = async () => {
     //   await loadUsersToAllocate();
     // }
 
+    fetchUserFields();
     fetchCategoryFields();
     // fetchUsersToAllocate();
 
@@ -477,6 +506,9 @@ export default function AddProperty(props) {
                   }
 
                   break;
+                case 9:
+                  setDeedTitle(metaTag.value);
+                  break;
               }
             });
           }
@@ -580,6 +612,22 @@ export default function AddProperty(props) {
               />
             </div>
           </div>
+          {
+            userJobTitle && userJobTitle === 'landlord' && (
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label> Deed Title *</label>
+                  <input
+                    type="text"
+                    value={deedTitle}
+                    placeholder="Deed Title"
+                    onChange={(e) => setDeedTitle(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+            )
+          }
           <div className="col-md-12">
             <div className="input-item">
               <label>Price *</label>

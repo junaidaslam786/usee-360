@@ -589,36 +589,36 @@ const MeetingJoin = (props) => {
         <div className="d-flex align-items-center">
           {videoStreaming === true && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
-              <i class="fa-solid fa-video"></i>
+              <i className="fa-solid fa-video"></i>
             </span>
           )}
           {videoStreaming === false && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
-              <i class="fa-solid fa-video-slash"></i>
+              <i className="fa-solid fa-video-slash"></i>
             </span>
           )}
           {audioStreaming === true && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
-              <i class="fa-solid fa-microphone"></i>
+              <i className="fa-solid fa-microphone"></i>
             </span>
           )}
           {audioStreaming === false && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
-              <i class="fa-solid fa-microphone-slash"></i>
+              <i className="fa-solid fa-microphone-slash"></i>
             </span>
           )}
           {screenSharing === true && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
-              <i class="fa-solid fa-laptop"></i>
+              <i className="fa-solid fa-laptop"></i>
             </span>
           )}
           {screenSharing === false && (
             <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
-              <i class="fa-solid fa-laptop"></i>
+              <i className="fa-solid fa-laptop"></i>
             </span>
           )}
           {/* <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => leaveSession()}>
-            <i class="fa-solid fa-phone-slash"></i>
+            <i className="fa-solid fa-phone-slash"></i>
           </span> */}
         </div>
 

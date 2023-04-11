@@ -477,7 +477,7 @@ export default function ViewOffer(props) {
                                                                             <div className="row mb-50">
                                                                                 <div className="col-md-12">
                                                                                     <div className="input-item">
-                                                                                        <label>Approve Snaglist</label>
+                                                                                        <label>Approve Snaglist, if all above points are accepted.</label>
                                                                                         <div className="input-item">
                                                                                             <input
                                                                                                 type="checkbox"

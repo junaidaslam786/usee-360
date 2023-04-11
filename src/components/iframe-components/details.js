@@ -94,7 +94,7 @@ export default function PropertyDetails() {
         <div className="row">
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
-              <h5 className="mb-30"><Link to="/iframe/property-grid"><i class="fa-solid fa-arrow-left"></i> Back</Link></h5>
+              <h5 className="mb-30"><Link to="/iframe/property-grid"><i className="fa-solid fa-arrow-left"></i> Back</Link></h5>
               <div className="ltn__blog-meta">
                 {propertyImages?.length > 0 ? (
                   <Slideshow fadeImages={propertyImages} />

@@ -77,10 +77,21 @@ export default function PropertyDetails() {
     if (!token) {
       history.push(
         "/customer/login?returnUrl=" +
-          encodeURIComponent(window.location.pathname)
+          encodeURIComponent(`/customer/property-details/${params.id}`)
       );
     } else {
       history.push(`/customer/property-details/${params.id}`);
+    }
+  }
+
+  async function makeAppointmentHandler() {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent('/customer/add-appointment')
+      );
+    } else {
+      history.push('/customer/add-appointment');
     }
   }
 
@@ -196,19 +207,21 @@ export default function PropertyDetails() {
                 </div>
               </div>
               <div>
+                <a onClick={makeAppointmentHandler} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</a>
                 <a onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</a>
-                {
-                  propertyDocuments && (
-                    propertyDocuments.map((element, index) => (
-                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3 w-100">View {element.title}</a>
-                    )
-                  ))
-                }
                 {
                   (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
                     <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3 w-100">View Tour</a>
                   )
                 }
+                {
+                  propertyDocuments && (
+                    propertyDocuments.map((element, index) => (
+                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-3 mb-3 w-100">View {element.title}</a>
+                    )
+                  ))
+                }
+                
               </div>
             </aside>
           </div>

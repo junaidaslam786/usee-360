@@ -35,9 +35,10 @@ export const COMMERCIAL_PROPERTY = [
 ];
 
 export const PRICE_TYPE = [
-    { value: "weekly", label: "weekly" },
-    { value: "monthly", label: "monthly" },
-    { value: "yearly", label: "yearly" },
+    { value: "daily", label: "Daily" },
+    { value: "weekly", label: "Weekly" },
+    { value: "monthly", label: "Monthly" },
+    { value: "yearly", label: "Yearly" },
 ];
 
 export const UNITS = [

@@ -10,7 +10,7 @@ function PropertyDetailsPage() {
   return (
     <div>
       <Navbar />
-      <PageHeader headertitle="Product Details" customclass="mb-0" />
+      <PageHeader headertitle="Product Details" customclassName="mb-0" />
       <ProductDetails />
       <CallToActionV1 />
       <Footer />
