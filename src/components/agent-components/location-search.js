@@ -6,7 +6,7 @@ import "./location-search.css";
 export default function LocationSearch() {
   const [mapstate, setMap] = useState(null);
   const [center, setCenter] = useState({ lat: 24.466667, lng: 54.366669 });
-  const [centerAddress, setCenterAddress] = useState(null);
+  const [centerAddress, setCenterAddress] = useState('');
   const [radius, setRadius] = useState(300);
   const [active, setActive] = useState(true);
   const [circle, setCirle] = useState(null);
@@ -298,7 +298,7 @@ export default function LocationSearch() {
           {properties &&
             properties.length > 0 &&
             properties.map((element, i) => (
-              <div className="content-box">
+              <div key={element} className="content-box">
                 <img
                   src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
                   alt="#"
@@ -324,10 +324,6 @@ export default function LocationSearch() {
               </div>
             ))}
         </div>
-        {/* <ol>
-          <li>By drawing shapes on maps</li>
-          <li>By selecting a center point and radius</li> 
-        </ol> */}
          {/*<div className="sidebar-search">
           <input
             type="number"
