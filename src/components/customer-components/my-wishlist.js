@@ -81,7 +81,7 @@ export default function MyWishlist() {
                       </div>
                     </td>
                     <td>
-                      {moment(element?.product?.createdAt).format("MMMM d, YYYY")}
+                      {moment(element?.product?.createdAt).format("MMMM D, YYYY")}
                     </td>
                     <td>
                       <button

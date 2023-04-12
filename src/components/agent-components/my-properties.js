@@ -183,7 +183,7 @@ export default function MyProperties() {
                         </small>
                       </div>
                     </td>
-                    <td>{moment(element?.createdAt).format("MMMM d, YYYY")}</td>
+                    <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
                     <td>
                       <Link to={`/agent/edit-property/${element.id}`}>
                         Edit
