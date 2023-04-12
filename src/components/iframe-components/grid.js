@@ -31,44 +31,6 @@ export default function PropertyGrid() {
       size: 50,
     };
 
-    if (location.state) {
-      const {
-        propertyCategory,
-        propertyCategoryType,
-        propertyType,
-        rooms,
-        lat,
-        lng,
-        minPrice,
-        maxPrice,
-      } = location.state;
-
-      if (propertyCategory) {
-        payload.propertyCategory = propertyCategory;
-      }
-      if (propertyCategoryType) {
-        payload.propertyCategoryType = propertyCategoryType;
-      }
-      if (propertyType) {
-        payload.propertyType = propertyType;
-      }
-      if (rooms) {
-        payload.rooms = rooms;
-      }
-      if (lat) {
-        payload.lat = lat;
-      }
-      if (lng) {
-        payload.lng = lng;
-      }
-      if (minPrice) {
-        payload.minPrice = minPrice;
-      }
-      if (maxPrice) {
-        payload.maxPrice = maxPrice;
-      }
-    }
-
     if (search == "filter") {
       if (propertyCategoryFilter) {
         payload.propertyCategory = propertyCategoryFilter;
