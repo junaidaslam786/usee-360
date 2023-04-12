@@ -60,9 +60,9 @@ export default function PropertyDetails() {
               break;
           }
         });
-        setAgentImage(response.data.user.profileImage);
+        setAgentImage(response?.data?.user?.profileImage);
         setAgentName(
-          `${response.data.user.firstName} ${response.data.user.lastName}`
+          `${response?.data?.user?.firstName} ${response?.data?.user?.lastName}`
         );
         if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);

@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
+import {
+  PROPERTY_TYPES,
+  PROPERTY_CATEGORY_TYPES,
+  BEDROOMS,
+  UNITS,
+  VIRTUAL_TOUR_TYPE,
+  DEFAULT_CURRENCY,
+} from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -15,10 +22,10 @@ export default function PropertyDetails() {
   const [agentImage, setAgentImage] = useState();
   const [agentName, setAgentName] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
-  const [propertyDocuments, setPropertyDocuments] = useState([]);
-
-  const token = JSON.parse(localStorage.getItem("customerToken"));
-  const history = useHistory();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState();
+  const [successMessage, setSuccessMessage] = useState();
 
   const params = useParams();
 
@@ -34,14 +41,18 @@ export default function PropertyDetails() {
         response.data.productMetaTags.forEach((metaTag) => {
           switch (metaTag.categoryField.id) {
             case 1:
-              setPropertyType(PROPERTY_TYPES.find(
-                (property) => property.value == metaTag.value
-              ));
+              setPropertyType(
+                PROPERTY_TYPES.find(
+                  (property) => property.value == metaTag.value
+                )
+              );
               break;
             case 2:
-              setPropertyCategoryType(PROPERTY_CATEGORY_TYPES.find(
-                (category) => category.value == metaTag.value
-              ));
+              setPropertyCategoryType(
+                PROPERTY_CATEGORY_TYPES.find(
+                  (category) => category.value == metaTag.value
+                )
+              );
               break;
             case 3:
               setPropertyUnit(
@@ -53,35 +64,44 @@ export default function PropertyDetails() {
               break;
             case 5:
               setPropertyBedrooms(
-                BEDROOMS.find(
-                  (bedroom) => bedroom.value == metaTag.value
-                )
+                BEDROOMS.find((bedroom) => bedroom.value == metaTag.value)
               );
               break;
           }
         });
-        setAgentImage(response.data.user.profileImage);
+        setAgentImage(response?.data?.user?.profileImage);
         setAgentName(
-          `${response.data.user.firstName} ${response.data.user.lastName}`
+          `${response?.data?.user?.firstName} ${response?.data?.user?.lastName}`
         );
         if (response?.data?.productImages?.length > 0) {
           setPropertyImages(response.data.productImages);
         }
-        if (response?.data?.productDocuments?.length > 0) {
-          setPropertyDocuments(response.data.productDocuments);
-        }
       });
   }
 
-  async function makeOfferHandler() {
-    if (!token) {
-      history.push(
-        "/customer/login?returnUrl=" +
-          encodeURIComponent(window.location.pathname)
-      );
-    } else {
-      history.push(`/customer/property-details/${params.id}`);
-    }
+  async function makeOfferHandler(e) {
+    e.preventDefault();
+
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      productId: params.id,
+    };
+
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/iframe/register-customer`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        setSuccessMessage(true);
+      });
   }
 
   useEffect(() => {
@@ -94,7 +114,11 @@ export default function PropertyDetails() {
         <div className="row">
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
-              <h5 className="mb-30"><Link to="/iframe/property-grid"><i className="fa-solid fa-arrow-left"></i> Back</Link></h5>
+              <h5 className="mb-30">
+                <Link to="/iframe/property-grid">
+                  <i className="fa-solid fa-arrow-left"></i> Back
+                </Link>
+              </h5>
               <div className="ltn__blog-meta">
                 {propertyImages?.length > 0 ? (
                   <Slideshow fadeImages={propertyImages} />
@@ -124,7 +148,9 @@ export default function PropertyDetails() {
                 </span>{" "}
                 {property.address}
               </label>
-              <h2 className="mb-50">{DEFAULT_CURRENCY} {property.price}</h2>
+              <h2 className="mb-50">
+                {DEFAULT_CURRENCY} {property.price}
+              </h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>
@@ -197,21 +223,86 @@ export default function PropertyDetails() {
                 </div>
               </div>
               <div>
-                <a onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</a>
-                {
-                  propertyDocuments && (
-                    propertyDocuments.map((element, index) => (
-                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3 w-100">View {element.title}</a>
-                    )
-                  ))
-                }
-                {
-                  (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
-                    <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3 w-100">View Tour</a>
-                  )
-                }
+                <a
+                  className="btn theme-btn-3 mb-3 w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ltn_make_offer_modal"
+                >
+                  Make Offer
+                </a>
               </div>
             </aside>
+          </div>
+        </div>
+      </div>
+      <div className="ltn__modal-area ltn__add-to-cart-modal-area">
+        <div className="modal fade" id="ltn_make_offer_modal" tabIndex={-1}>
+          <div className="modal-dialog modal-md" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="ltn__quick-view-modal-inner">
+                  <div className="modal-product-item">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="modal-product-info text-center p-0">
+                          <h4>Make Offer</h4>
+                          <form
+                            onSubmit={makeOfferHandler}
+                            className="ltn__form-box"
+                          >
+                            {successMessage ? (
+                              <div className="alert alert-success" role="alert">
+                                Offer Sent Successfully!
+                              </div>
+                            ) : null}
+                            <div className="row">
+                              <div className="col-md-6">
+                                <input
+                                  type="text"
+                                  placeholder="First Name"
+                                  onChange={(e) => setFirstName(e.target.value)}
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6">
+                                <input
+                                  type="text"
+                                  placeholder="Last Name"
+                                  onChange={(e) => setLastName(e.target.value)}
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <input
+                              type="email"
+                              placeholder="Email Address"
+                              onChange={(e) => setEmail(e.target.value)}
+                              required
+                            />
+                            <button
+                              className="theme-btn-1 btn btn-full-width-2"
+                              type="submit"
+                            >
+                              Submit
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
