@@ -19,9 +19,6 @@ import Contact from "./pages/contact";
 import Termcondition from "./pages/termcondition";
 
 import PropertiesService from "./pages/services/properties";
-import YachtsService from "./pages/services/yachts";
-import VehiclesService from "./pages/services/vehicles";
-import AviationService from "./pages/services/aviation";
 
 import AgentRegister from "./pages/agent/register";
 import AgentLogin from "./pages/agent/login";
@@ -57,7 +54,16 @@ import Meeting from "./pages/meeting";
 import Error from "./pages/404";
 
 function AgentRoute({ component: Component, ...restOfProps }) {
-  const isAuthenticated = localStorage.getItem("agentToken");
+  let isAuthenticated = false;
+  const token = localStorage.getItem("agentToken");
+  if(token) {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      localStorage.removeItem("agentToken");
+      isAuthenticated = false;
+    }
+    isAuthenticated = true;
+  }
 
   return (
     <Route
@@ -70,7 +76,16 @@ function AgentRoute({ component: Component, ...restOfProps }) {
 }
 
 function CustomerRoute({ component: Component, ...restOfProps }) {
-  const isAuthenticated = localStorage.getItem("customerToken");
+  let isAuthenticated = false;
+  const token = localStorage.getItem("customerToken");
+  if(token) {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      localStorage.removeItem("customerToken");
+      isAuthenticated = false;
+    }
+    isAuthenticated = true;
+  }
 
   return (
     <Route
@@ -98,9 +113,6 @@ class Root extends Component {
 
             {/* Services Routes */}
             <Route path="/services/properties" component={PropertiesService} />
-            <Route path="/services/yachts" component={YachtsService} />
-            <Route path="/services/vehicles" component={VehiclesService} />
-            <Route path="/services/aviation" component={AviationService} />
             <Route path="/services" component={Services} />
 
             {/* Agent Routes */}
@@ -140,7 +152,7 @@ class Root extends Component {
             <Route path="/location-search" component={LocationSearch} />
 
             {/* Iframe Routes */}
-            <Route path="/iframe/property-grid" component={IframePropertyGrid} />
+            <Route path="/iframe/property-grid/:id" component={IframePropertyGrid} />
             <Route path="/iframe/property-details/:id" component={IframePropertyDetails} />
 
             <Route path="*" component={Error} />

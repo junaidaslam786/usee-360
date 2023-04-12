@@ -79,18 +79,18 @@ class Navbar extends Component {
                                 </Link>
                               </li>
                               <li>
-                                <Link to="/services/yachts">
+                                <Link to="#">
                                   Usee-360 Yachts
                                 </Link>
                               </li>
                               <li>
-                                <Link to="/services/vehicles">
+                                <Link to="#">
                                   Usee-360 Vehicles
                                 </Link>
                               </li>
                               <li>
-                                <Link to="/services/aviation">
-                                  Usee-360 Aviation
+                                <Link to="#">
+                                  Usee-360 Maintenance
                                 </Link>
                               </li>
                             </ul>
@@ -176,13 +176,13 @@ class Navbar extends Component {
                       <Link to="/services/properties">Usee-360 Properties</Link>
                     </li>
                     <li>
-                      <Link to="/services/yachts">Usee-360 Yachts</Link>
+                      <Link to="#">Usee-360 Yachts</Link>
                     </li>
                     <li>
-                      <Link to="/services/vehicles">Usee-360 Vehicles</Link>
+                      <Link to="#">Usee-360 Vehicles</Link>
                     </li>
                     <li>
-                      <Link to="/services/aviation">Usee-360 Aviation</Link>
+                      <Link to="#">Usee-360 Maintenance</Link>
                     </li>
                   </ul>
                 </li>

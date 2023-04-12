@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ResponseHandler from "../global-components/respones-handler";
 
 export default function AccountDetails() {
+  const [agentId, setAgentId] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [companyPosition, setCompanyPosition] = useState();
@@ -27,6 +28,9 @@ export default function AccountDetails() {
   const [loadingPass, setLoadingPass] = useState();
   const [successPass, setSuccessPass] = useState();
   const [errorPass, setErrorPass] = useState();
+  const [successMessage, setSuccessMessage] = useState();
+
+  const code = useRef();
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
   const getUser = async () => {
@@ -41,6 +45,7 @@ export default function AccountDetails() {
       }
     );
     const jsonData = await response.json();
+    setAgentId(jsonData.agent.id);
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
     setCompanyPosition(
@@ -490,7 +495,30 @@ export default function AccountDetails() {
                         <div className="modal-product-info text-center p-0">
                           <h4>Embeded Code</h4>
                           <form className="ltn__form-box mt-50">
-                            <textarea>{ `<!-- useepopupcode--><link rel="stylesheet" href="${process.env.REACT_APP_PUBLIC_URL}/script/usee-agent-popup.css?v=107"><div id="usee_prop_list_dn"><button type="button" style="font-size: 15px; color:#00CB04; background: #ffffff; border: 2px solid #00CB04" className="usee_btn grn-line-btn usee-popup-trigger_" data-popup-trigger="usee_agent_model">Book a guided U-See Virtual Tour</button><div className="usee_agent_website_model" data-popup-modal="usee_agent_model"><div id="usee_agent_website_popup" className="u-see-agent-website-popup_ shadow"><span className="usee_popup__close">X</span> <iframe className="usee-agent-popup-iframe" src="${process.env.REACT_APP_PUBLIC_URL}/iframe/property-grid" width="100%" height="100%" frameborder="0"></iframe> </div></div></div><div className="usee-bg-popup-overlay_"></div><script src="${process.env.REACT_APP_PUBLIC_URL}/script/useeapi.js?ver=2"></script><!-- usee popupcodeends-->` }</textarea>
+                            {successMessage ? (
+                              <div className="alert alert-success" role="alert">
+                                Code Copied Successfully!
+                              </div>
+                            ) : null}
+                            <textarea
+                              ref={code}
+                              value={`<!-- useepopupcode--><link rel="stylesheet" href="${process.env.REACT_APP_PUBLIC_URL}/script/usee-agent-popup.css?v=107"><div id="usee_prop_list_dn"><button type="button" style="font-size: 15px; color:#00CB04; background: #ffffff; border: 2px solid #00CB04" class="usee_btn grn-line-btn usee-popup-trigger_" data-popup-trigger="usee_agent_model">Book a guided U-See Virtual Tour</button><div class="usee_agent_website_model" data-popup-modal="usee_agent_model"><div id="usee_agent_website_popup" class="u-see-agent-website-popup_ shadow"><span class="usee_popup__close">X</span> <iframe class="usee-agent-popup-iframe" src="${process.env.REACT_APP_PUBLIC_URL}/iframe/property-grid/${agentId}" width="100%" height="100%" frameborder="0"></iframe> </div></div></div><div class="usee-bg-popup-overlay_"></div><script src="${process.env.REACT_APP_PUBLIC_URL}/script/useeapi.js?ver=2"></script><!-- usee popupcodeends-->`}
+                            ></textarea>
+                            <button
+                              className="btn theme-btn-1"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigator.clipboard.writeText(
+                                  code.current.value
+                                );
+                                setSuccessMessage(true);
+                                setTimeout(() => {
+                                  setSuccessMessage(false);
+                                }, 2000);
+                              }}
+                            >
+                              Copy
+                            </button>
                           </form>
                         </div>
                       </div>

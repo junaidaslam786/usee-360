@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   DEFAULT_CURRENCY,
@@ -9,13 +9,21 @@ import {
 } from "../../constants";
 
 export default function PropertyGrid() {
-  const publicUrl = `${process.env.REACT_APP_API_URL}`;
-  const [properties, setProperties] = useState([]);
-
+  const [propertyCategoryFilter, setPropertyCategory] = useState();
+  const [propertyCategoryTypeFilter, setPropertyCategoryType] = useState();
   const [latFilter, setLatFilter] = useState();
   const [lngFilter, setLngFilter] = useState();
-  const [sortFilter, setSortFilter] = useState();
+  const [roomsFilter, setRooms] = useState();
   const [address, setAddress] = useState();
+
+  const publicUrl = `${process.env.REACT_APP_API_URL}`;
+
+  const [properties, setProperties] = useState([]);
+
+  const price = useRef(null);
+  const sort = useRef(null);
+  const location = useLocation();
+  const params = useParams();
 
   async function loadProperties(search) {
     let payload = {
@@ -23,7 +31,57 @@ export default function PropertyGrid() {
       size: 50,
     };
 
-    if (search == "location") {
+    if (location.state) {
+      const {
+        propertyCategory,
+        propertyCategoryType,
+        propertyType,
+        rooms,
+        lat,
+        lng,
+        minPrice,
+        maxPrice,
+      } = location.state;
+
+      if (propertyCategory) {
+        payload.propertyCategory = propertyCategory;
+      }
+      if (propertyCategoryType) {
+        payload.propertyCategoryType = propertyCategoryType;
+      }
+      if (propertyType) {
+        payload.propertyType = propertyType;
+      }
+      if (rooms) {
+        payload.rooms = rooms;
+      }
+      if (lat) {
+        payload.lat = lat;
+      }
+      if (lng) {
+        payload.lng = lng;
+      }
+      if (minPrice) {
+        payload.minPrice = minPrice;
+      }
+      if (maxPrice) {
+        payload.maxPrice = maxPrice;
+      }
+    }
+
+    if (search == "filter") {
+      if (propertyCategoryFilter) {
+        payload.propertyCategory = propertyCategoryFilter;
+      }
+
+      if (propertyCategoryTypeFilter) {
+        payload.propertyCategoryType = propertyCategoryTypeFilter;
+      }
+
+      if (roomsFilter) {
+        payload.rooms = parseInt(roomsFilter);
+      }
+
       if (latFilter) {
         payload.lat = latFilter;
       }
@@ -31,20 +89,26 @@ export default function PropertyGrid() {
       if (lngFilter) {
         payload.lng = lngFilter;
       }
-    }
 
-    if (search == "sort") {
-      if (sortFilter) {
-        payload.sort = ["price", sortFilter];
+      if (sort.current.value !== "null") {
+        payload.sort = ["price", sort.current.value];
       }
+
+      let arr = price.current.value.split(" - ");
+      payload.minPrice = parseInt(arr[0]);
+      payload.maxPrice = parseInt(arr[1]);
     }
 
     await axios
-      .post(`${process.env.REACT_APP_API_URL}/home/property/list`, payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `${process.env.REACT_APP_API_URL}/home/property/list?agentId=${params.id}`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         setProperties(response.data.data);
       });
@@ -109,32 +173,39 @@ export default function PropertyGrid() {
     return metaData;
   }
 
-  const autocomplete = new window.google.maps.places.Autocomplete(
-    document.getElementById("autocomplete")
-  );
-
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) {
-      window.alert("No details available for input: '" + place.name + "'");
-      return;
-    }
-
-    setAddress(place.formatted_address);
-    setLatFilter(place.geometry.location.lat());
-    setLngFilter(place.geometry.location.lng());
-  });
-
   useEffect(() => {
     loadProperties();
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      document.getElementById("autocomplete")
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      setAddress(place.formatted_address);
+      setLatFilter(place.geometry.location.lat());
+      setLngFilter(place.geometry.location.lng());
+    });
+
+    const publicUrl = `${process.env.PUBLIC_URL}/`;
+    const minscript = document.createElement("script");
+
+    minscript.async = true;
+    minscript.src = `${publicUrl}assets/js/main.js`;
+    document.body.appendChild(minscript);
   }, []);
 
   return (
-    <div className="mt-50">
+    <div>
       <div className="ltn__product-area ltn__product-gutter">
         <div className="container">
           <div className="row">
-            <div className="col-lg-8 order-lg-2 mb-50">
+            <div className="col-lg-12 order-lg-2 mb-50">
               <div className="ltn__shop-options">
                 <ul className="justify-content-start">
                   <li>
@@ -162,12 +233,12 @@ export default function PropertyGrid() {
                     <div className="short-by text-center">
                       <select
                         className="nice-select"
-                        onChange={(e) => {
-                          setSortFilter(e.target.value);
-                          loadProperties("sort");
+                        ref={sort}
+                        onChange={() => {
+                          loadProperties("filter");
                         }}
                       >
-                        <option selected disabled>
+                        <option selected disabled value="null">
                           Default Sorting
                         </option>
                         <option value={"ASC"}>
@@ -180,6 +251,128 @@ export default function PropertyGrid() {
                     </div>
                   </li>
                 </ul>
+              </div>
+              <div className="mb-50">
+                <aside className="sidebar ltn__shop-sidebar">
+                  <h3 className="mb-10">Advance Filters</h3>
+                  <div className="widget ltn__menu-widget row">
+                    <ul className="col-sm-4">
+                      <h4 className="ltn__widget-title">Property Category</h4>
+                      <div
+                        onChange={(e) => {
+                          setPropertyCategory(e.target.value);
+                        }}
+                      >
+                        <li>
+                          <label className="checkbox-item">
+                            Rent
+                            <input
+                              type="radio"
+                              name="propertyCategory"
+                              value="rent"
+                            />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                        <li>
+                          <label className="checkbox-item">
+                            Buy
+                            <input
+                              type="radio"
+                              name="propertyCategory"
+                              value="sale"
+                            />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                      </div>
+                    </ul>
+                    <ul className="col-sm-4">
+                      <h4 className="ltn__widget-title">Type</h4>
+                      <div
+                        onChange={(e) => {
+                          setPropertyCategoryType(e.target.value);
+                        }}
+                      >
+                        <li>
+                          <label className="checkbox-item">
+                            Commercial
+                            <input
+                              type="radio"
+                              name="propertyCategoryType"
+                              value="commercial"
+                            />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                        <li>
+                          <label className="checkbox-item">
+                            Residential
+                            <input
+                              type="radio"
+                              name="propertyCategoryType"
+                              value="residential"
+                            />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                      </div>
+                    </ul>
+                    <ul className="col-sm-4">
+                      <h4 className="ltn__widget-title">Bedrooms</h4>
+                      <div
+                        onChange={(e) => {
+                          setRooms(e.target.value);
+                        }}
+                      >
+                        <li>
+                          <label className="checkbox-item">
+                            Up To 3
+                            <input type="radio" name="bedrooms" value="3" />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                        <li>
+                          <label className="checkbox-item">
+                            Up To 5
+                            <input type="radio" name="bedrooms" value="5" />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                      </div>
+                    </ul>
+                    <hr />
+                    <div className="widget--- ltn__price-filter-widget col-sm-12">
+                      <h4 className="ltn__widget-title ltn__widget-title-border---">
+                        Filter by price
+                      </h4>
+                      <div className="price_filter">
+                        <div className="price_slider_amount">
+                          <input
+                            type="text"
+                            className="amount"
+                            name="price"
+                            ref={price}
+                            placeholder="Add Your Price"
+                          />
+                        </div>
+                        <div className="slider-range" />
+                      </div>
+                    </div>
+                  </div>
+                </aside>
+                <button
+                  className="mt-4 btn theme-btn-1"
+                  onClick={() => loadProperties("filter")}
+                >
+                  Submit
+                </button>
+                <button
+                  className="mt-4 btn theme-btn-2"
+                  onClick={() => window.location.reload(true)}
+                >
+                  Reset
+                </button>
               </div>
               <div className="tab-content">
                 <div
@@ -194,7 +387,7 @@ export default function PropertyGrid() {
                           <form>
                             <input
                               type="text"
-                              name="search"
+                              name="ltn__name"
                               id="autocomplete"
                               placeholder="Search Location..."
                               value={address}
@@ -205,7 +398,7 @@ export default function PropertyGrid() {
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
-                                loadProperties("location");
+                                loadProperties("filter");
                               }}
                             >
                               <i className="fas fa-search" />

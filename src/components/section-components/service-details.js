@@ -57,7 +57,7 @@ class ServiceDetails extends Component {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/services/yachts">
+                      <Link to="#">
                         Yachts
                         <span>
                           <i className="fas fa-arrow-right" />
@@ -65,7 +65,7 @@ class ServiceDetails extends Component {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/services/vehicles">
+                      <Link to="#">
                         Vehicles
                         <span>
                           <i className="fas fa-arrow-right" />
@@ -73,8 +73,8 @@ class ServiceDetails extends Component {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/services/aviation">
-                        Aviation
+                      <Link to="#">
+                        Maintenance
                         <span>
                           <i className="fas fa-arrow-right" />
                         </span>

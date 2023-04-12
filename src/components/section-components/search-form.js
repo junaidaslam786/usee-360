@@ -31,22 +31,6 @@ export default function SearchForm() {
     }, 300);
   };
 
-  const autocomplete = new window.google.maps.places.Autocomplete(
-    document.getElementById("autocomplete")
-  );
-
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) {
-      window.alert("No details available for input: '" + place.name + "'");
-      return;
-    }
-
-    setAddress(place.formatted_address);
-    setLat(place.geometry.location.lat());
-    setLng(place.geometry.location.lng());
-  });
-
   function handleChange(value) {
     setPropertyCategoryType(value);
     if (value == "commercial") {
@@ -58,6 +42,24 @@ export default function SearchForm() {
       setFlag(true);
     }
   }
+
+  useEffect(() => {
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      document.getElementById("autocomplete")
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      setAddress(place.formatted_address);
+      setLat(place.geometry.location.lat());
+      setLng(place.geometry.location.lng());
+    });
+  }, []);
 
   return (
     <div className="ltn__car-dealer-form-area mt-120 mb-120">

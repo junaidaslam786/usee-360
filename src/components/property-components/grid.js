@@ -14,7 +14,6 @@ export default function PropertyGrid() {
   const [latFilter, setLatFilter] = useState();
   const [lngFilter, setLngFilter] = useState();
   const [roomsFilter, setRooms] = useState();
-  const [sortFilter, setSortFilter] = useState();
   const [address, setAddress] = useState();
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
@@ -28,6 +27,7 @@ export default function PropertyGrid() {
 
   const toggleButton = useRef(null);
   const price = useRef(null);
+  const sort = useRef(null);
   const history = useHistory();
   const location = useLocation();
 
@@ -88,12 +88,6 @@ export default function PropertyGrid() {
         payload.rooms = parseInt(roomsFilter);
       }
 
-      let arr = price.current.value.split(" - ");
-      payload.minPrice = parseInt(arr[0]);
-      payload.maxPrice = parseInt(arr[1]);
-    }
-
-    if (search == "location") {
       if (latFilter) {
         payload.lat = latFilter;
       }
@@ -101,12 +95,14 @@ export default function PropertyGrid() {
       if (lngFilter) {
         payload.lng = lngFilter;
       }
-    }
 
-    if (search == "sort") {
-      if (sortFilter) {
-        payload.sort = ["price", sortFilter];
+      if(sort.current.value !== "null") {
+        payload.sort = ["price", sort.current.value];
       }
+
+      let arr = price.current.value.split(" - ");
+      payload.minPrice = parseInt(arr[0]);
+      payload.maxPrice = parseInt(arr[1]);
     }
 
     await axios
@@ -166,12 +162,15 @@ export default function PropertyGrid() {
       );
     } else {
       await axios
-        .delete(`${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .delete(
+          `${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then(() => {
           loadWishlistProperties();
         });
@@ -237,27 +236,27 @@ export default function PropertyGrid() {
     return metaData;
   }
 
-  const autocomplete = new window.google.maps.places.Autocomplete(
-    document.getElementById("autocomplete")
-  );
-
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) {
-      window.alert("No details available for input: '" + place.name + "'");
-      return;
-    }
-
-    setAddress(place.formatted_address);
-    setLatFilter(place.geometry.location.lat());
-    setLngFilter(place.geometry.location.lng());
-  });
-
   useEffect(() => {
     loadProperties();
     if (token) {
       loadWishlistProperties();
     }
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      document.getElementById("autocomplete")
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      setAddress(place.formatted_address);
+      setLatFilter(place.geometry.location.lat());
+      setLngFilter(place.geometry.location.lng());
+    });
   }, []);
 
   return (
@@ -293,12 +292,12 @@ export default function PropertyGrid() {
                     <div className="short-by text-center">
                       <select
                         className="nice-select"
-                        onChange={(e) => {
-                          setSortFilter(e.target.value);
-                          loadProperties("sort");
+                        ref={sort}
+                        onChange={() => {
+                          loadProperties("filter");
                         }}
                       >
-                        <option selected disabled>
+                        <option selected disabled value="null">
                           Default Sorting
                         </option>
                         <option value={"ASC"}>
@@ -325,7 +324,7 @@ export default function PropertyGrid() {
                           <form>
                             <input
                               type="text"
-                              name="search"
+                              name="ltn__name"
                               id="autocomplete"
                               placeholder="Search Location..."
                               value={address}
@@ -336,7 +335,7 @@ export default function PropertyGrid() {
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
-                                loadProperties("location");
+                                loadProperties("filter");
                               }}
                             >
                               <i className="fas fa-search" />
@@ -422,9 +421,14 @@ export default function PropertyGrid() {
                                       <a
                                         href="#"
                                         title="Quick View"
-                                        onClick={() =>
-                                          { wishlistProperties.find(({ productId }) => productId === element.id) ? removeWishList(element.id) : addToWishList(element.id) }
-                                        }
+                                        onClick={() => {
+                                          wishlistProperties.find(
+                                            ({ productId }) =>
+                                              productId === element.id
+                                          )
+                                            ? removeWishList(element.id)
+                                            : addToWishList(element.id);
+                                        }}
                                       >
                                         <i className="flaticon-heart-1" />
                                       </a>
@@ -546,9 +550,14 @@ export default function PropertyGrid() {
                                       <a
                                         href="#"
                                         title="Quick View"
-                                        onClick={() =>
-                                          { wishlistProperties.find(({ productId }) => productId === element.id) ? removeWishList(element.id) : addToWishList(element.id) }
-                                        }
+                                        onClick={() => {
+                                          wishlistProperties.find(
+                                            ({ productId }) =>
+                                              productId === element.id
+                                          )
+                                            ? removeWishList(element.id)
+                                            : addToWishList(element.id);
+                                        }}
                                       >
                                         <i className="flaticon-heart-1" />
                                       </a>
@@ -729,7 +738,7 @@ export default function PropertyGrid() {
               </button>
               <button
                 className="mt-4 btn theme-btn-2"
-                onClick={() => loadProperties()}
+                onClick={() => window.location.reload(true)}
               >
                 Reset
               </button>
