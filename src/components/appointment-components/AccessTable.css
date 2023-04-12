@@ -161,3 +161,8 @@ a button {
     width: 100%;
   }
 }
+
+.OT_publisher {
+  border-radius: 5px;
+  border: 2px solid rgb(0, 203, 4)
+}

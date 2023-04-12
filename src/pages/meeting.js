@@ -22,6 +22,8 @@ const Meeting = (props) => {
       audioOutputDeviceId, 
       videoDeviceId, 
       appointment,
+      filter,
+      backgroundImage
     } = props.location.state;
     return (
       <div>
@@ -32,6 +34,8 @@ const Meeting = (props) => {
           appointment={appointment}
           appointmentId={id}
           userType={usertype}
+          filter={filter}
+          backgroundImage={backgroundImage}
         />
       </div>
     );

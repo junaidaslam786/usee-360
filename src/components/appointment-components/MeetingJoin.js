@@ -27,6 +27,8 @@ const MeetingJoin = (props) => {
     appointment,
     userType,
     appointmentId,
+    backgroundImage,
+    filter
   } = props;
 
   const token = getToken(userType);
@@ -70,15 +72,15 @@ const MeetingJoin = (props) => {
   const [videoStreaming, setVideoStreaming] = useState(true);
   const [audioStreaming, setAudioStreaming] = useState(true);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [publisher, setPublisher] = useState(null);
-  const [screenPublisher, setScreenPublisher] = useState(null);
+  const [publisher, setPublisher] = useState('');
+  const [screenPublisher, setScreenPublisher] = useState('');
   const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
-  const [selectedProperty, setSelectedProperty] = useState(null);
-  const [virtualTourUrl, setVirtualTourUrl] = useState(null);
-  const [virtualTourVideo, setVirtualTourVideo] = useState(null);
-  const [productImages, setProductImages] = useState(null);
+  const [selectedProperty, setSelectedProperty] = useState('');
+  const [virtualTourUrl, setVirtualTourUrl] = useState('');
+  const [virtualTourVideo, setVirtualTourVideo] = useState('');
+  const [productImages, setProductImages] = useState('');
   const [defaultImage, setDefaultImage] = useState(true);
   const agentJWTToken = JSON.parse(localStorage.getItem("agentToken"));
   const customerJWTToken = JSON.parse(localStorage.getItem("customerToken"));
@@ -331,12 +333,19 @@ const MeetingJoin = (props) => {
         publisherOptions.audioSource = audioInputDeviceId;
         publisherOptions.videoSource = videoDeviceId;
       }
-      // if (OT.hasMediaProcessorSupport()) {
-      //   publisherOptions.videoFilter = {
-      //     type: "backgroundReplacement",
-      //     backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
-      //   };
-      // }
+      if (OT.hasMediaProcessorSupport()) {
+        if(filter && filter === "blur") {
+          publisherOptions.videoFilter = {
+            type: "backgroundBlur",
+            blurStrength: "high",
+          };
+        } else if (filter && filter === "background" && backgroundImage) {
+          publisherOptions.videoFilter = {
+            type: "backgroundReplacement",
+            backgroundImgUrl: `${process.env.REACT_APP_API_URL}/${backgroundImage}`,
+          };
+        }
+      }
       const publisher = OT.initPublisher(
         "publisher",
         publisherOptions,
