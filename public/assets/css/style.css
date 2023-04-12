@@ -599,6 +599,7 @@ ol li {
   background-color: transparent;
 }
 .section-bg-3 input[type="text"],
+.section-bg-3 input[type="number"],
 .section-bg-3 input[type="email"],
 .section-bg-3 input[type="password"],
 .section-bg-3 input[type="submit"] {
@@ -1009,6 +1010,7 @@ code {
     Form input box
 ---------------------------------------------------- */
 input[type="text"],
+input[type="number"],
 input[type="date"],
 input[type="time"],
 input[type="email"],
@@ -12560,6 +12562,7 @@ blockquote::before {
   padding: 50px;
   background-color: var(--white-5);
 }
+.ltn__comment-reply-area form input[type="number"],
 .ltn__comment-reply-area form input[type="text"],
 .ltn__comment-reply-area form input[type="email"],
 .ltn__comment-reply-area form input[type="password"],

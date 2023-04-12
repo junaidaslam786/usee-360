@@ -632,7 +632,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Price *</label>
               <input
-                type="text"
+                min="1"
+                type="number"
                 value={price || ""}
                 placeholder="Enter price"
                 onChange={(e) => setPrice(e.target.value)}
@@ -673,7 +674,8 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Area</label>
               <input
-                type="text"
+                min="1"
+                type="number"
                 placeholder="0"
                 onChange={(e) => setArea(e.target.value)}
                 value={area}
