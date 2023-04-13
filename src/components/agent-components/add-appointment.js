@@ -274,7 +274,7 @@ export default function AddAppointment() {
   //   }
   // }, [selectedAllocatedAgent, time]);
 
-  function handleButtonClick(event) {
+  const handleButtonClick = (event) => {
     const now = new Date();
 
     // Format the date and time values to be used as input values
@@ -282,6 +282,33 @@ export default function AddAppointment() {
     const timeValue = now.toTimeString().slice(0, 5);
     setDate(dateValue);
     setTime(timeValue);
+  }
+
+  const checkTimeOver = (dateTime, timeValue) => {
+    let difdate = dateTime ? dateTime : date;
+    let parts = difdate.split("-");
+    let fpdate = parts[1]+'-'+parts[2]+'-'+parts[0];
+
+    let startDate = new Date(fpdate+' '+(timeValue ? timeValue : time));
+    let today = new Date();
+    if (startDate.getTime() < today.getTime()) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  const setTimeHandler = (e) => {
+    setTime(e);
+    checkTimeOver(date, e);
+  }
+
+  const setDateHandler = (e) => {
+    setDate(e);
+    checkTimeOver(e, time);
   }
 
   return (
@@ -319,7 +346,7 @@ export default function AddAppointment() {
                     <label>Select Date *</label>
                     <input
                       type="date"
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => setDateHandler(e.target.value)}
                       value={date}
                       required
                     />
@@ -330,7 +357,7 @@ export default function AddAppointment() {
                     <label>Choose Time *</label>
                     <input
                       type="time"
-                      onChange={(e) => setTime(e.target.value)}
+                      onChange={(e) => setTimeHandler(e.target.value)}
                       value={time}
                       required
                     />

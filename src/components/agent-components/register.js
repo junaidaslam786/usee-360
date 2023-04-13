@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ResponseHandler from "../global-components/respones-handler";
-import { JOB_TITLE } from "../../constants";
+import { JOB_TITLE, DEFAULT_LICENSE_NO_TEXT, DEFAULT_DEED_TITLE_TEXT } from "../../constants";
 import Select from "react-select";
 
 export default function Register() {
@@ -15,7 +15,7 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
-  const [jobTitlePlaceHolder, setJobTitlePlaceHolder] = useState("License or Registration #");
+  const [jobTitlePlaceHolder, setJobTitlePlaceHolder] = useState(DEFAULT_LICENSE_NO_TEXT);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
 
@@ -72,9 +72,7 @@ export default function Register() {
 
   const jobTitleHandler = (e) => {
     setJobTitle(e);
-    if (e.value === "landlord") {
-      setJobTitlePlaceHolder("Deed title");
-    }
+    setJobTitlePlaceHolder(e.value === "landlord" ? DEFAULT_DEED_TITLE_TEXT : DEFAULT_LICENSE_NO_TEXT);
   }
 
   return (
@@ -98,7 +96,6 @@ export default function Register() {
                 onSubmit={handleSubmit}
                 className="ltn__form-box contact-form-box"
               >
-                <ResponseHandler errors={errors} />
                 <input
                   type="text"
                   name="companyname"
@@ -154,7 +151,7 @@ export default function Register() {
                     <input
                       type="text"
                       name="licenseNo"
-                      placeholder=""
+                      placeholder={jobTitlePlaceHolder}
                       onChange={(e) => setLicenseNo(e.target.value)}
                     />
                   </div>
@@ -197,6 +194,7 @@ export default function Register() {
                     />
                   </div>
                 </div>
+                <ResponseHandler errors={errors} />
                 <div className="btn-wrapper">
                   <button
                     className="theme-btn-1 btn reverse-color btn-block"

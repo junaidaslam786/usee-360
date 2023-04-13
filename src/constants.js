@@ -90,3 +90,6 @@ export const JOB_TITLE = [
     { value: "freelance_agent", label: "Freelance Agent" },
     { value: "landlord", label: "Landlord" },
 ];
+
+export const DEFAULT_LICENSE_NO_TEXT = "Company Registration #";
+export const DEFAULT_DEED_TITLE_TEXT = "Deed Title";
