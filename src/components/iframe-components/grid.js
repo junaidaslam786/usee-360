@@ -289,14 +289,21 @@ export default function PropertyGrid() {
                       >
                         <li>
                           <label className="checkbox-item">
-                            Up To 3
+                            1
+                            <input type="radio" name="bedrooms" value="1" />
+                            <span className="checkmark" />
+                          </label>
+                        </li>
+                        <li>
+                          <label className="checkbox-item">
+                            3
                             <input type="radio" name="bedrooms" value="3" />
                             <span className="checkmark" />
                           </label>
                         </li>
                         <li>
                           <label className="checkbox-item">
-                            Up To 5
+                            5
                             <input type="radio" name="bedrooms" value="5" />
                             <span className="checkmark" />
                           </label>

@@ -96,7 +96,7 @@ export default function PropertyGrid() {
         payload.lng = lngFilter;
       }
 
-      if(sort.current.value !== "null") {
+      if (sort.current.value !== "null") {
         payload.sort = ["price", sort.current.value];
       }
 
@@ -700,28 +700,35 @@ export default function PropertyGrid() {
                     >
                       <li>
                         <label className="checkbox-item">
-                          Single
+                          1
                           <input type="radio" name="bedrooms" value="1" />
                           <span className="checkmark" />
                         </label>
                       </li>
                       <li>
                         <label className="checkbox-item">
-                          Double
+                          2
                           <input type="radio" name="bedrooms" value="2" />
                           <span className="checkmark" />
                         </label>
                       </li>
                       <li>
                         <label className="checkbox-item">
-                          Up To 3
+                          3
                           <input type="radio" name="bedrooms" value="3" />
                           <span className="checkmark" />
                         </label>
                       </li>
                       <li>
                         <label className="checkbox-item">
-                          Up To 5
+                          4
+                          <input type="radio" name="bedrooms" value="4" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          5
                           <input type="radio" name="bedrooms" value="5" />
                           <span className="checkmark" />
                         </label>

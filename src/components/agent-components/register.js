@@ -195,7 +195,7 @@ export default function Register() {
                   </div>
                 </div>
                 <ResponseHandler errors={errors} />
-                <div className="btn-wrapper">
+                <div className="btn-wrapper text-center">
                   <button
                     className="theme-btn-1 btn reverse-color btn-block"
                     type="submit"

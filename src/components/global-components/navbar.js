@@ -37,7 +37,7 @@ class Navbar extends Component {
                     <div className="ltn__top-bar-menu">
                       <ul>
                         <li>
-                          <Social />
+                          {/* <Social /> */}
                         </li>
                       </ul>
                     </div>

@@ -113,14 +113,14 @@ class Footer_v1 extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 col-12">
+              {/* <div className="col-lg-3 col-md-3 col-sm-3 col-12">
                 <div className="footer-widget footer-menu-widget clearfix">
                   <h4 className="footer-title">Socials</h4>
                   <div className="ltn__social-media mt-20">
                     <Social />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

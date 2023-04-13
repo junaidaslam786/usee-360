@@ -34,7 +34,7 @@ class BannerV3 extends Component {
                             to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Properties
+                            Search
                           </Link>
                         </div>
                       </div>
@@ -70,7 +70,7 @@ class BannerV3 extends Component {
                             to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Properties
+                            Search
                           </Link>
                         </div>
                       </div>
@@ -106,7 +106,7 @@ class BannerV3 extends Component {
                             to="/services/properties"
                             className="theme-btn-1 btn btn-effect-1"
                           >
-                            Properties
+                            Search
                           </Link>
                         </div>
                       </div>
