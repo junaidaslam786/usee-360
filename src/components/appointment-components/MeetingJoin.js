@@ -133,8 +133,7 @@ const MeetingJoin = (props) => {
         ) {
           setVirtualTourVideo(propertyData.virtualTourUrl);
           setDefaultImage(false);
-        }
-        if (propertyData.productImages.length > 0) {
+        } else if (propertyData.productImages.length > 0) {
           setProductImages(propertyData.productImages);
           setDefaultImage(false);
         }
