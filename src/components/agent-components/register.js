@@ -153,6 +153,7 @@ export default function Register() {
                       name="licenseNo"
                       placeholder={jobTitlePlaceHolder}
                       onChange={(e) => setLicenseNo(e.target.value)}
+                      required
                     />
                   </div>
                 </div>

@@ -91,5 +91,5 @@ export const JOB_TITLE = [
     { value: "landlord", label: "Landlord" },
 ];
 
-export const DEFAULT_LICENSE_NO_TEXT = "Company Registration #";
-export const DEFAULT_DEED_TITLE_TEXT = "Deed Title";
+export const DEFAULT_LICENSE_NO_TEXT = "Company Registration # *";
+export const DEFAULT_DEED_TITLE_TEXT = "Deed Title *";
