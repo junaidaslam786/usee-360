@@ -52,10 +52,10 @@ const AccessTable = (props) => {
   const [audioInputOptions, setAudioInputOptions] = useState([{"label":"------------ Audio ------------"}]);
   const [videoOptions, setVideoOptions] = useState([{"label":"------------ Video ------------"}]);
   const [audioOutputOptions, setAudioOutputOptions] = useState([]);
-  const [selectedAudioInput, setSelectedAudioInput] = useState(null);
-  const [selectedVideoDevice, setSelectedVideoDevice] = useState(null);
-  const [selectedAudioOutput, setSelectedAudioOutput] = useState(null);
-  const [appointment, setAppointment] = useState(null);
+  const [selectedAudioInput, setSelectedAudioInput] = useState('');
+  const [selectedVideoDevice, setSelectedVideoDevice] = useState('');
+  const [selectedAudioOutput, setSelectedAudioOutput] = useState('');
+  const [appointment, setAppointment] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const detect = new RTCDetect();
 
@@ -170,78 +170,80 @@ const AccessTable = (props) => {
               </p>
               <h3>Testing your system</h3>
               <table className='testing_results'>
-                <tr className='single_drow'>
-                  <td className='testing_secn'>Browser</td>
-                  <td className='testing_res success_msg' id="browserresult">
-                    {browserStatus === 0 && <p>Waiting to check...</p> }
-                    {browserStatus === 1 && <p>SUCCESS</p> }
-                    {browserStatus === 2 && <p>WebRTC is not supported for this device</p> }
-                  </td>
-                </tr>
-                <tr className='single_drow'>
-                  <td className='testing_secn'>Microphone</td>
-                  <td className='testing_res success_msg' id="browserresult">
-                    <select value={selectedAudioInput} onChange={(event) => {setSelectedAudioInput(event.target.value)}}>
-                      {audioInputOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    {/* {microphoneStatus === 0 && <p>Waiting to check...</p> }
-                    {microphoneStatus === 1 && <p>SUCCESS</p> }
-                    {microphoneStatus === 2 && <p>Microphone permission denied</p> } */}
-                  </td> 
-                </tr>
-                <tr className='single_drow'>
-                  <td className='testing_secn'>Camera</td>
-                  <td className='testing_res success_msg' id="browserresult">
-                    <select value={selectedVideoDevice} onChange={(event) => {setSelectedVideoDevice(event.target.value)}}>
-                      {videoOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    {/* {cameraStatus === 0 && <p>Waiting to check...</p> }
-                    {cameraStatus === 1 && <p>SUCCESS</p> }
-                    {cameraStatus === 2 && <p>Camera permission denied</p> } */}
-                  </td> 
-                </tr>
-                {/* <tr className='single_drow'>
-                  <td>Speaker</td>
-                  <td>
-                    <select value={selectedAudioOutput} onChange={(event) => {setSelectedAudioOutput(event.target.value)}}>
-                      {audioOutputOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    {speakerStatus === 0 && <p>Waiting to check...</p> }
-                    {speakerStatus === 1 && <p>SUCCESS</p> }
-                    {speakerStatus === 2 && <p>Speaker/AudioOutputDevice permission denied</p> }
-                  </td>
-                </tr> */}
-                <tr className='single_drow'>
-                  <td className='testing_secn'>Screensharing</td>
-                  <td className='testing_res success_msg' id="browserresult">
-                    {screenSharingStatus === 0 && <p>Waiting to check...</p> }
-                    {screenSharingStatus === 1 && <p>SUCCESS</p> }
-                    {screenSharingStatus === 2 && <p>Screensharing is not available for this browser</p> }
-                  </td>
-                </tr>
-                <tr className='single_drow'>
-                  <Link to={{
-                    pathname: `/meeting/${appointmentId}/${userType}`,
-                    state: { 
-                      audioInputDeviceId: selectedAudioInput, 
-                      audioOutputDeviceId: selectedAudioOutput,
-                      videoDeviceId: selectedVideoDevice,
-                      appointment,
-                    }
-                  }}><button disabled={buttonDisabled}>JOIN CALL</button></Link>
-                </tr>
+                <tbody>
+                  <tr className='single_drow'>
+                    <td className='testing_secn'>Browser</td>
+                    <td className='testing_res success_msg' id="browserresult">
+                      {browserStatus === 0 && <p>Waiting to check...</p> }
+                      {browserStatus === 1 && <p>SUCCESS</p> }
+                      {browserStatus === 2 && <p>WebRTC is not supported for this device</p> }
+                    </td>
+                  </tr>
+                  <tr className='single_drow'>
+                    <td className='testing_secn'>Microphone</td>
+                    <td className='testing_res success_msg' id="browserresult">
+                      <select value={selectedAudioInput} onChange={(event) => {setSelectedAudioInput(event.target.value)}}>
+                        {audioInputOptions.map((option, index) => (
+                          <option key={index} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {/* {microphoneStatus === 0 && <p>Waiting to check...</p> }
+                      {microphoneStatus === 1 && <p>SUCCESS</p> }
+                      {microphoneStatus === 2 && <p>Microphone permission denied</p> } */}
+                    </td> 
+                  </tr>
+                  <tr className='single_drow'>
+                    <td className='testing_secn'>Camera</td>
+                    <td className='testing_res success_msg' id="browserresult">
+                      <select value={selectedVideoDevice} onChange={(event) => {setSelectedVideoDevice(event.target.value)}}>
+                        {videoOptions.map((option, index) => (
+                          <option key={index} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {/* {cameraStatus === 0 && <p>Waiting to check...</p> }
+                      {cameraStatus === 1 && <p>SUCCESS</p> }
+                      {cameraStatus === 2 && <p>Camera permission denied</p> } */}
+                    </td> 
+                  </tr>
+                  {/* <tr className='single_drow'>
+                    <td>Speaker</td>
+                    <td>
+                      <select value={selectedAudioOutput} onChange={(event) => {setSelectedAudioOutput(event.target.value)}}>
+                        {audioOutputOptions.map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {speakerStatus === 0 && <p>Waiting to check...</p> }
+                      {speakerStatus === 1 && <p>SUCCESS</p> }
+                      {speakerStatus === 2 && <p>Speaker/AudioOutputDevice permission denied</p> }
+                    </td>
+                  </tr> */}
+                  <tr className='single_drow'>
+                    <td className='testing_secn'>Screensharing</td>
+                    <td className='testing_res success_msg' id="browserresult">
+                      {screenSharingStatus === 0 && <p>Waiting to check...</p> }
+                      {screenSharingStatus === 1 && <p>SUCCESS</p> }
+                      {screenSharingStatus === 2 && <p>Screensharing is not available for this browser</p> }
+                    </td>
+                  </tr>
+                  <tr className='single_drow'>
+                      <Link to={{
+                        pathname: `/meeting/${appointmentId}/${userType}`,
+                        state: { 
+                          audioInputDeviceId: selectedAudioInput, 
+                          audioOutputDeviceId: selectedAudioOutput,
+                          videoDeviceId: selectedVideoDevice,
+                          appointment,
+                        }
+                      }}><button disabled={buttonDisabled}>JOIN CALL</button></Link>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
