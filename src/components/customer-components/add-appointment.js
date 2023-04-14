@@ -3,6 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
+import { checkTimeOver } from "../../utils";
 
 export default function AddAppointment() {
   const [properties, setProperties] = useState([]);
@@ -117,7 +118,7 @@ export default function AddAppointment() {
     fetchPropertiesToAllocate();
   }, []);
 
-  function handleButtonClick(event) {
+  const handleButtonClick = (event) => {
     const now = new Date();
 
     // Format the date and time values to be used as input values
@@ -125,6 +126,30 @@ export default function AddAppointment() {
     const timeValue = now.toTimeString().slice(0, 5);
     setDate(dateValue);
     setTime(timeValue);
+
+    if (checkTimeOver(dateValue, timeValue)) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+    }
+  }
+
+  const setTimeHandler = (e) => {
+    setTime(e);
+    if (checkTimeOver(date, e)) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+    }
+  }
+
+  const setDateHandler = (e) => {
+    setDate(e);
+    if (checkTimeOver(e, time)) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+    }
   }
 
   return (
@@ -162,7 +187,7 @@ export default function AddAppointment() {
                     <label>Select Date *</label>
                     <input
                       type="date"
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => setDateHandler(e.target.value)}
                       value={date}
                       required
                     />
@@ -173,7 +198,7 @@ export default function AddAppointment() {
                     <label>Choose Time *</label>
                     <input
                       type="time"
-                      onChange={(e) => setTime(e.target.value)}
+                      onChange={(e) => setTimeHandler(e.target.value)}
                       value={time}
                       required
                     />

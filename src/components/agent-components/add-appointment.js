@@ -4,6 +4,7 @@ import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
+import { checkTimeOver } from "../../utils";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
@@ -282,33 +283,30 @@ export default function AddAppointment() {
     const timeValue = now.toTimeString().slice(0, 5);
     setDate(dateValue);
     setTime(timeValue);
-  }
 
-  const checkTimeOver = (dateTime, timeValue) => {
-    let difdate = dateTime ? dateTime : date;
-    let parts = difdate.split("-");
-    let fpdate = parts[1]+'-'+parts[2]+'-'+parts[0];
-
-    let startDate = new Date(fpdate+' '+(timeValue ? timeValue : time));
-    let today = new Date();
-    if (startDate.getTime() < today.getTime()) {
+    if (checkTimeOver(dateValue, timeValue)) {
       setErrorHandler(
         "Time is expired. Please select another timeslot"
       );
-      return false;
     }
-
-    return true;
   }
 
   const setTimeHandler = (e) => {
     setTime(e);
-    checkTimeOver(date, e);
+    if (checkTimeOver(date, e)) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+    }
   }
 
   const setDateHandler = (e) => {
     setDate(e);
-    checkTimeOver(e, time);
+    if (checkTimeOver(e, time)) {
+      setErrorHandler(
+        "Time is expired. Please select another timeslot"
+      );
+    }
   }
 
   return (
