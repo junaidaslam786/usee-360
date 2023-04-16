@@ -9,6 +9,8 @@ import {
 } from "../../constants";
 
 export default function PropertyGrid() {
+  const [currentPage, setCurrentPage] = useState();
+  const [totalPages, setTotalPages] = useState();
   const [propertyCategoryFilter, setPropertyCategory] = useState();
   const [propertyCategoryTypeFilter, setPropertyCategoryType] = useState();
   const [latFilter, setLatFilter] = useState();
@@ -31,10 +33,10 @@ export default function PropertyGrid() {
   const history = useHistory();
   const location = useLocation();
 
-  async function loadProperties(search) {
+  async function loadProperties(search, page = 1) {
     let payload = {
-      page: 1,
-      size: 50,
+      page: page,
+      size: 10,
     };
 
     if (location.state) {
@@ -113,6 +115,8 @@ export default function PropertyGrid() {
       })
       .then((response) => {
         setProperties(response.data.data);
+        setCurrentPage(response.data.page);
+        setTotalPages(response.data.totalPage);
       });
   }
 
@@ -573,37 +577,56 @@ export default function PropertyGrid() {
                   </div>
                 </div>
               </div>
-              {/* <div className="ltn__pagination-area text-center">
+              <div className="ltn__pagination-area text-center">
                 <div className="ltn__pagination">
                   <ul>
                     <li>
-                      <Link to="#">
+                      <Link
+                        to="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage !== 1) {
+                            loadProperties("filter", currentPage - 1);
+                          }
+                        }}
+                      >
                         <i className="fas fa-angle-double-left" />
                       </Link>
                     </li>
+                    {Array.from(Array(totalPages), (e, i) => {
+                      return (
+                        <li
+                          key={i}
+                          className={currentPage == i + 1 ? "active" : null}
+                        >
+                          <Link
+                            to="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              loadProperties("filter", i + 1);
+                            }}
+                          >
+                            {i + 1}
+                          </Link>
+                        </li>
+                      );
+                    })}
                     <li>
-                      <Link to="#">1</Link>
-                    </li>
-                    <li className="active">
-                      <Link to="#">2</Link>
-                    </li>
-                    <li>
-                      <Link to="#">3</Link>
-                    </li>
-                    <li>
-                      <Link to="#">...</Link>
-                    </li>
-                    <li>
-                      <Link to="#">10</Link>
-                    </li>
-                    <li>
-                      <Link to="#">
+                      <Link
+                        to="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage !== totalPages) {
+                            loadProperties("filter", currentPage + 1);
+                          }
+                        }}
+                      >
                         <i className="fas fa-angle-double-right" />
                       </Link>
                     </li>
                   </ul>
                 </div>
-              </div> */}
+              </div>
             </div>
             <div className="col-lg-4  mb-100">
               <aside className="sidebar ltn__shop-sidebar">
