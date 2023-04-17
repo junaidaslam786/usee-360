@@ -1,0 +1,19 @@
+USEE360-Frontend:
+  stage: deploy
+  tags: 
+    -  frontend
+  environment:
+    name: USEE360-Frontend
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - echo "Deploy USEE360-Frontend Server"
+    - ssh-add <(echo "$SSH_KEY")
+    - rm -rf .git
+    - ssh -o StrictHostKeyChecking=no -vvv frontend@10.10.11.45  "cd /home/frontend/frontend; git reset --hard; git pull origin develop; npm i; pm2 restart all; exit"
+
+  only:
+    - develop

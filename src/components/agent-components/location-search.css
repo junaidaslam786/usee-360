@@ -1,0 +1,151 @@
+.map-container {
+  width: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sidebarforsearch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  overflow-y: auto;
+  top: 0;
+  left: -360px;
+  width: 360px;
+  height: 100%;
+  padding: 5px 7px;
+  background-color: #fff;
+  z-index: 999;
+  transition: all 0.3s ease-in-out;
+}
+
+.sidebarforsearch.open {
+  right: 0;
+}
+
+.sidebarforsearch #sideabar-logo {
+  max-width: 30%;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding: 5px;
+  border: 2px solid black;
+  border-radius: 15px 0 15px 0;
+}
+
+.sidebarforsearch h2 {
+  margin-top: 0;
+}
+
+.sidebarforsearch p {
+  margin-bottom: 0;
+  width: 97%;
+  font-weight: 600;
+}
+
+.isActive {
+  left: 0;
+  box-shadow: 0 5px 14px 0 rgba(38, 38, 55, 0.15);
+}
+
+button.open-button {
+  position: absolute;
+  top: 10px;
+  left: 370px;
+  line-height: 27px;
+  padding-left: 12px;
+  padding-right: 12px;
+  z-index: 999;
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 40px black;
+  background: #00c864;
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+button.closed-button {
+  left: 16px;
+  transition: all 0.3s ease-in-out;
+}
+
+.sidebar-search {
+  width: 100%;
+}
+.sidebar-search input {
+  width: 70%;
+}
+
+.sidebar-search button {
+  background: #00c864;
+  color: #fff;
+  border: 2px solid #0e7746;
+}
+
+.sidebarforsearch ol {
+  width: 100%;
+}
+.sidebarforsearch li:hover {
+  padding-left: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.scrollable {
+  padding: 20px 10px;
+  width: 100%;
+}
+
+.scrollable .content-box {
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollable .content-box .featured-image-style {
+  max-width: 100%;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  cursor: pointer;
+}
+.scrollable .content-box .content {
+  padding: 15px;
+}
+.scrollable .content-box .content .description:hover {
+  color: var(--ltn__secondary-color);
+  cursor: pointer;
+}
+
+.scrollable .content-box .flaticon-pin {
+  color: var(--ltn__secondary-color);
+}
+.scrollable .content-box .location {
+  font-size: 14px;
+}
+
+.scrollable .content-box .product-info-bottom {
+  border-top: 1px solid;
+  border-color: var(--border-color-1);
+  padding: 15px;
+}
+.scrollable .content-box .product-info-bottom .product-price {
+  color: var(--ltn__secondary-color);
+}
+
+.gm-style-iw-t {
+  cursor: pointer;
+}

@@ -1,8 +1,3 @@
-/*
-    Template Name: Quarter
-    Description: Real Estate HTML Template
-    Version: 1.0.0
-*/
 /* Single side border-radius  */
 /* BORDER RADIUS */
 /* user select */
@@ -229,10 +224,10 @@ font-family: 'Poppins', sans-serif;
   /* Darken */
   --ltn__primary-color-3: #133236;
   /* Lighten */
-  --ltn__secondary-color: #ff5a3c;
-  --ltn__secondary-color-2: #cb3421;
+  --ltn__secondary-color: #00c800;
+  --ltn__secondary-color-2: #00c800;
   /* Darken */
-  --ltn__secondary-color-3: #fb412a;
+  --ltn__secondary-color-3: #00c800;
   /* Lighten */
   --ltn__heading-color: #071c1f;
   --ltn__paragraph-color: #5c727d;
@@ -244,7 +239,7 @@ font-family: 'Poppins', sans-serif;
   --ltn__color-3: #a3bcc0;
   --ltn__color-4: #84a2a6;
   --ltn__color-5: #5c727d;
-  --ltn__color-6: #f5dfdc;
+  --ltn__color-6: rgba(0, 200, 0, 0.1);
   /* Gradient Colors */
   --gradient-color-1: linear-gradient(
     90deg,
@@ -276,7 +271,7 @@ font-family: 'Poppins', sans-serif;
   /* White */
   --section-bg-2: #171b2a;
   /* Black */
-  --section-bg-5: #fff2f0;
+  --section-bg-5: rgba(0, 200, 0, 0.1);
   /* White */
   --section-bg-6: #0b2c3d;
   /* Black */
@@ -289,9 +284,9 @@ font-family: 'Poppins', sans-serif;
   /* Black */
   --border-color-3: #5c617f;
   /* Black */
-  --border-color-4: #eb6954;
+  --border-color-4: #00c800;
   /* Red */
-  --border-color-5: #bc3928;
+  --border-color-5: #00c800;
   /* Red */
   --border-color-6: #103034;
   /* Black */
@@ -604,6 +599,7 @@ ol li {
   background-color: transparent;
 }
 .section-bg-3 input[type="text"],
+.section-bg-3 input[type="number"],
 .section-bg-3 input[type="email"],
 .section-bg-3 input[type="password"],
 .section-bg-3 input[type="submit"] {
@@ -987,6 +983,8 @@ fieldset legend {
     input and button type focus outline disable
 ---------------------------------------------------- */
 input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
 input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus,
@@ -1012,6 +1010,9 @@ code {
     Form input box
 ---------------------------------------------------- */
 input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
 input[type="email"],
 input[type="password"],
 input[type="submit"],
@@ -1032,6 +1033,8 @@ textarea {
 }
 
 input[type="text"]::-webkit-input-placeholder,
+input[type="date"]::-webkit-input-placeholder,
+input[type="time"]::-webkit-input-placeholder,
 input[type="email"]::-webkit-input-placeholder,
 input[type="password"]::-webkit-input-placeholder,
 input[type="submit"]::-webkit-input-placeholder,
@@ -1042,6 +1045,8 @@ textarea::-webkit-input-placeholder {
 }
 
 input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 textarea:focus {
@@ -1934,43 +1939,43 @@ ul {
 }
 
 .bg-overlay-theme-05:before {
-  background: rgba(229, 62, 41, 0.05);
+  background: rgba(0, 200, 0, 0.05);
 }
 
 .bg-overlay-theme-10:before {
-  background: rgba(229, 62, 41, 0.1);
+  background: rgba(0, 200, 0, 0.1);
 }
 
 .bg-overlay-theme-20:before {
-  background: rgba(229, 62, 41, 0.2);
+  background: rgba(0, 200, 0, 0.2);
 }
 
 .bg-overlay-theme-30:before {
-  background: rgba(229, 62, 41, 0.3);
+  background: rgba(0, 200, 0, 0.3);
 }
 
 .bg-overlay-theme-40:before {
-  background: rgba(229, 62, 41, 0.4);
+  background: rgba(0, 200, 0, 0.4);
 }
 
 .bg-overlay-theme-50:before {
-  background: rgba(229, 62, 41, 0.5);
+  background: rgba(0, 200, 0, 0.5);
 }
 
 .bg-overlay-theme-60:before {
-  background: rgba(229, 62, 41, 0.6);
+  background: rgba(0, 200, 0, 0.6);
 }
 
 .bg-overlay-theme-70:before {
-  background: rgba(229, 62, 41, 0.7);
+  background: rgba(0, 200, 0, 0.7);
 }
 
 .bg-overlay-theme-80:before {
-  background: rgba(229, 62, 41, 0.8);
+  background: rgba(0, 200, 0, 0.8);
 }
 
 .bg-overlay-theme-90:before {
-  background: rgba(229, 62, 41, 0.9);
+  background: rgba(0, 200, 0, 0.9);
 }
 
 .bg-overlay-theme-black-05,
@@ -2738,6 +2743,10 @@ ul {
 
 .ml-30 {
   margin-left: 30px;
+}
+
+.ml-20 {
+  margin-left: 20px;
 }
 
 .pl-70 {
@@ -5822,10 +5831,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__header-options-2 .mini-cart-icon a,
 .ltn__header-options-2 .header-wishlist {
   height: 50px;
-  width: 50px;
+  width: 150px;
   line-height: 50px;
-  background: var(--white);
-  color: var(--ltn__heading-color);
+  background: #00c800;
+  color: white;
   text-align: center;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
@@ -5836,6 +5845,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   transition: all 0.3s ease 0s;
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
+  font-size: 16px;
 }
 .ltn__header-options-2 .header-search-1:hover,
 .ltn__header-options-2 .ltn__drop-menu > ul > li > a:hover,
@@ -5866,6 +5876,15 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   background: var(--white);
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
+}
+
+.ltn__header-options-2 .ltn__drop-menu ul > li:first-child {
+  margin-right: 10px;
+}
+
+.ltn__header-options-2 .ltn__drop-menu > ul > li:first-child a {
+  color: black !important;
+  background: white !important;
 }
 
 /* ltn__drop-menu */
@@ -6604,8 +6623,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .sticky-active.ltn__sticky-bg-white .ltn__header-options-2 .header-wishlist {
   -webkit-box-shadow: var(--ltn__box-shadow-1);
   box-shadow: var(--ltn__box-shadow-1);
-  background: var(--white);
-  color: var(--ltn__heading-color);
+  color: var(--white);
 }
 
 .header-contact-search {
@@ -9770,6 +9788,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   padding: 0;
 }
 
+.ltn__comment-reply-area form {
+  width: 100% !important;
+}
+
 .add-a-review {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -10094,6 +10116,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__product-list-view .ltn__product-item .product-img {
   max-width: 40%;
   float: left;
+  width: 100%;
+  object-fit: cover;
 }
 
 .ltn__product-list-view .ltn__product-item .product-info {
@@ -11093,7 +11117,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   line-height: 115px;
   font-size: 45px;
   border-radius: 100%;
-  background-color: var(--section-bg-5);
+  background-color: white;
   color: var(--ltn__secondary-color);
   text-align: center;
   margin-bottom: 20px;
@@ -12538,6 +12562,7 @@ blockquote::before {
   padding: 50px;
   background-color: var(--white-5);
 }
+.ltn__comment-reply-area form input[type="number"],
 .ltn__comment-reply-area form input[type="text"],
 .ltn__comment-reply-area form input[type="email"],
 .ltn__comment-reply-area form input[type="password"],
@@ -13967,6 +13992,9 @@ input.cart-plus-minus-box {
 .ltn__newsletter-inner .ltn__form-box {
   position: relative;
   margin-top: 30px;
+}
+.ltn__form-box form {
+  width: 100% !important;
 }
 .ltn__newsletter-inner .ltn__form-box input {
   margin-bottom: 0;
@@ -15863,6 +15891,10 @@ input.cart-plus-minus-box {
 /* ----------------------------------------------------
     Car Dealer Form
 ---------------------------------------------------- */
+.ltn__car-dealer-form-box {
+  width: 100% !important;
+}
+
 .ltn__car-dealer-form-tab .ltn__tab-menu {
   margin-bottom: 0;
 }
@@ -15989,7 +16021,7 @@ input.cart-plus-minus-box {
 ---------------------------------------------------- */
 /* car home 3 */
 .ltn__video-popup-margin {
-  margin-bottom: -180px;
+  margin-bottom: 0px;
 }
 
 /* Service page */
@@ -18086,8 +18118,237 @@ input.cart-plus-minus-box {
   display: none;
 }
 
+@media only screen and (min-width: 991px) {
+  .history-step {
+    margin-top: 60px !important;
+  }
+}
+
+.alert {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.lds-ring {
+  display: inline-block;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+  top: 25%;
+  left: 32%;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.search-btn {
+  width: 100% !important;
+}
+
+.no-data {
+  border: 0 !important;
+}
+
+.appointment-date {
+  color: #00c800;
+}
+
+@media only screen and (min-width: 768px) {
+  .appointment-info {
+    padding-left: 25px;
+    border-left: 1px solid #d5dbdb;
+  }
+}
+
+.dashboard-card {
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.dashboard-card i {
+  font-size: 25px;
+  display: inline;
+  margin-right: 5px;
+}
+
+.dashboard-card .card-desc-left {
+  color: white;
+  font-size: 25px !important;
+}
+
+.dashboard-card .card-desc-right {
+  display: inline;
+  color: white;
+  font-size: 50px !important;
+}
+
+.dashboard-card.card-1 {
+  background-color: #89e88b;
+}
+
+.dashboard-card.card-2 {
+  background-color: #00cb04;
+}
+
+.dashboard-card.card-3 {
+  background-color: #7a5970;
+}
+
+.dashboard-card.card-4 {
+  background-color: #3e2837;
+}
+
+.link-active {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #00c800;
+}
+
+.property-desc {
+  padding: 50px 0;
+  border-bottom: 1px solid #ccd1d1;
+}
+
+.property-desc .col-md-2 h3 {
+  color: #00c800;
+  margin-top: 20px;
+}
+
+.property-details {
+  padding: 50px 0 0 0;
+}
+
+.property-details .col-md-5 button {
+  width: 100%;
+}
+
+.wishlist-active {
+  background-color: #00c800 !important;
+  color: white !important;
+}
+
+.request-now-btn {
+  padding: 8px 22px;
+  margin-top: 28%;
+}
+
 /* ----------------------------------------------------
     END
 ---------------------------------------------------- */
 
 /*# sourceMappingURL=style.css.map */
+.dropzone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #eeeeee;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border 0.24s ease-in-out;
+}
+
+.featuredImageCss {
+  width: 350px;
+  height: 200px;
+  border: 2px solid #00c800;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.ltn__breadcrumb-area {
+  margin-bottom: 65px;
+  padding: 2px 0;
+  color: #fff;
+  background-image: none;
+  background-color: #e9ecef;
+}
+
+h1.page-title {
+  font-size: 41px;
+  line-height: 45px;
+  margin-bottom: 5px;
+}
+
+.ltn__breadcrumb-list li {
+  margin-top: 0;
+  color: #212529;
+}
+
+.companyLogoCss {
+  /* position: absolute; */
+  /* right: -120px; */
+  /* top: -20px; */
+  width: 250px;
+  height: 250px;
+  border: 2px solid #00c800;
+  border-radius: 5px;
+  padding: 2px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.positionRevert {
+  position: revert;
+}
+
+.modal-dialog-large {
+  min-width: 1080px !important;
+}
+
+.draw-on-map {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #00c800;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.draw-on-map:hover {
+  background-color: #1565c0;
+}
+
+.draw-on-map i {
+  margin-right: 10px;
+}
+
+.text-highlight {
+  color: var(--ltn__secondary-color);
+}
+.text-highlight:hover {
+  color: var(--white);
+}
