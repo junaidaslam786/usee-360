@@ -84,8 +84,9 @@
     border-radius: 8px;
     height: 42px;
     font-weight: 600;
-    margin-left: 8px;
     user-select: none;
+    background-color: #00cb04;
+    color: #fff;
 }
 
 .separator {
@@ -99,6 +100,14 @@
     .ltn__modal-area.timeModal .modal-dialog {
         max-width: 750px !important;
     }
+
+    .ltn__modal-area.timeModal .modal-body .calenderContent {
+        min-height: auto !important;
+    }
+
+    .ltn__modal-area.timeModal .modal-body .custom-calendar {
+        margin-top: 20px;
+    }
 }
 
 @media (max-width: 767px) {
@@ -111,3 +120,53 @@
         max-width: 500px !important;
     }
 } */
+
+.timeselectinput {
+    cursor: grab !important;
+    background: #fff !important;
+    color: #5c727d !important;
+}
+
+.ltn__modal-area.timeModal .modal-body.calenderBody .timeCards {
+    height: 40px;
+}
+
+.ltn__modal-area.timeModal .modal-body.calenderBody .bgNew {
+    height: 40px;
+}
+
+.ltn__modal-area.timeModal .modal-body.calenderBody input {
+    height: unset !important;
+}
+
+.ltn__modal-area.timeModal .modal-body.childModal input {
+    height: unset !important;
+    border-radius: 4px;
+    padding: 4px 0 4px 7px;
+    margin-bottom: 10px;
+}
+
+.ltn__modal-area.timeModal .modal-body .custom-calendar {
+    width: 400px !important;
+    padding: 15px 0 20px 0;
+    margin-top: 50px;
+}
+
+.ltn__modal-area.timeModal .modal-body .custom-calendar .Calendar__weekDays {
+    padding: 0 3.6em;
+}
+
+.ltn__modal-area.timeModal .modal-body .custom-calendar .Calendar__section {
+    padding: 0 4.2em;
+}
+
+.ltn__modal-area.timeModal .modal-body .custom-calendar .Calendar__day,
+.Calendar__day.-selected {
+    border-radius: 10% !important;
+}
+
+.ltn__modal-area.timeModal .modal-body .calenderModalHeading {
+    font-size: 20px;
+    font-weight: 600;
+    color: #071c1f;
+}

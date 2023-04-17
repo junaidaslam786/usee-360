@@ -4,7 +4,8 @@ import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
-import { checkTimeOver } from "../../utils";
+import { checkTimeOver, findCurrentTimeSlot } from "../../utils";
+import moment from "moment";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
@@ -14,6 +15,7 @@ export default function AddAppointment() {
   // const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
   const [selectedAllocatedProperties, setSelectedAllocatedProperties] =
     useState([]);
+  const [timeslots, setTimeslots] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
@@ -21,6 +23,7 @@ export default function AddAppointment() {
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState();
+  const [isChecked, setIsChecked] = useState(false);
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
 
@@ -43,14 +46,33 @@ export default function AddAppointment() {
     }
   };
 
-  const loadUsersToAllocate = async () => {
-    return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) => data.json());
+  // const loadUsersToAllocate = async () => {
+  //   return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   }).then((data) => data.json());
+  // };
+
+  const loadAgentAvailabilitySlots = async () => {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/availability/list-slots`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const responseResult = await response.json();
+    if (responseResult) {
+      setTimeslots(responseResult);
+      return responseResult;
+    }
   };
 
   const loadPropertiesToAllocate = async () => {
@@ -63,33 +85,32 @@ export default function AddAppointment() {
     }).then((data) => data.json());
   };
 
-  // const checkAvailability = async () => {
-  //   if (!selectedAllocatedAgent || !time || !date) {
-  //     return;
-  //   }
+  const checkAvailability = async () => {
+    if (!time || !date) {
+      return;
+    }
 
-  //   await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`,
-  //   {
-  //     "userId": selectedAllocatedAgent.value,
-  //     date,
-  //     time,
-  //   },
-  //   {
-  //     headers: {
-  //       'Authorization': `Bearer ${token}`,
-  //       'Content-Type': 'application/json'
-  //     }
-  //   }).then((response) => {
-  //       console.log('checkAvailability-response', response);
-  //       if (!response || !response?.data?.success) {
-  //         setErrorHandler("Sorry allotted person not avaiable during the selected timeslot. Please change the timeslot.");
-  //       }
-  //       return true;
-  //   }).catch(error => {
-  //     console.log('checkAvailability-error', error);
-  //     setErrorHandler("Unable to check availability, please try again later.");
-  //   });
-  // };
+    await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`,
+    {
+      date,
+      time,
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+        console.log('checkAvailability-response', response);
+        if (!response || !response?.data?.success) {
+          setErrorHandler("Sorry this timeslot is not available. Please choose another timeslot.");
+        }
+        return true;
+    }).catch(error => {
+      console.log('checkAvailability-error', error);
+      setErrorHandler(error?.response?.data?.message ? error.response.data.message : "Unable to check availability, please try again later.");
+    });
+  };
 
   const loadOptions = (inputValue, callback) => {
     try {
@@ -159,13 +180,14 @@ export default function AddAppointment() {
     const formData = {
       properties: selectedAllocatedProperties.map((property) => property.value),
       appointmentDate: date,
-      appointmentTime: time,
+      timeSlotId: time,
       customerId: customerId,
       customerFirstName: customerFirstName,
       customerLastName: customerLastName,
       customerPhone: customerPhoneNumber,
       customerEmail: customerEmail,
-      // allotedAgent: selectedAllocatedAgent.value
+      isAssignedToSupervisor: isChecked
+      // allotedAgent: selectedAllocatedAgent
     };
 
     setLoading(true);
@@ -214,7 +236,17 @@ export default function AddAppointment() {
       setPhone("");
       setDate("");
       setTime("");
+      setIsChecked(false);
     }
+  };
+
+  const checkHandler = () => {
+    setIsChecked(!isChecked);
+  };
+
+  const printSelectedTime = () => {
+    const selectedTime = timeslots.find((slot) => slot.value === time);
+    return selectedTime?.fromTime  ? selectedTime.fromTime : "";
   };
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {
@@ -261,50 +293,62 @@ export default function AddAppointment() {
       }
     };
 
+    const fetchAgentAvailabilitySlots = async () => {
+      const response = await loadAgentAvailabilitySlots();
+      if (response) {
+        setTimeslots(response.map((timeSlot) => {
+          return {
+            label: timeSlot.textShow,
+            value: timeSlot.id,
+            fromTime: timeSlot.fromTime,
+            toTime: timeSlot.toTime
+          }
+        }));
+      }
+    }
+
     // fetchUsersToAllocate();
     fetchPropertiesToAllocate();
+    fetchAgentAvailabilitySlots();
   }, []);
 
-  // useEffect(() => {
-  //   if (selectedAllocatedAgent) {
-  //     const callCheckAvailability = async () => {
-  //       await checkAvailability();
-  //     }
+  useEffect(() => {
+    if (date && time) {
+      const callCheckAvailability = async () => {
+        await checkAvailability();
+      }
 
-  //     callCheckAvailability();
-  //   }
-  // }, [selectedAllocatedAgent, time]);
+      callCheckAvailability();
+    }
+  }, [date, time]);
 
   const handleButtonClick = (event) => {
     const now = new Date();
 
     // Format the date and time values to be used as input values
     const dateValue = now.toISOString().slice(0, 10);
-    const timeValue = now.toTimeString().slice(0, 5);
     setDate(dateValue);
-    setTime(timeValue);
 
-    if (checkTimeOver(dateValue, timeValue)) {
-      setErrorHandler(
-        "Time is expired. Please select another timeslot"
-      );
-    }
-  }
+    const currentSlot = findCurrentTimeSlot(timeslots);
+    if (currentSlot) { 
+      const foundSlot = timeslots.find((time) => time.value === currentSlot.value);
 
-  const setTimeHandler = (e) => {
-    setTime(e);
-    if (checkTimeOver(date, e)) {
-      setErrorHandler(
-        "Time is expired. Please select another timeslot"
-      );
-    }
-  }
+      // check if current slot expired
+      const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
 
-  const setDateHandler = (e) => {
-    setDate(e);
-    if (checkTimeOver(e, time)) {
+      // if current slot expired, then select next slot
+      const nextSlot = !isTimeExpired ? foundSlot : timeslots.find((time) => time.value === currentSlot.value + 1);
+
+      if (!nextSlot) {
+        setErrorHandler(
+          "Slot is not available, select another slot"
+        );
+      }
+
+      setTime(nextSlot.value);
+    } else {
       setErrorHandler(
-        "Time is expired. Please select another timeslot"
+        "Slot is not available, select another slot"
       );
     }
   }
@@ -344,7 +388,7 @@ export default function AddAppointment() {
                     <label>Select Date *</label>
                     <input
                       type="date"
-                      onChange={(e) => setDateHandler(e.target.value)}
+                      onChange={(e) => setDate(e.target.value)}
                       value={date}
                       required
                     />
@@ -352,12 +396,15 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-4">
                   <div className="input-item">
-                    <label>Choose Time *</label>
+                    <label>Choose Time * </label>
                     <input
-                      type="time"
-                      onChange={(e) => setTimeHandler(e.target.value)}
-                      value={time}
-                      required
+                      className="timeselectinput"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ltn_api_code_modal"
+                      type="text"
+                      placeholder="Choose time"
+                      readOnly
+                      value={ printSelectedTime() }
                     />
                   </div>
                 </div>
@@ -399,6 +446,19 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
+                <div className="col-md-6">
+                  <div className="input-item mt-50">
+                    <label className="checkbox-item">
+                      Assign to Supervisor
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={checkHandler}
+                      />
+                      <span className="checkmark" />
+                    </label>
+                  </div>
+                </div>
                 {/* <div className="col-md-6">
                   <div className="input-item">
                     <Select 
@@ -429,6 +489,54 @@ export default function AddAppointment() {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+
+        <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
+          <div className="modal fade" id="ltn_api_code_modal" tabIndex={-1}>
+            <div className="modal-dialog modal-md" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <div className="ltn__quick-view-modal-inner">
+                    <div className="modal-product-item">
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="modalHeading">
+                            <h2>Select Time slots - { date }</h2>
+                          </div>
+                          <div className="row">
+                            {
+                              timeslots && timeslots.map((item, index) => {
+                                return (
+                                  <div className="col-4 col-sm-3 px-1 py-1" key={index}>
+                                    <div onClick={() => setTime(item.value)} className={ time === item.value ? "bgNew" : "timeCards" }>
+                                      <p>{ item?.fromTime ? moment(item.fromTime, "hh:mm:ss").format("HH:mm") : "-" }</p>
+                                    </div>
+                                  </div>
+                                );
+                              })
+                            }
+                          </div>
+                          <div className="row">
+                            <ResponseHandler errors={errors} success={success} />
+                          </div>
+                          <div className="modalBtn">
+                            <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

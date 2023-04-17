@@ -24,6 +24,10 @@ export default function Sidebar() {
         Add Appointments
         <i className="fa-solid fa-calendar-check"></i>
       </NavLink>
+      <NavLink to="/customer/calendar">
+        My Calendar
+          <i className="fa-solid fa-calendar" />
+      </NavLink>
       <NavLink to="/customer/wishlist">
         My Wishlist
         <i className="fa-solid fa-list" />

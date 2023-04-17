@@ -41,12 +41,13 @@
   z-index: 9999999;
   min-height: 100vh;
 }
+
 @media (max-width: 991px) {
   .modal-dialog {
-    margin-top: 30px !important;
+      margin-top: 30px !important;
   }
   .ltn__tab-menu-list .nav {
-    margin-right: 0;
+      margin-right: 0;
   }
 }
 
@@ -96,8 +97,7 @@
   color: var(--white-color);
   font-family: var(--ltn__body-font);
 }
-.custom-select__control
-  .custom-select__indicator.custom-select__dropdown-indicator {
+.custom-select__control .custom-select__indicator.custom-select__dropdown-indicator {
   color: var(--white-color);
 }
 
@@ -185,4 +185,37 @@
 .map-search-buttons .reset:hover {
   background-color: red;
   border-color: red;
+}
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+  padding: 0 4px;
+}
+
+.fc .fc-daygrid-event-harness {
+  background-color: var(--ltn__secondary-color);
+  color: white;
+  padding: 0 3px 0 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.fc-daygrid-dot-event .fc-event-time,
+.fc-event-title {
+  color: #fff;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+.fc-daygrid-dot-event .fc-event-title:hover,
+.fc-event-time:hover {
+  color: #fff !important;
+}
+.fc-daygrid-dot-event .fc-event-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.fc-event {
+  cursor: pointer;
+}
+.availabliltyTable tbody tr {
+  box-shadow: 0 0 16px rgba(110, 110, 110, 0.28);
+  border-radius: 15px;
 }

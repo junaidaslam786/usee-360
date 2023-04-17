@@ -48,14 +48,17 @@ export default function CompletedAppointments() {
       if (response?.id) {
         setAppointmentView({
           id: response.id,
+          agentId: response.agentId,
+          allotedAgent: response.allotedAgent,
           date: response.appointmentDate,
-          time: response.appointmentTime,
+          time: response?.agentTimeSlot?.fromTime ? response.agentTimeSlot.fromTime : "",
           customerName: `${response.customerUser.firstName} ${response.customerUser.lastName}`,
           customerEmail: response.customerUser.email,
           customerPhone: response.customerUser.phoneNumber,
           customerPic: `${process.env.REACT_APP_API_URL}/${response.customerUser.profileImage}`,
           agentName: `${response.agentUser.firstName} ${response.agentUser.lastName}`,
           agentPic: `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`,
+          supervisorName: response?.allotedAgentUser ? `${response.allotedAgentUser.firstName} ${response.allotedAgentUser.lastName}` : null,
           properties: response.products,
         });
         openViewModal.current.click();
@@ -97,7 +100,7 @@ export default function CompletedAppointments() {
                   <tr key={i}>
                     <td className="ltn__my-properties-img go-top">
                       <h3 className="appointment-date">
-                        {moment.utc(element?.appointmentDate).format("D MMMM")}
+                        {moment(element?.appointmentDate).format("D MMMM")}
                       </h3>
                     </td>
                     <td>
@@ -108,18 +111,17 @@ export default function CompletedAppointments() {
                         </h6>
                         <small>
                           <i className="icon-clock" />{" "}
-                          {moment(element?.appointmentTime, "h:mm").format(
-                            "HH:mm"
-                          )}
+                          {
+                            element?.agentTimeSlot?.fromTime
+                            ? moment(element.agentTimeSlot.fromTime, "hh:mm:ss").format(
+                                      "HH:mm"
+                                    )
+                            : "-"
+                          }
                         </small>
                       </div>
                     </td>
                     <td>
-                      <span
-                        ref={openViewModal}
-                        data-bs-toggle="modal"
-                        data-bs-target="#appointment-details"
-                      ></span>
                     </td>
                     <td>
                       <button
@@ -131,13 +133,22 @@ export default function CompletedAppointments() {
                       </button>
                     </td>
                     <td>
-                      <Link
-                        to={{
-                          pathname: `/precall/${element.id}/agent`,
-                        }}
-                      >
-                        <button className="py-2">JOIN CALL</button>
-                      </Link>
+                      {
+                        element.allotedAgent === element.agentId && (
+                          <Link
+                            to={{
+                              pathname: `/precall/${element.id}/agent`,
+                            }}
+                          >
+                            <button className="py-2">JOIN CALL</button>
+                          </Link> 
+                        )
+                      }
+                      {
+                        element.allotedAgent !== element.agentId && (
+                          "Assigned to supervisor"
+                        )
+                      }
                     </td>
                   </tr>
                 ))
@@ -177,6 +188,11 @@ export default function CompletedAppointments() {
           </div>
         </div> */}
       </div>
+      <span
+        ref={openViewModal}
+        data-bs-toggle="modal"
+        data-bs-target="#appointment-details"
+      ></span>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
           <div className="modal-dialog modal-lg" role="document">
@@ -221,8 +237,7 @@ export default function CompletedAppointments() {
                               <p className="p-0 m-o">
                                 <i className="fa-regular fa-calendar"></i>{" "}
                                 {appointmentView?.date
-                                  ? moment
-                                      .utc(appointmentView.date)
+                                  ? moment(appointmentView.date)
                                       .format("D/MM/YYYY")
                                   : "-"}
                               </p>
@@ -231,7 +246,7 @@ export default function CompletedAppointments() {
                               <p>
                                 <i className="fa-regular fa-clock"></i>{" "}
                                 {appointmentView?.time
-                                  ? moment(appointmentView.time, "h:mm").format(
+                                  ? moment(appointmentView.time, "hh:mm:ss").format(
                                       "HH:mm"
                                     )
                                   : "-"}
@@ -252,9 +267,15 @@ export default function CompletedAppointments() {
                       </div>
                       <div className="col-lg-6">
                         <div>
-                          <h5 className="p-0 m-0">Agent Name</h5>
+                          <h5 className="p-0 m-0">
+                            {
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
+                            }
+                          </h5>
                           <p className="p-0 m-o">
-                            {appointmentView?.agentName || "N/A"}
+                            {
+                              appointmentView.supervisorName ? appointmentView.supervisorName : (appointmentView?.agentName || "N/A")
+                            }
                           </p>
                         </div>
                         <div>

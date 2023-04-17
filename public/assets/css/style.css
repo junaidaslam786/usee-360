@@ -6885,8 +6885,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 ---------------------------------------- */
 @media (min-width: 1200px) and (max-width: 1300px) {
     /* .ltn__main-menu > ul > li {
-    margin-right: 15px;
-  } */
+        margin-right: 15px;
+    } */
     .ltn__main-menu > ul > li:last-child {
         margin-right: 0;
     }
@@ -18171,4 +18171,10 @@ h1.page-title {
 }
 .text-highlight:hover {
     color: var(--white);
+}
+
+input[readonly] {
+  background: #999;
+  color: white;
+  cursor: no-drop;
 }

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ResponseHandler from "../global-components/respones-handler";
+import SupervisorDetails from "../agent-components/supervisor-details";
+import { AGENT_TYPE } from "../../constants";
 
 export default function AccountDetails() {
   const [agentId, setAgentId] = useState();
@@ -29,6 +31,7 @@ export default function AccountDetails() {
   const [successPass, setSuccessPass] = useState();
   const [errorPass, setErrorPass] = useState();
   const [successMessage, setSuccessMessage] = useState();
+  const [agentType, setAgentType] = useState(AGENT_TYPE.AGENT);
 
   const code = useRef();
 
@@ -78,6 +81,10 @@ export default function AccountDetails() {
         ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
         : ""
     );
+
+    if (jsonData?.agent?.agentType) {
+      setAgentType(jsonData.agent.agentType);
+    }
   };
 
   const updateProfile = async (e) => {
@@ -398,6 +405,12 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
+            {
+              agentType === AGENT_TYPE.AGENT && (
+                <SupervisorDetails />
+              )
+            }
+            
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
               <ResponseHandler errors={errorPass} success={successPass} />
@@ -501,6 +514,7 @@ export default function AccountDetails() {
                               </div>
                             ) : null}
                             <textarea
+                              readOnly
                               ref={code}
                               value={`<!-- useepopupcode--><link rel="stylesheet" href="${process.env.REACT_APP_PUBLIC_URL}/script/usee-agent-popup.css?v=107"><div id="usee_prop_list_dn"><button type="button" style="font-size: 15px; color:#00CB04; background: #ffffff; border: 2px solid #00CB04" class="usee_btn grn-line-btn usee-popup-trigger_" data-popup-trigger="usee_agent_model">Book a guided U-See Virtual Tour</button><div class="usee_agent_website_model" data-popup-modal="usee_agent_model"><div id="usee_agent_website_popup" class="u-see-agent-website-popup_ shadow"><span class="usee_popup__close">X</span> <iframe class="usee-agent-popup-iframe" src="${process.env.REACT_APP_PUBLIC_URL}/iframe/property-grid/${agentId}" width="100%" height="100%" frameborder="0"></iframe> </div></div></div><div class="usee-bg-popup-overlay_"></div><script src="${process.env.REACT_APP_PUBLIC_URL}/script/useeapi.js?ver=2"></script><!-- usee popupcodeends-->`}
                             ></textarea>

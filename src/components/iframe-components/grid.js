@@ -385,7 +385,7 @@ export default function PropertyGrid() {
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
                               <div className="product-img go-top">
                                 <Link
-                                  to={`/iframe/property-details/${element.id}`}
+                                  to={`/iframe/property-details/${params.id}/${element.id}`}
                                 >
                                   <img
                                     src={`${publicUrl}/${element.featuredImage}`}
@@ -408,7 +408,7 @@ export default function PropertyGrid() {
                                 </div>
                                 <h2 className="product-title go-top">
                                   <Link
-                                    to={`/iframe/property-details/${element.id}`}
+                                    to={`/iframe/property-details/${params.id}/${element.id}`}
                                   >
                                     {element.title}
                                   </Link>
@@ -485,7 +485,7 @@ export default function PropertyGrid() {
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
                               <div className="product-img go-top">
                                 <Link
-                                  to={`/iframe/property-details/${element.id}`}
+                                  to={`/iframe/property-details/${params.id}/${element.id}`}
                                 >
                                   <img
                                     src={`${publicUrl}/${element.featuredImage}`}
@@ -515,7 +515,7 @@ export default function PropertyGrid() {
                                 </div>
                                 <h2 className="product-title go-top">
                                   <Link
-                                    to={`/iframe/property-details/${element.id}`}
+                                    to={`/iframe/property-details/${params.id}/${element.id}`}
                                   >
                                     {element.title}
                                   </Link>

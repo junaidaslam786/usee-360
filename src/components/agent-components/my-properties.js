@@ -4,6 +4,7 @@ import moment from "moment";
 import axios from "axios";
 import Select from "react-select";
 import Layout from "./layouts/layout";
+import { AGENT_TYPE } from "../../constants";
 
 export default function MyProperties() {
   const [page, setPage] = useState(1);
@@ -14,6 +15,7 @@ export default function MyProperties() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [removeReasons, setRemoveReasons] = useState([]);
+  const [agentType, setAgentType] = useState(AGENT_TYPE.AGENT);
   const closeModal = useRef(null);
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
@@ -33,6 +35,21 @@ export default function MyProperties() {
     if (response) {
       setList(response.data);
     }
+  };
+
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const jsonData = await response.json();
+    setAgentType(jsonData.agent.agentType);
   };
 
   const loadRemoveReasons = async () => {
@@ -143,6 +160,14 @@ export default function MyProperties() {
     fetchRemoveReasons();
   }, [page]);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      await getUser();
+    };
+
+    fetchUserDetails();
+  }, []);
+
   return (
     <Layout>
       <div className="ltn__myaccount-tab-content-inner">
@@ -153,8 +178,14 @@ export default function MyProperties() {
                 <th scope="col">My Properties</th>
                 <th scope="col" />
                 <th scope="col">Date Added</th>
-                <th scope="col">Actions</th>
-                <th scope="col">Delete</th>
+                {
+                  agentType === AGENT_TYPE.AGENT && (
+                    <React.Fragment>
+                      <th scope="col">Actions</th>
+                      <th scope="col">Delete</th>
+                    </React.Fragment>
+                  )
+                }
               </tr>
             </thead>
             <tbody>
@@ -184,20 +215,26 @@ export default function MyProperties() {
                       </div>
                     </td>
                     <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
-                    <td>
-                      <Link to={`/agent/edit-property/${element.id}`}>
-                        Edit
-                      </Link>
-                    </td>
-                    <td>
-                      <button
-                        data-bs-toggle="modal"
-                        data-bs-target="#ltn_delete_property_modal"
-                        onClick={() => handleDeleteButtonClick(element.id)}
-                      >
-                        <i className="fa-solid fa-trash-can" />
-                      </button>
-                    </td>
+                    {
+                      agentType === AGENT_TYPE.AGENT && (
+                        <React.Fragment>
+                          <td>
+                            <Link to={`/agent/edit-property/${element.id}`}>
+                              Edit
+                            </Link>
+                          </td>
+                          <td>
+                            <button
+                              data-bs-toggle="modal"
+                              data-bs-target="#ltn_delete_property_modal"
+                              onClick={() => handleDeleteButtonClick(element.id)}
+                            >
+                              <i className="fa-solid fa-trash-can" />
+                            </button>
+                          </td>
+                        </React.Fragment>
+                      )
+                    }
                   </tr>
                 ))
               )}

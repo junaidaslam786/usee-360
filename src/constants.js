@@ -93,3 +93,9 @@ export const JOB_TITLE = [
 
 export const DEFAULT_LICENSE_NO_TEXT = "Company Registration # *";
 export const DEFAULT_DEED_TITLE_TEXT = "Deed Title *";
+
+export const AGENT_TYPE = {
+    AGENT: "agent",
+    MANAGER: "manager",
+    STAFF: "staff",
+};

@@ -11,6 +11,7 @@ import {
   DEFAULT_CURRENCY,
 } from "../../constants";
 import Slideshow from "../Slideshow";
+import Modal from "./dateTimeModal";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -26,16 +27,20 @@ export default function PropertyDetails() {
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
   const [successMessage, setSuccessMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState();
 
   const params = useParams();
 
   async function loadProperty() {
     await axios
-      .get(`${process.env.REACT_APP_API_URL}/home/property/${params.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/home/property/${params.propertyId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         setProperty(response.data);
         response.data.productMetaTags.forEach((metaTag) => {
@@ -79,28 +84,33 @@ export default function PropertyDetails() {
       });
   }
 
-  async function makeOfferHandler(e) {
+  async function wishlistHandler(e) {
     e.preventDefault();
 
     const payload = {
       firstName,
       lastName,
       email,
-      productId: params.id,
+      productId: params.propertyId,
     };
 
     await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/iframe/register-customer`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(() => {
-        setSuccessMessage(true);
+      .post(`${process.env.REACT_APP_API_URL}/iframe/wishlist`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setSuccessMessage(response.data.message);
+        setTimeout(() => {
+          setSuccessMessage(false);
+        }, 2000);
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.message);
+        setTimeout(() => {
+          setErrorMessage(false);
+        }, 2000);
       });
   }
 
@@ -115,7 +125,7 @@ export default function PropertyDetails() {
           <div className="col-lg-8 col-md-12">
             <div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
               <h5 className="mb-30">
-                <Link to="/iframe/property-grid">
+                <Link to={`/iframe/property-grid/${params.agentId}`}>
                   <i className="fa-solid fa-arrow-left"></i> Back
                 </Link>
               </h5>
@@ -226,17 +236,29 @@ export default function PropertyDetails() {
                 <a
                   className="btn theme-btn-3 mb-3 w-100"
                   data-bs-toggle="modal"
-                  data-bs-target="#ltn_make_offer_modal"
+                  data-bs-target="#ltn_add_to_wishlist_modal"
                 >
-                  Make Offer
+                  Add To Wishlist
+                </a>
+                <a
+                  className="btn theme-btn-3 mb-3 w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ltn_book_an_appointment_modal"
+                >
+                  Book an Appointment
                 </a>
               </div>
             </aside>
           </div>
         </div>
       </div>
+
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
-        <div className="modal fade" id="ltn_make_offer_modal" tabIndex={-1}>
+        <div
+          className="modal fade"
+          id="ltn_add_to_wishlist_modal"
+          tabIndex={-1}
+        >
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -255,14 +277,19 @@ export default function PropertyDetails() {
                     <div className="row">
                       <div className="col-12">
                         <div className="modal-product-info text-center p-0">
-                          <h4>Make Offer</h4>
+                          <h4>Add To Wishlist</h4>
                           <form
-                            onSubmit={makeOfferHandler}
+                            onSubmit={wishlistHandler}
                             className="ltn__form-box"
                           >
                             {successMessage ? (
                               <div className="alert alert-success" role="alert">
-                                Offer Sent Successfully!
+                                {successMessage}
+                              </div>
+                            ) : null}
+                            {errorMessage ? (
+                              <div className="alert alert-danger" role="alert">
+                                {errorMessage}
                               </div>
                             ) : null}
                             <div className="row">
@@ -306,6 +333,12 @@ export default function PropertyDetails() {
           </div>
         </div>
       </div>
+
+      <Modal
+        id="ltn_book_an_appointment_modal"
+        agentId={params.agentId}
+        propertyId={params.propertyId}
+      />
     </div>
   );
 }
