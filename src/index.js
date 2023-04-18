@@ -61,8 +61,9 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     if (decodedJwt.exp * 1000 < Date.now()) {
       localStorage.removeItem("agentToken");
       isAuthenticated = false;
+    } else {
+      isAuthenticated = true;
     }
-    isAuthenticated = true;
   }
 
   return (
@@ -83,8 +84,9 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
     if (decodedJwt.exp * 1000 < Date.now()) {
       localStorage.removeItem("customerToken");
       isAuthenticated = false;
+    } else {
+      isAuthenticated = true;
     }
-    isAuthenticated = true;
   }
 
   return (
