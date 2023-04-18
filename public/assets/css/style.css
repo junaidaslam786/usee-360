@@ -5882,7 +5882,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   margin-right: 10px;
 }
 
-.ltn__header-options-2 .ltn__drop-menu > ul > li:first-child a {
+.ltn__header-options-2 .ltn__drop-menu > ul > li.button-inactive a {
   color: black !important;
   background: white !important;
 }
