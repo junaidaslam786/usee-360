@@ -5,8 +5,8 @@ import { useHistory } from 'react-router';
 import { OFFER_STATUS, SNAG_LIST } from "../../../constants";
 
 export default function ViewOffer(props) {
+    const [userId, setUserId] = useState(0);
     const [productId, setProductId] = useState(0);
-    const [offerId, setOfferId] = useState(0);
     const [snagOfferId, setSnagOfferId] = useState(0);
     const [list, setList] = useState([]);
     const [amount, setAmount] = useState("");
@@ -26,6 +26,24 @@ export default function ViewOffer(props) {
     const history = useHistory();
 
     const token = JSON.parse(localStorage.getItem("customerToken"));
+
+    const getUser = async () => {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/user/profile`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const jsonData = await response.json();
+        if (jsonData?.id) {
+            setUserId(jsonData.id);
+            return jsonData.id;
+        }
+    };
 
     const makeOfferSubmit = async (e) => {
         e.preventDefault();
@@ -223,13 +241,19 @@ export default function ViewOffer(props) {
     };
 
     useEffect(() => {
-        if (props?.property?.id) {
-            setProductId(props.property.id);
-        }
+        const getUserDetail = async () => {
+            const currentUserId = await getUser();
 
-        if (props?.property?.productOffers) {
-            setList(props.property.productOffers);
-        }
+            if (props?.property?.id) {
+                setProductId(props.property.id);
+            }
+    
+            if (currentUserId && props?.property?.productOffers) {
+                setList(props.property.productOffers.filter((offer) => offer.user.id === currentUserId));
+            }
+        };
+      
+        getUserDetail();
     }, [props.property]);
 
     useEffect(() => {

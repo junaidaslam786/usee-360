@@ -109,7 +109,7 @@ export default function CompletedAppointments() {
                         <small>
                           <i className="icon-clock" />{" "}
                           {moment(element?.appointmentTime, "h:mm").format(
-                            "HH:mm A"
+                            "HH:mm"
                           )}
                         </small>
                       </div>
@@ -232,7 +232,7 @@ export default function CompletedAppointments() {
                                 <i className="fa-regular fa-clock"></i>{" "}
                                 {appointmentView?.time
                                   ? moment(appointmentView.time, "h:mm").format(
-                                      "HH:mm A"
+                                      "HH:mm"
                                     )
                                   : "-"}
                               </p>
