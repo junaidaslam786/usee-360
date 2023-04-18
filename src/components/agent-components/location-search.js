@@ -25,8 +25,8 @@ export default function LocationSearch() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          //const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, };
-          const currentLocation = { lat: 24.466667, lng: 54.366669 };
+          const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, };
+          //const currentLocation = { lat: 24.466667, lng: 54.366669 };
           setCenter(currentLocation);
           map.setCenter(currentLocation);
           setCenterAddress(await reverseGeocode(geocoder, currentLocation));
@@ -63,7 +63,9 @@ export default function LocationSearch() {
       map.setCenter(place.geometry.location);
       map.setZoom(17);
 
-      centerMarker.setPosition(place.geometry.location);
+      if(centerMarker) {
+        centerMarker.setPosition(place.geometry.location);
+      }
     });
 
     map.addListener("click", function (event) {
