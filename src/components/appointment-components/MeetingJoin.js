@@ -190,7 +190,9 @@ const MeetingJoin = (props) => {
         if (userType === "agent") {
           getPropertiesList();
           getPropertyDetail(appointment.products[0].id);
-          //setSelectedProperty(appointment.products[0].id);
+          setSelectedProperty(appointment.products[0].id);
+        } else if(userType === "customer") {
+          getPropertyDetail(appointment.products[0].id);
         }
         const session = OT.initSession("46869314", appointment.sessionId);
         setSession(session);
