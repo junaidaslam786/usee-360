@@ -127,7 +127,7 @@ export default function Login() {
                 <h1 className="section-title">
                   Sign In
                   <br />
-                  To Your Agent Account
+                  To Your Trader Account
                 </h1>
               </div>
             </div>

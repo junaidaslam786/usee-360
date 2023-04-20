@@ -84,7 +84,7 @@ export default function Register() {
               <h1 className="section-title">
                 Register
                 <br />
-                Your Agent Account
+                Your Trader Account
               </h1>
             </div>
           </div>

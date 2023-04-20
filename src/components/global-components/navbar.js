@@ -110,7 +110,7 @@ export default function Navbar() {
                     </li>
                     <li className={ !location.pathname.includes('agent') ? "button-inactive" : null }>
                       <Link to="/agent/dashboard">
-                        <i className="icon-user" /> Agent
+                        <i className="icon-user" /> Trader
                       </Link>
                     </li>
                   </ul>
