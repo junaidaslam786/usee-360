@@ -74,7 +74,7 @@ export default function PropertyDetails() {
           `${response?.data?.user?.firstName} ${response?.data?.user?.lastName}`
         );
         if (response?.data?.productImages?.length > 0) {
-          setPropertyImages(response.data.productImages);
+          setPropertyImages([{ id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', image: response.data.featuredImage }, ...response.data.productImages]);
         }
       });
   }

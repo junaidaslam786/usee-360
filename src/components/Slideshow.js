@@ -1,5 +1,5 @@
 import React from "react";
-import { Fade } from "react-slideshow-image";
+import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 const Slideshow = (props) => {
@@ -7,7 +7,7 @@ const Slideshow = (props) => {
 
   return (
     <div className="slide-container mb-4 w-100">
-      <Fade>
+      <Slide>
         {fadeImages.map((fadeImage, index) => (
           <div key={index}>
             <img
@@ -16,7 +16,7 @@ const Slideshow = (props) => {
             />
           </div>
         ))}
-      </Fade>
+      </Slide>
     </div>
   );
 };
