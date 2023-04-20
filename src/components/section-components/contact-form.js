@@ -97,7 +97,7 @@ export default function ContactForm() {
                     </div>
                   </div>
                   <div className="col-md-6">
-                    <div className="input-item input-item-email ltn__custom-icon">
+                    <div className="input-item input-item-briefcase ltn__custom-icon">
                       <input
                         type="text"
                         name="job"

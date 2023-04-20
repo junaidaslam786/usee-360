@@ -1138,6 +1138,10 @@ button:focus {
   content: "\f06e";
 }
 
+.input-item-briefcase.ltn__custom-icon::before {
+  content: "\f0b1";
+}
+
 .input-item-website.ltn__custom-icon::before {
   content: "\f0ac";
 }
