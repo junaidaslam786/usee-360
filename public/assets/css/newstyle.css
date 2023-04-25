@@ -1,0 +1,113 @@
+.ltn__modal-area.timeModal .modal-content {
+    border-radius: 20px;
+}
+
+.ltn__modal-area.timeModal .modal-dialog {
+    max-width: 950px !important;
+}
+
+.ltn__modal-area.timeModal .modal-body .ltn__quick-view-modal-inner {
+    padding: 20px 40px;
+}
+
+.ltn__modal-area.timeModal .modal-body .modalHeading h2 {
+    font-size: 20px;
+    text-align: center;
+    font-family: var(--ltn__body-font);
+    color: #3e2837;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.ltn__modal-area.timeModal .modal-body .timeCards {
+    background: #00cb04;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ltn__modal-area.timeModal .modal-body .bgNew {
+    background: #fff;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ltn__modal-area.timeModal .modal-body .timeCards p {
+    color: #fff;
+    margin: 0;
+    user-select: none;
+    font-weight: 500;
+}
+
+.ltn__modal-area.timeModal .modal-body .bgNew p {
+    color: black;
+    margin: 0;
+    user-select: none;
+    font-weight: 500;
+}
+
+.ltn__modal-area.timeModal .modal-body .modalHeading p {
+    text-align: center;
+    color: #989898;
+    font-weight: 700;
+}
+
+.ltn__modal-area.timeModal .modal-body .modalBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.ltn__modal-area.timeModal .modal-body .modalBtn button:first-child {
+    width: 105px;
+    background-color: #00cb04;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 8px;
+    height: 42px;
+    user-select: none;
+}
+
+.ltn__modal-area.timeModal .modal-body .modalBtn button:nth-child(2) {
+    width: 105px;
+    border-radius: 8px;
+    height: 42px;
+    font-weight: 600;
+    margin-left: 8px;
+    user-select: none;
+}
+
+.separator {
+    width: 1px;
+    height: 17px;
+    background-color: #071c1f;
+    margin: 0 10px;
+}
+
+@media (max-width: 991px) {
+    .ltn__modal-area.timeModal .modal-dialog {
+        max-width: 750px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .ltn__modal-area.timeModal .modal-dialog {
+        max-width: 600px !important;
+    }
+}
+/* @media (max-width: 575px) {
+    .ltn__modal-area.timeModal .modal-dialog {
+        max-width: 500px !important;
+    }
+} */
