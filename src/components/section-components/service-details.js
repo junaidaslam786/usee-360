@@ -56,30 +56,6 @@ class ServiceDetails extends Component {
                         </span>
                       </Link>
                     </li>
-                    <li>
-                      <Link to="#">
-                        Yachts
-                        <span>
-                          <i className="fas fa-arrow-right" />
-                        </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        Vehicles
-                        <span>
-                          <i className="fas fa-arrow-right" />
-                        </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        Maintenance
-                        <span>
-                          <i className="fas fa-arrow-right" />
-                        </span>
-                      </Link>
-                    </li>
                   </ul>
                 </div>
               </aside>

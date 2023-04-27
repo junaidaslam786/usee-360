@@ -45,7 +45,7 @@ export default function AccountDetails() {
       }
     );
     const jsonData = await response.json();
-    setAgentId(jsonData.agent.id);
+    setAgentId(jsonData.agent.userId);
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
     setCompanyPosition(
