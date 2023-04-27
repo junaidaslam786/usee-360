@@ -266,7 +266,11 @@ const MeetingJoin = (props) => {
           },
           sessionDisconnected: function sessionDisconnectHandler(event) {
             console.log("You were disconnected from the session.", event.reason);
-            history.push("/");
+            if(userType === "agent") {
+              history.push("/agent/dashboard");
+            } else if (userType === "customer") {
+              history.push("/customer/dashboard");
+            }
             // setTimeout(function() {
             //   session.connect(token, function(error) {
             //     if (error) {
@@ -365,24 +369,25 @@ const MeetingJoin = (props) => {
         // Send a signal once the user enters data in the form
         form.addEventListener("submit", (event) => {
           event.preventDefault();
-
-          const name =
+          if(msgTxt.value) {
+            const name =
             userType === "customer"
               ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
               : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
-          session.signal(
-            {
-              type: "msg",
-              data: `${name}: ${msgTxt.value}`,
-            },
-            (error) => {
-              if (error) {
-                //handleError(error);
-              } else {
-                msgTxt.value = "";
+            session.signal(
+              {
+                type: "msg",
+                data: `${name}: ${msgTxt.value}`,
+              },
+              (error) => {
+                if (error) {
+                  //handleError(error);
+                } else {
+                  msgTxt.value = "";
+                }
               }
-            }
-          );
+            );
+          }
         });
       }
       fetchData();
@@ -621,9 +626,9 @@ const MeetingJoin = (props) => {
               <i className="fa-solid fa-laptop"></i>
             </span>
           )}
-          {/* <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => leaveSession()}>
+          <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => leaveSession()}>
             <i className="fa-solid fa-phone-slash"></i>
-          </span> */}
+          </span>
         </div>
 
         <div id="toggle">
@@ -641,6 +646,17 @@ const MeetingJoin = (props) => {
         </div>
       </div>
       <div id="chatArea" className={"slide-out"}>
+        <div className="minimize-chat">
+          <button 
+            className="minimize-button"
+            onClick={() => {
+              let slider = document.getElementById("chatArea");
+
+              let isOpen = slider.classList.contains("slide-in");
+
+              slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
+            }}
+            ><i class="fa fa-window-minimize" aria-hidden="true" /></button></div>
         <p id="history"></p>
         <form id="Chatform" encType="multipart/form-data" action="">
           <div>

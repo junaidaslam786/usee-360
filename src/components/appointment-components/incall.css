@@ -249,3 +249,12 @@
 .download-file-link:hover {
   background-color: #005a7e;
 }
+
+.minimize-chat {
+  text-align: end;
+}
+
+.minimize-button {
+  margin-right: 5px;
+  padding-top: 0px;
+}
