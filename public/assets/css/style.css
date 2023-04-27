@@ -11017,10 +11017,19 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     background-color: var(--ltn__secondary-color);
     color: var(--white);
 }
+.ltn__category-item-5 .category-desc {
+    color: var(--ltn__paragraph-color);
+}
 .ltn__category-item-5:hover .category-title {
     color: var(--white);
 }
-
+.ltn__category-item-5:hover .category-desc {
+    color: var(--white) !important;
+    transition: all 0.3s ease 0s;
+}
+.ltn__category-item-5:hover {
+    outline: 5px solid var(--white);
+}
 .ltn__category-item-5-2 a .category-icon {
     margin-right: 0;
     margin-left: auto;
