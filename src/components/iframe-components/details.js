@@ -12,6 +12,7 @@ import {
 } from "../../constants";
 import Slideshow from "../Slideshow";
 import Modal from "./dateTimeModal";
+import ResponseHandler from '../global-components/respones-handler';
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -26,8 +27,8 @@ export default function PropertyDetails() {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
-  const [successMessage, setSuccessMessage] = useState();
-  const [errorMessage, setErrorMessage] = useState();
+  const [success, setSuccess] = useState();
+  const [errors, setErrors] = useState();
 
   const params = useParams();
 
@@ -101,18 +102,37 @@ export default function PropertyDetails() {
         },
       })
       .then((response) => {
-        setSuccessMessage(response.data.message);
-        setTimeout(() => {
-          setSuccessMessage(false);
-        }, 2000);
+        setSuccessHandler(response.data.message);
       })
       .catch((error) => {
-        setErrorMessage(error.response.data.message);
-        setTimeout(() => {
-          setErrorMessage(false);
-        }, 2000);
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) {
+          setErrorHandler(error.response.data.message);
+        } else {
+          setErrorHandler(
+            "Unable to add to wishlist, please try again later"
+          );
+        }
       });
   }
+
+  const setErrorHandler = (msg, param = "form", fullError = false) => {
+    setErrors(fullError ? msg : [{ msg, param }]);
+    setTimeout(() => {
+      setErrors([]);
+    }, 3000);
+    setSuccess("");
+  };
+
+  const setSuccessHandler = (msg) => {
+    setSuccess(msg);
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+
+    setErrors([]);
+  };
 
   useEffect(() => {
     loadProperty();
@@ -282,16 +302,7 @@ export default function PropertyDetails() {
                             onSubmit={wishlistHandler}
                             className="ltn__form-box"
                           >
-                            {successMessage ? (
-                              <div className="alert alert-success" role="alert">
-                                {successMessage}
-                              </div>
-                            ) : null}
-                            {errorMessage ? (
-                              <div className="alert alert-danger" role="alert">
-                                {errorMessage}
-                              </div>
-                            ) : null}
+                            <ResponseHandler errors={errors} success={success}/>
                             <div className="row">
                               <div className="col-md-6">
                                 <input
