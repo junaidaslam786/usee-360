@@ -5,6 +5,7 @@ import moment from "moment";
 export default function CompletedAppointments() {
   let publicUrl = process.env.PUBLIC_URL + "/";
 
+  const [agentId, setAgentId] = useState();
   const [page, setPage] = useState(1);
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
@@ -27,6 +28,21 @@ export default function CompletedAppointments() {
     if (response) {
       setList(response.data);
     }
+  };
+
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const jsonData = await response.json();
+    setAgentId(jsonData.id);
   };
 
   const loadAppointmentFields = async (appointmentId) => {
@@ -67,12 +83,15 @@ export default function CompletedAppointments() {
   };
 
   useEffect(() => {
-    loadAllList();
-
     const fetchAllAppointments = async () => {
       await loadAllList();
     };
 
+    const fetchCurrentUser = async () => {
+      await getUser();
+    };
+
+    fetchCurrentUser();
     fetchAllAppointments();
   }, [page]);
 
@@ -134,7 +153,7 @@ export default function CompletedAppointments() {
                     </td>
                     <td>
                       {
-                        element.allotedAgent === element.agentId && (
+                        element.allotedAgent === agentId ? (
                           <Link
                             to={{
                               pathname: `/precall/${element.id}/agent`,
@@ -142,10 +161,7 @@ export default function CompletedAppointments() {
                           >
                             <button className="py-2">JOIN CALL</button>
                           </Link> 
-                        )
-                      }
-                      {
-                        element.allotedAgent !== element.agentId && (
+                        ) : (
                           "Assigned to supervisor"
                         )
                       }
