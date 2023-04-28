@@ -188,12 +188,13 @@ export default function Availability() {
                               })}
                           </div>
                           <div className="modalBtn">
-                            <button onClick={handleSubmit}>Submit</button>
+                            <button style={{"background-color": "#3e2837"}} onClick={handleSubmit}>Submit</button>
                             <button
                               type="button"
                               data-bs-dismiss="modal"
                               ref={closeModal}
                               aria-label="Close"
+                              style={{"background-color": "#dadada", "color":"black", "margin-left":"10px"}}
                             >
                               Close
                             </button>
