@@ -433,6 +433,8 @@ export default function AccountDetails() {
                     name="ltn__lastname"
                     placeholder="New Password"
                     onChange={(e) => setNewPassword(e.target.value)}
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                    title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                     value={newPassword}
                     required
                   />
@@ -442,6 +444,8 @@ export default function AccountDetails() {
                     name="ltn__lastname"
                     placeholder="Confirm Password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                    title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                     value={confirmPassword}
                     required
                   />

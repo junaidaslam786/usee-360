@@ -108,6 +108,8 @@ export default function Register() {
                       name="password"
                       placeholder="Password*"
                       onChange={(e) => setPassword(e.target.value)}
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                      title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                       required
                     />
                   </div>
@@ -117,6 +119,8 @@ export default function Register() {
                       name="confirmpassword"
                       placeholder="Confirm Password*"
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                      title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                       required
                     />
                   </div>
