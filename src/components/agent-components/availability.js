@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import moment from "moment";
-import axios from "axios";
-import Select from "react-select";
 import Layout from "./layouts/layout";
 import "../Availability/index.css";
 import options from "../Availability/avaliabilityData";
-import { AGENT_TYPE } from "../../constants";
+import ResponseHandler from '../global-components/respones-handler';
 
 export default function Availability() {
 
-  const [clicked, setClicked] = useState([]);
   const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedDayTitle, setSelectedDayTitle] = useState("Monday");
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [timeOptions, setTimeOptions] = useState({});
+  const [errors, setErrors] = useState('');
+  const [success, setSuccess] = useState('');
   const [userId, setUserId] = useState('');
+  const closeModal = useRef(null);
 
   const handleClick = (index) => {
     if (selectedSlots.includes(index)) {
@@ -60,6 +59,9 @@ export default function Availability() {
             return 0;
           }
         });
+        const count = value.filter(obj => obj.status === true).length;
+        const objToUpdate = options.find(obj => parseInt(obj.id) === parseInt(key));
+        objToUpdate.count = count;
         assocArray[key] = value;
       }
       setTimeOptions(assocArray);
@@ -93,12 +95,24 @@ export default function Availability() {
       }
     );
     if(response && response.status === 200) {
+      closeModal.current.click();
       await loadAllList();
+      setSuccessHandler("Availability slots have been updated!");
     }
+  };
+
+  const setSuccessHandler = (msg) => {
+    setSuccess(msg);
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+
+    setErrors([]);
   };
 
   return (
     <Layout>
+      <ResponseHandler errors={errors} success={success}/>
       <div className="ltn__myaccount-tab-content-inner">
         {options &&
           options.map((item) => {
@@ -113,7 +127,7 @@ export default function Availability() {
                   </div>
                   <div className="availabilityCardHeading">
                     <h1>{item.title}</h1>
-                    <p>{item.desc}</p>
+                    <p>{item.count} slots enabled. Click edit button to view and edit.</p>
                   </div>
                 </div>
                 <div>
@@ -122,6 +136,7 @@ export default function Availability() {
                     data-bs-target="#ltn_api_code_modal"
                     onClick={(event) => {
                       setSelectedDay(item.id);
+                      setSelectedDayTitle(item.title)
                       setSelectedSlots(timeOptions[item.id].filter(timeItem => timeItem.status).map(timeItem => timeItem.id));
                     }}
                   >
@@ -151,7 +166,7 @@ export default function Availability() {
                       <div className="row">
                         <div className="col-12">
                           <div className="modalHeading">
-                            <h2>Update Availability Times - monday</h2>
+                            <h2>Update Availability Times - {selectedDayTitle}</h2>
                             <p>Select Time slots</p>
                           </div>
                           <div className="row">
@@ -177,6 +192,7 @@ export default function Availability() {
                             <button
                               type="button"
                               data-bs-dismiss="modal"
+                              ref={closeModal}
                               aria-label="Close"
                             >
                               Close

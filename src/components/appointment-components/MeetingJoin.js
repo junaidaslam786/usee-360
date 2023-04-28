@@ -125,7 +125,12 @@ const MeetingJoin = (props) => {
           propertyData.virtualTourType === "url" &&
           propertyData.virtualTourUrl
         ) {
-          setVirtualTourUrl(propertyData.virtualTourUrl);
+          let embedUrl = propertyData.virtualTourUrl;
+          const videoId = extractVideoId(propertyData.virtualTourUrl);
+          if(videoId) {
+            embedUrl = "https://www.youtube.com/embed/" + videoId;
+          }
+          setVirtualTourUrl(embedUrl);
           setDefaultImage(false);
         } else if (
           propertyData.virtualTourType === "video" &&
@@ -142,6 +147,38 @@ const MeetingJoin = (props) => {
         console.error("Error:", error);
       });
   };
+
+  function extractVideoId(url) {
+    let videoId;
+  
+    // Extract the video ID from the YouTube URL
+    if (url.indexOf("youtube.com/watch?v=") !== -1) {
+      // Extract the video ID from a URL like "https://www.youtube.com/watch?v=VIDEO_ID_HERE"
+      videoId = url.split("v=")[1];
+    } else if (url.indexOf("youtu.be/") !== -1) {
+      // Extract the video ID from a URL like "https://youtu.be/VIDEO_ID_HERE"
+      videoId = url.split("youtu.be/")[1];
+    } else if (url.indexOf("youtube.com/embed/") !== -1) {
+      // Extract the video ID from a URL like "https://www.youtube.com/embed/VIDEO_ID_HERE"
+      videoId = url.split("embed/")[1];
+    } else if (url.indexOf("youtube.com/v/") !== -1) {
+      // Extract the video ID from a URL like "https://www.youtube.com/v/VIDEO_ID_HERE"
+      videoId = url.split("v/")[1];
+    }
+  
+    // Remove any additional parameters or fragments from the video ID
+    if (videoId) {
+      const ampersandPosition = videoId.indexOf("&");
+      const hashPosition = videoId.indexOf("#");
+      if (ampersandPosition !== -1) {
+        videoId = videoId.substring(0, ampersandPosition);
+      } else if (hashPosition !== -1) {
+        videoId = videoId.substring(0, hashPosition);
+      }
+    }
+  
+    return videoId;
+  }  
 
   const getSessionToken = async () => {
     if (userType === "agent") {

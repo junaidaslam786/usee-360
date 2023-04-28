@@ -71,17 +71,30 @@ export default function CustomerCalendar() {
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
       const response = await loadAppointmentFields(id);
+      let appointmentAgentName = `${response.agentUser.firstName} ${response.agentUser.lastName}`;
+      let appointmentAgentPic = `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`;
+      let appointmentAgentEmail = response.agentUser.email;
+      let appointmentAgentPhone = response.agentUser.phoneNumber;
+      if (response.allotedAgent !== response.agentId && response?.allotedAgentUser) {
+        appointmentAgentName = `${response.allotedAgentUser.firstName} ${response.allotedAgentUser.lastName}`;
+        appointmentAgentPic = `${process.env.REACT_APP_API_URL}/${response.allotedAgentUser.profileImage}`;
+        appointmentAgentEmail = response.allotedAgentUser.email;
+        appointmentAgentPhone = response.allotedAgentUser.phoneNumber;
+      }
+
       if (response) {
         setAppointmentView({
           id: response.id,
+          agentId: response.agentId,
+          allotedAgent: response.allotedAgent,
           date: response.appointmentDate,
-          time: response.appointmentTime,
+          time: response?.agentTimeSlot?.fromTime ? response.agentTimeSlot.fromTime : "",
           customerName: `${response.customerUser.firstName} ${response.customerUser.lastName}`,
           customerPic: `${process.env.REACT_APP_API_URL}/${response.customerUser.profileImage}`,
-          agentName: `${response.agentUser.firstName} ${response.agentUser.lastName}`,
-          agentPic: `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`,
-          agentEmail: response.agentUser.email,
-          agentPhone: response.agentUser.phoneNumber,
+          agentName: appointmentAgentName,
+          agentPic: appointmentAgentPic,
+          agentEmail: appointmentAgentEmail,
+          agentPhone: appointmentAgentPhone,
           properties: response.products,
         });
         openViewModal.current.click();
@@ -143,7 +156,11 @@ export default function CustomerCalendar() {
                       </div>
                       <div className="col-lg-6">
                         <div>
-                          <h5 className="p-0 m-0">Agent Name</h5>
+                          <h5 className="p-0 m-0">
+                            {
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
+                            }
+                          </h5>
                           <p className="p-0 m-o">
                             {appointmentView?.agentName || "N/A"}
                           </p>
@@ -156,14 +173,13 @@ export default function CustomerCalendar() {
                           />
                         </div>
                         <div>
-                        <h5 className="p-0 m-0 mt-2">Booking Time</h5>
+                          <h5 className="p-0 m-0 mt-2">Booking Time</h5>
                           <div className="row">
                             <div className="col">
                               <p className="p-0 m-o">
                                 <i className="fa-regular fa-calendar"></i>{" "}
                                 {appointmentView?.date
-                                  ? moment
-                                      .utc(appointmentView.date)
+                                  ? moment(appointmentView.date)
                                       .format("D/MM/YYYY")
                                   : "-"}
                               </p>
@@ -190,7 +206,9 @@ export default function CustomerCalendar() {
                             {appointmentView?.agentPhone || "N/A"}
                           </p>
                         </div>
-                        <div className="col-lg-6">
+                      </div>
+                      <div className="col-lg-6">
+                        <div>
                           <h5 className="p-0 m-0">Customer Name</h5>
                           <p className="p-0 m-o">
                             {appointmentView?.customerName || "N/A"}
@@ -229,16 +247,6 @@ export default function CustomerCalendar() {
                             ))
                           : ""}
                       </div>
-                      <Link
-                        to={{
-                          pathname: `/precall/${appointmentView?.id}/customer`,
-                          state: {
-                            appointment: appointmentView,
-                          },
-                        }}
-                      >
-                        <button data-bs-dismiss="modal">JOIN CALL</button>
-                      </Link>
                     </div>
                   </div>
                 </div>

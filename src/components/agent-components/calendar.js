@@ -9,6 +9,7 @@ import moment from "moment";
 
 export default function AgentCalendar() {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
+  const [agentId, setAgentId] = useState();
   const [userAppointments, setUserAppointments] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
@@ -42,6 +43,21 @@ export default function AgentCalendar() {
     }
   };
 
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const jsonData = await response.json();
+    setAgentId(jsonData.id);
+  };
+
   const loadAppointmentFields = async (appointmentId) => {
     return fetch(
       `${process.env.REACT_APP_API_URL}/agent/appointment/${appointmentId}`,
@@ -59,8 +75,13 @@ export default function AgentCalendar() {
     const fetchAllAppointments = async () => {
       await loadAllList();
     };
+    
+    const fetchCurrentUser = async () => {
+      await getUser();
+    };
 
     fetchAllAppointments();
+    fetchCurrentUser();
   }, []);
 
   const handleEventClick = (info) => {
@@ -74,14 +95,17 @@ export default function AgentCalendar() {
       if (response?.id) {
         setAppointmentView({
           id: response.id,
+          agentId: response.agentId,
+          allotedAgent: response.allotedAgent,
           date: response.appointmentDate,
-          time: response.appointmentTime,
+          time: response?.agentTimeSlot?.fromTime ? response.agentTimeSlot.fromTime : "",
           customerName: `${response.customerUser.firstName} ${response.customerUser.lastName}`,
           customerEmail: response.customerUser.email,
           customerPhone: response.customerUser.phoneNumber,
           customerPic: `${process.env.REACT_APP_API_URL}/${response.customerUser.profileImage}`,
           agentName: `${response.agentUser.firstName} ${response.agentUser.lastName}`,
           agentPic: `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`,
+          supervisorName: response?.allotedAgentUser ? `${response.allotedAgentUser.firstName} ${response.allotedAgentUser.lastName}` : null,
           properties: response.products,
         });
         openViewModal.current.click();
@@ -193,9 +217,15 @@ export default function AgentCalendar() {
                       </div>
                       <div className="col-lg-6">
                         <div>
-                          <h5 className="p-0 m-0">Agent Name</h5>
+                          <h5 className="p-0 m-0">
+                            {
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
+                            }
+                          </h5>
                           <p className="p-0 m-o">
-                            {appointmentView?.agentName || "N/A"}
+                            {
+                              appointmentView.supervisorName ? appointmentView.supervisorName : (appointmentView?.agentName || "N/A")
+                            }
                           </p>
                         </div>
                         <div>
@@ -231,16 +261,22 @@ export default function AgentCalendar() {
                             ))
                           : ""}
                       </div>
-                      <Link
-                        to={{
-                          pathname: `/precall/${appointmentView?.id}/agent`,
-                          state: {
-                            appointment: appointmentView,
-                          },
-                        }}
-                      >
-                        <button data-bs-dismiss="modal">JOIN CALL</button>
-                      </Link>
+                      {
+                        appointmentView.allotedAgent === agentId ? (
+                          <Link
+                          to={{
+                            pathname: `/precall/${appointmentView?.id}/agent`,
+                            state: {
+                              appointment: appointmentView,
+                            },
+                          }}
+                        >
+                          <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
+                        </Link>
+                        ) : (
+                          "Assigned to supervisor"
+                        )
+                      }
                     </div>
                   </div>
                 </div>
