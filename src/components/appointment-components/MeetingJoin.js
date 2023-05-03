@@ -80,8 +80,9 @@ const MeetingJoin = (props) => {
   const [virtualTourVideo, setVirtualTourVideo] = useState('');
   const [productImages, setProductImages] = useState('');
   const [defaultImage, setDefaultImage] = useState(true);
-  const agentJWTToken = JSON.parse(localStorage.getItem("agentToken"));
-  const customerJWTToken = JSON.parse(localStorage.getItem("customerToken"));
+  const [agentJoined, setAgentJoined] = useState(false);
+  const [customerJoined, setCustomerJoined] = useState(false);
+  const [showCancelBtn, setShowCancelBtn] = useState(false);
 
   const getPropertiesList = async () => {
     return fetch(
@@ -222,6 +223,7 @@ const MeetingJoin = (props) => {
 
   useEffect(() => {
     if(token) {
+      let agentTimer;
       const fetchData = async () => {
         const tokToken = await getSessionToken();
         if (userType === "agent") {
@@ -231,7 +233,17 @@ const MeetingJoin = (props) => {
         } else if(userType === "customer") {
           getPropertyDetail(appointment.products[0].id);
         }
-        const session = OT.initSession("46869314", appointment.sessionId);
+
+        // Set a timeout of 5 minutes for agent waiting
+        agentTimer = setTimeout(() => {
+          if (!agentJoined) {
+            // Enable call cancellation button with reason "customer did not join"
+            setShowCancelBtn(true);
+            alert("Customer did ");
+          }
+        }, 0.5 * 60 * 1000);
+        // if(!publisher)
+        // const session = OT.initSession("46869314", appointment.sessionId);
         setSession(session);
         session.on({
           streamCreated: (event) => {
@@ -265,6 +277,12 @@ const MeetingJoin = (props) => {
                   subscriberDisconnectedNotification.style.visibility = "hidden";
                 },
               });
+              if(userType == "customer") {
+                setAgentJoined(true);
+              } else if(userType == "agent") {
+                setCustomerJoined(true);
+              }
+              console.log(event);
             } else if (event.stream.videoType === "screen") {
               const subscriberOptions = {
                 insertMode: "replace",
@@ -428,8 +446,11 @@ const MeetingJoin = (props) => {
         });
       }
       fetchData();
+      return () => {
+        clearTimeout(agentTimer);
+      };
     }
-  }, []);
+  }, [agentJoined]);
 
   function toggleVideo() {
     publisher.publishVideo(!videoStreaming);
@@ -682,6 +703,11 @@ const MeetingJoin = (props) => {
           />
         </div>
       </div>
+      {showCancelBtn && (
+        <button onClick={() => console.log('Call canceled: customer did not join.')}>
+          Cancel Call
+        </button>
+      )}
       <div id="chatArea" className={"slide-out"}>
         <div className="minimize-chat">
           <button 

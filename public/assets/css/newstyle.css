@@ -133,7 +133,7 @@
 .dash_date_pickr.active .dash_date_arrow {
     background-position: -77px -86px;
 }
-custom_drop_popup,
+.custom_drop_popup,
 .dash_date_inner {
     display: none;
     position: absolute;
@@ -384,6 +384,35 @@ custom_drop_popup,
     padding: 6px 20px;
     border-radius: 4px;
     background-color: #00c800;
+}
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) .fc-button-group button:nth-child(2) {
+    display: none;
+}
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) .fc-button-group button:first-child {
+    border-radius: 0.25em;
+}
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) button {
+    border-radius: 0.25em;
+}
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk button {
+    background-color: #00c800;
+    font-weight: 600;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    border-color: transparent !important;
+}
+.fc .fc-button:disabled {
+    cursor: not-allowed;
+}
+
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk button:hover {
+    background-color: #04da04;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #04da04 !important;
 }
 @media (max-width: 991px) {
     .ltn__modal-area.timeModal .modal-dialog {

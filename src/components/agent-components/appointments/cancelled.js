@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-export default function UpcomingAppointments() {
+export default function CancelledAppointments() {
   let publicUrl = process.env.PUBLIC_URL + "/";
 
   const [agentId, setAgentId] = useState();
