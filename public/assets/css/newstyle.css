@@ -238,7 +238,7 @@ custom_drop_popup,
 .date_btn {
     font-size: 14px;
     font-weight: 700;
-    color: #222;
+    color: #171b2a;
     text-align: center;
     padding: 12px;
     border: 1px solid #c4b7c0;
@@ -323,7 +323,7 @@ custom_drop_popup,
 .date_btn {
     font-size: 14px;
     font-weight: 700;
-    color: #222;
+    color: #171b2a;
     text-align: center;
     padding: 12px;
     border: 1px solid #00c800;
@@ -335,7 +335,7 @@ custom_drop_popup,
 }
 .date-Selector input[readonly] {
     background-color: #fff !important;
-    color: #222;
+    color: #171b2a;
     border: 1px solid #00c800;
     border-radius: 6px;
     width: 148px;

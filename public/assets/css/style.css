@@ -4703,7 +4703,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .price_filter .ui-widget-content {
     background-color: var(--ltn__primary-color);
     border: medium none;
-    color: #222;
+    color: #171b2a;
     height: 3px;
     width: 98%;
     background-image: none;
@@ -5852,6 +5852,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__header-options-2 .ltn__drop-menu > ul > li.button-inactive a {
     color: black !important;
     background: white !important;
+    border: 1px solid #d1cece;
 }
 
 /* ltn__drop-menu */
@@ -10951,11 +10952,12 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 }
 
 .ltn__category-item-5 {
-    border: none;
+    /* border: none; */
     -webkit-box-shadow: var(--ltn__box-shadow-4);
     box-shadow: var(--ltn__box-shadow-4);
     border-radius: 10px;
     margin-bottom: 50px;
+    height: 365px;
 }
 .ltn__category-item-5 a {
     padding: 40px 30px 35px;
@@ -11028,9 +11030,6 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__category-item-5:hover .category-desc {
     color: var(--white) !important;
     transition: all 0.3s ease 0s;
-}
-.ltn__category-item-5:hover {
-    outline: 5px solid var(--white);
 }
 .ltn__category-item-5-2 a .category-icon {
     margin-right: 0;
@@ -11364,6 +11363,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     border: 1px solid var(--border-color-8);
     margin-bottom: 30px;
     padding: 40px 30px 35px;
+    border: 1px solid #e4e4e4;
 }
 .ltn__feature-item-6::before {
     position: absolute;
@@ -15747,6 +15747,7 @@ input.cart-plus-minus-box {
 .ltn__car-dealer-form-tab .tab-content {
     padding: 40px;
     background-color: var(--section-bg-1);
+    border: 1px solid #d1cece;
 }
 
 .ltn__car-dealer-form-box .ltn__car-dealer-form-item {
@@ -17915,7 +17916,7 @@ input.cart-plus-minus-box {
     height: 100%;
     left: 0;
     display: none;
-    background: #222;
+    background: #171b2a;
 }
 .cv-spinner {
     height: 100%;

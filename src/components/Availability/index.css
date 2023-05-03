@@ -28,15 +28,15 @@
   font-size: 20px;
   margin: 0;
   line-height: normal;
-  color: #3e2837;
+  color: #171b2a;
   font-weight: 700;
   font-family: var(--ltn__body-font);
 }
 .availabilityCard p {
   margin: 0;
-  border: 1px solid #cfcfcf;
+  border: 1px solid #e4e4e4;
   border-radius: 4px;
-  color: #9f6d5c;
+  color: #171b2a;
   font-size: 14px;
   padding: 1px 8px;
   font-weight: 500;
@@ -44,17 +44,16 @@
 }
 .availabilityCard button {
   font-size: 16px;
-  border: 1px solid #77576d;
-  color: #77576d;
+  border: 1px solid #00c800;
+  color: #171b2a;
   background-color: transparent;
   border-radius: 30px;
   width: 80px;
   margin: 20px 20px 0 0;
 }
 .availabilityCard button:hover {
-  background-color: #7a5970;
+  background-color: #00c800;
   color: #fff;
-  opacity: 0.5;
 }
 @media (max-width: 1199px) {
   .availabilityCard button {

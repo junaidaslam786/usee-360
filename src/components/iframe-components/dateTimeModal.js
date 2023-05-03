@@ -18,11 +18,11 @@ const colourStyles = {
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isSelected ? "#9eea9f" : "#fff",
-    color: state.isSelected ? "#222" : "#222",
+    color: state.isSelected ? "#171b2a;" : "#171b2a;",
     fontFamily: "var(--ltn__body-font)",
     "&:hover": {
       backgroundColor: state.isSelected ? "#9eea9f" : "#9eea9f",
-      color: "#222",
+      color: "#171b2a;",
     },
   }),
   control: (base, state) => ({
