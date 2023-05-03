@@ -95,7 +95,296 @@
     background-color: #071c1f;
     margin: 0 10px;
 }
+.custom_drop_btn,
+.dash_date_pickr {
+    float: right;
+    width: 170px;
+    border: 1px solid #00c800;
+    padding: 0 10px;
+    border-radius: 15px;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    font-weight: 700;
+    color: #00c800;
+    line-height: 40px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
 
+.custom_drop_btn:hover,
+.custom_drop_btn.active,
+.dash_date_pickr:hover,
+.dash_date_pickr.active {
+    background: #00c800;
+    color: #fff;
+}
+
+.custom_drop_btn:hover .dash_date_icon,
+.custom_drop_btn.active .dash_date_icon,
+.dash_date_pickr:hover .dash_date_icon,
+.dash_date_pickr.active .dash_date_icon {
+    background-position: -51px -79px;
+}
+
+.custom_drop_btn:hover .dash_date_arrow,
+.custom_drop_btn.active .dash_date_arrow,
+.dash_date_pickr:hover .dash_date_arrow,
+.dash_date_pickr.active .dash_date_arrow {
+    background-position: -77px -86px;
+}
+custom_drop_popup,
+.dash_date_inner {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: 50px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 0 40px rgba(110, 110, 110, 0.28);
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.custom_drop_popup.show,
+.dash_date_inner.show {
+    display: block;
+    transform: scaleY(1);
+}
+
+.custom_drop_popup label,
+.dash_date_inner label {
+    color: #c4b7c0;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.custom_drop_popup .datetimepicker-input,
+.dash_date_inner .datetimepicker-input {
+    font-size: 14px;
+    font-weight: 700;
+    width: 100%;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-top: 5px;
+    position: relative;
+    color: #7a5970;
+}
+.dash_date_from {
+    float: left;
+    width: 46%;
+    height: 90px;
+}
+
+.dash_date_to {
+    float: right;
+    width: 50%;
+    height: 90px;
+}
+
+.date_btns {
+    margin-top: 13px;
+}
+.custom_drop_popup,
+.dash_date_inner {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: 50px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 0 40px rgba(110, 110, 110, 0.28);
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.custom_drop_popup.show,
+.dash_date_inner.show {
+    display: block;
+    transform: scaleY(1);
+}
+
+.custom_drop_popup label,
+.dash_date_inner label {
+    color: #c4b7c0;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.custom_drop_popup .datetimepicker-input,
+.dash_date_inner .datetimepicker-input {
+    font-size: 14px;
+    font-weight: 700;
+    width: 100%;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-top: 5px;
+    position: relative;
+    color: #7a5970;
+}
+.custom_drop_optn,
+.date_btn {
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #c4b7c0;
+    margin-bottom: 13px;
+    border-radius: 10px;
+    background: #fff;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.custom_drop_optn:last-child,
+.date_btn:last-child {
+    margin: 0;
+}
+
+.custom_drop_optn.active,
+.custom_drop_optn:hover,
+.custom_drop_optn:focus,
+.date_btn.active,
+.date_btn:hover,
+.date_btn:focus {
+    color: #fff;
+    background: #00c800;
+    border-color: #00c800;
+}
+
+.custom_drop_btn .custom_selected {
+    max-width: 86%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+}
+.row.properties_filter_row {
+    box-shadow: 0 0 16px rgba(110, 110, 110, 0.28);
+    margin: 15px;
+    padding: 15px;
+    padding-bottom: 0px;
+}
+
+.custom_drop_optn,
+.date_btn {
+    font-size: 14px;
+    font-weight: 700;
+    color: #212529;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #c4b7c0;
+    margin-bottom: 13px;
+    border-radius: 10px;
+    background: #fff;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.custom_drop_optn:last-child,
+.date_btn:last-child {
+    margin: 0;
+}
+
+.custom_drop_optn.active,
+.custom_drop_optn:hover,
+.custom_drop_optn:focus,
+.date_btn.active,
+.date_btn:hover,
+.date_btn:focus {
+    color: #fff;
+    background: #00c800;
+    border-color: #00c800;
+}
+
+.custom_drop_btn .custom_selected {
+    max-width: 86%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+}
+.custom_drop_optn,
+.date_btn {
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #00c800;
+    margin-bottom: 13px;
+    border-radius: 10px;
+    background: #fff;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+.date-Selector input[readonly] {
+    background-color: #fff !important;
+    color: #222;
+    border: 1px solid #00c800;
+    border-radius: 6px;
+    width: 148px;
+    cursor: pointer;
+    height: 38px;
+    font-size: 14px;
+}
+/* ---tabbing--- */
+.nav-link.active {
+    background-color: #00c800 !important;
+    font-weight: 600;
+    color: #fff !important;
+}
+.customColor {
+    color: #071c1f !important;
+    font-weight: 600;
+}
+.tab-data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    /* margin-bottom: 15px; */
+}
+.tab-data .tabInner-data {
+    display: flex;
+    align-items: center;
+}
+.tab-data .tabInner-data h1 {
+    font-size: 70px;
+}
+.tab-data .tabInner-data .view {
+    padding: 6px 15px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.tab-data .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tab-data .tabInner-data .joinCall {
+    padding: 6px 20px;
+    border-radius: 4px;
+    background-color: #00c800;
+}
 @media (max-width: 991px) {
     .ltn__modal-area.timeModal .modal-dialog {
         max-width: 750px !important;
@@ -115,11 +404,15 @@
         max-width: 600px !important;
     }
 }
-/* @media (max-width: 575px) {
-    .ltn__modal-area.timeModal .modal-dialog {
-        max-width: 500px !important;
+@media (max-width: 575px) {
+    .tab-data {
+        flex-direction: column;
+        align-items: flex-start !important;
     }
-} */
+    .tab-data .tabInner-data:nth-child(2) {
+        padding-top: 20px;
+    }
+}
 
 .timeselectinput {
     cursor: grab !important;

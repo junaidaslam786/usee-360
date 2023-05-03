@@ -6237,6 +6237,9 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     .header-search-1-form {
         width: 270px;
     }
+    .ltn__my-properties-img {
+        padding-left: 15px !important;
+    }
 }
 
 /* search-2 */
@@ -9723,7 +9726,6 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__shop-details-tab-inner-2 .ltn__shop-details-tab-content-inner .ltn__comment-reply-area form {
     padding: 30px;
 }
-
 /* product-details-menu-1 */
 .ltn__product-details-menu-1 ul li a {
     position: relative;
@@ -17103,7 +17105,8 @@ input.cart-plus-minus-box {
 }
 
 .ltn__my-properties-img {
-    width: 180px;
+    /* width: 180px; */
+    padding: 0 30px;
 }
 
 @media (max-width: 767px) {
@@ -17994,6 +17997,7 @@ input.cart-plus-minus-box {
 
 .no-data {
     border: 0 !important;
+    padding: 15px 0 0 10px;
 }
 
 .appointment-date {
@@ -18021,7 +18025,7 @@ input.cart-plus-minus-box {
 
 .dashboard-card .card-desc-left {
     color: white;
-    font-size: 25px !important;
+    font-size: 20px !important;
 }
 
 .dashboard-card .card-desc-right {
@@ -18174,7 +18178,7 @@ h1.page-title {
 }
 
 input[readonly] {
-  background: #999;
-  color: white;
-  cursor: no-drop;
+    background: #999;
+    color: white;
+    cursor: no-drop;
 }
