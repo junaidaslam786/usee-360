@@ -4,6 +4,11 @@ import Social from "../section-components/social";
 import Copyright from "./copyright";
 
 class Footer_v1 extends Component {
+  constructor(props) {
+    super(props);
+    // You can access props as this.props in the constructor
+  }
+
   componentDidMount() {
     const { $ } = window;
 
@@ -64,9 +69,13 @@ class Footer_v1 extends Component {
                       <li>
                         <Link to="/services">Services</Link>
                       </li>
-                      <li>
-                        <Link to="/demo">Book a Demo</Link>
-                      </li>
+                      {
+                        this.props?.page !== 'register' && (
+                          <li>
+                            <Link to="/demo">Book a Demo</Link>
+                          </li>
+                        )
+                      }
                       <li>
                         <Link to="/contact">Contact</Link>
                       </li>

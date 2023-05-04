@@ -3,14 +3,15 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 
 export default function Appointments() {
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState();
+  const [totalPages, setTotalPages] = useState();
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
-  const loadAllList = async () => {
+  const loadAllList = async (page = 1) => {
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/customer/appointment/list?page=${page}&size=10`,
       {
@@ -25,6 +26,8 @@ export default function Appointments() {
     response = await response.json();
     if (response) {
       setList(response.data);
+      setCurrentPage(parseInt(response.page));
+      setTotalPages(parseInt(response.totalPage));
     }
   };
 
@@ -48,7 +51,10 @@ export default function Appointments() {
       let appointmentAgentPic = `${process.env.REACT_APP_API_URL}/${response.agentUser.profileImage}`;
       let appointmentAgentEmail = response.agentUser.email;
       let appointmentAgentPhone = response.agentUser.phoneNumber;
-      if (response.allotedAgent !== response.agentId && response?.allotedAgentUser) {
+      if (
+        response.allotedAgent !== response.agentId &&
+        response?.allotedAgentUser
+      ) {
         appointmentAgentName = `${response.allotedAgentUser.firstName} ${response.allotedAgentUser.lastName}`;
         appointmentAgentPic = `${process.env.REACT_APP_API_URL}/${response.allotedAgentUser.profileImage}`;
         appointmentAgentEmail = response.allotedAgentUser.email;
@@ -61,7 +67,9 @@ export default function Appointments() {
           agentId: response.agentId,
           allotedAgent: response.allotedAgent,
           date: response.appointmentDate,
-          time: response?.agentTimeSlot?.fromTime ? response.agentTimeSlot.fromTime : "",
+          time: response?.agentTimeSlot?.fromTime
+            ? response.agentTimeSlot.fromTime
+            : "",
           customerName: `${response.customerUser.firstName} ${response.customerUser.lastName}`,
           customerPic: `${process.env.REACT_APP_API_URL}/${response.customerUser.profileImage}`,
           agentName: appointmentAgentName,
@@ -83,7 +91,7 @@ export default function Appointments() {
     };
 
     fetchAllProperties();
-  }, [page]);
+  }, []);
 
   return (
     <div>
@@ -119,13 +127,12 @@ export default function Appointments() {
                         </h6>
                         <small>
                           <i className="icon-clock" />{" "}
-                          {
-                            element?.agentTimeSlot?.fromTime
-                            ? moment(element.agentTimeSlot.fromTime, "hh:mm:ss").format(
-                                      "HH:mm"
-                                    )
-                            : "-"
-                          }
+                          {element?.agentTimeSlot?.fromTime
+                            ? moment(
+                                element.agentTimeSlot.fromTime,
+                                "hh:mm:ss"
+                              ).format("HH:mm")
+                            : "-"}
                         </small>
                       </div>
                     </td>
@@ -164,6 +171,55 @@ export default function Appointments() {
           </table>
         </div>
       </div>
+      
+      <div className="ltn__pagination-area text-center">
+        <div className="ltn__pagination">
+          <ul>
+            <li>
+              <Link
+                to="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage !== 1) {
+                    loadAllList(currentPage - 1);
+                  }
+                }}
+              >
+                <i className="fas fa-angle-double-left" />
+              </Link>
+            </li>
+            {Array.from(Array(totalPages), (e, i) => {
+              return (
+                <li key={i} className={currentPage == i + 1 ? "active" : null}>
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      loadAllList(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </Link>
+                </li>
+              );
+            })}
+            <li>
+              <Link
+                to="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage !== totalPages) {
+                    loadAllList(currentPage + 1);
+                  }
+                }}
+              >
+                <i className="fas fa-angle-double-right" />
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
           <div className="modal-dialog modal-lg" role="document">
@@ -190,9 +246,10 @@ export default function Appointments() {
                       <div className="col-lg-6">
                         <div>
                           <h5 className="p-0 m-0">
-                            {
-                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
-                            }
+                            {appointmentView.allotedAgent !==
+                            appointmentView.agentId
+                              ? "Supervisor Name"
+                              : "Agent Name"}
                           </h5>
                           <p className="p-0 m-o">
                             {appointmentView?.agentName || "N/A"}
@@ -212,8 +269,9 @@ export default function Appointments() {
                               <p className="p-0 m-o">
                                 <i className="fa-regular fa-calendar"></i>{" "}
                                 {appointmentView?.date
-                                  ? moment(appointmentView.date)
-                                      .format("D/MM/YYYY")
+                                  ? moment(appointmentView.date).format(
+                                      "D/MM/YYYY"
+                                    )
                                   : "-"}
                               </p>
                             </div>

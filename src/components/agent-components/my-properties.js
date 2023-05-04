@@ -7,7 +7,9 @@ import Layout from "./layouts/layout";
 import { AGENT_TYPE } from "../../constants";
 
 export default function MyProperties() {
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [search, setSearch] = useState();
   const [propertyIdToDelete, setPropertyIdToDelete] = useState(0);
   const [removeReason, setRemoveReason] = useState();
   const [notes, setNotes] = useState("");
@@ -19,9 +21,10 @@ export default function MyProperties() {
   const closeModal = useRef(null);
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
-  const loadAllList = async () => {
+  const loadAllList = async (search = '', page = 1) => {
+    setSearch(search);
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/property/list?page=${page}&size=10`,
+      `${process.env.REACT_APP_API_URL}/property/list?search=${search}&page=${page}&size=10`,
       {
         method: "GET",
         headers: {
@@ -34,6 +37,8 @@ export default function MyProperties() {
     response = await response.json();
     if (response) {
       setList(response.data);
+      setCurrentPage(parseInt(response.page));
+      setTotalPages(parseInt(response.totalPage));
     }
   };
 
@@ -158,7 +163,7 @@ export default function MyProperties() {
 
     fetchAllProperties();
     fetchRemoveReasons();
-  }, [page]);
+  }, []);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -172,20 +177,25 @@ export default function MyProperties() {
     <Layout>
       <div className="ltn__myaccount-tab-content-inner">
         <div className="ltn__my-properties-table table-responsive">
+          <div className="input-item">
+            <input
+              type="text"
+              placeholder="Search..."
+              onChange={(e) => loadAllList(e.target.value)}
+            />
+          </div>
           <table className="table">
             <thead>
               <tr>
                 <th scope="col">My Properties</th>
                 <th scope="col" />
                 <th scope="col">Date Added</th>
-                {
-                  agentType === AGENT_TYPE.AGENT && (
-                    <React.Fragment>
-                      <th scope="col">Actions</th>
-                      <th scope="col">Delete</th>
-                    </React.Fragment>
-                  )
-                }
+                {agentType === AGENT_TYPE.AGENT && (
+                  <React.Fragment>
+                    <th scope="col">Actions</th>
+                    <th scope="col">Delete</th>
+                  </React.Fragment>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -214,63 +224,84 @@ export default function MyProperties() {
                         </small>
                       </div>
                     </td>
-                    <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
-                    {
-                      agentType === AGENT_TYPE.AGENT && (
-                        <React.Fragment>
-                          <td>
-                            <Link to={`/agent/edit-property/${element.id}`}>
-                              Edit
-                            </Link>
-                          </td>
-                          <td>
-                            <button
-                              data-bs-toggle="modal"
-                              data-bs-target="#ltn_delete_property_modal"
-                              onClick={() => handleDeleteButtonClick(element.id)}
-                            >
-                              <i className="fa-solid fa-trash-can" />
-                            </button>
-                          </td>
-                        </React.Fragment>
-                      )
-                    }
+                    <td>
+                      {element?.createdAt
+                        ? moment.utc(element.createdAt).format("MMMM D, YYYY")
+                        : "-"}
+                    </td>
+                    {agentType === AGENT_TYPE.AGENT && (
+                      <React.Fragment>
+                        <td>
+                          <Link to={`/agent/edit-property/${element.id}`}>
+                            Edit
+                          </Link>
+                        </td>
+                        <td>
+                          <button
+                            data-bs-toggle="modal"
+                            data-bs-target="#ltn_delete_property_modal"
+                            onClick={() => handleDeleteButtonClick(element.id)}
+                          >
+                            <i className="fa-solid fa-trash-can" />
+                          </button>
+                        </td>
+                      </React.Fragment>
+                    )}
                   </tr>
                 ))
               )}
             </tbody>
           </table>
-          {/* <div className="ltn__pagination-area text-center">
+          <div className="ltn__pagination-area text-center">
             <div className="ltn__pagination">
               <ul>
                 <li>
-                  <Link to="#">
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage !== 1) {
+                        loadAllList(search, currentPage - 1);
+                      }
+                    }}
+                  >
                     <i className="fas fa-angle-double-left" />
                   </Link>
                 </li>
+                {Array.from(Array(totalPages), (e, i) => {
+                  return (
+                    <li
+                      key={i}
+                      className={currentPage == i + 1 ? "active" : null}
+                    >
+                      <Link
+                        to="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          loadAllList(search, i + 1);
+                        }}
+                      >
+                        {i + 1}
+                      </Link>
+                    </li>
+                  );
+                })}
                 <li>
-                  <Link to="#">1</Link>
-                </li>
-                <li className="active">
-                  <Link to="#">2</Link>
-                </li>
-                <li>
-                  <Link to="#">3</Link>
-                </li>
-                <li>
-                  <Link to="#">...</Link>
-                </li>
-                <li>
-                  <Link to="#">10</Link>
-                </li>
-                <li>
-                  <Link to="#">
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage !== totalPages) {
+                        loadAllList(search, currentPage + 1);
+                      }
+                    }}
+                  >
                     <i className="fas fa-angle-double-right" />
                   </Link>
                 </li>
               </ul>
             </div>
-          </div> */}
+          </div>
           <div className="ltn__modal-area ltn__add-to-cart-modal-area----">
             <div
               className="modal show"

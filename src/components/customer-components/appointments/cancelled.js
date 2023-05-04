@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-export default function CompletedAppointments() {
+export default function CancelledAppointments() {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [list, setList] = useState([]);

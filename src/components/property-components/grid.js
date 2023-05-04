@@ -87,7 +87,7 @@ export default function PropertyGrid() {
       }
 
       if (roomsFilter) {
-        payload.rooms = parseInt(roomsFilter);
+        payload.rooms = roomsFilter;
       }
 
       if (latFilter) {

@@ -1,8 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import Social from "../section-components/social";
 
-export default function Navbar() {
+export default function Navbar(props) {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const location = useLocation();
 
@@ -84,10 +83,14 @@ export default function Navbar() {
                             style={{ marginLeft: "20px" }}
                           ></div>
                         </li>
-                        <li>
-                          <Link to="/demo">Book a Demo</Link>
-                          <div className="separator"></div>
-                        </li>
+                        {
+                          props?.page !== 'register' && (
+                            <li>
+                              <Link to="/demo">Book a Demo</Link>
+                              <div className="separator"></div>
+                            </li>
+                          )
+                        }
                         <li>
                           <Link to="/contact">Contact</Link>
                         </li>
@@ -179,9 +182,13 @@ export default function Navbar() {
                   </li>
                 </ul>
               </li>
-              <li>
-                <Link to="/demo">Book a Demo</Link>
-              </li>
+              {
+                props?.page !== 'register' && (
+                  <li>
+                  <Link to="/demo">Book a Demo</Link>
+                  </li>
+                )
+              }
               <li>
                 <Link to="/contact">Contact</Link>
               </li>

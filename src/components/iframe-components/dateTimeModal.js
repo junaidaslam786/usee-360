@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import { Calendar } from "react-modern-calendar-datepicker";
+import ResponseHandler from "../global-components/respones-handler";
 import axios from "axios";
 
 const colourStyles = {
@@ -61,12 +62,28 @@ const Modal = ({ id, agentId, propertyId }) => {
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
   const [supervisor, setSupervisor] = useState(false);
-  const [successMessage, setSuccessMessage] = useState();
-  const [errorMessage, setErrorMessage] = useState();
+  const [success, setSuccess] = useState();
+  const [errors, setErrors] = useState();
 
   const handleClick = (id) => {
     setTimeSlotId(id);
     checkAvailability(id);
+  };
+
+  const setErrorHandler = (msg, param = "form", fullError = false) => {
+    setErrors(fullError ? msg : [{ msg, param }]);
+    setTimeout(() => {
+      setErrors([]);
+    }, 3000);
+    setSuccess("");
+  };
+
+  const setSuccessHandler = (msg) => {
+    setSuccess(msg);
+    setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+    setErrors([]);
   };
 
   async function loadSlots() {
@@ -105,10 +122,7 @@ const Modal = ({ id, agentId, propertyId }) => {
         },
       })
       .then((response) => {
-        setSuccessMessage(response.data.message);
-        setTimeout(() => {
-          setSuccessMessage(false);
-        }, 2000);
+        setSuccessHandler(response.data.message);
         setFirstName("");
         setLastName("");
         setEmail("");
@@ -117,10 +131,13 @@ const Modal = ({ id, agentId, propertyId }) => {
         setSupervisor(false);
       })
       .catch((error) => {
-        setErrorMessage(error.response.data.message);
-        setTimeout(() => {
-          setErrorMessage(false);
-        }, 2000);
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else if (error?.response?.data?.message) {
+          setErrorHandler(error.response.data.message);
+        } else {
+          setErrorHandler("Unable to add to wishlist, please try again later");
+        }
       });
   }
 
@@ -140,14 +157,12 @@ const Modal = ({ id, agentId, propertyId }) => {
             "Content-Type": "application/json",
           },
         }
-      ).then((response) => {
-        if(!response.data.success) {
-          setErrorMessage("Time slot already booked.");
-          setTimeout(() => {
-            setErrorMessage(false);
-          }, 2000);
+      )
+      .then((response) => {
+        if (!response.data.success) {
+          setErrorHandler("Time slot already booked.");
         }
-      })
+      });
   }
 
   useEffect(() => {
@@ -197,63 +212,59 @@ const Modal = ({ id, agentId, propertyId }) => {
                     </div>
                   </div>
                   {appointmentDate ? (
-                  <div
-                    className="ltn__quick-view-modal-inner col-12 col-lg-6"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div style={{ marginLeft: "-10px" }}>
-                        <h2
-                          className="calenderModalHeading"
-                          style={{ marginBottom: "10px" }}
-                        >
-                          Pick a Time Slot
-                        </h2>
-                        {errorMessage ? (
-                          <div className="alert alert-danger" role="alert">
-                            {errorMessage}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="modal-product-item mt-4">
-                        <div className="row">
-                          {slots &&
-                            slots.map((item, index) => {
-                              return (
-                                <div className="col-3 px-1 py-1">
-                                  <div
-                                    key={index}
-                                    onClick={() => handleClick(item.id)}
-                                    className={
-                                      timeSlotId === item.id
-                                        ? "bgNew"
-                                        : "timeCards"
-                                    }
-                                  >
-                                    <p>{item.fromTime}</p>
-                                  </div>
-                                </div>
-                              );
-                            })}
+                    <div
+                      className="ltn__quick-view-modal-inner col-12 col-lg-6"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div>
+                        <div style={{ marginLeft: "-10px" }}>
+                          <h2
+                            className="calenderModalHeading"
+                            style={{ marginBottom: "10px" }}
+                          >
+                            Pick a Time Slot
+                          </h2>
+                          <ResponseHandler errors={errors} />
                         </div>
+                        <div className="modal-product-item mt-4">
+                          <div className="row">
+                            {slots &&
+                              slots.map((item, index) => {
+                                return (
+                                  <div className="col-3 px-1 py-1">
+                                    <div
+                                      key={index}
+                                      onClick={() => handleClick(item.id)}
+                                      className={
+                                        timeSlotId === item.id
+                                          ? "bgNew"
+                                          : "timeCards"
+                                      }
+                                    >
+                                      <p>{item.fromTime}</p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                        <input
+                          type="checkbox"
+                          id="supervisor"
+                          onChange={(e) => setSupervisor(e.target.checked)}
+                          style={{ marginTop: "10px" }}
+                          checked={supervisor}
+                        />
+                        <label for="supervisor" style={{ marginLeft: "5px" }}>
+                          Select Supervisor
+                        </label>
                       </div>
-                      <input
-                        type="checkbox"
-                        id="supervisor"
-                        onChange={(e) => setSupervisor(e.target.checked)}
-                        style={{ marginTop: "10px" }}
-                        checked={supervisor}
-                      />
-                      <label for="supervisor" style={{ marginLeft: "5px" }}>
-                        Select Supervisor
-                      </label>
                     </div>
-                  </div>
-                  ) : null }
+                  ) : null}
                 </div>
                 <div
                   className="modalBtn"
@@ -303,16 +314,7 @@ const Modal = ({ id, agentId, propertyId }) => {
                     style={{ paddingTop: "40px" }}
                     onSubmit={bookAppointmentHandler}
                   >
-                    {successMessage ? (
-                      <div className="alert alert-success" role="alert">
-                        {successMessage}
-                      </div>
-                    ) : null}
-                    {errorMessage ? (
-                      <div className="alert alert-danger" role="alert">
-                        {errorMessage}
-                      </div>
-                    ) : null}
+                    <ResponseHandler errors={errors} success={success} />
                     <div>
                       <label htmlFor="fname">First Name</label>
                       <br />

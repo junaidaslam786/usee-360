@@ -185,7 +185,7 @@ export default function SearchForm() {
                                 propertyCategory,
                                 propertyCategoryType,
                                 propertyType,
-                                rooms: parseInt(rooms),
+                                rooms: rooms,
                                 lat,
                                 lng,
                                 minPrice: parseInt(minPrice),

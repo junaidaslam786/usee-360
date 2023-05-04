@@ -270,7 +270,7 @@ font-family: 'Poppins', sans-serif;
     /* Red */
     --border-color-6: #103034;
     /* Black */
-    --border-color-7: #d1dae0;
+    --border-color-7: #ABB2B9;
     /* White */
     --border-color-8: #f6f6f6;
     /* White */
@@ -5852,7 +5852,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__header-options-2 .ltn__drop-menu > ul > li.button-inactive a {
     color: black !important;
     background: white !important;
-    border: 1px solid #d1cece;
+    border: 1px solid var(--border-color-7);
 }
 
 /* ltn__drop-menu */
@@ -10955,7 +10955,6 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     /* border: none; */
     -webkit-box-shadow: var(--ltn__box-shadow-4);
     box-shadow: var(--ltn__box-shadow-4);
-    border-radius: 10px;
     margin-bottom: 50px;
     height: 365px;
 }
@@ -11360,10 +11359,9 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 /* feature-item-6 */
 .ltn__feature-item-6 {
-    border: 1px solid var(--border-color-8);
+    border: 1px solid var(--border-color-7);
     margin-bottom: 30px;
     padding: 40px 30px 35px;
-    border: 1px solid #e4e4e4;
 }
 .ltn__feature-item-6::before {
     position: absolute;
@@ -13493,6 +13491,7 @@ blockquote::before {
 
 .contact-form-box {
     padding: 40px 50px 50px;
+    border: 1px solid var(--border-color-7);
     position: relative;
     z-index: 1;
 }
@@ -13524,7 +13523,7 @@ blockquote::before {
 .ltn__contact-address-item-3 {
     -webkit-box-shadow: none;
     box-shadow: none;
-    border: 2px solid var(--border-color-11);
+    border: 1px solid var(--border-color-7);
     padding: 50px 30px 25px;
 }
 .ltn__contact-address-item-3 i {
@@ -15747,7 +15746,7 @@ input.cart-plus-minus-box {
 .ltn__car-dealer-form-tab .tab-content {
     padding: 40px;
     background-color: var(--section-bg-1);
-    border: 1px solid #d1cece;
+    border: 1px solid var(--border-color-7);
 }
 
 .ltn__car-dealer-form-box .ltn__car-dealer-form-item {

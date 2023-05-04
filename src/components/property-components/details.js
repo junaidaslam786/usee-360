@@ -96,6 +96,7 @@ export default function PropertyDetails() {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     loadProperty();
   }, []);
 
