@@ -88,10 +88,10 @@ export default function PropertyDetails() {
     if (!token) {
       history.push(
         "/customer/login?returnUrl=" +
-          encodeURIComponent('/customer/add-appointment')
+          encodeURIComponent(`/customer/add-appointment?id=${params.id}`)
       );
     } else {
-      history.push('/customer/add-appointment');
+      history.push(`/customer/add-appointment?id=${params.id}`);
     }
   }
 

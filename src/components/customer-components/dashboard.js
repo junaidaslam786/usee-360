@@ -1,36 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Layout from "./layouts/layout";
-import Appointments from "./appointments/upcoming";
+import UpcomingAppointments from "./appointments/upcoming";
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function Dashboard() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [selected, setSelected] = useState(0);
-
-  const token = JSON.parse(localStorage.getItem("customerToken"));
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    setName(jsonData.firstName + " " + jsonData.lastName);
-    setEmail(jsonData.email);
-    setPhone(jsonData.phoneNumber);
-    setProfileImage(`${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`);
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  const userDetail = getUserDetailsFromJwt();
 
   return (
     <Layout>
@@ -38,13 +12,13 @@ export default function Dashboard() {
         <div className="ltn-author-introducing clearfix">
           <div className="author-img">
             <img
-              src={profileImage}
+              src={`${process.env.REACT_APP_API_URL}/${userDetail.profileImage}`}
               alt="Author Image"
             />
           </div>
           <div className="author-info">
             <h6>Customer</h6>
-            <h2>{name}</h2>
+            <h2>{userDetail.name}</h2>
             <div className="footer-address">
               <ul>
                 <li>
@@ -53,7 +27,7 @@ export default function Dashboard() {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href="#">{phone}</a>
+                      <a href="#">{userDetail.phoneNumber}</a>
                     </p>
                   </div>
                 </li>
@@ -63,7 +37,7 @@ export default function Dashboard() {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href="#">{email}</a>
+                      <a href="#">{userDetail.email}</a>
                     </p>
                   </div>
                 </li>
@@ -128,7 +102,41 @@ export default function Dashboard() {
           </div>
         </div> */}
       </div>
-      <Appointments />
+      <div className="ltn__myaccount-tab-content-inner">
+        <div className="ltn__my-properties-table table-responsive">
+        <ul
+          class="nav nav-pills pb-2"
+          id="pills-tab"
+          role="tablist"
+          style={{ borderBottom: "1px solid #e5eaee", margin: "0 10px" }}
+        >
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active customColor"
+              id="pills-upcoming-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-upcoming"
+              type="button"
+              role="tab"
+              aria-controls="pills-upcoming"
+              aria-selected="true"
+            >
+              Upcoming
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+          <div
+            class="tab-pane fade show active"
+            id="pills-upcoming"
+            role="tabpanel"
+            aria-labelledby="pills-upcoming-tab"
+          >
+            <UpcomingAppointments />
+          </div>
+        </div>
+        </div>
+      </div>
     </Layout>
   );
 }

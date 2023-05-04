@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { getUserDetailsFromJwt } from "../../../utils";
 
 export default function UpcomingAppointments() {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
-  const [agentId, setAgentId] = useState();
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
   const token = JSON.parse(localStorage.getItem("agentToken"));
+  const userDetail = getUserDetailsFromJwt();
 
   const loadAllList = async (page = 1) => {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10`,
+      `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10&type=upcoming`,
       {
         method: "GET",
         headers: {
@@ -29,21 +30,6 @@ export default function UpcomingAppointments() {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
-
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    setAgentId(jsonData.id);
   };
 
   const loadAppointmentFields = async (appointmentId) => {
@@ -92,129 +78,130 @@ export default function UpcomingAppointments() {
       await loadAllList();
     };
 
-    const fetchCurrentUser = async () => {
-      await getUser();
-    };
-
-    fetchCurrentUser();
     fetchAllAppointments();
   }, []);
 
   return (
     <div>
       <div>
-        {list && list.length === 0 ? (
-          <div>
-            <h4 className="no-data">No Data!</h4>
-          </div>
-        ) : (
-          list.map((element, i) => (
-            <div key={i} className="tab-data">
-              <div className="tabInner-data">
-                <div className="ltn__my-properties-img go-top center">
-                  <div>
-                    <h1 className="appointment-date mb-1">
-                      {moment(element?.appointmentDate).format("D")}
-                    </h1>
-                    <h3 className="appointment-date mb-0">
-                      {moment(element?.appointmentDate).format("MMM")}
-                    </h3>
-                  </div>
-                </div>
-                <div>
-                  <div className="ltn__my-properties-info appointment-info">
-                    <h6 className="mb-10 go-top">
-                      {element?.customerUser?.firstName}{" "}
-                      {element?.customerUser?.lastName}
-                    </h6>
-                    <small>
-                      <i className="icon-clock" />{" "}
-                      {element?.agentTimeSlot?.fromTime
-                        ? moment(
-                            element.agentTimeSlot.fromTime,
-                            "hh:mm:ss"
-                          ).format("HH:mm")
-                        : "-"}
-                    </small>
-                  </div>
-                </div>
-              </div>
-              <div className="tabInner-data">
-                <div>
-                  <button
-                    className="view"
-                    onClick={() => handleViewAppointmentButtonClick(element.id)}
-                  >
-                    <i className="fa-solid fa-eye" /> View
-                  </button>
-                </div>
-                <div>
-                  {element.allotedAgent === agentId ? (
-                    <Link
-                      to={{
-                        pathname: `/precall/${element.id}/agent`,
-                      }}
-                    >
-                      <button className="joinCall">JOIN CALL</button>
-                    </Link>
-                  ) : (
-                    "Assigned to supervisor"
-                  )}
-                </div>
-              </div>
+        {
+          list && list.length === 0 ? (
+            <div>
+              <h4 className="no-data">No Data!</h4>
             </div>
-          ))
-        )}
-        <div className="ltn__pagination-area text-center">
-          <div className="ltn__pagination">
-            <ul>
-              <li>
-                <Link
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage !== 1) {
-                      loadAllList(currentPage - 1);
-                    }
-                  }}
-                >
-                  <i className="fas fa-angle-double-left" />
-                </Link>
-              </li>
-              {Array.from(Array(totalPages), (e, i) => {
-                return (
-                  <li
-                    key={i}
-                    className={currentPage == i + 1 ? "active" : null}
-                  >
+          ) : (
+            list.map((element, i) => (
+              <div key={i} className="tab-data">
+                <div className="tabInner-data">
+                  <div className="ltn__my-properties-img go-top center">
+                    <div>
+                      <h1 className="appointment-date mb-1">
+                        {moment(element?.appointmentDate).format("D")}
+                      </h1>
+                      <h3 className="appointment-date mb-0">
+                        {moment(element?.appointmentDate).format("MMM")}
+                      </h3>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="ltn__my-properties-info appointment-info">
+                      <h6 className="mb-10 go-top">
+                        {element?.customerUser?.firstName}{" "}
+                        {element?.customerUser?.lastName}
+                      </h6>
+                      <small>
+                        <i className="icon-clock" />{" "}
+                        {element?.agentTimeSlot?.fromTime
+                          ? moment(
+                              element.agentTimeSlot.fromTime,
+                              "hh:mm:ss"
+                            ).format("HH:mm")
+                          : "-"}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div className="tabInner-data">
+                  <div>
+                    <button
+                      className="view"
+                      onClick={() => handleViewAppointmentButtonClick(element.id)}
+                    >
+                      <i className="fa-solid fa-eye" /> View
+                    </button>
+                  </div>
+                  <div>
+                    {element.allotedAgent === userDetail.id ? (
+                      <Link
+                        to={{
+                          pathname: `/precall/${element.id}/agent`,
+                        }}
+                      >
+                        <button className="joinCall">JOIN CALL</button>
+                      </Link>
+                    ) : (
+                      "Assigned to supervisor"
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )
+        }
+
+        {
+          list && list.length > 0 && (
+            <div className="ltn__pagination-area text-center">
+              <div className="ltn__pagination">
+                <ul>
+                  <li>
                     <Link
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        loadAllList(i + 1);
+                        if (currentPage !== 1) {
+                          loadAllList(currentPage - 1);
+                        }
                       }}
                     >
-                      {i + 1}
+                      <i className="fas fa-angle-double-left" />
                     </Link>
                   </li>
-                );
-              })}
-              <li>
-                <Link
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage !== totalPages) {
-                      loadAllList(currentPage + 1);
-                    }
-                  }}
-                >
-                  <i className="fas fa-angle-double-right" />
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+                  {Array.from(Array(totalPages), (e, i) => {
+                    return (
+                      <li
+                        key={i}
+                        className={currentPage == i + 1 ? "active" : null}
+                      >
+                        <Link
+                          to="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            loadAllList(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                  <li>
+                    <Link
+                      to="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage !== totalPages) {
+                          loadAllList(currentPage + 1);
+                        }
+                      }}
+                    >
+                      <i className="fas fa-angle-double-right" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+        )}
       </div>
 
       <span
@@ -342,6 +329,24 @@ export default function UpcomingAppointments() {
                               </div>
                             ))
                           : ""}
+                      </div>
+                      <div className="col-lg-12 mt-20">
+                        {
+                          appointmentView.allotedAgent === userDetail.id ? (
+                            <Link
+                              to={{
+                                pathname: `/precall/${appointmentView.id}/agent`,
+                                state: {
+                                  appointment: appointmentView,
+                                },
+                              }}
+                            >
+                              <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
+                            </Link>
+                          ) : (
+                            <div className='supervisor-text'>Assigned to supervisor</div>
+                          )
+                        }
                       </div>
                     </div>
                   </div>

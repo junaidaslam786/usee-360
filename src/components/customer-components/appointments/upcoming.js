@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { getUserDetailsFromJwt } from "../../../utils";
 
-export default function Appointments() {
+export default function UpcomingAppointments() {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
 
+  const userDetail = getUserDetailsFromJwt();
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
   const loadAllList = async (page = 1) => {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/customer/appointment/list?page=${page}&size=10`,
+      `${process.env.REACT_APP_API_URL}/customer/appointment/list?page=${page}&size=10&type=upcoming`,
       {
         method: "GET",
         headers: {
@@ -95,130 +97,120 @@ export default function Appointments() {
 
   return (
     <div>
-      <div className="ltn__myaccount-tab-content-inner">
-        <div className="ltn__my-properties-table table-responsive">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Appointments</th>
-                <th scope="col" />
-                <th scope="col" />
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list && list.length === 0 ? (
-                <tr>
-                  <td className="no-data">No Data!</td>
-                </tr>
-              ) : (
-                list.map((element, i) => (
-                  <tr key={i}>
-                    <td className="ltn__my-properties-img go-top">
-                      <h3 className="appointment-date">
-                        {moment.utc(element?.appointmentDate).format("D MMMM")}
-                      </h3>
-                    </td>
-                    <td>
-                      <div className="ltn__my-properties-info appointment-info">
-                        <h6 className="mb-10 go-top">
-                          {element?.customerUser?.firstName}{" "}
-                          {element?.customerUser?.lastName}
-                        </h6>
-                        <small>
-                          <i className="icon-clock" />{" "}
-                          {element?.agentTimeSlot?.fromTime
-                            ? moment(
-                                element.agentTimeSlot.fromTime,
-                                "hh:mm:ss"
-                              ).format("HH:mm")
-                            : "-"}
-                        </small>
-                      </div>
-                    </td>
-                    <td>
-                      <span
-                        ref={openViewModal}
-                        data-bs-toggle="modal"
-                        data-bs-target="#appointment-details"
-                      ></span>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          handleViewAppointmentButtonClick(element.id)
-                        }
-                      >
-                        <i className="fa-solid fa-eye" /> View
-                      </button>
-                    </td>
-                    <td>
-                      <Link
-                        to={{
-                          pathname: `/precall/${element.id}/customer`,
-                          state: {
-                            appointment: element,
-                          },
-                        }}
-                      >
-                        <button>JOIN CALL</button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {
+        list && list.length === 0 ? (
+          <div>
+            <h4 className="no-data">No Data!</h4>
+          </div>
+        ) : (
+          list.map((element, i) => (
+            <div key={i} className="tab-data">
+              <div className="tabInner-data">
+                <div className="ltn__my-properties-img go-top center">
+                  <div>
+                    <h1 className="appointment-date mb-1">
+                      {moment(element?.appointmentDate).format("D")}
+                    </h1>
+                    <h3 className="appointment-date mb-0">
+                      {moment(element?.appointmentDate).format("MMM")}
+                    </h3>
+                  </div>
+                </div>
+                <div>
+                  <div className="ltn__my-properties-info appointment-info">
+                    <h6 className="mb-10 go-top">
+                      {element?.customerUser?.firstName}{" "}
+                      {element?.customerUser?.lastName}
+                    </h6>
+                    <small>
+                      <i className="icon-clock" />{" "}
+                      {element?.agentTimeSlot?.fromTime
+                        ? moment(
+                            element.agentTimeSlot.fromTime,
+                            "hh:mm:ss"
+                          ).format("HH:mm")
+                        : "-"}
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div className="tabInner-data">
+                <div>
+                  <button
+                    className="view"
+                    onClick={() => handleViewAppointmentButtonClick(element.id)}
+                  >
+                    <i className="fa-solid fa-eye" /> View
+                  </button>
+                </div>
+                <div>
+                  {element.allotedAgent === userDetail.id ? (
+                    <Link
+                      to={{
+                        pathname: `/precall/${element.id}/agent`,
+                      }}
+                    >
+                      <button className="joinCall">JOIN CALL</button>
+                    </Link>
+                  ) : (
+                    "Assigned to supervisor"
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+      )}
       
-      <div className="ltn__pagination-area text-center">
-        <div className="ltn__pagination">
-          <ul>
-            <li>
-              <Link
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage !== 1) {
-                    loadAllList(currentPage - 1);
-                  }
-                }}
-              >
-                <i className="fas fa-angle-double-left" />
-              </Link>
-            </li>
-            {Array.from(Array(totalPages), (e, i) => {
-              return (
-                <li key={i} className={currentPage == i + 1 ? "active" : null}>
+      {
+        list && list.length > 0 && (
+          <div className="ltn__pagination-area text-center">
+            <div className="ltn__pagination">
+              <ul>
+                <li>
                   <Link
                     to="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      loadAllList(i + 1);
+                      if (currentPage !== 1) {
+                        loadAllList(currentPage - 1);
+                      }
                     }}
                   >
-                    {i + 1}
+                    <i className="fas fa-angle-double-left" />
                   </Link>
                 </li>
-              );
-            })}
-            <li>
-              <Link
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage !== totalPages) {
-                    loadAllList(currentPage + 1);
-                  }
-                }}
-              >
-                <i className="fas fa-angle-double-right" />
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+                {Array.from(Array(totalPages), (e, i) => {
+                  return (
+                    <li key={i} className={currentPage == i + 1 ? "active" : null}>
+                      <Link
+                        to="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          loadAllList(i + 1);
+                        }}
+                      >
+                        {i + 1}
+                      </Link>
+                    </li>
+                  );
+                })}
+                <li>
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage !== totalPages) {
+                        loadAllList(currentPage + 1);
+                      }
+                    }}
+                  >
+                    <i className="fas fa-angle-double-right" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+      )}
 
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
@@ -246,10 +238,9 @@ export default function Appointments() {
                       <div className="col-lg-6">
                         <div>
                           <h5 className="p-0 m-0">
-                            {appointmentView.allotedAgent !==
-                            appointmentView.agentId
-                              ? "Supervisor Name"
-                              : "Agent Name"}
+                            {
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : `${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name`
+                            }
                           </h5>
                           <p className="p-0 m-o">
                             {appointmentView?.agentName || "N/A"}
@@ -337,6 +328,18 @@ export default function Appointments() {
                               </div>
                             ))
                           : ""}
+                      </div>
+                      <div className="col-lg-12 mt-20">
+                        <Link
+                          to={{
+                            pathname: `/precall/${appointmentView.id}/customer`,
+                            state: {
+                              appointment: appointmentView,
+                            },
+                          }}
+                        >
+                          <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
+                        </Link>
                       </div>
                     </div>
                   </div>

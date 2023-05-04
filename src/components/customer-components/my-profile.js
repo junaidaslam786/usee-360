@@ -308,7 +308,7 @@ export default function AccountDetails() {
                       <div></div>
                     </div>
                   ) : (
-                    "Save Changes"
+                    "Update Password"
                   )}
                 </button>
               </div>

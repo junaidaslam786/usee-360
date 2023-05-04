@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
-import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
 import { checkTimeOver, findCurrentTimeSlot } from "../../utils";
 import moment from "moment";
+import { useLocation } from "react-router-dom";
 
 export default function AddAppointment() {
-  const [properties, setProperties] = useState([]);
+  const [defaultPropertyOptions, setDefaultPropertyOptions] = useState([]);
   const [selectedAllocatedProperty, setSelectedAllocatedProperty] =
     useState([]);
   const [selectedAllocatedPropertyAgent, setSelectedAllocatedPropertyAgent] =
@@ -20,11 +20,30 @@ export default function AddAppointment() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState();
   const [isChecked, setIsChecked] = useState(false);
+  const location = useLocation();
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
+  async function loadProperty(id) {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/property/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const responseResult = await response.json();
+    if (responseResult) {
+      return responseResult;
+    }
+  }
+
   const loadPropertiesToAllocate = async (searchQuery) => {
-    let response = await fetch(
+    const response = await fetch(
       `${process.env.REACT_APP_API_URL}/property/to-allocate-customer?q=${searchQuery}`,
       {
         method: "GET",
@@ -37,7 +56,6 @@ export default function AddAppointment() {
 
     const responseResult = await response.json();
     if (responseResult) {
-      setProperties(responseResult);
       return responseResult;
     }
   };
@@ -98,7 +116,7 @@ export default function AddAppointment() {
     }).then((response) => {
         console.log('checkAvailability-response', response);
         if (!response || !response?.data?.success) {
-          setErrorHandler("Sorry! Agent is not available at this timeslot. Please choose another timeslot or assign it to supervisor.");
+          setErrorHandler(`Sorry! ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to supervisor.`);
         }
         return true;
     }).catch(error => {
@@ -247,6 +265,26 @@ export default function AddAppointment() {
     }
   }, [date, time]);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const idParam = searchParams.get('id');
+
+    const loadUserSelectedProperty = async () => {
+      const response = await loadProperty(idParam);
+      if (response?.id) {
+        const defaultOption = {
+          value: response.id,
+          label: response.title,
+          userId: response.userId,
+        };
+        setDefaultPropertyOptions([defaultOption]);
+        selectedAllocatedPropertyHandler(defaultOption);
+      }
+    }
+
+    loadUserSelectedProperty();
+  }, [location]);
+
   return (
     <Layout>
       <div>
@@ -263,7 +301,7 @@ export default function AddAppointment() {
                       classNamePrefix="custom-select"
                       cacheOptions
                       loadOptions={loadProperties}
-                      defaultOptions={[]}
+                      defaultOptions={defaultPropertyOptions}
                       onChange={(e) => selectedAllocatedPropertyHandler(e) }
                       value={selectedAllocatedProperty}
                       placeholder="Type to search"

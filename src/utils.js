@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 export const checkTimeOver = (date, time) => {
     const difdate = date;
     const parts = difdate.split("-");
@@ -34,5 +36,21 @@ export const findCurrentTimeSlot = (timeslots) => {
       }
     }
 
-    return null;
+  return null;
+}
+
+export const getUserDetailsFromJwt = () => {
+  try {
+    const customerToken = JSON.parse(localStorage.getItem("customerToken"));
+    const agentToken = JSON.parse(localStorage.getItem("agentToken"));
+    const decoded = jwt.verify(agentToken || customerToken, process.env.REACT_APP_JWT_SECRET_KEY);
+    return decoded;
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      console.log('Token has expired:', err.message);
+    } else {
+      console.log('Error decoding token:', err.message);
+    }
+    return "";
   }
+}

@@ -5,6 +5,7 @@ import axios from "axios";
 import Select from "react-select";
 import Layout from "./layouts/layout";
 import { AGENT_TYPE } from "../../constants";
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function MyProperties() {
   const [currentPage, setCurrentPage] = useState();
@@ -17,7 +18,7 @@ export default function MyProperties() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [removeReasons, setRemoveReasons] = useState([]);
-  const [agentType, setAgentType] = useState(AGENT_TYPE.AGENT);
+  const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
@@ -40,21 +41,6 @@ export default function MyProperties() {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
-
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    setAgentType(jsonData.agent.agentType);
   };
 
   const loadRemoveReasons = async () => {
@@ -165,14 +151,6 @@ export default function MyProperties() {
     fetchRemoveReasons();
   }, []);
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      await getUser();
-    };
-
-    fetchUserDetails();
-  }, []);
-
   return (
     <Layout>
       <div className="ltn__myaccount-tab-content-inner">
@@ -190,12 +168,14 @@ export default function MyProperties() {
                 <th scope="col">My Properties</th>
                 <th scope="col" />
                 <th scope="col">Date Added</th>
-                {agentType === AGENT_TYPE.AGENT && (
-                  <React.Fragment>
-                    <th scope="col">Actions</th>
-                    <th scope="col">Delete</th>
-                  </React.Fragment>
-                )}
+                {
+                  userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
+                    <React.Fragment>
+                      <th scope="col">Actions</th>
+                      <th scope="col">Delete</th>
+                    </React.Fragment>
+                  )
+                }
               </tr>
             </thead>
             <tbody>
@@ -224,29 +204,27 @@ export default function MyProperties() {
                         </small>
                       </div>
                     </td>
-                    <td>
-                      {element?.createdAt
-                        ? moment.utc(element.createdAt).format("MMMM D, YYYY")
-                        : "-"}
-                    </td>
-                    {agentType === AGENT_TYPE.AGENT && (
-                      <React.Fragment>
-                        <td>
-                          <Link to={`/agent/edit-property/${element.id}`}>
-                            Edit
-                          </Link>
-                        </td>
-                        <td>
-                          <button
-                            data-bs-toggle="modal"
-                            data-bs-target="#ltn_delete_property_modal"
-                            onClick={() => handleDeleteButtonClick(element.id)}
-                          >
-                            <i className="fa-solid fa-trash-can" />
-                          </button>
-                        </td>
-                      </React.Fragment>
-                    )}
+                    <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
+                    {
+                      userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
+                        <React.Fragment>
+                          <td>
+                            <Link to={`/agent/edit-property/${element.id}`}>
+                              Edit
+                            </Link>
+                          </td>
+                          <td>
+                            <button
+                              data-bs-toggle="modal"
+                              data-bs-target="#ltn_delete_property_modal"
+                              onClick={() => handleDeleteButtonClick(element.id)}
+                            >
+                              <i className="fa-solid fa-trash-can" />
+                            </button>
+                          </td>
+                        </React.Fragment>
+                      )
+                    }
                   </tr>
                 ))
               )}

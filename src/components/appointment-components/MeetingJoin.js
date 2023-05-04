@@ -719,7 +719,7 @@ const MeetingJoin = (props) => {
 
               slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
             }}
-            ><i class="fa fa-window-minimize" aria-hidden="true" /></button></div>
+            ><i className="fa fa-window-minimize" aria-hidden="true" /></button></div>
         <p id="history"></p>
         <form id="Chatform" encType="multipart/form-data" action="">
           <div>

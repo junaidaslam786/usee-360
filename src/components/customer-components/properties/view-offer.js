@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ResponseHandler from '../../global-components/respones-handler';
 import { useHistory } from 'react-router';
-import { OFFER_STATUS, SNAG_LIST } from "../../../constants";
+import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
+import { getUserDetailsFromJwt } from "../../../utils";
 
 export default function ViewOffer(props) {
-    const [userId, setUserId] = useState(0);
     const [productId, setProductId] = useState(0);
     const [snagOfferId, setSnagOfferId] = useState(0);
     const [list, setList] = useState([]);
@@ -26,24 +26,7 @@ export default function ViewOffer(props) {
     const history = useHistory();
 
     const token = JSON.parse(localStorage.getItem("customerToken"));
-
-    const getUser = async () => {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/user/profile`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const jsonData = await response.json();
-        if (jsonData?.id) {
-            setUserId(jsonData.id);
-            return jsonData.id;
-        }
-    };
+    const userDetail = getUserDetailsFromJwt();
 
     const makeOfferSubmit = async (e) => {
         e.preventDefault();
@@ -241,19 +224,16 @@ export default function ViewOffer(props) {
     };
 
     useEffect(() => {
-        const getUserDetail = async () => {
-            const currentUserId = await getUser();
+        const currentUserId = userDetail.id;
 
-            if (props?.property?.id) {
-                setProductId(props.property.id);
-            }
-    
-            if (currentUserId && props?.property?.productOffers) {
-                setList(props.property.productOffers.filter((offer) => offer.user.id === currentUserId));
-            }
-        };
+        if (props?.property?.id) {
+            setProductId(props.property.id);
+        }
+
+        if (currentUserId && props?.property?.productOffers) {
+            setList(props.property.productOffers.filter((offer) => offer.user.id === currentUserId));
+        }
       
-        getUserDetail();
     }, [props.property]);
 
     useEffect(() => {
@@ -354,7 +334,7 @@ export default function ViewOffer(props) {
                                 ) : (
                                     list.map((element, i) => (
                                         <tr key={i}>
-                                            <td>{ element.amount }</td>
+                                            <td>{DEFAULT_CURRENCY} { element.amount }</td>
                                             <td>{ element.notes }</td>
                                             <td>
                                                 { element.status }
@@ -430,7 +410,7 @@ export default function ViewOffer(props) {
                                                                                 <tr>
                                                                                     <th scope="col">Type</th>
                                                                                     <th scope="col">Result</th>
-                                                                                    <th scope="col">Agent Comments( area / damage etc..)</th>
+                                                                                    <th scope="col">{process.env.REACT_APP_AGENT_ENTITY_LABEL} Comments( area / damage etc..)</th>
                                                                                     <th scope="col">Customer Comments( area / damage etc..)</th>
                                                                                 </tr>
                                                                             </thead>

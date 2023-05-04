@@ -11,10 +11,11 @@ import {
   COMMERCIAL_PROPERTY, PROPERTY_CATEGORY_TYPES, 
   PRICE_TYPE, UNITS, BEDROOMS 
 } from '../../constants';
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function AddProperty(props) {
   const token = JSON.parse(localStorage.getItem("agentToken"));
-  const [categoryFields, setCategoryFields] = useState([]);
+  const userDetail = getUserDetailsFromJwt();
 
   const [id, setId] = useState(null);
   const [title, setTitle] = useState("");
@@ -38,6 +39,7 @@ export default function AddProperty(props) {
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   // const [allotedToUsers, setAllotedToUsers] = useState([]);
+  // const [categoryFields, setCategoryFields] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
   const [virtualTourType, setVirtualTourType] = useState("");
@@ -49,7 +51,6 @@ export default function AddProperty(props) {
   const [success, setSuccess] = useState(null);
   const [propertySubTypeOptions, setPropertySubTypeOptions] = useState(null);
   const [deedTitle, setDeedTitle] = useState("");
-  const [userJobTitle, setUserJobTitle] = useState("");
   // const [users, setUsers] = useState([]);
   const history = useHistory();
 
@@ -61,23 +62,6 @@ export default function AddProperty(props) {
         Authorization: `Bearer ${token}`,
       },
     }).then((data) => data.json());
-  };
-
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    if (jsonData?.agent?.jobTitle) {
-      setUserJobTitle(jsonData.agent.jobTitle);
-    }
   };
 
   // const loadUsersToAllocate = async () => {
@@ -122,7 +106,7 @@ export default function AddProperty(props) {
     }
 
     let apiUrl = "create";
-    let successMsg = "Property created successfully.";
+    let successMsg = "Your changes are saved successfully.";
 
     let formdata = new FormData();
     formdata.append("title", title);
@@ -351,21 +335,16 @@ export default function AddProperty(props) {
   };
 
   useEffect(() => {
-    const fetchCategoryFields = async () => {
-      const response = await loadCategoryFields();
-      if (response) setCategoryFields(response.categoryFields);
-    };
-
-    const fetchUserFields = async () => {
-      await getUser();
-    };
+    // const fetchCategoryFields = async () => {
+    //   const response = await loadCategoryFields();
+    //   if (response) setCategoryFields(response.categoryFields);
+    // };
 
     // const fetchUsersToAllocate = async () => {
     //   await loadUsersToAllocate();
     // }
 
-    fetchUserFields();
-    fetchCategoryFields();
+    // fetchCategoryFields();
     // fetchUsersToAllocate();
 
     const map = new window.google.maps.Map(document.getElementById("map"), {
@@ -613,7 +592,7 @@ export default function AddProperty(props) {
             </div>
           </div>
           {
-            userJobTitle && userJobTitle === 'landlord' && (
+            userDetail && userDetail.agent.jobTitle === 'landlord' && (
               <div className="col-md-12">
                 <div className="input-item">
                   <label> Deed Title *</label>
@@ -665,7 +644,6 @@ export default function AddProperty(props) {
                   options={BEDROOMS}
                   onChange={(e) => setBedrooms(e)}
                   value={bedrooms}
-                  required
                 />
               </div>
             </div>
@@ -674,7 +652,6 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Area</label>
               <input
-                min="1"
                 type="number"
                 placeholder="0"
                 onChange={(e) => setArea(e.target.value)}
@@ -691,7 +668,6 @@ export default function AddProperty(props) {
                   options={UNITS}
                   onChange={(e) => setUnit(e)}
                   value={unit}
-                  required
                 />
               </div>
             </div>
@@ -841,22 +817,29 @@ export default function AddProperty(props) {
         <br />
         
         <ResponseHandler errors={errors} success={success}/>
-        <button
-          disabled={loading}
-          type="submit"
-          className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
-        >
-          {loading ? (
-            <div className="lds-ring">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          ) : (
-            "Submit"
-          )}
-        </button>
+        <div className="col-md-12">
+          {
+            !id && (
+              <div className="alert alert-warning" role="alert"> Add Images/Documents by clicking Next button </div>
+            )
+          }
+          <button
+            disabled={loading}
+            type="submit"
+            className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
+          >
+            {loading ? (
+              <div className="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            ) : (
+              id ? "Update Property" : "Next"
+            )}
+          </button>
+        </div>
       </form>
       {id && (
         <div className="row mb-50">

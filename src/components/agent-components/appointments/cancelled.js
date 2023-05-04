@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-export default function UpcomingAppointments() {
+export default function CancelledAppointments() {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [agentId, setAgentId] = useState();
@@ -13,7 +13,7 @@ export default function UpcomingAppointments() {
 
   const loadAllList = async (page = 1) => {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10`,
+      `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10&type=cancelled`,
       {
         method: "GET",
         headers: {
@@ -165,56 +165,60 @@ export default function UpcomingAppointments() {
             </div>
           ))
         )}
-        <div className="ltn__pagination-area text-center">
-          <div className="ltn__pagination">
-            <ul>
-              <li>
-                <Link
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage !== 1) {
-                      loadAllList(currentPage - 1);
-                    }
-                  }}
-                >
-                  <i className="fas fa-angle-double-left" />
-                </Link>
-              </li>
-              {Array.from(Array(totalPages), (e, i) => {
-                return (
-                  <li
-                    key={i}
-                    className={currentPage == i + 1 ? "active" : null}
-                  >
+
+        {
+          list && list.length > 0 && (
+            <div className="ltn__pagination-area text-center">
+              <div className="ltn__pagination">
+                <ul>
+                  <li>
                     <Link
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        loadAllList(i + 1);
+                        if (currentPage !== 1) {
+                          loadAllList(currentPage - 1);
+                        }
                       }}
                     >
-                      {i + 1}
+                      <i className="fas fa-angle-double-left" />
                     </Link>
                   </li>
-                );
-              })}
-              <li>
-                <Link
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage !== totalPages) {
-                      loadAllList(currentPage + 1);
-                    }
-                  }}
-                >
-                  <i className="fas fa-angle-double-right" />
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+                  {Array.from(Array(totalPages), (e, i) => {
+                    return (
+                      <li
+                        key={i}
+                        className={currentPage == i + 1 ? "active" : null}
+                      >
+                        <Link
+                          to="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            loadAllList(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                  <li>
+                    <Link
+                      to="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage !== totalPages) {
+                          loadAllList(currentPage + 1);
+                        }
+                      }}
+                    >
+                      <i className="fas fa-angle-double-right" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+        )}
       </div>
 
       <span

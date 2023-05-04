@@ -158,7 +158,7 @@ export default function CustomerCalendar() {
                         <div>
                           <h5 className="p-0 m-0">
                             {
-                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : `${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name`
                             }
                           </h5>
                           <p className="p-0 m-o">
@@ -246,6 +246,18 @@ export default function CustomerCalendar() {
                               </div>
                             ))
                           : ""}
+                      </div>
+                      <div className="col-lg-12 mt-20">
+                        <Link
+                          to={{
+                            pathname: `/precall/${appointmentView.id}/customer`,
+                            state: {
+                              appointment: appointmentView,
+                            },
+                          }}
+                        >
+                          <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
+                        </Link>
                       </div>
                     </div>
                   </div>

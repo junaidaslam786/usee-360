@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ResponseHandler from '../../global-components/respones-handler';
-import { OFFER_STATUS, SNAG_LIST } from "../../../constants";
+import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
 import { useHistory } from 'react-router';
 
 export default function ViewOffer(props) {
@@ -261,7 +261,7 @@ export default function ViewOffer(props) {
                                         { element.user.firstName } { element.user.lastName }
                                     </td>
                                     <td></td>
-                                    <td>{ element.amount }</td>
+                                    <td>{DEFAULT_CURRENCY} { element.amount }</td>
                                     <td>{ element.notes }</td>
                                     <td>
                                         { element.status }
@@ -397,7 +397,7 @@ export default function ViewOffer(props) {
                                                                             <tr>
                                                                                 <th scope="col">Type</th>
                                                                                 <th scope="col">Result</th>
-                                                                                <th scope="col">Agent Comments( area / damage etc..)</th>
+                                                                                <th scope="col">{process.env.REACT_APP_AGENT_ENTITY_LABEL} Comments( area / damage etc..)</th>
                                                                                 <th scope="col">Customer Comments( area / damage etc..)</th>
                                                                             </tr>
                                                                         </thead>

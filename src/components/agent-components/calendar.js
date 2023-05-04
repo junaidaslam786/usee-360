@@ -6,15 +6,16 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function AgentCalendar() {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
-  const [agentId, setAgentId] = useState();
   const [userAppointments, setUserAppointments] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
 
   const token = JSON.parse(localStorage.getItem("agentToken"));
+  const userDetail = getUserDetailsFromJwt();
 
   const loadAllList = async () => {
     let response = await fetch(
@@ -43,21 +44,6 @@ export default function AgentCalendar() {
     }
   };
 
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    setAgentId(jsonData.id);
-  };
-
   const loadAppointmentFields = async (appointmentId) => {
     return fetch(
       `${process.env.REACT_APP_API_URL}/agent/appointment/${appointmentId}`,
@@ -76,12 +62,7 @@ export default function AgentCalendar() {
       await loadAllList();
     };
     
-    const fetchCurrentUser = async () => {
-      await getUser();
-    };
-
     fetchAllAppointments();
-    fetchCurrentUser();
   }, []);
 
   const handleEventClick = (info) => {
@@ -219,7 +200,7 @@ export default function AgentCalendar() {
                         <div>
                           <h5 className="p-0 m-0">
                             {
-                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"
+                              appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : `${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name`
                             }
                           </h5>
                           <p className="p-0 m-o">
@@ -261,22 +242,24 @@ export default function AgentCalendar() {
                             ))
                           : ""}
                       </div>
-                      {
-                        appointmentView.allotedAgent === agentId ? (
-                          <Link
-                          to={{
-                            pathname: `/precall/${appointmentView?.id}/agent`,
-                            state: {
-                              appointment: appointmentView,
-                            },
-                          }}
-                        >
-                          <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
-                        </Link>
-                        ) : (
-                          "Assigned to supervisor"
-                        )
-                      }
+                      <div className="col-lg-12 mt-20">
+                        {
+                          appointmentView.allotedAgent === userDetail.id ? (
+                            <Link
+                            to={{
+                              pathname: `/precall/${appointmentView.id}/agent`,
+                              state: {
+                                appointment: appointmentView,
+                              },
+                            }}
+                          >
+                            <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
+                          </Link>
+                          ) : (
+                            <div className='supervisor-text'>Assigned to supervisor</div>
+                          )
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -13,14 +13,14 @@ export default function Appointments() {
       <div className="ltn__myaccount-tab-content-inner">
         <div className="ltn__my-properties-table table-responsive">
           <ul
-            class="nav nav-pills pb-2"
+            className="nav nav-pills pb-2"
             id="pills-tab"
             role="tablist"
             style={{ borderBottom: "1px solid #e5eaee", margin: "0 10px" }}
           >
-            <li class="nav-item" role="presentation">
+            <li className="nav-item" role="presentation">
               <button
-                class="nav-link active customColor"
+                className="nav-link active customColor"
                 id="pills-upcoming-tab"
                 data-bs-toggle="pill"
                 data-bs-target="#pills-upcoming"
@@ -32,9 +32,9 @@ export default function Appointments() {
                 Upcoming
               </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li className="nav-item" role="presentation">
               <button
-                class="nav-link customColor"
+                className="nav-link customColor"
                 id="pills-completed-tab"
                 data-bs-toggle="pill"
                 data-bs-target="#pills-completed"
@@ -46,9 +46,9 @@ export default function Appointments() {
                 Completed
               </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li className="nav-item" role="presentation">
               <button
-                class="nav-link customColor"
+                className="nav-link customColor"
                 id="pills-cancelled-tab"
                 data-bs-toggle="pill"
                 data-bs-target="#pills-cancelled"
@@ -61,9 +61,9 @@ export default function Appointments() {
               </button>
             </li>
           </ul>
-          <div class="tab-content" id="pills-tabContent">
+          <div className="tab-content" id="pills-tabContent">
             <div
-              class="tab-pane fade show active"
+              className="tab-pane fade show active"
               id="pills-upcoming"
               role="tabpanel"
               aria-labelledby="pills-upcoming-tab"
@@ -71,7 +71,7 @@ export default function Appointments() {
               <UpcomingAppointments />
             </div>
             <div
-              class="tab-pane fade"
+              className="tab-pane fade"
               id="pills-completed"
               role="tabpanel"
               aria-labelledby="pills-completed-tab"
@@ -79,7 +79,7 @@ export default function Appointments() {
               <CompletedAppointments />
             </div>
             <div
-              class="tab-pane fade"
+              className="tab-pane fade"
               id="pills-cancelled"
               role="tabpanel"
               aria-labelledby="pills-cancelled-tab"

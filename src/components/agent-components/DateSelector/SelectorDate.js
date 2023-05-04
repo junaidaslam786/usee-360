@@ -11,19 +11,19 @@ const SelectorDate = () => {
     return (
         <>
             <div className="date-Selector">
-                <div class="position-relative clearfix">
-                    <div class="dash_date_pickr" onclick="show();">
-                        <div class="dash_date_icon"></div>
-                        <i class="fa-solid fa-clock"></i>
-                        <span class="ms-1">Any Date</span>
-                        <div class="dash_date_arrow"></div>
+                <div className="position-relative clearfix">
+                    <div className="dash_date_pickr" onclick="show();">
+                        <div className="dash_date_icon"></div>
+                        <i className="fa-solid fa-clock"></i>
+                        <span className="ms-1">Any Date</span>
+                        <div className="dash_date_arrow"></div>
                     </div>
-                    <div class="dash_date_inner">
-                        <div class="clearfix" style={{ height: "70px" }}>
-                            <div class="dash_date_from">
+                    <div className="dash_date_inner">
+                        <div className="clearfix" style={{ height: "70px" }}>
+                            <div className="dash_date_from">
                                 <label>From</label>
-                                <div class="dash_input">
-                                    <span class="date_icon2"></span>
+                                <div className="dash_input">
+                                    <span className="date_icon2"></span>
                                     <DatePicker
                                         value={selectedDay1}
                                         onChange={setSelectedDay1}
@@ -33,10 +33,10 @@ const SelectorDate = () => {
                                 </div>
                             </div>
 
-                            <div class="dash_date_to">
+                            <div className="dash_date_to">
                                 <label>To</label>
-                                <div class="dash_input">
-                                    <span class="date_icon2"></span>
+                                <div className="dash_input">
+                                    <span className="date_icon2"></span>
                                     <DatePicker
                                         value={selectedDay2}
                                         onChange={setSelectedDay2}
@@ -46,24 +46,24 @@ const SelectorDate = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="date_btns">
-                            <button id="today_btn" type="button" class="date_btn" OnClick="searchcount('1');">
+                        <div className="date_btns">
+                            <button id="today_btn" type="button" className="date_btn" OnClick="searchcount('1');">
                                 {" "}
                                 Today{" "}
                             </button>
-                            <button id="yesterday_btn" type="button" class="date_btn" OnClick="searchcount('2');">
+                            <button id="yesterday_btn" type="button" className="date_btn" OnClick="searchcount('2');">
                                 {" "}
                                 Yesterday{" "}
                             </button>
-                            <button id="this_month_btn" type="button" class="date_btn" onclick="searchcount(3);">
+                            <button id="this_month_btn" type="button" className="date_btn" onclick="searchcount(3);">
                                 {" "}
                                 This Month{" "}
                             </button>
-                            <button id="past_month_btn" type="button" class="date_btn" onclick="searchcount(4);">
+                            <button id="past_month_btn" type="button" className="date_btn" onclick="searchcount(4);">
                                 {" "}
                                 Past Month{" "}
                             </button>
-                            <button id="three_months_btn" type="button" class="date_btn" onclick="searchcount(5);">
+                            <button id="three_months_btn" type="button" className="date_btn" onclick="searchcount(5);">
                                 {" "}
                                 Past 3 Months{" "}
                             </button>

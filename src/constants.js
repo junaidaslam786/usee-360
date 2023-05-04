@@ -99,3 +99,22 @@ export const AGENT_TYPE = {
     MANAGER: "manager",
     STAFF: "staff",
 };
+
+export const USER_ALERT_MODE = {
+    WISHLIST: "wishlist",
+    INTEREST: "interest",
+    OFFER: "offer",
+    APPOINTMENT: "appointment",
+    SNAGLIST: "snag_list",
+}
+
+export const USER_ALERT_TYPE = {
+    WISHLIST_ADDED: 1,
+    WISHLIST_REMOVED: 2,
+    INTERESTED: 1,
+    NOT_INTERESTED: 2,
+    OFFER: 1,
+    APPOINTMENT: 1,
+    SNAGLIST_UPDATED: 1,
+    SNAGLIST_APPROVED: 2,
+}

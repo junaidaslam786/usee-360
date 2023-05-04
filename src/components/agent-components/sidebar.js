@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { AGENT_TYPE } from "../../constants";
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function Sidebar() {
   const [count, setCount] = useState();
-  const [agentType, setAgentType] = useState(AGENT_TYPE.AGENT);
   const history = useHistory();
   const token = JSON.parse(localStorage.getItem("agentToken"));
+  const userDetail = getUserDetailsFromJwt();
 
   function handleClick() {
     localStorage.removeItem("agentToken");
@@ -32,32 +33,12 @@ export default function Sidebar() {
     }
   };
 
-  const getUser = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonData = await response.json();
-    setAgentType(jsonData.agent.agentType);
-  };
-
   useEffect(() => {
     const fetchAlertCount = async () => {
       await loadAlertCount();
     };
 
-    const fetchUserDetails = async () => {
-      await getUser();
-    };
-
     fetchAlertCount();
-    fetchUserDetails();
   }, []);
 
   return (
@@ -75,7 +56,7 @@ export default function Sidebar() {
         <i className="fa-solid fa-list" />
       </NavLink>
       {
-        agentType === AGENT_TYPE.AGENT && (
+        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
           <NavLink to="/agent/add-property">
             Add Property
             <i className="fa-solid fa-map-location-dot" />
@@ -88,7 +69,7 @@ export default function Sidebar() {
         <i className="fa-solid fa-clock" />
       </NavLink>
       {
-        agentType === AGENT_TYPE.AGENT && (
+        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
           <NavLink to="/agent/add-appointment">
             Add Appointments
             <i className="fa-solid fa-calendar-check"></i>
@@ -109,7 +90,7 @@ export default function Sidebar() {
       </NavLink>
       <NavLink to="/agent/my-availability">
         My Availability
-        <i class="fa-sharp fa-solid fa-check-to-slot"/>
+        <i className="fa-sharp fa-solid fa-check-to-slot"/>
       </NavLink>
       <a onClick={handleClick} href="#">
         Logout

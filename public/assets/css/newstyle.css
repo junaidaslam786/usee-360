@@ -492,3 +492,21 @@
     font-weight: 600;
     color: #071c1f;
 }
+
+.ltn__popular-post-widget ul li:hover {
+    background: #ddd;
+}
+
+.ltn__popular-post-widget ul li p:hover {
+    color: black;
+    cursor: pointer;
+}
+
+.ltn__popular-post-widget > ul > li {
+    padding: 10px;
+}
+
+.supervisor-text {
+    text-align: center;
+    font-weight: bold;
+}
