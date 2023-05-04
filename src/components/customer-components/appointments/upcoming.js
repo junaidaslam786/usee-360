@@ -212,6 +212,11 @@ export default function UpcomingAppointments() {
           </div>
       )}
 
+      <span
+        ref={openViewModal}
+        data-bs-toggle="modal"
+        data-bs-target="#appointment-details"
+      ></span>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="appointment-details" tabIndex={-1}>
           <div className="modal-dialog modal-lg" role="document">
