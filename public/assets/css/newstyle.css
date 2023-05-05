@@ -531,3 +531,7 @@
     width: 62px;
     margin-top: 8px;
 }
+
+.fc .fc-scrollgrid table{
+    width:100% !important;
+}
