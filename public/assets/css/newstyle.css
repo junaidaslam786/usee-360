@@ -510,3 +510,24 @@
     text-align: center;
     font-weight: bold;
 }
+
+.fc .fc-scroller {
+    overflow: auto !important;
+}
+
+.fc .fc-daygrid-body {
+  
+    width: 100% !important;
+}
+
+.acceptBtn {
+    width: 62px;
+    background: #00c800;
+    color: #fff;
+    border: none;
+}
+
+.rejectBtn {
+    width: 62px;
+    margin-top: 8px;
+}

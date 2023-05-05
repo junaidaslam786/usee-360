@@ -271,11 +271,11 @@ export default function ViewOffer(props) {
                                     {
                                         element?.status === OFFER_STATUS.PENDING && (
                                             <div>
-                                                <button onClick={() => acceptOfferHandler(element.id) }>
+                                                <button className="acceptBtn" onClick={() => acceptOfferHandler(element.id) }>
                                                     Accept
                                                 </button>
                                                 <button
-                                                    className="ml-30"
+                                                    className="rejectBtn"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#ltn_offer_status_modal"
                                                     onClick={() => handleRejectOfferButtonClick(element.id)}
