@@ -3,7 +3,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { getUserDetailsFromJwt } from "../../../utils";
 
-export default function UpcomingAppointments() {
+export default function UpcomingAppointments(props) {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [list, setList] = useState([]);
@@ -14,8 +14,10 @@ export default function UpcomingAppointments() {
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
   const loadAllList = async (page = 1) => {
+    let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
+    appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&filter=${props?.selectedFilter}&startDate${props.startDate}&endDate${props.endDate}`: ""}`;
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/customer/appointment/list?page=${page}&size=10&type=upcoming`,
+      `${process.env.REACT_APP_API_URL}/customer/appointment/list?page=${page}&size=10&type=upcoming${appendQuery}`,
       {
         method: "GET",
         headers: {
@@ -86,14 +88,12 @@ export default function UpcomingAppointments() {
   };
 
   useEffect(() => {
-    loadAllList();
-
-    const fetchAllProperties = async () => {
+    const fetchAllAppointments = async () => {
       await loadAllList();
     };
 
-    fetchAllProperties();
-  }, []);
+    fetchAllAppointments();
+  }, [props]);
 
   return (
     <div>

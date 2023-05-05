@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ResponseHandler from '../global-components/respones-handler';
 import { useHistory } from "react-router-dom";
+import { USER_TYPE } from "../../constants";
 
 export default function ResetPassword() {
   const params = useParams();
@@ -20,7 +21,7 @@ export default function ResetPassword() {
     setLoading(true);
     const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/reset-password`, {
       token: params.token,
-      type: "customer",
+      type: USER_TYPE.CUSTOMER,
       password,
       confirmPassword,
     }, {

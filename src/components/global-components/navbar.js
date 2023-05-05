@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { USER_TYPE } from "../../constants";
 
 export default function Navbar(props) {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
@@ -105,7 +106,7 @@ export default function Navbar(props) {
                   <ul>
                     <li
                       className={
-                        !location.pathname.includes("customer")
+                        !location.pathname.includes(USER_TYPE.CUSTOMER)
                           ? "button-inactive"
                           : null
                       }
@@ -116,7 +117,7 @@ export default function Navbar(props) {
                     </li>
                     <li
                       className={
-                        !location.pathname.includes("agent")
+                        !location.pathname.includes(USER_TYPE.AGENT)
                           ? "button-inactive"
                           : null
                       }

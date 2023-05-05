@@ -4,14 +4,15 @@ import { useHistory } from "react-router-dom";
 import "./incall.css";
 import axios from "axios";
 import Slideshow from "../Slideshow";
+import { USER_TYPE } from "../../constants";
 const fs = require("fs");
 
 function getToken(userType) {
   let userToken = null;
-  if (userType === "agent") {
+  if (userType === USER_TYPE.AGENT) {
     const tokenString = localStorage.getItem("agentToken");
     userToken = JSON.parse(tokenString);
-  } else if (userType === "customer") {
+  } else if (userType === USER_TYPE.CUSTOMER) {
     const tokenString = localStorage.getItem("customerToken");
     userToken = JSON.parse(tokenString);
   }
@@ -33,11 +34,11 @@ const MeetingJoin = (props) => {
   const history = useHistory();
 
   if (!token) {
-    if (userType === "agent") {
+    if (userType === USER_TYPE.AGENT) {
       history.push(
         "/agent/login?returnUrl=" + encodeURIComponent(window.location.pathname)
       );
-    } else if (userType === "customer") {
+    } else if (userType === USER_TYPE.CUSTOMER) {
       history.push(
         "/customer/login?returnUrl=" +
           encodeURIComponent(window.location.pathname)
@@ -48,13 +49,13 @@ const MeetingJoin = (props) => {
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      if (userType === "agent") {
+      if (userType === USER_TYPE.AGENT) {
         localStorage.removeItem("agentToken");
         history.push(
           "/agent/login?returnUrl=" +
             encodeURIComponent(window.location.pathname)
         );
-      } else if (userType === "customer") {
+      } else if (userType === USER_TYPE.CUSTOMER) {
         localStorage.removeItem("customerToken");
         history.push(
           "/customer/login?returnUrl=" +
@@ -182,7 +183,7 @@ const MeetingJoin = (props) => {
   }  
 
   const getSessionToken = async () => {
-    if (userType === "agent") {
+    if (userType === USER_TYPE.AGENT) {
       return fetch(
         `${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`,
         {
@@ -200,7 +201,7 @@ const MeetingJoin = (props) => {
         .catch((error) => {
           console.error("Error:", error);
         });
-    } else if (userType === "customer") {
+    } else if (userType === USER_TYPE.CUSTOMER) {
       return fetch(
         `${process.env.REACT_APP_API_URL}/agent/appointment/session-token/${appointment.id}`,
         {
@@ -226,11 +227,11 @@ const MeetingJoin = (props) => {
       let agentTimer;
       const fetchData = async () => {
         const tokToken = await getSessionToken();
-        if (userType === "agent") {
+        if (userType === USER_TYPE.AGENT) {
           getPropertiesList();
           getPropertyDetail(appointment.products[0].id);
           setSelectedProperty(appointment.products[0].id);
-        } else if(userType === "customer") {
+        } else if(userType === USER_TYPE.CUSTOMER) {
           getPropertyDetail(appointment.products[0].id);
         }
 
@@ -277,9 +278,9 @@ const MeetingJoin = (props) => {
                   subscriberDisconnectedNotification.style.visibility = "hidden";
                 },
               });
-              if(userType == "customer") {
+              if(userType == USER_TYPE.CUSTOMER) {
                 setAgentJoined(true);
-              } else if(userType == "agent") {
+              } else if(userType == USER_TYPE.AGENT) {
                 setCustomerJoined(true);
               }
               console.log(event);
@@ -321,9 +322,9 @@ const MeetingJoin = (props) => {
           },
           sessionDisconnected: function sessionDisconnectHandler(event) {
             console.log("You were disconnected from the session.", event.reason);
-            if(userType === "agent") {
+            if(userType === USER_TYPE.AGENT) {
               history.push("/agent/dashboard");
-            } else if (userType === "customer") {
+            } else if (userType === USER_TYPE.CUSTOMER) {
               history.push("/customer/dashboard");
             }
             // setTimeout(function() {
@@ -344,9 +345,9 @@ const MeetingJoin = (props) => {
 
         const msgHistory = document.querySelector("#history");
         session.on("signal:msg", (event) => {
-          if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
+          if (userType === USER_TYPE.CUSTOMER && event.data.includes("PROPERTY_ID")) {
             getPropertyDetail(event.data.split(":")[1]);
-          } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
+          } else if (userType === USER_TYPE.AGENT && event.data.includes("PROPERTY_ID")) {
           } else if (event.data.includes("::")) {
             const msg = document.createElement("p");
             const content = event.data.split("::");
@@ -381,7 +382,7 @@ const MeetingJoin = (props) => {
           publishVideo: true,
           publishAudio: true,
           name:
-            userType === "customer"
+            userType === USER_TYPE.CUSTOMER
               ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
               : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
           nameDisplayMode: "on",
@@ -426,7 +427,7 @@ const MeetingJoin = (props) => {
           event.preventDefault();
           if(msgTxt.value) {
             const name =
-            userType === "customer"
+            userType === USER_TYPE.CUSTOMER
               ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
               : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
             session.signal(
@@ -537,7 +538,7 @@ const MeetingJoin = (props) => {
         console.log(error);
       });
     const name =
-      userType === "customer"
+      userType === USER_TYPE.CUSTOMER
         ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
         : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
     session.signal(
@@ -556,7 +557,7 @@ const MeetingJoin = (props) => {
 
   async function handlePropertyChange(event) {
     setSelectedProperty(event.target.value);
-    if (userType === "agent") {
+    if (userType === USER_TYPE.AGENT) {
       session.signal(
         {
           type: "msg",
@@ -584,7 +585,7 @@ const MeetingJoin = (props) => {
               />
             </center>
           </div>
-          {userType === "agent" && (
+          {userType === USER_TYPE.AGENT && (
             <div>
               <select
                 className="nice-select w-100 select-margin"

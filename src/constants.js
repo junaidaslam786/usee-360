@@ -10,7 +10,6 @@ export const PROPERTY_CATEGORY_TYPES = [
     { value: "sale", label: "Sale" },
 ];
 
-
 export const RESIDENTIAL_PROPERTY = [
     { value: "apartment", label: "Apartments" },
     { value: "house", label: "House" },
@@ -118,3 +117,27 @@ export const USER_ALERT_TYPE = {
     SNAGLIST_UPDATED: 1,
     SNAGLIST_APPROVED: 2,
 }
+
+export const DASHBOARD_FILTER_VALUE = {
+    CUSTOM: "custom",
+    TODAY: "today",
+    YESTERDAY: "yesterday",
+    THIS_MONTH: "this_month",
+    PAST_MONTH: "past_month",
+    PAST_3_MONTH: "past_3_months"
+};
+
+export const DASHBOARD_FILTER_LABEL = {
+    "custom": "Custom",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_month": "This Month",
+    "past_month": "Past Month",
+    "past_3_months": "Past 3 Months"
+};
+
+export const USER_TYPE = {
+    ADMIN: "admin",
+    AGENT: "agent",
+    CUSTOMER: "customer",
+};

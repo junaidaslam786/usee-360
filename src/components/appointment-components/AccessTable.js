@@ -3,13 +3,14 @@ import { Link, useHistory } from 'react-router-dom';
 import RTCDetect from 'rtc-detect';
 import OT from '@opentok/client';
 import './AccessTable.css';
+import { USER_TYPE } from '../../constants';
 
 function getToken(userType) {
   let userToken = null;
-  if(userType === "agent") {
+  if(userType === USER_TYPE.AGENT) {
     const tokenString = localStorage.getItem("agentToken");
     userToken = JSON.parse(tokenString);
-  } else if(userType === "customer") {
+  } else if(userType === USER_TYPE.CUSTOMER) {
     const tokenString = localStorage.getItem("customerToken");
     userToken = JSON.parse(tokenString);
   }
@@ -24,19 +25,19 @@ const AccessTable = (props) => {
   const history = useHistory();
 
   if (!token) {
-    if(userType === "agent")
+    if(userType === USER_TYPE.AGENT)
       history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
-    else if(userType === "customer")
+    else if(userType === USER_TYPE.CUSTOMER)
       history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
     else
       history.push("/");
   } else {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
-      if(userType === "agent"){
+      if(userType === USER_TYPE.AGENT){
         localStorage.removeItem("agentToken");
         history.push('/agent/login?returnUrl=' + encodeURIComponent(window.location.pathname));
-      } else if(userType === "customer") {
+      } else if(userType === USER_TYPE.CUSTOMER) {
         localStorage.removeItem("customerToken");
         history.push("/customer/login?returnUrl=" + encodeURIComponent(window.location.pathname));
       }
@@ -61,8 +62,8 @@ const AccessTable = (props) => {
 
   const getAppointmentDetail = async () => {
     let url = '';
-    if(userType === "agent") url = `${process.env.REACT_APP_API_URL}/agent/appointment/${appointmentId}`;
-    else if(userType === "customer") url = `${process.env.REACT_APP_API_URL}/customer/appointment/${appointmentId}`;
+    if(userType === USER_TYPE.AGENT) url = `${process.env.REACT_APP_API_URL}/agent/appointment/${appointmentId}`;
+    else if(userType === USER_TYPE.CUSTOMER) url = `${process.env.REACT_APP_API_URL}/customer/appointment/${appointmentId}`;
     else ;
     return fetch(url, {
       method: "GET",
@@ -163,9 +164,9 @@ const AccessTable = (props) => {
                 {appointment && appointment.appointmentTime && 
                   <b> {appointment.appointmentTime}</b>} 
                 <br /> with
-                 {appointment && appointment.agentUser && userType === "customer" && 
+                 {appointment && appointment.agentUser && userType === USER_TYPE.CUSTOMER && 
                   <b> {appointment.agentUser.firstName} {appointment.agentUser.lastName}</b>}
-                {appointment && appointment.customerUser && userType === "agent" && 
+                {appointment && appointment.customerUser && userType === USER_TYPE.AGENT && 
                   <b> {appointment.customerUser.firstName} {appointment.customerUser.lastName}</b>}
               </p>
               <h3>Testing your system</h3>

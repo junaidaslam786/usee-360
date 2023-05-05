@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import ResponseHandler from '../global-components/respones-handler';
 import axios from "axios";
+import { USER_TYPE } from "../../constants";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function Login() {
     const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, {
       email,
       password,
-      type: "agent"
+      type: USER_TYPE.AGENT
     }, {
       headers: {
         "Content-Type": "application/json",
