@@ -343,6 +343,8 @@ export default function AddAppointment() {
         setErrorHandler(
           "Slot is not available, select another slot"
         );
+        
+        return;
       }
 
       setTime(nextSlot.value);
