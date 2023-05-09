@@ -169,7 +169,7 @@ export default function MyProperties() {
                 <th scope="col" />
                 <th scope="col">Date Added</th>
                 {
-                  userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
+                  userDetail?.agent && (
                     <React.Fragment>
                       <th scope="col">Actions</th>
                       <th scope="col">Delete</th>
@@ -206,7 +206,7 @@ export default function MyProperties() {
                     </td>
                     <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
                     {
-                      userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
+                      userDetail?.agent && (
                         <React.Fragment>
                           <td>
                             <Link to={`/agent/edit-property/${element.id}`}>

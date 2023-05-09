@@ -6,7 +6,7 @@ import { getUserDetailsFromJwt } from "../../utils";
 export default function Navbar(props) {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const location = useLocation();
-  const userDetails = getUserDetailsFromJwt();
+  const userDetail = getUserDetailsFromJwt();
 
   return (
     <div>
@@ -107,7 +107,7 @@ export default function Navbar(props) {
                 <div className="ltn__drop-menu user-menu">
                   <ul>
                     {
-                      !userDetails && (
+                      !userDetail && (
                         <React.Fragment>
                           <li
                             className={
@@ -136,7 +136,7 @@ export default function Navbar(props) {
                     }
                     
                     {
-                      userDetails && (
+                      userDetail && (
                         <li
                           className={
                             !location.pathname.includes(USER_TYPE.CUSTOMER)
@@ -144,7 +144,7 @@ export default function Navbar(props) {
                               : null
                           }
                         >
-                          <Link to="/customer/dashboard">
+                          <Link to={ userDetail?.agent ? "/agent/dashboard" : "/customer/dashboard" }>
                             <i className="icon-user" /> Dashboard
                           </Link>
                         </li>
@@ -223,7 +223,7 @@ export default function Navbar(props) {
             <ul>
               
               {
-                !userDetails && (
+                !userDetail && (
                   <React.Fragment>
                     <li>
                       <Link to="/customer/dashboard">
@@ -246,7 +246,7 @@ export default function Navbar(props) {
               }
 
               {
-                userDetails && (
+                userDetail && (
                   <li
                     className={
                       !location.pathname.includes(USER_TYPE.CUSTOMER)
@@ -254,7 +254,7 @@ export default function Navbar(props) {
                         : null
                     }
                   >
-                    <Link to="/customer/dashboard">
+                    <Link to={ userDetail?.agent ? "/agent/dashboard" : "/customer/dashboard" }>
                       <i className="icon-user" /> Dashboard
                     </Link>
                   </li>
