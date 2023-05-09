@@ -1,10 +1,12 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { USER_TYPE } from "../../constants";
+import { getUserDetailsFromJwt } from "../../utils";
 
 export default function Navbar(props) {
   const publicUrl = `${process.env.PUBLIC_URL}/`;
   const location = useLocation();
+  const userDetails = getUserDetailsFromJwt();
 
   return (
     <div>
@@ -104,28 +106,50 @@ export default function Navbar(props) {
                 {/* user-menu */}
                 <div className="ltn__drop-menu user-menu">
                   <ul>
-                    <li
-                      className={
-                        !location.pathname.includes(USER_TYPE.CUSTOMER)
-                          ? "button-inactive"
-                          : null
-                      }
-                    >
-                      <Link to="/customer/dashboard">
-                        <i className="icon-user" /> Customer
-                      </Link>
-                    </li>
-                    <li
-                      className={
-                        !location.pathname.includes(USER_TYPE.AGENT)
-                          ? "button-inactive"
-                          : null
-                      }
-                    >
-                      <Link to="/agent/dashboard">
-                        <i className="icon-user" /> Trader
-                      </Link>
-                    </li>
+                    {
+                      !userDetails && (
+                        <React.Fragment>
+                          <li
+                            className={
+                              !location.pathname.includes(USER_TYPE.CUSTOMER)
+                                ? "button-inactive"
+                                : null
+                            }
+                          >
+                            <Link to="/customer/dashboard">
+                              <i className="icon-user" /> { process.env.REACT_APP_CUSTOMER_ENTITY_LABEL }
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              !location.pathname.includes(USER_TYPE.AGENT)
+                                ? "button-inactive"
+                                : null
+                            }
+                          >
+                            <Link to="/agent/dashboard">
+                              <i className="icon-user" /> { process.env.REACT_APP_AGENT_ENTITY_LABEL }
+                            </Link>
+                          </li>
+                        </React.Fragment>
+                      )
+                    }
+                    
+                    {
+                      userDetails && (
+                        <li
+                          className={
+                            !location.pathname.includes(USER_TYPE.CUSTOMER)
+                              ? "button-inactive"
+                              : null
+                          }
+                        >
+                          <Link to="/customer/dashboard">
+                            <i className="icon-user" /> Dashboard
+                          </Link>
+                        </li>
+                      )
+                    }
                   </ul>
                 </div>
                 {/* Mobile Menu Button */}
@@ -197,22 +221,45 @@ export default function Navbar(props) {
           </div>
           <div className="ltn__utilize-buttons ltn__utilize-buttons-2">
             <ul>
-              <li>
-                <Link to="/customer/dashboard">
-                  <span className="utilize-btn-icon">
-                    <i className="far fa-user" />
-                  </span>
-                  Customer
-                </Link>
-              </li>
-              <li>
-                <Link to="/agent/dashboard">
-                  <span className="utilize-btn-icon">
-                    <i className="far fa-user" />
-                  </span>
-                  Trader
-                </Link>
-              </li>
+              
+              {
+                !userDetails && (
+                  <React.Fragment>
+                    <li>
+                      <Link to="/customer/dashboard">
+                        <span className="utilize-btn-icon">
+                          <i className="far fa-user" />
+                        </span>
+                        { process.env.REACT_APP_CUSTOMER_ENTITY_LABEL }
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/agent/dashboard">
+                        <span className="utilize-btn-icon">
+                          <i className="far fa-user" />
+                        </span>
+                        { process.env.REACT_APP_AGENT_ENTITY_LABEL }
+                      </Link>
+                    </li>
+                  </React.Fragment>
+                )
+              }
+
+              {
+                userDetails && (
+                  <li
+                    className={
+                      !location.pathname.includes(USER_TYPE.CUSTOMER)
+                        ? "button-inactive"
+                        : null
+                    }
+                  >
+                    <Link to="/customer/dashboard">
+                      <i className="icon-user" /> Dashboard
+                    </Link>
+                  </li>
+                )
+              }
             </ul>
           </div>
           <div className="ltn__social-media-2">

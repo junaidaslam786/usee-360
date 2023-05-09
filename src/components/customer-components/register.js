@@ -61,7 +61,7 @@ export default function Register() {
               <h1 className="section-title">
                 Register
                 <br />
-                Your Customer Account
+                Your { process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Account
               </h1>
             </div>
           </div>

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ResponseHandler from '../../global-components/respones-handler';
 import { useHistory } from 'react-router';
-import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
+import { 
+    OFFER_STATUS, 
+    SNAG_LIST, 
+    DEFAULT_CURRENCY,
+} from "../../../constants";
 import { getUserDetailsFromJwt } from "../../../utils";
 
 export default function ViewOffer(props) {
@@ -33,7 +37,7 @@ export default function ViewOffer(props) {
         setLoading(true);
 
         const formResponse = await axios.post(`${process.env.REACT_APP_API_URL}/property/customer/make-offer`, {
-            productId: productId,
+            productId,
             amount,
             notes
         }, {
@@ -411,7 +415,7 @@ export default function ViewOffer(props) {
                                                                                     <th scope="col">Type</th>
                                                                                     <th scope="col">Result</th>
                                                                                     <th scope="col">{process.env.REACT_APP_AGENT_ENTITY_LABEL} Comments( area / damage etc..)</th>
-                                                                                    <th scope="col">Customer Comments( area / damage etc..)</th>
+                                                                                    <th scope="col">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Comments( area / damage etc..)</th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>

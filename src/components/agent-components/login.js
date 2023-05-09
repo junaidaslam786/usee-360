@@ -128,7 +128,7 @@ export default function Login() {
                 <h1 className="section-title">
                   Sign In
                   <br />
-                  To Your Trader Account
+                  To Your { process.env.REACT_APP_AGENT_ENTITY_LABEL } Account
                 </h1>
               </div>
             </div>

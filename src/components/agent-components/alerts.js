@@ -222,7 +222,7 @@ export default function Alerts() {
                       </div>
                       <div className="col-lg-6">
                         <div>
-                          <h5 className="p-0 m-0">Customer Name</h5>
+                          <h5 className="p-0 m-0">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Name</h5>
                           <p className="p-0 m-o">
                             {appointmentView?.customerName || "N/A"}
                           </p>
@@ -370,7 +370,7 @@ export default function Alerts() {
                             <thead>
                               <tr>
                                 <th scope="col">Amount</th>
-                                <th scope="col">Customer comment</th>
+                                <th scope="col">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } comment</th>
                               </tr>
                             </thead>
                             <tbody>

@@ -84,7 +84,7 @@ export default function Register() {
               <h1 className="section-title">
                 Register
                 <br />
-                Your Trader Account
+                Your { process.env.REACT_APP_AGENT_ENTITY_LABEL } Account
               </h1>
             </div>
           </div>

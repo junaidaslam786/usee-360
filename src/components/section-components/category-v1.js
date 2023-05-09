@@ -98,7 +98,7 @@ class CategoryV1 extends Component {
                     <i className="flaticon-book" />
                   </span>
                   <span className="category-title">
-                    Customer Analytics & Insights
+                  { process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Analytics & Insights
                   </span>
                   <p className="category-desc">
                     Receive data to better understand your customers and deliver

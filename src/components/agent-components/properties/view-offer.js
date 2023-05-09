@@ -241,7 +241,7 @@ export default function ViewOffer(props) {
                 <table className="table">
                     <thead>
                         <tr>
-                        <th scope="col">Customer</th>
+                        <th scope="col">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL }</th>
                         <th scope="col"/>
                         <th scope="col">Amount</th>
                         <th scope="col">Notes</th>
@@ -398,7 +398,7 @@ export default function ViewOffer(props) {
                                                                                 <th scope="col">Type</th>
                                                                                 <th scope="col">Result</th>
                                                                                 <th scope="col">{process.env.REACT_APP_AGENT_ENTITY_LABEL} Comments( area / damage etc..)</th>
-                                                                                <th scope="col">Customer Comments( area / damage etc..)</th>
+                                                                                <th scope="col">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Comments( area / damage etc..)</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>

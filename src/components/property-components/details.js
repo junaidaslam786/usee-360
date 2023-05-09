@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
+import { 
+  PROPERTY_TYPES, 
+  PROPERTY_CATEGORY_TYPES, 
+  BEDROOMS, 
+  UNITS, 
+  VIRTUAL_TOUR_TYPE, 
+  DEFAULT_CURRENCY,
+  PRODUCT_LOG_TYPE 
+} from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -95,9 +103,26 @@ export default function PropertyDetails() {
     }
   }
 
+  function markPropertyViewed() {
+    axios.post(`${process.env.REACT_APP_API_URL}/property/log`,
+    {
+      id: params.id,
+      logType: PRODUCT_LOG_TYPE.VIEWED,
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
     loadProperty();
+    if (token) {
+      markPropertyViewed();
+    }
   }, []);
 
   return (

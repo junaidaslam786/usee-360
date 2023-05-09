@@ -18,7 +18,7 @@ export default function Dashboard() {
             />
           </div>
           <div className="author-info">
-            <h6>Customer</h6>
+            <h6>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL }</h6>
             <h2>{userDetail.name}</h2>
             <div className="footer-address">
               <ul>

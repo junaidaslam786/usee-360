@@ -141,3 +141,19 @@ export const USER_TYPE = {
     AGENT: "agent",
     CUSTOMER: "customer",
 };
+
+export const PRODUCT_LOG_TYPE = {
+    WISHLIST_ADDED: "wishlist_added",
+    WISHLIST_REMOVED: "wishlist_removed",
+    INTERESTED: "interested",
+    NOT_INTERESTED: "not_interested",
+    OFFER: "offer_made",
+    OFFER_REJECTED: "offer_rejected",
+    OFFER_APPROVED: "offer_approved",
+    APPOINTMENT_CREATED: "appointment_created",
+    APPOINTMENT_COMPLETED: "appointment_completed",
+    APPOINTMENT_CANCELLED: "appointment_cancelled",
+    SNAGLIST_UPDATED: "snaglist_added",
+    SNAGLIST_APPROVED: "snaglist_approved",
+    VIEWED: "viewed",
+};

@@ -412,7 +412,7 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-6">
                   <div className="input-item">
-                    <label>Customer Name</label>
+                    <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Name</label>
                     <AsyncCreatableSelect
                       classNamePrefix="custom-select"
                       cacheOptions
@@ -426,10 +426,10 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-6">
                   <div className="input-item">
-                    <label>Customer Email</label>
+                    <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Email</label>
                     <input
                       type="email"
-                      placeholder="Customer Email"
+                      placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Email` }
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -438,10 +438,10 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-6">
                   <div className="input-item">
-                    <label>Customer Phone</label>
+                    <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Phone</label>
                     <input
                       type="text"
-                      placeholder="Customer Phone"
+                      placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Phone` }
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       required

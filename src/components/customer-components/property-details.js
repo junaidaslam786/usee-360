@@ -3,7 +3,15 @@ import { Link, useParams } from "react-router-dom";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ViewOffer from "./properties/view-offer";
-import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
+import { 
+  PROPERTY_TYPES, 
+  PROPERTY_CATEGORY_TYPES, 
+  BEDROOMS, 
+  UNITS, 
+  VIRTUAL_TOUR_TYPE, 
+  DEFAULT_CURRENCY,
+  PRODUCT_LOG_TYPE 
+} from "../../constants";
 import Slideshow from "../Slideshow";
 
 export default function PropertyDetails() {
@@ -19,6 +27,7 @@ export default function PropertyDetails() {
   const params = useParams();
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
+
   async function loadProperty() {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/property/${params.id}`, {
@@ -69,8 +78,23 @@ export default function PropertyDetails() {
       });
   }
 
+  async function markPropertyViewed() {
+    await axios.post(`${process.env.REACT_APP_API_URL}/property/log`,
+    {
+      id: params.id,
+      logType: PRODUCT_LOG_TYPE.VIEWED,
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   useEffect(() => {
     loadProperty();
+    markPropertyViewed();
   }, []);
 
   return (

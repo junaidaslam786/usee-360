@@ -148,7 +148,7 @@ export default function AgentCalendar() {
                       </div>
                       <div className="col-lg-6">
                         <div>
-                          <h5 className="p-0 m-0">Customer Name</h5>
+                          <h5 className="p-0 m-0">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Name</h5>
                           <p className="p-0 m-o">
                             {appointmentView?.customerName || "N/A"}
                           </p>
