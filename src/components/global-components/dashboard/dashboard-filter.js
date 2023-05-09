@@ -43,8 +43,8 @@ export default function DashboardFilter(props) {
         await axios.post(`${process.env.REACT_APP_API_URL}/${props.type === USER_TYPE.AGENT ? "agent" : "customer"}/dashboard`,
         {
             filter,
-            startDate: startDate ? `${startDate.year}-${startDate.month}-${startDate.day}` : "",
-            endDate: endDate ? `${endDate.year}-${endDate.month}-${endDate.day}` : "",
+            startDate: computedDate(startDate),
+            endDate: computedDate(endDate),
         },
         {
           headers: {
@@ -62,6 +62,10 @@ export default function DashboardFilter(props) {
           console.log('dashboard-error', error);
         });
     };
+
+    const computedDate = (date) => {
+        return date ? `${date.year}-${date.month}-${date.day}` : "";
+    }
 
     useEffect(() => {
         if (startDate && endDate) {
@@ -159,13 +163,13 @@ export default function DashboardFilter(props) {
                   >
                     {
                         props.type === USER_TYPE.AGENT && (
-                            <AgentUpcomingAppointments selectedFilter={selectedFilter} startDate={startDate} endDate={endDate}/>
+                            <AgentUpcomingAppointments selectedFilter={selectedFilter} startDate={computedDate(startDate)} endDate={computedDate(endDate)}/>
                         )
                     }
 
                     {
                         props.type === USER_TYPE.CUSTOMER && (
-                            <CustomerUpcomingAppointments selectedFilter={selectedFilter} startDate={startDate} endDate={endDate}/>
+                            <CustomerUpcomingAppointments selectedFilter={selectedFilter} startDate={computedDate(startDate)} endDate={computedDate(endDate)}/>
                         )
                     }
                   </div>

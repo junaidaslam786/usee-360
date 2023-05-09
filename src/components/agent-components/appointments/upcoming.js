@@ -14,7 +14,7 @@ export default function UpcomingAppointments(props) {
 
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
-    appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&filter=${props?.selectedFilter}&startDate${props.startDate}&endDate${props.endDate}`: ""}`;
+    appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&startDate${props.startDate}&endDate${props.endDate}`: ""}`;
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10&type=upcoming${appendQuery}`,
       {
