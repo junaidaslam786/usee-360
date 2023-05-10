@@ -605,3 +605,20 @@
         max-width: unset;
     }
 }
+
+.status-buttons {
+    margin: 5px;
+    border-radius: 4px;
+    color: white;
+    background-color: #00c800;
+}
+
+.notes-list {
+    background: var(--fc-border-color);
+    color: black;
+}
+
+.notes-scrollable-container {
+    height: 200px; /* Set the desired height for the container */
+    overflow: auto; /* Enable vertical scrolling */
+}

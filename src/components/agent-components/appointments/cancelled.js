@@ -148,19 +148,6 @@ export default function CancelledAppointments() {
                     <i className="fa-solid fa-eye" /> View
                   </button>
                 </div>
-                <div>
-                  {element.allotedAgent === agentId ? (
-                    <Link
-                      to={{
-                        pathname: `/precall/${element.id}/agent`,
-                      }}
-                    >
-                      <button className="joinCall">JOIN CALL</button>
-                    </Link>
-                  ) : (
-                    <button className="supervisor-btn">Assigned to supervisor</button>
-                  )}
-                </div>
               </div>
             </div>
           ))

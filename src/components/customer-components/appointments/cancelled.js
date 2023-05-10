@@ -147,7 +147,7 @@ export default function CancelledAppointments() {
                   {element.allotedAgent === userDetail.id ? (
                     <Link
                       to={{
-                        pathname: `/precall/${element.id}/agent`,
+                        pathname: `/precall/${element.id}/customer`,
                       }}
                     >
                       <button className="joinCall">JOIN CALL</button>

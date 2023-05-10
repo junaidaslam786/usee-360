@@ -5,6 +5,7 @@ import "./incall.css";
 import axios from "axios";
 import Slideshow from "../Slideshow";
 import { USER_TYPE } from "../../constants";
+import Modal from 'react-modal';
 const fs = require("fs");
 
 function getToken(userType) {
@@ -83,11 +84,13 @@ const MeetingJoin = (props) => {
   const [defaultImage, setDefaultImage] = useState(true);
   const [agentJoined, setAgentJoined] = useState(false);
   const [customerJoined, setCustomerJoined] = useState(false);
-  const [showCancelBtn, setShowCancelBtn] = useState(false);
+  const [showCancelBtn, setShowCancelBtn] = useState(true);
+  const [confirmCancelModal, setConfirmCancelModal] = useState(false);
+  const [confirmEndModal, setConfirmEndModal] = useState(false);
 
   const getPropertiesList = async () => {
     return fetch(
-      `${process.env.REACT_APP_API_URL}/property/list?page=1&size=1000`,
+      `${process.env.REACT_APP_API_URL}/property/to-allocate`,
       {
         method: "GET",
         headers: {
@@ -99,7 +102,7 @@ const MeetingJoin = (props) => {
       .then((response) => response.json())
       .then((propertyData) => {
         setPropertiesList(
-          propertyData.data.map((property) => {
+          propertyData.map((property) => {
             return { label: property.title, value: property.id };
           })
         );
@@ -224,7 +227,6 @@ const MeetingJoin = (props) => {
 
   useEffect(() => {
     if(token) {
-      let agentTimer;
       const fetchData = async () => {
         const tokToken = await getSessionToken();
         if (userType === USER_TYPE.AGENT) {
@@ -235,223 +237,267 @@ const MeetingJoin = (props) => {
           getPropertyDetail(appointment.products[0].id);
         }
 
-        // Set a timeout of 5 minutes for agent waiting
-        agentTimer = setTimeout(() => {
-          if (!agentJoined) {
-            // Enable call cancellation button with reason "customer did not join"
-            setShowCancelBtn(true);
-            // alert("Customer did ");
-          }
-        }, 0.5 * 60 * 1000);
-        // if(!publisher)
-        const session = OT.initSession("46869314", appointment.sessionId);
-        setSession(session);
-        session.on({
-          streamCreated: (event) => {
-            if (event.stream.videoType === "camera") {
-              const subscriberOptions = {
-                insertMode: "append",
-                nameDisplayMode: "on",
-                width: "100%",
-                height: "250px",
-              };
-              const subscriber = session.subscribe(
-                event.stream,
-                "subscribers",
-                subscriberOptions,
-                (error) => {}
-              );
-              setSubscriber(subscriber);
-              subscriber.on("videoElementCreated", function (event) {});
-              var subscriberDisconnectedNotification =
-                document.createElement("div");
-              subscriberDisconnectedNotification.className =
-                "subscriberDisconnectedNotification";
-              subscriberDisconnectedNotification.innerText =
-                "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
-              subscriber.element.appendChild(subscriberDisconnectedNotification);
-              subscriber.on({
-                disconnected: function (event) {
-                  subscriberDisconnectedNotification.style.visibility = "visible";
-                },
-                connected: function (event) {
-                  subscriberDisconnectedNotification.style.visibility = "hidden";
-                },
-              });
-              if(userType == USER_TYPE.CUSTOMER) {
-                setAgentJoined(true);
-              } else if(userType == USER_TYPE.AGENT) {
-                setCustomerJoined(true);
-              }
-              console.log(event);
-            } else if (event.stream.videoType === "screen") {
-              const subscriberOptions = {
-                insertMode: "replace",
-                width: "100%",
-                height: "100%",
-              };
-              setVirtualTourUrl(null);
-              setVirtualTourVideo(null);
-              setProductImages(null);
-              setDefaultImage(null);
-              const screenshareEle = document.createElement("div");
-              const screenPreview = document.getElementById("screen-preview");
-              //const ot_element = document.getElementById(`OT`)
-              screenPreview.appendChild(screenshareEle);
-              const subscriber = session.subscribe(
-                event.stream,
-                screenshareEle,
-                subscriberOptions,
-                (error) => {}
-              );
-            }
-          },
-          streamDestroyed: (event) => {
-            if (
-              event.reason === "clientDisconnected" &&
-              event.stream.videoType === "screen"
-            ) {
-              setDefaultImage(true);
-            }
-          },
-          connectionCreated: function (event) {
-            console.log("Connection created" + event);
-          },
-          connectionDestroyed: function (event) {
-            console.log("Connection destroyed");
-          },
-          sessionDisconnected: function sessionDisconnectHandler(event) {
-            console.log("You were disconnected from the session.", event.reason);
-            if(userType === USER_TYPE.AGENT) {
-              history.push("/agent/dashboard");
-            } else if (userType === USER_TYPE.CUSTOMER) {
-              history.push("/customer/dashboard");
-            }
-            // setTimeout(function() {
-            //   session.connect(token, function(error) {
-            //     if (error) {
-            //       console.error('Failed to reconnect to the session:', error.message);
-            //     } else {
-            //       console.log('Session reconnected.');
-            //     }
-            //   });
-            // }, 5000);
-          },
-          sessionReconnecting: function () {
-            console.log("Session reconn");
-          },
-          sessionReconnected: function () {},
-        });
-
-        const msgHistory = document.querySelector("#history");
-        session.on("signal:msg", (event) => {
-          if (userType === USER_TYPE.CUSTOMER && event.data.includes("PROPERTY_ID")) {
-            getPropertyDetail(event.data.split(":")[1]);
-          } else if (userType === USER_TYPE.AGENT && event.data.includes("PROPERTY_ID")) {
-          } else if (event.data.includes("::")) {
-            const msg = document.createElement("p");
-            const content = event.data.split("::");
-            msg.textContent = `${content[0]}: `;
-            const a = document.createElement("a");
-            a.classList.add("download-file-link");
-            a.setAttribute("target", "_blank");
-            const text = document.createTextNode(content[1].split("/")[1]);
-            a.appendChild(text);
-            a.href = `${process.env.REACT_APP_API_URL}/${content[1]}`;
-            a.download = content[1].split("/")[1];
-            msg.appendChild(a);
-            msgHistory.appendChild(msg);
-            msg.scrollIntoView();
-          } else {
-            const msg = document.createElement("p");
-            msg.textContent = `${event.data}`;
-            msg.className =
-              event.from.connectionId === session.connection.connectionId
-                ? "mine"
-                : "theirs";
-            msgHistory.appendChild(msg);
-            msg.scrollIntoView();
-          }
-        });
-
-        // initialize the publisher
-        const publisherOptions = {
-          insertMode: "append",
-          audioFallbackEnabled: true,
-          facingMode: "user",
-          publishVideo: true,
-          publishAudio: true,
-          name:
-            userType === USER_TYPE.CUSTOMER
-              ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-              : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
-          nameDisplayMode: "on",
-          width: "100%",
-          height: "250px",
-        };
-        if (audioInputDeviceId || videoDeviceId) {
-          publisherOptions.audioSource = audioInputDeviceId;
-          publisherOptions.videoSource = videoDeviceId;
-        }
-        // if (OT.hasMediaProcessorSupport()) {
-        //   publisherOptions.videoFilter = {
-        //     type: "backgroundReplacement",
-        //     backgroundImgUrl: "http://localhost:3000/assets/img/video-meeting-1.jpeg",
-        //   };
-        // }
-        const publisher = OT.initPublisher(
-          "publisher",
-          publisherOptions,
-          (error) => {}
-        );
-        setPublisher(publisher);
-        // Connect to the session
-        session.connect(tokToken, (error) => {
-          if (error) {
-            if (error.name === "OT_NOT_CONNECTED") {
-              //
-            } else {
-              //
-            }
-          } else {
-            // If the connection is successful, publish the publisher to the session
-            session.publish(publisher, (error) => {});
-          }
-        });
-        // Text chat
-        const form = document.querySelector("form");
-        const msgTxt = document.querySelector("#msgTxt");
-
-        // Send a signal once the user enters data in the form
-        form.addEventListener("submit", (event) => {
-          event.preventDefault();
-          if(msgTxt.value) {
-            const name =
-            userType === USER_TYPE.CUSTOMER
-              ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-              : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
-            session.signal(
-              {
-                type: "msg",
-                data: `${name}: ${msgTxt.value}`,
-              },
-              (error) => {
-                if (error) {
-                  //handleError(error);
-                } else {
-                  msgTxt.value = "";
+        if(!publisher){
+          const session = OT.initSession("46869314", appointment.sessionId);
+          setSession(session);
+          session.on({
+            streamCreated: (event) => {
+              if (event.stream.videoType === "camera") {
+                const subscriberOptions = {
+                  insertMode: "append",
+                  nameDisplayMode: "on",
+                  width: "100%",
+                  height: "250px",
+                };
+                const subscriber = session.subscribe(
+                  event.stream,
+                  "subscribers",
+                  subscriberOptions,
+                  (error) => {}
+                );
+                setSubscriber(subscriber);
+                subscriber.on("videoElementCreated", function (event) {});
+                var subscriberDisconnectedNotification =
+                  document.createElement("div");
+                subscriberDisconnectedNotification.className =
+                  "subscriberDisconnectedNotification";
+                subscriberDisconnectedNotification.innerText =
+                  "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
+                subscriber.element.appendChild(subscriberDisconnectedNotification);
+                subscriber.on({
+                  disconnected: function (event) {
+                    subscriberDisconnectedNotification.style.visibility = "visible";
+                  },
+                  connected: function (event) {
+                    subscriberDisconnectedNotification.style.visibility = "hidden";
+                  },
+                });
+                if(userType == "customer") {
+                  setAgentJoined(true);
+                } else if(userType == "agent") {
+                  setCustomerJoined(true);
                 }
+              } else if (event.stream.videoType === "screen") {
+                const subscriberOptions = {
+                  insertMode: "replace",
+                  width: "100%",
+                  height: "100%",
+                };
+                setVirtualTourUrl(null);
+                setVirtualTourVideo(null);
+                setProductImages(null);
+                setDefaultImage(null);
+                const screenshareEle = document.createElement("div");
+                const screenPreview = document.getElementById("screen-preview");
+                //const ot_element = document.getElementById(`OT`)
+                screenPreview.appendChild(screenshareEle);
+                const subscriber = session.subscribe(
+                  event.stream,
+                  screenshareEle,
+                  subscriberOptions,
+                  (error) => {}
+                );
               }
-            );
+            },
+            streamDestroyed: (event) => {
+              if (
+                event.reason === "clientDisconnected" &&
+                event.stream.videoType === "screen"
+              ) {
+                setDefaultImage(true);
+              }
+            },
+            connectionCreated: function (event) {
+              
+            },
+            connectionDestroyed: function (event) {
+              if(userType === 'agent') {
+                addLogEntry('left', "Customer has left the meeting");
+              } else if(userType === 'customer') {
+                addLogEntry('left', "Agent has left the meeting");
+              }
+            },
+            'signal:custom-disconnect': function (event) {
+              updateStatus('completed');
+              if(userType === 'agent') {
+                addLogEntry('left', "Customer has left the meeting by clicking on the endcall button");
+                addLogEntry('completed', "Appointment got completed as customer has ended the call");
+              } else if(userType === 'customer') {
+                addLogEntry('left', "Agent has left the meeting by clicking on the endcall button");
+                addLogEntry('completed', "Appointment got completed as agent has ended the call");
+              }
+            },
+            sessionDisconnected: function sessionDisconnectHandler(event) {
+              if(userType === "agent") {
+                history.push("/agent/dashboard");
+              } else if (userType === "customer") {
+                history.push("/customer/dashboard");
+              }
+            },
+            sessionReconnecting: function (event) {
+            },
+            sessionReconnected: function (event) {
+            },
+          });
+
+          const msgHistory = document.querySelector("#history");
+          session.on("signal:msg", (event) => {
+            if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
+              getPropertyDetail(event.data.split(":")[1]);
+            } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
+            } else if (event.data.includes("::")) {
+              const msg = document.createElement("p");
+              const content = event.data.split("::");
+              msg.textContent = `${content[0]}: `;
+              const a = document.createElement("a");
+              a.classList.add("download-file-link");
+              a.setAttribute("target", "_blank");
+              const text = document.createTextNode(content[1].split("/")[1]);
+              a.appendChild(text);
+              a.href = `${process.env.REACT_APP_API_URL}/${content[1]}`;
+              a.download = content[1].split("/")[1];
+              msg.appendChild(a);
+              msgHistory.appendChild(msg);
+              msg.scrollIntoView();
+            } else {
+              const msg = document.createElement("p");
+              msg.textContent = `${event.data}`;
+              msg.className =
+                event.from.connectionId === session.connection.connectionId
+                  ? "mine"
+                  : "theirs";
+              msgHistory.appendChild(msg);
+              msg.scrollIntoView();
+            }
+          });
+
+          // initialize the publisher
+          const publisherOptions = {
+            insertMode: "append",
+            audioFallbackEnabled: true,
+            facingMode: "user",
+            publishVideo: true,
+            publishAudio: true,
+            name:
+              userType === "customer"
+                ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+                : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
+            nameDisplayMode: "on",
+            width: "100%",
+            height: "250px",
+          };
+          if (audioInputDeviceId || videoDeviceId) {
+            publisherOptions.audioSource = audioInputDeviceId;
+            publisherOptions.videoSource = videoDeviceId;
           }
-        });
+          const publisher = OT.initPublisher(
+            "publisher",
+            publisherOptions,
+            (error) => {}
+          );
+          setPublisher(publisher);
+          // Connect to the session
+          session.connect(tokToken, (error) => {
+            if (error) {
+              if (error.name === "OT_NOT_CONNECTED") {
+                //
+              } else {
+                //
+              }
+            } else {
+              // If the connection is successful, publish the publisher to the session
+              session.publish(publisher, (error) => {});
+              if(userType === "customer") {
+                setCustomerJoined(true);
+                addLogEntry('joined', "Customer has joined the meeting");
+              } else if(userType === "agent") {
+                setAgentJoined(true);
+                addLogEntry('joined', "Agent has joined the meeting");
+              }
+            }
+          });
+          // Text chat
+          const form = document.querySelector("form");
+          const msgTxt = document.querySelector("#msgTxt");
+
+          // Send a signal once the user enters data in the form
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if(msgTxt.value) {
+              const name =
+              userType === "customer"
+                ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+                : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+              session.signal(
+                {
+                  type: "msg",
+                  data: `${name}: ${msgTxt.value}`,
+                },
+                (error) => {
+                  if (error) {
+                    //handleError(error);
+                  } else {
+                    msgTxt.value = "";
+                  }
+                }
+              );
+            }
+          });
+        }
       }
       fetchData();
       return () => {
-        clearTimeout(agentTimer);
       };
     }
-  }, [agentJoined]);
+  }, [agentJoined, customerJoined]);
+
+  useEffect(() => {
+    if(agentJoined && customerJoined && userType === "agent") {
+      updateStatus('inprogress');
+      setShowCancelBtn(false);
+    } 
+  }, [agentJoined, customerJoined]);
+
+  async function addLogEntry(logType, reason) {
+    const requestData = {
+      id: appointment.id,
+      logType,
+      reason
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/appointment/log`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
+    if(response && response.status === 200) {
+    }
+  }
+
+  async function updateStatus(status) {
+    const requestData = {
+      id: appointment.id,
+      status,
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/appointment/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
+    if(response && response.status === 200) {
+    }
+  }
 
   function toggleVideo() {
     publisher.publishVideo(!videoStreaming);
@@ -464,6 +510,7 @@ const MeetingJoin = (props) => {
   }
 
   function leaveSession() {
+    sendDisconnectSignal();
     session.disconnect();
   }
 
@@ -555,6 +602,20 @@ const MeetingJoin = (props) => {
     );
   }
 
+  const sendDisconnectSignal = () => {
+    session.signal(
+      {
+        type: 'custom-disconnect',
+        data: 'User is disconnecting intentionally',
+      },
+      (error) => {
+        if (error) {
+        } else {
+        }
+      }
+    );
+  };
+
   async function handlePropertyChange(event) {
     setSelectedProperty(event.target.value);
     if (userType === USER_TYPE.AGENT) {
@@ -571,6 +632,33 @@ const MeetingJoin = (props) => {
       );
       getPropertyDetail(event.target.value);
     }
+  }
+
+  const handleCancelModalConfirm = async () => {
+    // Do something when the user clicks "Yes"
+    setConfirmCancelModal(false); // Close the modal
+    await updateStatus('cancelled');
+    leaveSession();
+  }
+
+  const handleCancelModalCancel = () => {
+    // Do something when the user clicks "No"
+    setConfirmCancelModal(false); // Close the modal
+  }
+
+  const handleEndModalConfirm = () => {
+    // Do something when the user clicks "Yes"
+    setConfirmEndModal(false); // Close the modal
+    leaveSession();
+  }
+
+  const handleEndModalCancel = () => {
+    // Do something when the user clicks "No"
+    setConfirmEndModal(false); // Close the modal
+  }
+
+  function closeModal() {
+    setShowCancelBtn(false);
   }
 
   return (
@@ -641,17 +729,9 @@ const MeetingJoin = (props) => {
       </div>
       <div id="chatOptions">
         <div id="toggle2">
-          <img
-            id="ChatIcon2"
-            src={`${publicUrl}assets/img/icons/chat.png`}
-            onClick={() => {
-              let slider = document.getElementById("chatArea");
-
-              let isOpen = slider.classList.contains("slide-in");
-
-              slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
-            }}
-          />
+          {showCancelBtn && userType === "agent" && 
+            <button className="call-meeting-button" onClick={() => setConfirmCancelModal(true)}>Cancel Meeting</button>
+          }
         </div>
 
         <div className="d-flex align-items-center">
@@ -685,7 +765,7 @@ const MeetingJoin = (props) => {
               <i className="fa-solid fa-laptop"></i>
             </span>
           )}
-          <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => leaveSession()}>
+          <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => setConfirmEndModal(true)}>
             <i className="fa-solid fa-phone-slash"></i>
           </span>
         </div>
@@ -704,11 +784,6 @@ const MeetingJoin = (props) => {
           />
         </div>
       </div>
-      {showCancelBtn && (
-        <button onClick={() => console.log('Call canceled: customer did not join.')}>
-          Cancel Call
-        </button>
-      )}
       <div id="chatArea" className={"slide-out"}>
         <div className="minimize-chat">
           <button 
@@ -752,6 +827,35 @@ const MeetingJoin = (props) => {
           </div>
         </form>
       </div>
+      <Modal
+        isOpen={confirmEndModal}
+        onRequestClose={() => setConfirmEndModal(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Complete Meeting</h2>
+        <p>Are you sure you want to end this call? You won't be able to join this appointment again.</p>
+        <div className="ButtonContainer">
+          <button className="btn theme-btn-1" onClick={handleEndModalConfirm}>Yes</button>
+          <button className="btn theme-btn-2" onClick={handleEndModalCancel}>No</button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={confirmCancelModal}
+        onRequestClose={() => setConfirmCancelModal(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Cancel Meeting</h2>
+        <p>Are you sure you want to cancel this appointment? You won't be able to join this appointment again.</p>
+        <div className="ButtonContainer">
+          <button className="btn theme-btn-1" onClick={handleCancelModalConfirm}>Yes</button>
+          <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>No</button>
+        </div>
+      </Modal>
     </div>
   );
 };

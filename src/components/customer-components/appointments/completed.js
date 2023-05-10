@@ -147,10 +147,10 @@ export default function CompletedAppointments(props) {
                   {element.allotedAgent === userDetail.id ? (
                     <Link
                       to={{
-                        pathname: `/precall/${element.id}/agent`,
+                        pathname: `/precall/${element.id}/customer`,
                       }}
                     >
-                      <button className="joinCall">JOIN CALL</button>
+                      <button className="ltn__utilize-close">JOIN CALL</button>
                     </Link>
                   ) : (
                     <button className="supervisor-btn">Assigned to supervisor</button>

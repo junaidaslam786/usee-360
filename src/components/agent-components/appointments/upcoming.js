@@ -2,12 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { getUserDetailsFromJwt } from "../../../utils";
+import Modal from 'react-modal';
 
 export default function UpcomingAppointments(props) {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState({});
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [confirmCancelModal, setConfirmCancelModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState('');
+  const [notes, setNotes] = useState('');
   const openViewModal = useRef(null);
   const token = JSON.parse(localStorage.getItem("agentToken"));
   const userDetail = getUserDetailsFromJwt();
@@ -75,6 +80,48 @@ export default function UpcomingAppointments(props) {
     }
   };
 
+  async function addNote(notes) {
+    const requestData = {
+      userId: userDetail.id,
+      userType: "agent",
+      id: selectedAppointment,
+      notes
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/appointment/note`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
+    if(response && response.status === 200) {
+    }
+  }
+
+  async function updateStatus(status) {
+    const requestData = {
+      id: selectedAppointment,
+      status,
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/appointment/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
+    if(response && response.status === 200) {
+    }
+  }
+
   useEffect(() => {
     const fetchAllAppointments = async () => {
       await loadAllList();
@@ -82,6 +129,42 @@ export default function UpcomingAppointments(props) {
 
     fetchAllAppointments();
   }, [props]);
+
+  const handleCancelModalConfirm = async () => {
+    // Do something when the user clicks "Yes"
+    await updateStatus('cancelled');
+    await loadAllList();
+    setConfirmCancelModal(false);
+  }
+
+  const handleCancelModalCancel = () => {
+    // Do something when the user clicks "No"
+    setConfirmCancelModal(false); // Close the modal
+  }
+
+  const handleNotesModalSubmit = async () => {
+    // Do something when the user clicks "Yes"
+    await updateStatus('completed');
+    await addNote(notes);
+    setNotes('');
+    await loadAllList();
+    setIsNotesModalOpen(false); // Close the modal
+  }
+
+  const handleNotesModalCancel = () => {
+    // Do something when the user clicks "No"
+    setIsNotesModalOpen(false); // Close the modal
+  }
+
+  const handleConfirm = (id) => {
+    setSelectedAppointment(id);
+    setConfirmCancelModal(true);
+  }
+
+  const handleNotesModal = (id) => {
+    setSelectedAppointment(id);
+    setIsNotesModalOpen(true);
+  }
 
   return (
     <div>
@@ -120,6 +203,10 @@ export default function UpcomingAppointments(props) {
                             ).format("HH:mm")
                           : "-"}
                       </small>
+                    </div>
+                    <div>
+                      <button className="status-buttons" onClick={() => handleNotesModal(element.id)}>Mark as completed</button>
+                      <button className="status-buttons" onClick={() => handleConfirm(element.id)}>Mark as cancelled</button>
                     </div>
                   </div>
                 </div>
@@ -358,6 +445,36 @@ export default function UpcomingAppointments(props) {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isNotesModalOpen}
+        onRequestClose={() => setIsNotesModalOpen(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Add some notes to remember</h2>
+        <label>Add Note</label>
+        <textarea
+          onChange={(e) => setNotes(e.target.value)}
+          value={notes}
+        />
+        <button className="btn theme-btn-1" onClick={handleNotesModalSubmit}>Submit</button>
+        <button className="btn theme-btn-2" onClick={handleNotesModalCancel}>Cancel</button>
+      </Modal>
+      <Modal
+        isOpen={confirmCancelModal}
+        onRequestClose={() => setConfirmCancelModal(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Confirmation</h2>
+        <p>Are you sure you want to cancel this appointment? You won't be able to join this appointment again.</p>
+        <div className="ButtonContainer">
+          <button className="btn theme-btn-1" onClick={handleCancelModalConfirm}>Yes</button>
+          <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>No</button>
+        </div>
+      </Modal>
     </div>
   );
 }

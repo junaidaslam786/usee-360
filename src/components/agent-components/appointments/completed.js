@@ -1,16 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import Modal from 'react-modal';
+import { getUserDetailsFromJwt } from "../../../utils";
 
 export default function CompletedAppointments(props) {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [agentId, setAgentId] = useState();
   const [list, setList] = useState([]);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState('');
+  const [notes, setNotes] = useState('');
   const [appointmentView, setAppointmentView] = useState({});
   const openViewModal = useRef(null);
   const token = JSON.parse(localStorage.getItem("agentToken"));
-
+  const userDetail = getUserDetailsFromJwt();
+  const [showNotesList, setShowNotesList] = useState(false);
+  const [notesList, setNotesList] = useState([]);
+  
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
     appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&startDate=${props.startDate}&endDate=${props.endDate}`: ""}`;
@@ -61,6 +69,28 @@ export default function CompletedAppointments(props) {
     ).then((data) => data.json());
   };
 
+  async function addNote(notes) {
+    const requestData = {
+      userId: userDetail.id,
+      userType: "agent",
+      id: selectedAppointment,
+      notes
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/agent/appointment/note`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData)
+      }
+    );
+    if(response && response.status === 200) {
+    }
+  }
+
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
       const response = await loadAppointmentFields(id);
@@ -102,6 +132,24 @@ export default function CompletedAppointments(props) {
     fetchAllAppointments();
   }, [props]);
 
+  const handleNotesModalSubmit = async () => {
+    // Do something when the user clicks "Yes"
+    await addNote(notes);
+    setNotes('');
+    await loadAllList();
+    setIsNotesModalOpen(false); // Close the modal
+  }
+
+  const handleNotesModalCancel = () => {
+    // Do something when the user clicks "No"
+    setIsNotesModalOpen(false); // Close the modal
+  }
+
+  const handleNotesModal = (id) => {
+    setSelectedAppointment(id);
+    setIsNotesModalOpen(true);
+  }
+
   return (
     <div>
       <div>
@@ -139,6 +187,10 @@ export default function CompletedAppointments(props) {
                         : "-"}
                     </small>
                   </div>
+                  <div>
+                    <button className="status-buttons" onClick={() => handleNotesModal(element.id)}>Add Notes</button>
+                    <button className="status-buttons" onClick={() => {setShowNotesList(true); setNotesList(element.appointmentNotes);}}>Show Notes</button>
+                  </div>
                 </div>
               </div>
               <div className="tabInner-data">
@@ -149,19 +201,6 @@ export default function CompletedAppointments(props) {
                   >
                     <i className="fa-solid fa-eye" /> View
                   </button>
-                </div>
-                <div>
-                  {element.allotedAgent === agentId ? (
-                    <Link
-                      to={{
-                        pathname: `/precall/${element.id}/agent`,
-                      }}
-                    >
-                      <button className="joinCall">JOIN CALL</button>
-                    </Link>
-                  ) : (
-                    <button className="supervisor-btn">Assigned to supervisor</button>
-                  )}
                 </div>
               </div>
             </div>
@@ -357,6 +396,39 @@ export default function CompletedAppointments(props) {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isNotesModalOpen}
+        onRequestClose={() => setIsNotesModalOpen(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Add some notes to remember</h2>
+        <label>Add Note</label>
+        <textarea
+          onChange={(e) => setNotes(e.target.value)}
+          value={notes}
+        />
+        <button className="btn theme-btn-1" onClick={handleNotesModalSubmit}>Submit</button>
+        <button className="btn theme-btn-2" onClick={handleNotesModalCancel}>Cancel</button>
+      </Modal>
+      <Modal
+        isOpen={showNotesList}
+        onRequestClose={() => setShowNotesList(false)}
+        className="MyNotes"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Notes</h2>
+        <div className="notes-scrollable-container">
+        {notesList.length ? (
+          notesList.map((element, i) => (
+            <p key={i} className="notes-list">{element.notes}</p>
+          ))
+        ) : <span></span>}
+        </div>
+        <button className="theme-btn-2" onClick={() => setShowNotesList(false)}>Close</button>
+      </Modal>
     </div>
   );
 }

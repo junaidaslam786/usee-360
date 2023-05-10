@@ -58,6 +58,7 @@ const AccessTable = (props) => {
   const [selectedAudioOutput, setSelectedAudioOutput] = useState('');
   const [appointment, setAppointment] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [canJoin, setCanJoin] = useState(true);
   const detect = new RTCDetect();
 
   const getAppointmentDetail = async () => {
@@ -78,6 +79,9 @@ const AccessTable = (props) => {
         alert(appointmentData.message);
         history.push("/");
       } else {
+        if(appointmentData.status === 'completed' || appointmentData.status === 'cancelled') {
+          setCanJoin(false);
+        }
         setAppointment(appointmentData);
       }
     }).catch((error) => {
@@ -144,7 +148,7 @@ const AccessTable = (props) => {
 
   return (
     <main className="main">
-      <div className="container">
+      {canJoin && <div className="container">
         <div className="logo_wrap text-center">
             <center>
               <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
@@ -249,7 +253,12 @@ const AccessTable = (props) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> }
+      {!canJoin && 
+        <div>
+          This appoinment has been completed or canceled. Please create another.
+        </div>
+      }
     </main>
   );
 };
