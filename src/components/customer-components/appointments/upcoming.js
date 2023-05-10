@@ -118,7 +118,7 @@ export default function UpcomingAppointments(props) {
                 </div>
                 <div>
                   <div className="ltn__my-properties-info appointment-info">
-                    <h6 className="mb-10 go-top">
+                    <h6 className="mb-10 go-top overflow-dots">
                       {element?.customerUser?.firstName}{" "}
                       {element?.customerUser?.lastName}
                     </h6>
