@@ -240,7 +240,7 @@ const MeetingJoin = (props) => {
           if (!agentJoined) {
             // Enable call cancellation button with reason "customer did not join"
             setShowCancelBtn(true);
-            alert("Customer did ");
+            // alert("Customer did ");
           }
         }, 0.5 * 60 * 1000);
         // if(!publisher)

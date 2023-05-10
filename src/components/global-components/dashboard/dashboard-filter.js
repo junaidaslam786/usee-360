@@ -77,6 +77,10 @@ export default function DashboardFilter(props) {
         }
     }, [startDate, endDate]);
 
+    useEffect(() => {
+        loadDashboardData("all");
+    }, []);
+    
     return (
         <div>
             <div className="date-Selector">

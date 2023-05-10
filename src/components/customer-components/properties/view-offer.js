@@ -235,7 +235,7 @@ export default function ViewOffer(props) {
         }
 
         if (currentUserId && props?.property?.productOffers) {
-            setList(props.property.productOffers.filter((offer) => offer.user.id === currentUserId));
+            setList(props.property.productOffers.filter((offer) => (offer?.user?.id && offer.user.id === currentUserId)));
         }
       
     }, [props.property]);
