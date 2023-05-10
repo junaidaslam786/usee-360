@@ -18182,3 +18182,16 @@ input[readonly] {
     color: white;
     cursor: no-drop;
 }
+
+.digit-group input {
+    width: 74px;
+    height: 65px;
+    line-height: 50px;
+    text-align: center;
+    border: 2px solid;
+    border-color: var(--border-color-9);
+    color: var(--ltn__paragraph-color);
+    font-size: 16px;
+    margin: 0 2px;
+    padding: 0;
+}

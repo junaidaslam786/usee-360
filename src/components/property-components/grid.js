@@ -756,6 +756,41 @@ export default function PropertyGrid() {
                           <span className="checkmark" />
                         </label>
                       </li>
+                      <li>
+                        <label className="checkbox-item">
+                          6
+                          <input type="radio" name="bedrooms" value="6" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          7
+                          <input type="radio" name="bedrooms" value="7" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          8
+                          <input type="radio" name="bedrooms" value="8" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          9
+                          <input type="radio" name="bedrooms" value="9" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
+                      <li>
+                        <label className="checkbox-item">
+                          10
+                          <input type="radio" name="bedrooms" value="10" />
+                          <span className="checkmark" />
+                        </label>
+                      </li>
                     </div>
                   </ul>
                 </div>
