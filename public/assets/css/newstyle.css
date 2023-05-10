@@ -98,13 +98,12 @@
 .custom_drop_btn,
 .dash_date_pickr {
     float: right;
-    width: 170px;
     border: 1px solid #00c800;
     padding: 0 10px;
-    border-radius: 15px;
+    border-radius: 8px;
     text-align: left;
     margin-bottom: 1.5rem;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: #00c800;
     line-height: 40px;
@@ -368,7 +367,7 @@
     align-items: center;
 }
 .tab-data .tabInner-data h1 {
-    font-size: 70px;
+    font-size: 60px;
 }
 .tab-data .tabInner-data .view {
     padding: 6px 15px;
@@ -534,4 +533,49 @@
 
 .fc .fc-scrollgrid table{
     width:100% !important;
+}
+.supervisor-btn {
+    width: 116px;
+    border-radius: 4px;
+    line-height: 18px;
+    padding: 5px 0;
+}
+.ltn__my-properties-imgNew {
+    width: 120px;
+}
+.dash-cards-agent,
+.dash-cards-cust {
+    display: flex;
+}
+.dash-cards-agent .card-desc-left {
+    max-width: 45%;
+}
+.dash-cards-cust .card-desc-left {
+    max-width: 45%;
+}
+.dashboard-card {
+    line-height: 30px;
+}
+.dashboard-card .dash-cards-cust:first-child .card-desc-left {
+    max-width: 60%;
+}
+.lds-ring div {
+    left: 48.5% !important;
+}
+.myProperties-img {
+    width: 200px;
+    height: 200px;
+}
+.myProperties-img img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .dash-cards-cust .card-desc-left {
+        max-width: unset;
+    }
+    .dashboard-card .dash-cards-cust:first-child .card-desc-left {
+        max-width: unset;
+    }
 }

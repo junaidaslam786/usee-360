@@ -51,10 +51,6 @@ export default function Sidebar() {
         Account Details
         <i className="fas fa-user" />
       </NavLink>
-      <NavLink to="/agent/properties">
-        My Properties
-        <i className="fa-solid fa-list" />
-      </NavLink>
       {
         userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
           <NavLink to="/agent/properties">
