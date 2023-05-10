@@ -106,12 +106,12 @@ export default function UpcomingAppointments(props) {
           list.map((element, i) => (
             <div key={i} className="tab-data">
               <div className="tabInner-data">
-                <div className="ltn__my-properties-img go-top center">
+                <div className="ltn__my-properties-img go-top center ltn__my-properties-imgNew">
                   <div>
-                    <h1 className="appointment-date mb-1">
+                    <h1 className="appointment-date mb-1 text-center">
                       {moment(element?.appointmentDate).format("D")}
                     </h1>
-                    <h3 className="appointment-date mb-0">
+                    <h3 className="appointment-date mb-0 text-center">
                       {moment(element?.appointmentDate).format("MMM")}
                     </h3>
                   </div>
@@ -153,7 +153,7 @@ export default function UpcomingAppointments(props) {
                       <button className="joinCall">JOIN CALL</button>
                     </Link>
                   ) : (
-                    "Assigned to supervisor"
+                    <button className="supervisor-btn">Assigned to supervisor</button>
                   )}
                 </div>
               </div>

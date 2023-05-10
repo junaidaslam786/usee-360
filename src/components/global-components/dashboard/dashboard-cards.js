@@ -8,10 +8,10 @@ export default function Cards(props) {
                 props?.type === USER_TYPE.AGENT && (
                     <div className="row p-2 mb-5">
                                 <div className="col-md-6 p-2">
-                                    <div className="dashboard-card card-1 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                        <div className="d-flex">
+                                    <div className="dashboard-card card-1 d-flex align-items-center justify-content-between" >
+                                        <div className="dash-cards-agent">
                                             <i className="fa-solid fa-house"></i>
-                                            <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                            <p className="card-desc-left m-0 p-0" >
                                                 No. of Properties
                                             </p>
                                         </div>
@@ -20,10 +20,10 @@ export default function Cards(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-6 p-2">
-                                    <div className="dashboard-card card-2 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                        <div className="d-flex">
+                                    <div className="dashboard-card card-2 d-flex align-items-center justify-content-between" >
+                                        <div className="dash-cards-agent">
                                             <i className="fa-solid fa-calendar"></i>
-                                            <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                            <p className="card-desc-left m-0 p-0" >
                                                 Upcoming Bookings
                                             </p>
                                         </div>
@@ -31,10 +31,10 @@ export default function Cards(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-6 p-2">
-                                    <div className="dashboard-card card-3 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                        <div className="d-flex">
+                                    <div className="dashboard-card card-3 d-flex align-items-center justify-content-between" >
+                                        <div className="dash-cards-agent">
                                             <i className="fa-solid fa-house"></i>
-                                            <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                            <p className="card-desc-left m-0 p-0" >
                                                 Properties Sold
                                             </p>
                                         </div>
@@ -42,10 +42,10 @@ export default function Cards(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-6 p-2">
-                                    <div className="dashboard-card card-4 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                        <div className="d-flex">
+                                    <div className="dashboard-card card-4 d-flex align-items-center justify-content-between" >
+                                        <div className="dash-cards-agent">
                                             <i className="fa-regular fa-calendar"></i>
-                                            <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                            <p className="card-desc-left m-0 p-0" >
                                                 Completed Bookings
                                             </p>
                                         </div>
@@ -59,11 +59,11 @@ export default function Cards(props) {
             {
                 props?.type === USER_TYPE.CUSTOMER && (
                     <div className="row p-2 mb-5">
-                        <div className="col-md-6 p-2">
-                            <div className="dashboard-card card-1 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                <div className="d-flex">
+                        <div className="col-lg-6 p-2">
+                            <div className="dashboard-card card-1 d-flex align-items-center justify-content-between" >
+                                <div className="dash-cards-cust">
                                     <i className="fa-solid fa-house"></i>
-                                    <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                    <p className="card-desc-left m-0 p-0" >
                                         No of Properties Viewed
                                     </p>
                                 </div>
@@ -71,33 +71,33 @@ export default function Cards(props) {
                                 <p className="card-desc-right m-0 p-0">{props.data?.totalPropertiesViewed || 0}</p>
                             </div>
                         </div>
-                        <div className="col-md-6 p-2">
-                            <div className="dashboard-card card-2 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                <div className="d-flex">
+                        <div className="col-lg-6 p-2">
+                            <div className="dashboard-card card-2 d-flex align-items-center justify-content-between" >
+                                <div className="dash-cards-cust">
                                     <i className="fa-solid fa-calendar"></i>
-                                    <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                    <p className="card-desc-left m-0 p-0" >
                                         Upcoming Bookings
                                     </p>
                                 </div>
                                 <p className="card-desc-right m-0 p-0">{props.data?.totalUpcomingAppointment || 0}</p>
                             </div>
                         </div>
-                        <div className="col-md-6 p-2">
-                            <div className="dashboard-card card-3 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                <div className="d-flex">
+                        <div className="col-lg-6 p-2">
+                            <div className="dashboard-card card-3 d-flex align-items-center justify-content-between" >
+                                <div className="dash-cards-cust">
                                     <i className="fa-solid fa-house"></i>
-                                    <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                    <p className="card-desc-left m-0 p-0" >
                                         No. of Properties in Wishlist
                                     </p>
                                 </div>
                                 <p className="card-desc-right m-0 p-0">{props.data?.totalPropertiesInWishlist || 0}</p>
                             </div>
                         </div>
-                        <div className="col-md-6 p-2">
-                            <div className="dashboard-card card-4 d-flex align-items-center justify-content-between" style={{ lineHeight: "30px" }}>
-                                <div className="d-flex">
+                        <div className="col-lg-6 p-2">
+                            <div className="dashboard-card card-4 d-flex align-items-center justify-content-between" >
+                                <div className="dash-cards-cust">
                                     <i className="fa-regular fa-calendar"></i>
-                                    <p className="card-desc-left m-0 p-0" style={{ maxWidth: "45%" }}>
+                                    <p className="card-desc-left m-0 p-0" >
                                         Completed Bookings
                                     </p>
                                 </div>

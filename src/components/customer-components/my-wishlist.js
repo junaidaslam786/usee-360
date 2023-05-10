@@ -60,10 +60,12 @@ export default function MyWishlist() {
                 list.map((element, i) => (
                   <tr key={i}>
                     <td className="ltn__my-properties-img go-top">
-                      <img
+                      <div className="myProperties-img">
+                        <img
                         src={`${process.env.REACT_APP_API_URL}/${element?.product?.featuredImage}`}
                         alt="#"
                       />
+                      </div>
                     </td>
                     <td>
                       <div className="ltn__my-properties-info">
