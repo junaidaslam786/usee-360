@@ -591,7 +591,12 @@
 .featuredImageCss {
     object-fit: contain;
 }
-
+.overflow-dots{
+    width: 250px; /* Set the width of the element */
+  white-space: nowrap; /* Prevent the text from wrapping */
+  overflow: hidden; /* Hide any text that overflows */
+  text-overflow: ellipsis;
+}
 @media (min-width: 992px) and (max-width: 1199px) {
     .dash-cards-cust .card-desc-left {
         max-width: unset;
