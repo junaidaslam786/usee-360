@@ -571,6 +571,27 @@
     height: 200px;
     object-fit: contain;
 }
+.map {
+    width: 96% !important;
+    margin-left: 16px;
+    height: 400px;
+}
+.mb-custom {
+    margin-bottom: 15px;
+}
+.mb-map {
+    margin-bottom: 35px;
+}
+.mb-btn {
+    margin-bottom: 30px;
+}
+.mb-minor {
+    margin-bottom: 10px !important;
+}
+.featuredImageCss {
+    object-fit: contain;
+}
+
 @media (min-width: 992px) and (max-width: 1199px) {
     .dash-cards-cust .card-desc-left {
         max-width: unset;
