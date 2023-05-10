@@ -11,6 +11,7 @@ import {
 } from "../../constants";
 import Select from "react-select";
 import { initializeApp } from "firebase/app";
+import OtpInput from "react-otp-input";
 import {
   getAuth,
   signInWithPhoneNumber,
@@ -36,12 +37,7 @@ export default function Register() {
   const [loading, setLoading] = useState();
   const [form1, setForm1] = useState(true);
   const [form2, setForm2] = useState(false);
-  const [otp1, setOtp1] = useState();
-  const [otp2, setOtp2] = useState();
-  const [otp3, setOtp3] = useState();
-  const [otp4, setOtp4] = useState();
-  const [otp5, setOtp5] = useState();
-  const [otp6, setOtp6] = useState();
+  const [otp, setOtp] = useState("");
 
   const setErrorHandler = (msg, param = "form", fullError = false) => {
     setErrors(fullError ? msg : [{ msg, param }]);
@@ -49,6 +45,17 @@ export default function Register() {
       setErrors([]);
     }, 3000);
   };
+
+  const renderInput = (props, index) => (
+    <input
+      className="otp-input"
+      {...props}
+      autoFocus={index === 0}
+      style={{ width: '60px', height: '60px', margin: '0 0.5rem', fontSize: '1.5rem', border: '1px solid gray',userSelect:"none" }}
+    />
+  );
+  
+  const handleChange = (otp) => setOtp(otp);
 
   const registerAgent = async () => {
     let formData = new FormData();
@@ -135,10 +142,8 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
 
-    const code = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
-
     await window.confirmationResult
-      .confirm(code)
+      .confirm(otp)
       .then(() => {
         updateProfile();
       })
@@ -345,72 +350,22 @@ export default function Register() {
               ) : null}
               {form2 ? (
                 <form
-                  className="ltn__form-box contact-form-box digit-group"
-                  data-group-name="digits"
-                  data-autosubmit="false"
-                  autocomplete="off"
+                  className="ltn__form-box contact-form-box contact-form-login digit-group text-center"
                   onSubmit={validateOTP}
                 >
                   <p className="text-center">Validate OTP (One Time Passcode)</p>
                   <ResponseHandler errors={errors} />
-                  <input
-                    type="text"
-                    id="digit-1"
-                    name="digit-1"
-                    data-next="digit-2"
-                    placeholder="-"
-                    onChange={(e) => setOtp1(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    id="digit-2"
-                    name="digit-2"
-                    data-next="digit-3"
-                    placeholder="-"
-                    data-previous="digit-1"
-                    onChange={(e) => setOtp2(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    id="digit-3"
-                    name="digit-3"
-                    data-next="digit-4"
-                    placeholder="-"
-                    data-previous="digit-2"
-                    onChange={(e) => setOtp3(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    id="digit-4"
-                    name="digit-4"
-                    data-next="digit-5"
-                    placeholder="-"
-                    data-previous="digit-3"
-                    onChange={(e) => setOtp4(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    id="digit-5"
-                    name="digit-5"
-                    data-next="digit-6"
-                    placeholder="-"
-                    data-previous="digit-4"
-                    onChange={(e) => setOtp5(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    id="digit-6"
-                    name="digit-6"
-                    placeholder="-"
-                    data-previous="digit-5"
-                    onChange={(e) => setOtp6(e.target.value)}
-                    required
-                  />
+                  <div className="d-flex justify-content-center otp">
+                    <OtpInput
+                      value={otp}
+                      onChange={handleChange}
+                      numInputs={6}
+                      isInputNum={true}
+                      inputMode="numeric"
+                      separator={<span>-</span>}
+                      renderInput={renderInput}
+                    />
+                  </div>
                   <div className="btn-wrapper text-center">
                     <button
                       className="theme-btn-1 btn reverse-color btn-block"
@@ -431,7 +386,7 @@ export default function Register() {
                 </form>
               ) : null}
               <div className="by-agree text-center">
-                <p>By creating an account, you agree to our:</p>
+                <p className="mt-3">By creating an account, you agree to our:</p>
                 <p>
                   <Link to={`/terms-and-conditions`}>
                     TERMS OF CONDITIONS &nbsp; &nbsp; | &nbsp; &nbsp; PRIVACY

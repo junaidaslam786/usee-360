@@ -559,9 +559,6 @@
 .dashboard-card .dash-cards-cust:first-child .card-desc-left {
     max-width: 60%;
 }
-.lds-ring div {
-    left: 48.5% !important;
-}
 .myProperties-img {
     width: 200px;
     height: 200px;
@@ -593,9 +590,17 @@
 }
 .overflow-dots{
     width: 250px; /* Set the width of the element */
-  white-space: nowrap; /* Prevent the text from wrapping */
-  overflow: hidden; /* Hide any text that overflows */
-  text-overflow: ellipsis;
+    white-space: nowrap; /* Prevent the text from wrapping */
+    overflow: hidden; /* Hide any text that overflows */
+    text-overflow: ellipsis;
+}
+.otp input:focus-within{
+    border: 1px solid #23c26a !important;
+    outline: none !important;
+}
+.contact-form-login{
+    width: 600px;
+    margin-inline: auto;
 }
 @media (min-width: 992px) and (max-width: 1199px) {
     .dash-cards-cust .card-desc-left {
