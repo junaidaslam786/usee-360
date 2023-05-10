@@ -523,7 +523,7 @@ export default function AddProperty(props) {
       <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner mb-50">
         <ResponseHandler errors={errors} success={success}/>
         <h4 className="title-2">Property Description</h4>
-        <div className="row mb-50">
+        <div className="row mb-custom">
           <div className="col-md-6">
             <div className="input-item">
               <label>Property Type *</label>
@@ -573,6 +573,7 @@ export default function AddProperty(props) {
                 Road, SM1)
               </label>
               <input
+              className="mb-custom"
                 type="text"
                 value={title}
                 placeholder="Property Name"
@@ -585,6 +586,7 @@ export default function AddProperty(props) {
             <div className="input-item">
               <label>Description</label>
               <textarea
+              className="mb-custom"
                 value={description}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
@@ -674,7 +676,7 @@ export default function AddProperty(props) {
           </div>
         </div>
         <h4 className="title-2">Featured Image</h4>
-        <div className="row mb-50">
+        <div className="row mb-custom">
           <div className="col-md-12">
             <div className="input-item">
               <input
@@ -705,7 +707,7 @@ export default function AddProperty(props) {
           </div>
         </div>
         <h4 className="title-2">Upload VR Tour</h4>
-        <div className="row mb-50">
+        <div className="row mb-custom">
           <div className="col-md-12">
             <div className="input-item">
               <input
@@ -753,9 +755,9 @@ export default function AddProperty(props) {
               />
             </div>
           </div>
-          <div className="col-lg-12">
+          <div className="col-lg-12 mb-map">
             <div className="property-details-google-map mb-60">
-              <div id="map" style={{ height: "400px", width: "100%" }} />
+              <div id="map" className="map" />
             </div>
           </div>
           <div className="col-md-6">
@@ -814,13 +816,14 @@ export default function AddProperty(props) {
             </div>
           </div>
         </div> */}
-        <br />
+        {/* <br /> */}
         
         <ResponseHandler errors={errors} success={success}/>
-        <div className="col-md-12">
+        <div className="row">
+          <div className="col-md-12">
           {
             !id && (
-              <div className="alert alert-warning" role="alert"> Add Images/Documents by clicking Next button </div>
+              <div className="alert alert-warning mb-btn" role="alert"> Add Images/Documents by clicking Next button </div>
             )
           }
           <button
@@ -839,6 +842,7 @@ export default function AddProperty(props) {
               id ? "Update Property" : "Next"
             )}
           </button>
+        </div>
         </div>
       </form>
       {id && (
