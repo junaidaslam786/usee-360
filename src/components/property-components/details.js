@@ -24,6 +24,7 @@ export default function PropertyDetails() {
   const [agentName, setAgentName] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
+  const [wishlistProperties, setWishlistProperties] = useState([]);
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
   const history = useHistory();
@@ -117,11 +118,75 @@ export default function PropertyDetails() {
     });
   }
 
+  async function loadWishlistProperties() {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setWishlistProperties(response.data);
+      });
+  }
+
+  async function addToWishList(ID) {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
+      await axios
+        .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/add/${ID}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          loadWishlistProperties();
+        });
+    }
+  }
+
+  async function removeWishList(ID) {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
+      await axios
+        .delete(
+          `${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then(() => {
+          loadWishlistProperties();
+        });
+    }
+  }
+
+  function isAddedToWishlist(propertyId) {
+    return wishlistProperties.find(
+      ({ productId }) =>
+        productId === propertyId
+    );
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
     loadProperty();
     if (token) {
       markPropertyViewed();
+      loadWishlistProperties();
     }
   }, []);
 
@@ -235,6 +300,12 @@ export default function PropertyDetails() {
               <div>
                 <a onClick={makeAppointmentHandler} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</a>
                 <a onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</a>
+                <a
+                  className="btn theme-btn-3 mb-3 w-100"
+                  onClick={() => { isAddedToWishlist(property.id) ? removeWishList(property.id) : addToWishList(property.id); }}
+                >
+                  { isAddedToWishlist(property.id) ? "Remove from wishlist" : "Add to wishlist" }
+                </a>
                 {
                   (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
                     <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3 w-100">View Tour</a>

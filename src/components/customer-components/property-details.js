@@ -23,6 +23,7 @@ export default function PropertyDetails() {
   const [propertyUnit, setPropertyUnit] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
+  const [wishlistProperties, setWishlistProperties] = useState([]);
 
   const params = useParams();
 
@@ -78,6 +79,55 @@ export default function PropertyDetails() {
       });
   }
 
+  async function loadWishlistProperties() {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setWishlistProperties(response.data);
+      });
+  }
+
+  async function addToWishList(propertyId) {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/add/${propertyId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        loadWishlistProperties();
+      });
+  }
+
+  async function removeWishList(propertyId) {
+    await axios
+      .delete(
+        `${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${propertyId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => {
+        loadWishlistProperties();
+      });
+  }
+
+  function isAddedToWishlist(propertyId) {
+    return wishlistProperties.find(
+      ({ productId }) =>
+        productId === propertyId
+    );
+  }
+
   async function markPropertyViewed() {
     await axios.post(`${process.env.REACT_APP_API_URL}/property/log`,
     {
@@ -95,6 +145,7 @@ export default function PropertyDetails() {
   useEffect(() => {
     loadProperty();
     markPropertyViewed();
+    loadWishlistProperties();
   }, []);
 
   return (
@@ -151,6 +202,13 @@ export default function PropertyDetails() {
             <div><p>{property.description}</p></div>
           </div>
           <div className="col-md-5">
+            <a href={`/customer/add-appointment?id=${property.id}`} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</a>
+            <a
+              className="btn theme-btn-3 mb-3 w-100"
+              onClick={() => { isAddedToWishlist(property.id) ? removeWishList(property.id) : addToWishList(property.id); }}
+            >
+              { isAddedToWishlist(property.id) ? "Remove from wishlist" : "Add to wishlist" }
+            </a>
             {
               propertyDocuments && (
                 propertyDocuments.map((element, index) => (

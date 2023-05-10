@@ -8,7 +8,9 @@ import {
 } from "../../../constants";
 import axios from "axios";
 import AgentUpcomingAppointments from "../../agent-components/appointments/upcoming";
+import AgentCompletedAppointments from "../../agent-components/appointments/completed";
 import CustomerUpcomingAppointments from "../../customer-components/appointments/upcoming";
+import CustomerCompletedAppointments from "../../customer-components/appointments/completed";
 
 import "./dashboard-filter.css";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
@@ -139,20 +141,34 @@ export default function DashboardFilter(props) {
                   role="tablist"
                   style={{ borderBottom: "1px solid #e5eaee", margin: "0 10px" }}
                 >
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link active customColor"
-                      id="pills-upcoming-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#pills-upcoming"
-                      type="button"
-                      role="tab"
-                      aria-controls="pills-upcoming"
-                      aria-selected="true"
-                    >
-                      Upcoming
-                    </button>
-                  </li>
+                    <li className="nav-item" role="presentation">
+                        <button
+                            className="nav-link active customColor"
+                            id="pills-upcoming-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-upcoming"
+                            type="button"
+                            role="tab"
+                            aria-controls="pills-upcoming"
+                            aria-selected="true"
+                        >
+                            Upcoming
+                        </button>
+                    </li>
+                    <li className="nav-item" role="presentation">
+                        <button
+                            className="nav-link customColor"
+                            id="pills-completed-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-completed"
+                            type="button"
+                            role="tab"
+                            aria-controls="pills-completed"
+                            aria-selected="false"
+                        >
+                            Completed
+                        </button>
+                    </li>
                 </ul>
                 <div className="tab-content" id="pills-tabContent">
                   <div
@@ -170,6 +186,24 @@ export default function DashboardFilter(props) {
                     {
                         props.type === USER_TYPE.CUSTOMER && (
                             <CustomerUpcomingAppointments selectedFilter={selectedFilter} startDate={computedDate(startDate)} endDate={computedDate(endDate)}/>
+                        )
+                    }
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id="pills-completed"
+                    role="tabpanel"
+                    aria-labelledby="pills-completed-tab"
+                  >
+                    {
+                        props.type === USER_TYPE.AGENT && (
+                            <AgentCompletedAppointments selectedFilter={selectedFilter} startDate={computedDate(startDate)} endDate={computedDate(endDate)}/>
+                        )
+                    }
+
+                    {
+                        props.type === USER_TYPE.CUSTOMER && (
+                            <CustomerCompletedAppointments selectedFilter={selectedFilter} startDate={computedDate(startDate)} endDate={computedDate(endDate)}/>
                         )
                     }
                   </div>
