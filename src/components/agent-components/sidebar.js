@@ -56,7 +56,7 @@ export default function Sidebar() {
         <i className="fa-solid fa-list" />
       </NavLink>
       {
-        userDetail?.agent && (
+        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
           <NavLink to="/agent/add-property">
             Add Property
             <i className="fa-solid fa-map-location-dot" />
@@ -69,7 +69,7 @@ export default function Sidebar() {
         <i className="fa-solid fa-clock" />
       </NavLink>
       {
-        userDetail?.agent && (
+        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
           <NavLink to="/agent/add-appointment">
             Add Appointments
             <i className="fa-solid fa-calendar-check"></i>
