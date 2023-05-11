@@ -53,6 +53,7 @@ export default function Login() {
         if (response?.status !== 200) {
           setErrorHandler("login", "Unable to login, please try again later");
         }
+        setLoading(false);
         return response.data;
       })
       .catch((error) => {
@@ -63,6 +64,7 @@ export default function Login() {
         } else {
           setErrorHandler("login", "Unable to login, please try again later");
         }
+        setLoading(false);
       });
 
     if (formResponse?.token) {
@@ -77,13 +79,11 @@ export default function Login() {
         await signInWithPhoneNumber(auth, formResponse.user.phoneNumber, appVerifier)
           .then((confirmationResult) => {
             window.confirmationResult = confirmationResult;
-            setLoading(false);
             setForm1(false);
             setForm2(true);
           })
           .catch(() => {
-            setErrorHandler("Unable to send code to phone number, please try again");
-            setLoading(false);
+            setErrorHandler("login", "Unable to send code to phone number, please try again");
           });
       } else {
         localStorage.setItem("agentToken", JSON.stringify(formResponse.token));
@@ -113,7 +113,7 @@ export default function Login() {
         window.location = returnUrl;
       })
       .catch(() => {
-        setErrorHandler("Some error occurred, please try again");
+        setErrorHandler("login", "Some error occurred, please try again");
         setLoading(false);
       });
   };
@@ -130,7 +130,7 @@ export default function Login() {
         updateProfile();
       })
       .catch(() => {
-        setErrorHandler("Invalid Code");
+        setErrorHandler("login", "Invalid Code");
         setLoading(false);
       });
   };
@@ -149,10 +149,7 @@ export default function Login() {
       )
       .then((response) => {
         if (response?.status !== 200) {
-          setErrorHandler(
-            "reset",
-            "Unable to reset password, please try again later"
-          );
+          setErrorHandler("reset", "Unable to reset password, please try again later");
         }
         return response.data;
       })
@@ -162,10 +159,7 @@ export default function Login() {
         } else if (error?.response?.data?.message) {
           setErrorHandler("reset", error.response.data.message);
         } else {
-          setErrorHandler(
-            "reset",
-            "Unable to reset password, please try again later"
-          );
+          setErrorHandler("reset", "Unable to reset password, please try again later");
         }
       });
 
@@ -203,7 +197,6 @@ export default function Login() {
     setTimeout(() => {
       setResetPassSuccess("");
     }, 3000);
-
     setResetPassErrors([]);
   };
 
