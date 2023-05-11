@@ -114,6 +114,9 @@ export default function AccountDetails() {
       })
       .then((response) => {
         setSuccessHandler("profile", response.data.message);
+        if (response?.data?.token) {
+          localStorage.setItem("agentToken", JSON.stringify(response.data.token));
+        }
         setLoading(false);
       })
       .catch((error) => {
