@@ -155,9 +155,9 @@ export default function ViewOffer(props) {
             }, 3000);
             setSnagSuccess("");
         } else if (type === 'reject') {
-            setRejectSuccess(fullError ? msg : [{ msg, param }])
+            setRejectErrors(fullError ? msg : [{ msg, param }])
             setTimeout(() => {
-                setRejectSuccess([]);
+                setRejectErrors([]);
             }, 3000);
             setRejectSuccess("");
         } else {

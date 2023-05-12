@@ -267,7 +267,7 @@ export default function AddProperty(props) {
         if (formResponse?.id) {
           history.push(`/agent/edit-property/${formResponse.id}`);
         }
-      }, 3000);
+      }, 1000);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "./layouts/layout";
 import UpcomingAppointments from "./appointments/upcoming";
 import CompletedAppointments from "./appointments/completed";
@@ -6,7 +6,6 @@ import CancelledAppointments from "./appointments/cancelled";
 
 
 export default function Appointments() {
-  //const [selected, setSelected] = useState(0);
 
   return (
     <Layout>

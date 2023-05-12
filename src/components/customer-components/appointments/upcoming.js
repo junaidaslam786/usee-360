@@ -119,8 +119,8 @@ export default function UpcomingAppointments(props) {
                 <div>
                   <div className="ltn__my-properties-info appointment-info">
                     <h6 className="mb-10 go-top overflow-dots">
-                      {element?.customerUser?.firstName}{" "}
-                      {element?.customerUser?.lastName}
+                      {element?.agentUser?.firstName}{" "}
+                      {element?.agentUser?.lastName}
                     </h6>
                     <small>
                       <i className="icon-clock" />{" "}
@@ -144,17 +144,13 @@ export default function UpcomingAppointments(props) {
                   </button>
                 </div>
                 <div>
-                  {element.allotedAgent === userDetail.id ? (
-                    <Link
-                      to={{
-                        pathname: `/precall/${element.id}/customer`,
-                      }}
-                    >
-                      <button className="joinCall">JOIN CALL</button>
-                    </Link>
-                  ) : (
-                    <button className="supervisor-btn">Assigned to supervisor</button>
-                  )}
+                  <Link
+                    to={{
+                      pathname: `/precall/${element.id}/customer`,
+                    }}
+                  >
+                    <button className="joinCall">JOIN CALL</button>
+                  </Link>
                 </div>
               </div>
             </div>
