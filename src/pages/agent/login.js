@@ -12,7 +12,6 @@ function AgentLoginPage() {
       <Navbar />
       <PageHeader headertitle="Account" subheader="Login" />
       <Login />
-      <CallToActionV1 />
       <Footer />
     </div>
   );

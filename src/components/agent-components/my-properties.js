@@ -36,7 +36,7 @@ export default function MyProperties() {
     );
 
     response = await response.json();
-    if (response) {
+    if (response?.data) {
       setList(response.data);
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));

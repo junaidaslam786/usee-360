@@ -403,7 +403,7 @@ export default function AddProperty(props) {
         // const usersArray = await loadUsersToAllocate();
 
         const response = await loadPropertyFields(props.id);
-        if (response) {
+        if (response?.id) {
           setTitle(response.title);
           setDescription(response.description);
           setPrice(response.price);

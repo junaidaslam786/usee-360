@@ -26,7 +26,7 @@ export default function CancelledAppointments() {
     );
 
     response = await response.json();
-    if (response) {
+    if (response?.data) {
       setList(response.data);
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
@@ -63,7 +63,7 @@ export default function CancelledAppointments() {
         appointmentAgentPhone = response.allotedAgentUser.phoneNumber;
       }
 
-      if (response) {
+      if (response?.id) {
         setAppointmentView({
           id: response.id,
           agentId: response.agentId,

@@ -28,17 +28,15 @@ export default function CustomerCalendar() {
     );
 
     response = await response.json();
-    if (response) {
-      if(response.data) {
-        const calendarData = response.data.map(appointment => {
-          return { 
-            id: appointment?.id,
-            start: `${appointment.appointmentDate}T${appointment.agentTimeSlot?.fromTime}`,
-            end: `${appointment.appointmentDate}T${appointment.agentTimeSlot?.toTime}`,
-          }
-        })
-        setUserAppointments(calendarData);
-      }
+    if(response?.data) {
+      const calendarData = response.data.map(appointment => {
+        return { 
+          id: appointment?.id,
+          start: `${appointment.appointmentDate}T${appointment.agentTimeSlot?.fromTime}`,
+          end: `${appointment.appointmentDate}T${appointment.agentTimeSlot?.toTime}`,
+        }
+      })
+      setUserAppointments(calendarData);
     }
   };
 
@@ -82,7 +80,7 @@ export default function CustomerCalendar() {
         appointmentAgentPhone = response.allotedAgentUser.phoneNumber;
       }
 
-      if (response) {
+      if (response?.id) {
         setAppointmentView({
           id: response.id,
           agentId: response.agentId,
