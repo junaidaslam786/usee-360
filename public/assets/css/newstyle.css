@@ -370,9 +370,10 @@
     font-size: 60px;
 }
 .tab-data .tabInner-data .view {
-    padding: 6px 15px;
+    padding: 6px 10px;
     border-radius: 4px;
-    margin-right: 10px;
+    width: 118px;
+    background-color: #edecec;
 }
 .tab-data .center {
     display: flex;
@@ -380,8 +381,9 @@
     align-items: center;
 }
 .tab-data .tabInner-data .joinCall {
-    padding: 6px 20px;
+    padding: 6px 10px;
     border-radius: 4px;
+    width: 118px;
     background-color: #00c800;
 }
 .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) .fc-button-group button:nth-child(2) {
@@ -611,19 +613,46 @@
     }
 }
 
-.status-buttons {
-    margin: 5px;
+.status-buttons.completed {
     border-radius: 4px;
+    padding: 6px 10px;
     color: white;
+    width: 118px;
     background-color: #00c800;
+}
+.status-buttons.cancelled {
+    border-radius: 4px;
+    color: #071c1f;
+    padding: 6px 10px;
+    width: 118px;
+    background-color: #edecec;
 }
 
 .notes-list {
     background: var(--fc-border-color);
     color: black;
+    overflow: auto;
 }
 
 .notes-scrollable-container {
-    height: 200px; /* Set the desired height for the container */
+    height: 300px; /* Set the desired height for the container */
     overflow: auto; /* Enable vertical scrolling */
+}
+.completed-icon,.cancelled-icon{
+    margin: 2px 3px 0 0;
+}
+.MyModal.Modal-size-unset{
+    width: 700px;
+}
+.MyModal.Cancelled{
+    width: unset;
+}
+.modal-btn-custom{
+    padding: 12px 20px;
+}
+.no-border{
+    border-left: none !important;
+}
+.border-right{
+    border-left: 1px solid #d5dbdb;
 }

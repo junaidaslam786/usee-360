@@ -171,8 +171,8 @@ export default function CompletedAppointments(props) {
                     </h3>
                   </div>
                 </div>
-                <div>
-                  <div className="ltn__my-properties-info appointment-info">
+                <div className="border-right">
+                  <div className="ltn__my-properties-info appointment-info no-border">
                     <h6 className="mb-10 go-top overflow-dots">
                       {element?.customerUser?.firstName}{" "}
                       {element?.customerUser?.lastName}
@@ -187,9 +187,9 @@ export default function CompletedAppointments(props) {
                         : "-"}
                     </small>
                   </div>
-                  <div>
+                  <div className="mt-2 ms-4">
                     <button className="status-buttons" onClick={() => handleNotesModal(element.id)}>Add Notes</button>
-                    <button className="status-buttons" onClick={() => {setShowNotesList(true); setNotesList(element.appointmentNotes);}}>Show Notes</button>
+                    <button className="status-buttons ms-1" onClick={() => {setShowNotesList(true); setNotesList(element.appointmentNotes);}}>Show Notes</button>
                   </div>
                 </div>
               </div>
@@ -399,7 +399,7 @@ export default function CompletedAppointments(props) {
       <Modal
         isOpen={isNotesModalOpen}
         onRequestClose={() => setIsNotesModalOpen(false)}
-        className="MyModal"
+        className="MyModal Modal-size-unset"
         overlayClassName="MyModalOverlay"
         ariaHideApp={false}
       >
@@ -409,13 +409,13 @@ export default function CompletedAppointments(props) {
           onChange={(e) => setNotes(e.target.value)}
           value={notes}
         />
-        <button className="btn theme-btn-1" onClick={handleNotesModalSubmit}>Submit</button>
-        <button className="btn theme-btn-2" onClick={handleNotesModalCancel}>Cancel</button>
+        <button className="btn theme-btn-1 modal-btn-custom" onClick={handleNotesModalSubmit}>Submit</button>
+        <button className="btn theme-btn-2 modal-btn-custom" onClick={handleNotesModalCancel}>Cancel</button>
       </Modal>
       <Modal
         isOpen={showNotesList}
         onRequestClose={() => setShowNotesList(false)}
-        className="MyNotes"
+        className="MyNotes MyModal Modal-size-unset"
         overlayClassName="MyModalOverlay"
         ariaHideApp={false}
       >
@@ -427,7 +427,7 @@ export default function CompletedAppointments(props) {
           ))
         ) : <span></span>}
         </div>
-        <button className="theme-btn-2" onClick={() => setShowNotesList(false)}>Close</button>
+        <button className="theme-btn-2 modal-btn-custom" onClick={() => setShowNotesList(false)}>Close</button>
       </Modal>
     </div>
   );

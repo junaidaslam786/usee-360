@@ -204,33 +204,41 @@ export default function UpcomingAppointments(props) {
                           : "-"}
                       </small>
                     </div>
-                    <div>
-                      <button className="status-buttons" onClick={() => handleNotesModal(element.id)}>Mark as completed</button>
-                      <button className="status-buttons" onClick={() => handleConfirm(element.id)}>Mark as cancelled</button>
-                    </div>
                   </div>
                 </div>
                 <div className="tabInner-data">
-                  <div>
-                    <button
-                      className="view"
-                      onClick={() => handleViewAppointmentButtonClick(element.id)}
-                    >
-                      <i className="fa-solid fa-eye" /> View
-                    </button>
-                  </div>
-                  <div>
+                  <div className="me-lg-2">
+                    <div>
                     {element.allotedAgent === userDetail.id ? (
                       <Link
                         to={{
                           pathname: `/precall/${element.id}/agent`,
                         }}
                       >
-                        <button className="joinCall">JOIN CALL</button>
+                        <button className="joinCall">Join Call</button>
                       </Link>
                     ) : (
                       <button className="supervisor-btn">Assigned to supervisor</button>
                     )}
+                  </div>
+                    <div>
+                      <button className="status-buttons completed mt-lg-2" onClick={() => handleNotesModal(element.id)}>
+                        <i class="fa-solid fa-check completed-icon"></i>
+                        Completed</button>
+                    </div>
+                  </div>
+                  <div>
+                  <div>
+                      <button
+                      className="view"
+                      onClick={() => handleViewAppointmentButtonClick(element.id)}
+                      >
+                        <i className="fa-solid fa-eye" /> View
+                      </button>
+                  </div>
+                  <div>
+                      <button className="status-buttons cancelled mt-lg-2" onClick={() => handleConfirm(element.id)}><i class="fa-solid fa-xmark cancelled-icon"></i>Cancelled</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -448,7 +456,7 @@ export default function UpcomingAppointments(props) {
       <Modal
         isOpen={isNotesModalOpen}
         onRequestClose={() => setIsNotesModalOpen(false)}
-        className="MyModal"
+        className="MyModal Modal-size-unset"
         overlayClassName="MyModalOverlay"
         ariaHideApp={false}
       >
@@ -458,21 +466,21 @@ export default function UpcomingAppointments(props) {
           onChange={(e) => setNotes(e.target.value)}
           value={notes}
         />
-        <button className="btn theme-btn-1" onClick={handleNotesModalSubmit}>Submit</button>
-        <button className="btn theme-btn-2" onClick={handleNotesModalCancel}>Cancel</button>
+        <button className="btn theme-btn-1 modal-btn-custom" onClick={handleNotesModalSubmit}>Submit</button>
+        <button className="btn theme-btn-2 modal-btn-custom" onClick={handleNotesModalCancel}>Cancel</button>
       </Modal>
       <Modal
         isOpen={confirmCancelModal}
         onRequestClose={() => setConfirmCancelModal(false)}
-        className="MyModal"
+        className="MyModal Cancelled"
         overlayClassName="MyModalOverlay"
         ariaHideApp={false}
       >
         <h2>Confirmation</h2>
         <p>Are you sure you want to cancel this appointment? You won't be able to join this appointment again.</p>
         <div className="ButtonContainer">
-          <button className="btn theme-btn-1" onClick={handleCancelModalConfirm}>Yes</button>
-          <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>No</button>
+          <button className="btn theme-btn-1 modal-btn-custom" onClick={handleCancelModalConfirm}>Yes</button>
+          <button className="btn theme-btn-2 modal-btn-custom" onClick={handleCancelModalCancel}>No</button>
         </div>
       </Modal>
     </div>
