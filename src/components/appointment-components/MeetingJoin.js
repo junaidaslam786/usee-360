@@ -326,6 +326,7 @@ const MeetingJoin = (props) => {
                 addLogEntry('left', "Agent has left the meeting by clicking on the endcall button");
                 addLogEntry('completed', "Appointment got completed as agent has ended the call");
               }
+              session.disconnect();
             },
             sessionDisconnected: function sessionDisconnectHandler(event) {
               if(userType === "agent") {
