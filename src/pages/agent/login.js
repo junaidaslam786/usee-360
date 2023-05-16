@@ -9,7 +9,7 @@ import Footer from "../../components/global-components/footer";
 function AgentLoginPage() {
   return (
     <div>
-      <Navbar />
+      <Navbar page="login" />
       <PageHeader headertitle="Account" subheader="Login" />
       <Login />
       <Footer />
