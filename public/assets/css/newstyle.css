@@ -517,7 +517,6 @@
 }
 
 .fc .fc-daygrid-body {
-  
     width: 100% !important;
 }
 
@@ -533,8 +532,8 @@
     margin-top: 8px;
 }
 
-.fc .fc-scrollgrid table{
-    width:100% !important;
+.fc .fc-scrollgrid table {
+    width: 100% !important;
 }
 .supervisor-btn {
     width: 116px;
@@ -590,17 +589,17 @@
 .featuredImageCss {
     object-fit: contain;
 }
-.overflow-dots{
+.overflow-dots {
     width: 250px; /* Set the width of the element */
     white-space: nowrap; /* Prevent the text from wrapping */
     overflow: hidden; /* Hide any text that overflows */
     text-overflow: ellipsis;
 }
-.otp input:focus-within{
+.otp input:focus-within {
     border: 1px solid #23c26a !important;
     outline: none !important;
 }
-.contact-form-login{
+.contact-form-login {
     width: 600px;
     margin-inline: auto;
 }
@@ -638,21 +637,57 @@
     height: 300px; /* Set the desired height for the container */
     overflow: auto; /* Enable vertical scrolling */
 }
-.completed-icon,.cancelled-icon{
+.completed-icon,
+.cancelled-icon {
     margin: 2px 3px 0 0;
 }
-.MyModal.Modal-size-unset{
+.MyModal.Modal-size-unset {
     width: 700px;
 }
-.MyModal.Cancelled{
+.MyModal.Cancelled {
     width: unset;
 }
-.modal-btn-custom{
+.modal-btn-custom {
     padding: 12px 20px;
 }
-.no-border{
+.no-border {
     border-left: none !important;
 }
-.border-right{
+.border-right {
     border-left: 1px solid #d5dbdb;
+}
+.lds-ring.snagList div {
+    left: 48%;
+}
+.headerItems .listItems a{
+    padding: 7px 15px !important;
+}
+.headerItems .listItems li a{
+    padding: unset !important;
+}
+.headerItems .listItems{
+    border: 1px solid #ABB2B9 !important;
+    margin: 0 10px !important;
+    box-shadow: 0 16px 32px 0 rgba(7, 28, 31, 0.1);
+}
+.headerItems .listItems:nth-child(2){
+    padding-right: 15px;
+}
+.userImg{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.userImg img{
+    width: 30px;
+    object-fit: cover;
+    object-position: center;
+    height: 30px;
+    border-radius: 50%;
+    margin-top: -3px;
+}
+.customPadding{
+  width: unset !important;
+  padding: 0 10px !important;  
 }
