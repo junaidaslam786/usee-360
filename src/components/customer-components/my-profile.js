@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ResponseHandler from '../global-components/respones-handler';
+import TimezoneDetail from "../global-components/timezone-detail";
+import { USER_TYPE } from "../../constants";
 
 export default function AccountDetails() {
   const [firstName, setFirstName] = useState();
@@ -259,6 +261,7 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
+            <TimezoneDetail type={USER_TYPE.CUSTOMER} />
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
               <ResponseHandler errors={errorPass} success={successPass}/>

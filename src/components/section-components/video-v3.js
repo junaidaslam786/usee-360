@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import parse from "html-react-parser";
 
 class VideoV3 extends Component {
   render() {
     const publicUrl = `${process.env.PUBLIC_URL}/`;
-    const imagealt = "image";
 
     return (
       <div className="ltn__video-popup-area ltn__video-popup-margin">

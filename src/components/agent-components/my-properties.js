@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import axios from "axios";
 import Select from "react-select";
 import Layout from "./layouts/layout";
 import { AGENT_TYPE } from "../../constants";
-import { getUserDetailsFromJwt } from "../../utils";
+import { 
+  getUserDetailsFromJwt,
+  formatCreatedAtTimestamp,
+} from "../../utils";
 
 export default function MyProperties() {
   const [currentPage, setCurrentPage] = useState();
@@ -206,7 +208,7 @@ export default function MyProperties() {
                         </small>
                       </div>
                     </td>
-                    <td>{ element?.createdAt ? moment.utc(element.createdAt).format("MMMM D, YYYY") : "-" }</td>
+                    <td>{ element?.createdAt ? formatCreatedAtTimestamp(element.createdAt, "MMMM D, YYYY") : "-" }</td>
                     {
                       userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
                         <React.Fragment>

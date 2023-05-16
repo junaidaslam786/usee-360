@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 class CopyRight extends Component {
   render() {
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
-
     return (
       <div className="ltn__copyright-area ltn__copyright-2 section-bg-7  plr--5">
         <div className="container-fluid ltn__border-top-2">

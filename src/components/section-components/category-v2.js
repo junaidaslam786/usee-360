@@ -4,9 +4,6 @@ import parse from "html-react-parser";
 
 class CategoryV2 extends Component {
   render() {
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
-    const imagealt = "image";
-
     return (
       <div className="ltn__category-area ltn__product-gutter section-bg-1--- pt-115 pb-70">
         <div className="container">

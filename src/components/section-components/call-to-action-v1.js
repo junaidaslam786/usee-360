@@ -4,9 +4,6 @@ import parse from "html-react-parser";
 
 class CallToActonV1 extends Component {
   render() {
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
-    const imagealt = "image";
-
     return (
       <div>
         {!localStorage.getItem("agentToken") && !localStorage.getItem("customerToken") ? (

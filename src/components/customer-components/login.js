@@ -63,6 +63,11 @@ export default function Login() {
 
       if (formResponse?.token) {
         setToken(formResponse.token);
+        
+        if (formResponse?.user?.timezone) {
+          localStorage.setItem("userTimezone", JSON.stringify(formResponse.user.timezone));
+        }
+
         if (!formResponse.user.otpVerified || formResponse.user.signupStep != 2) {
           const code = Math.floor(100000 + Math.random() * 900000);
           updateProfile(formResponse.token, formResponse.user.firstName, formResponse.user.lastName, formResponse.user.email, code);
