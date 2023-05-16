@@ -66,13 +66,13 @@ export default function Navbar(props) {
               <div className="col header-menu-column">
                 <div className="header-menu d-none d-xl-block">
                   <nav>
-                    <div className="ltn__main-menu go-top">
+                    <div className="ltn__main-menu go-top headerItems">
                       <ul>
-                        <li>
+                        <li className="listItems">
                           <Link to="/">Home</Link>
-                          <div className="separator"></div>
+                          {/* <div className="separator"></div> */}
                         </li>
-                        <li className="menu-icon">
+                        <li className="menu-icon listItems">
                           <Link to="/services">Services</Link>
                           <ul>
                             <li>
@@ -81,20 +81,20 @@ export default function Navbar(props) {
                               </Link>
                             </li>
                           </ul>
-                          <div
+                          {/* <div
                             className="separator"
                             style={{ marginLeft: "20px" }}
-                          ></div>
+                          ></div> */}
                         </li>
                         {
                           props?.page !== 'register' && (
-                            <li>
+                            <li className="listItems">
                               <Link to="/demo">Book a Demo</Link>
-                              <div className="separator"></div>
+                              {/* <div className="separator"></div> */}
                             </li>
                           )
                         }
-                        <li>
+                        <li className="listItems">
                           <Link to="/contact">Contact</Link>
                         </li>
                       </ul>
@@ -144,8 +144,10 @@ export default function Navbar(props) {
                               : null
                           }
                         >
-                          <Link to={ userDetail?.agent ? "/agent/dashboard" : "/customer/dashboard" }>
-                            <i className="icon-user" /> Dashboard
+                          <Link className="customPadding" to={ userDetail?.agent ? "/agent/dashboard" : "/customer/dashboard" }>
+                            <span className="userImg"><img src="https://api.usee-360.com/user/images/1684149098357_400019400164_292264.jpg" alt="user-avatar"/></span>
+                            {/* <i className="icon-user" /> */}
+                             haydar fathulla
                           </Link>
                         </li>
                       )
