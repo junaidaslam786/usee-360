@@ -21,6 +21,7 @@ export default function AddAppointment() {
   const [loading, setLoading] = useState();
   const [isChecked, setIsChecked] = useState(false);
   const location = useLocation();
+  const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useState(false);
 
   const token = JSON.parse(localStorage.getItem("customerToken"));
 
@@ -187,14 +188,17 @@ export default function AddAppointment() {
     setSelectedAllocatedPropertyAgent(e.userId);
     const response = await loadAgentAvailabilitySlots(e.userId);
     if (response) {
-      setTimeslots(response.map((timeSlot) => {
+      const timeSlotsResponse = response.map((timeSlot) => {
         return {
           label: timeSlot.textShow,
           value: timeSlot.id,
           fromTime: timeSlot.fromTime,
           toTime: timeSlot.toTime
         }
-      }));
+      });
+
+      setTimeslots(timeSlotsResponse);
+      selectNextSlot(timeSlotsResponse);
     }
   };
 
@@ -216,36 +220,16 @@ export default function AddAppointment() {
   };
 
   const handleButtonClick = (event) => {
-    const now = new Date();
-
-    // Format the date and time values to be used as input values
-    const dateValue = now.toISOString().slice(0, 10);
-    setDate(dateValue);
-
-    const currentSlot = findCurrentTimeSlot(timeslots);
-    if (currentSlot) { 
-      const foundSlot = timeslots.find((time) => time.value === currentSlot.value);
-
-      // check if current slot expired
-      const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
-
-      // if current slot expired, then select next slot
-      const nextSlot = !isTimeExpired ? foundSlot : timeslots.find((time) => time.value === currentSlot.value + 1);
-
-      if (!nextSlot) {
-        setErrorHandler(
-          "Slot is not available, select another slot"
-        );
-
-        return;
-      }
-
-      setTime(nextSlot.value);
-    } else {
+    const nextSlot = selectNextSlot();
+    if (!nextSlot) {
       setErrorHandler(
         "Slot is not available, select another slot"
       );
+      
+      return;
     }
+
+    setTime(nextSlot.value);
   }
 
   const checkHandler = () => {
@@ -271,21 +255,69 @@ export default function AddAppointment() {
     const searchParams = new URLSearchParams(location.search);
     const idParam = searchParams.get('id');
 
-    const loadUserSelectedProperty = async () => {
-      const response = await loadProperty(idParam);
-      if (response?.id) {
-        const defaultOption = {
-          value: response.id,
-          label: response.title,
-          userId: response.userId,
-        };
-        setDefaultPropertyOptions([defaultOption]);
-        selectedAllocatedPropertyHandler(defaultOption);
+    if (idParam) {
+      const loadUserSelectedProperty = async () => {
+        const response = await loadProperty(idParam);
+        if (response?.id) {
+          const defaultOption = {
+            value: response.id,
+            label: response.title,
+            userId: response.userId,
+          };
+          setDefaultPropertyOptions([defaultOption]);
+          selectedAllocatedPropertyHandler(defaultOption);
+        }
       }
+  
+      loadUserSelectedProperty();
+    }
+    
+  }, [location]);
+
+  const selectNextSlot = (currentTimeSlots) => {
+    const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
+    const now = new Date();
+
+    // Format the date and time values to be used as input values
+    const dateValue = now.toISOString().slice(0, 10);
+    setDate(dateValue);
+
+    const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
+    
+    if (currentSlot) { 
+      const foundSlot = availabilityTimeSlots.find((time) => time.value === currentSlot.value);
+
+      // check if current slot expired
+      const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
+
+      // if current slot expired, then select next slot
+      const nextSlot = !isTimeExpired ? foundSlot : availabilityTimeSlots.find((time) => time.value === currentSlot.value + 1);
+
+      if (!nextSlot) {
+        console.log('no slot');
+        setAnySlotAvailableForToday(false);
+        return false;
+      }
+
+      setAnySlotAvailableForToday(true);
+
+      return nextSlot;
     }
 
-    loadUserSelectedProperty();
-  }, [location]);
+    return false;
+  }
+
+  const setDateHandler = (e) => {
+    const now = new Date();
+    let dateValue = e;
+
+    if (new Date(e) < now) {
+      // Format the date and time values to be used as input values
+      dateValue = now.toISOString().slice(0, 10);
+    }
+    
+    setDate(dateValue);
+  }
 
   return (
     <Layout>
@@ -313,6 +345,7 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-4">
                   <button
+                    disabled={!(anySlotAvailableForToday && selectedAllocatedProperty)}
                     type="button"
                     className="btn theme-btn-2 request-now-btn"
                     onClick={handleButtonClick}
@@ -325,7 +358,7 @@ export default function AddAppointment() {
                     <label>Select Date *</label>
                     <input
                       type="date"
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => setDateHandler(e.target.value)}
                       value={date}
                       required
                     />
