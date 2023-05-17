@@ -11,14 +11,14 @@ class TermAndCondition extends Component {
                 <strong>INTRODUCTION</strong>
                 <ul>
                   <li>
-                    <strong>Who we are</strong>. We are ZELLE Technologies Limited a
+                    <strong>Who we are</strong>. We are ZELLE LTD Limited a
                     company incorporated in England with company number 13742020 whose
                     registered office is Birtles Farm Hocker Lane, Over Alderley,
-                    Macclesfield, SK10 4SB . Our registered VAT number is [TBC].
+                    Macclesfield, SK10 4SB. Our registered VAT number is [TBC].
                   </li>
                   <li>
                     <strong>How to contact us</strong>. You can contact us by
-                    telephoning our customer service team by emailing us at
+                    telephoning our customer service team by emailing us at &nbsp;
                     <a href="info@usee-360.com">info@usee-360.com</a>.
                   </li>
                   <li>
@@ -40,10 +40,9 @@ class TermAndCondition extends Component {
                     conditions (“<strong>terms</strong>”) set out the terms on which
                     we provide access to our U-See mobile application (“<strong
                       >our app</strong
-                    >”) and our website
-                    <a href="https://usee360.com/"
-                      >https://usee360.com/</a
-                    >(the term “<strong>our site</strong>” refers to the website and
+                    >”) and our website &nbsp;
+                    <a href="https://usee360.com/">https://usee360.com/</a> &nbsp;
+                    (the term “<strong>our site</strong>” refers to the website and
                     our app) which you use or through which you access our services.
                   </li>
                   <li>
@@ -131,10 +130,8 @@ class TermAndCondition extends Component {
                   <li>
                     <strong>Setting up an account.</strong> In order to allow your
                     properties to be viewed through our site, you will need to set up
-                    an account with us. You can do this&nbsp;
-                    <a href="https://usee360.com/customer/register"
-                      >here</a
-                    >
+                    an account with us. You can do this &nbsp;
+                    <a href="https://usee360.com/customer/register">here</a>
                   </li>
                   <li>
                     <strong></strong> The agreement between us will be for a minimum
@@ -149,7 +146,7 @@ class TermAndCondition extends Component {
                     procedures, you must treat such information as confidential. You
                     must not disclose it to any third party. If you know or suspect
                     that anyone other than you knows your user identification code or
-                    password, you must promptly notify us at
+                    password, you must promptly notify us at &nbsp;
                     <a href="mailto:info@usee-360.com">info@usee-360.com</a>.
                   </li>
                   <li>
@@ -178,13 +175,13 @@ class TermAndCondition extends Component {
                   </li>
                   <li>
                     <strong>When payment must be made.</strong> Following the initial
-                    free period we shall charge you 0 per month (or part thereof) for
+                    free period we shall charge you ZERO per month (or part thereof) for
                     each property which is uploaded by you to our site for the period
                     it remains on our site.
                   </li>
                   <li>
                     <strong>Upload fee.</strong> Following the initial free period we
-                    will also charge you an upload fee of 0 per upload per property.
+                    will also charge you an upload fee of ZERO per upload per property.
                   </li>
                   <li>
                     <strong
@@ -301,7 +298,7 @@ class TermAndCondition extends Component {
                     <strong
                       >How to complain about content uploaded by other users. </strong
                     >If you wish to complain about content uploaded by other users
-                    please contact us at
+                    please contact us at &nbsp;
                     <a href="info@usee-360.com">info@usee-360.com</a>.
                   </li>
                   <li>
