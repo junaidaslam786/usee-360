@@ -1,5 +1,9 @@
 export const DEFAULT_CURRENCY = "AED";
 
+export const PRODUCT_CATEGORIES = [
+    { value: 1, label: "Property" }
+];
+
 export const PROPERTY_TYPES = [
     { value: "commercial", label: "Commercial" },
     { value: "residential", label: "Residential" },

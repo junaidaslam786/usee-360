@@ -14,7 +14,13 @@ import { setMomentDefaultTimezone } from "./utils";
 import Home from "./pages/home";
 import PropertyGrid from "./pages/property-grid";
 import PropertyDetails from "./pages/property-details";
+import Blogs from "./pages/blogs";
+import BlogDetails from "./pages/blog-details";
+import News from "./pages/news";
+import NewsDetails from "./pages/news-details";
 import Services from "./pages/services";
+import Community from "./pages/community";
+import CommunityDetails from "./pages/community-details";
 import Demo from "./pages/demo";
 import Contact from "./pages/contact";
 import Termcondition from "./pages/termcondition";
@@ -120,6 +126,12 @@ class Root extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/property-grid" component={PropertyGrid} />
             <Route path="/property-details/:id" component={PropertyDetails} />
+            <Route path="/blogs" component={Blogs} />
+            <Route path="/blog-details/:id" component={BlogDetails} />
+            <Route path="/news" component={News} />
+            <Route path="/news-details/:id" component={NewsDetails} />
+            <Route path="/community" component={Community} />
+            <Route path="/community-details/:id" component={CommunityDetails} />
             <Route path="/demo" component={Demo} />
             <Route path="/contact" component={Contact} />
             <Route path="/terms-and-conditions" component={Termcondition} />

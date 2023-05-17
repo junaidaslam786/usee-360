@@ -82,6 +82,14 @@ export default function Navbar(props) {
                             </li>
                           </ul>
                         </li>
+                        <li className="menu-icon listItems">
+                          <Link className="pointer_none" to="#">About</Link>
+                          <ul>
+                            <li><Link to="/blogs">Blogs</Link></li>
+                            <li><Link to="/news">News</Link></li>
+                            <li><Link to="/community">Community</Link></li>
+                          </ul>
+                        </li>
                         {
                           (props?.page !== 'login' && props?.page !== 'register') && (!localStorage.getItem("agentToken") && !localStorage.getItem("customerToken")) ? (
                             <li className="listItems">
@@ -212,6 +220,15 @@ export default function Navbar(props) {
                   </li>
                 )
               }
+              <li>
+                <Link to="/blogs">Blogs</Link>
+              </li>
+              <li>
+                <Link to="/news">News</Link>
+              </li>
+              <li>
+                <Link to="/community">Community</Link>
+              </li>
               <li>
                 <Link to="/contact">Contact</Link>
               </li>

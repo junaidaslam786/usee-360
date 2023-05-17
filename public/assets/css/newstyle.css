@@ -673,6 +673,9 @@
 .headerItems .listItems:nth-child(2){
     padding-right: 15px;
 }
+.headerItems .listItems:nth-child(3){
+    padding-right: 15px;
+}
 .userImg{
     width: 30px;
     height: 30px;
@@ -837,4 +840,118 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.ltn__comment {
+    border-bottom: 1px solid #00c800;
+    padding: 1rem 0rem 1.5rem 0rem;
+}
+
+.ltn__comment-title {
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 18px;
+    margin-bottom: 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ltn__comment-location {
+    padding-right: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ltn__comment-info {
+    display: flex;
+}
+
+.ltn__comment-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ltn__commentdetail-posteddate {
+    margin-bottom: 1rem;
+}
+
+.comment-text {
+    padding: 25px;
+    margin-bottom: 10px;
+    background-color: #F2F4F4;
+}
+
+.blog-grid-desc {
+    line-height: 1.5em;
+    height: 3em;
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.ltn__blog-item-5 {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid var(--border-color-11) !important;
+    border: transparent;
+}
+
+.ltn__blog-item-5 > .ltn__blog-img img {
+    border-radius: 1rem;
+}
+
+.ltn__blog-item-5 > .ltn__blog-img {
+    position: relative;
+    flex: 0 0 36%;
+}
+
+.ltn__blog-title-news {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ltn__blog-item-3 {
+    box-shadow: var(--ltn__box-shadow-4) !important;
+}
+
+.ltn__blog-item-3 .ltn__blog-img {		
+    overflow: hidden;
+    height: 300px;
+}
+
+.ltn__blog-img img {
+    margin-bottom: 0 !important;
+    height: -webkit-fill-available !important;
+    width: -webkit-fill-available !important;
+}
+
+.ltn__blog-title {		
+    margin-bottom: 20px;		
+    font-size: 22px;		
+    font-weight: 600;		
+    white-space: nowrap;		
+    overflow: hidden;		
+    text-overflow: ellipsis;
+}
+
+.ltn__blog-list-wrap .ltn__blog-title {
+    font-size: 30px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+  
+.ltn__blog-brief {
+    overflow: hidden;
+    flex: 0 0 65%;
 }

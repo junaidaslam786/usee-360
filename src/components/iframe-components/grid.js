@@ -7,6 +7,7 @@ import {
   BEDROOMS,
   UNITS,
 } from "../../constants";
+import Select from "react-select";
 
 export default function PropertyGrid() {
   const [currentPage, setCurrentPage] = useState();
@@ -42,7 +43,7 @@ export default function PropertyGrid() {
       }
 
       if (roomsFilter) {
-        payload.rooms = roomsFilter;
+        payload.rooms = roomsFilter.value;
       }
 
       if (latFilter) {
@@ -285,33 +286,12 @@ export default function PropertyGrid() {
                     </ul>
                     <ul className="col-sm-4">
                       <h4 className="ltn__widget-title">Bedrooms</h4>
-                      <div
-                        onChange={(e) => {
-                          setRooms(e.target.value);
-                        }}
-                      >
-                        <li>
-                          <label className="checkbox-item">
-                            1
-                            <input type="radio" name="bedrooms" value="1" />
-                            <span className="checkmark" />
-                          </label>
-                        </li>
-                        <li>
-                          <label className="checkbox-item">
-                            3
-                            <input type="radio" name="bedrooms" value="3" />
-                            <span className="checkmark" />
-                          </label>
-                        </li>
-                        <li>
-                          <label className="checkbox-item">
-                            5
-                            <input type="radio" name="bedrooms" value="5" />
-                            <span className="checkmark" />
-                          </label>
-                        </li>
-                      </div>
+                        <Select
+                          classNamePrefix="custom-select"
+                          options={BEDROOMS}
+                          onChange={(e) => { setRooms(e) }}
+                          value={roomsFilter}
+                        />
                     </ul>
                     <hr />
                     <div className="widget--- ltn__price-filter-widget col-sm-12">
