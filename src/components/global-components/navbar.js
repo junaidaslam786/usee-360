@@ -145,9 +145,10 @@ export default function Navbar(props) {
                           }
                         >
                           <Link className="customPadding" to={ userDetail?.agent ? "/agent/dashboard" : "/customer/dashboard" }>
-                            <span className="userImg"><img src="https://api.usee-360.com/user/images/1684149098357_400019400164_292264.jpg" alt="user-avatar"/></span>
-                            {/* <i className="icon-user" /> */}
-                             haydar fathulla
+                            <span className="userImg">
+                              <img src={`${process.env.REACT_APP_API_URL}/${userDetail.profileImage}`} alt="Dashboard"/>
+                            </span>
+                            { userDetail.name }
                           </Link>
                         </li>
                       )
