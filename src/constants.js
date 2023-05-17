@@ -94,7 +94,7 @@ export const DEFAULT_LICENSE_NO_TEXT = "Company Registration # *";
 export const DEFAULT_DEED_TITLE_TEXT = "Deed Title *";
 
 export const UPLOAD_DOCUMENT_DEFAULT = "Upload Trade Licence Document *";
-export const UPLOAD_DOCUMENT_LANDLORD = "Upload Emirate ID/Copy of the Deed Title/Copy of Passport *";
+export const UPLOAD_DOCUMENT_LANDLORD = "Upload Emirate ID/Copy of Passport *";
 
 export const AGENT_TYPE = {
     AGENT: "agent",

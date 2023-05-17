@@ -87,12 +87,12 @@ export default function Navbar(props) {
                           ></div> */}
                         </li>
                         {
-                          props?.page !== 'register' && (
+                          (props?.page !== 'login' && props?.page !== 'register') && (!localStorage.getItem("agentToken") && !localStorage.getItem("customerToken")) ? (
                             <li className="listItems">
                               <Link to="/demo">Book a Demo</Link>
                               {/* <div className="separator"></div> */}
                             </li>
-                          )
+                          ) : null
                         }
                         <li className="listItems">
                           <Link to="/contact">Contact</Link>

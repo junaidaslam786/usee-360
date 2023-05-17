@@ -803,7 +803,10 @@ export default function PropertyGrid() {
               </button>
               <button
                 className="mt-4 btn theme-btn-2"
-                onClick={() => window.location.reload(true)}
+                onClick={() => { 
+                  window.history.replaceState({}, document.title)
+                  window.location.reload(true) 
+                }}
               >
                 Reset
               </button>
