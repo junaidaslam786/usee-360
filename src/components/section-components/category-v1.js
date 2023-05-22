@@ -23,7 +23,8 @@ class CategoryV1 extends Component {
           <div className="row ltn__category-slider-active--- slick-arrow-1 justify-content-center">
             <div className="col-12 col-md-6 col-xl-4">
                 <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-user" />
                   </span>
@@ -37,7 +38,8 @@ class CategoryV1 extends Component {
             </div>
             <div className="col-12 col-md-6 col-xl-4">
               <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-secure" />
                   </span>
@@ -52,7 +54,8 @@ class CategoryV1 extends Component {
             </div>
             <div className="col-12 col-md-6 col-xl-4">
               <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-house-4" />
                   </span>
@@ -65,7 +68,8 @@ class CategoryV1 extends Component {
             </div>
             <div className="col-12 col-md-6 col-xl-4">
               <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-deal" />
                   </span>
@@ -80,7 +84,8 @@ class CategoryV1 extends Component {
             </div>
             <div className="col-12 col-md-6 col-xl-4">
               <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-location" />
                   </span>
@@ -93,7 +98,8 @@ class CategoryV1 extends Component {
             </div>
             <div className="col-12 col-md-6 col-xl-4">
               <div className="ltn__category-item ltn__category-item-5 text-center">
-                <Link to="/" style={{ pointerEvents: "none" }}>
+                <Link to="/" className="pointer_none"
+                 >
                   <span className="category-icon">
                     <i className="flaticon-book" />
                   </span>

@@ -92,7 +92,8 @@ export default function DashboardFilter(props) {
                         <div className="dash_date_arrow"></div>
                     </div>
                     <div className={`dash_date_inner ${toggleMenu ? "show" : ""}`}>
-                        <div className="clearfix" style={{ height: "70px" }}>
+                        <div className="clearfix h_70"
+                        >
                             <div className="dash_date_from">
                                 <label>From</label>
                                 <div className="dash_input">
@@ -140,10 +141,9 @@ export default function DashboardFilter(props) {
             <div className="ltn__myaccount-tab-content-inner">
                 <div className="ltn__my-properties-table table-responsive">
                 <ul
-                  className="nav nav-pills pb-2"
+                  className="nav nav-pills pb-2 custom_divider"
                   id="pills-tab"
                   role="tablist"
-                  style={{ borderBottom: "1px solid #e5eaee", margin: "0 10px" }}
                 >
                     <li className="nav-item" role="presentation">
                         <button

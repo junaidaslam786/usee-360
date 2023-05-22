@@ -558,7 +558,9 @@ export default function AddAppointment() {
                             <ResponseHandler errors={errors} success={success} />
                           </div>
                           <div className="modalBtn">
-                            <button type="button" style={{"background-color": "#dadada", "color":"black"}} data-bs-dismiss="modal" aria-label="Close">
+                            <button type="button"
+                            className="modal_close"
+                             data-bs-dismiss="modal" aria-label="Close">
                               Close
                             </button>
                           </div>

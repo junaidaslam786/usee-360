@@ -81,16 +81,11 @@ export default function Navbar(props) {
                               </Link>
                             </li>
                           </ul>
-                          {/* <div
-                            className="separator"
-                            style={{ marginLeft: "20px" }}
-                          ></div> */}
                         </li>
                         {
                           (props?.page !== 'login' && props?.page !== 'register') && (!localStorage.getItem("agentToken") && !localStorage.getItem("customerToken")) ? (
                             <li className="listItems">
                               <Link to="/demo">Book a Demo</Link>
-                              {/* <div className="separator"></div> */}
                             </li>
                           ) : null
                         }

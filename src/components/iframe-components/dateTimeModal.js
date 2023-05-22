@@ -187,20 +187,13 @@ const Modal = ({ id, agentId, propertyId }) => {
               </div>
               <div className="modal-body calenderBody">
                 <div
-                  className="row"
-                  style={{ justifyContent: "center", alignItems: "center" }}
+                  className="row centered"
                 >
                   <div
-                    className="col-12 col-lg-6"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
+                    className="col-12 col-lg-6 centered"
                   >
                     <div
-                      className="calenderContent"
-                      style={{ minHeight: "562px" }}
+                      className="calenderContent mh_562"
                     >
                       <h1 className="calenderModalHeading">Pick a Day</h1>
                       <Calendar
@@ -213,18 +206,13 @@ const Modal = ({ id, agentId, propertyId }) => {
                   </div>
                   {appointmentDate ? (
                     <div
-                      className="ltn__quick-view-modal-inner col-12 col-lg-6"
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
+                      className="ltn__quick-view-modal-inner col-12 col-lg-6 centered"
                     >
                       <div>
-                        <div style={{ marginLeft: "-10px" }}>
+                        <div className="ml_n10"
+                        >
                           <h2
-                            className="calenderModalHeading"
-                            style={{ marginBottom: "10px" }}
+                            className="calenderModalHeading mb_10"
                           >
                             Pick a Time Slot
                           </h2>
@@ -256,10 +244,11 @@ const Modal = ({ id, agentId, propertyId }) => {
                           type="checkbox"
                           id="supervisor"
                           onChange={(e) => setSupervisor(e.target.checked)}
-                          style={{ marginTop: "10px" }}
                           checked={supervisor}
+                          className="mt_10"
                         />
-                        <label for="supervisor" style={{ marginLeft: "5px" }}>
+                        <label for="supervisor" className="ml_5"
+                         >
                           Select Supervisor
                         </label>
                       </div>
@@ -267,18 +256,17 @@ const Modal = ({ id, agentId, propertyId }) => {
                   ) : null}
                 </div>
                 <div
-                  className="modalBtn"
-                  style={{ justifyContent: "space-between" }}
+                  className="modalBtn justify-content-between"
                 >
                   <button
                     data-bs-dismiss="modal"
                     aria-label="Close"
-                    style={{ marginLeft: "15px" }}
+                    className="ml_15"
                   >
                     Close
                   </button>
                   <button
-                    style={{ marginRight: "20px" }}
+                  className="mr_20"
                     type="button"
                     data-bs-dismiss="modal"
                     aria-label="Close"
@@ -311,7 +299,7 @@ const Modal = ({ id, agentId, propertyId }) => {
                 </div>
                 <div className="modal-body calenderBody childModal">
                   <form
-                    style={{ paddingTop: "40px" }}
+                  className="pt_40"
                     onSubmit={bookAppointmentHandler}
                   >
                     <ResponseHandler errors={errors} success={success} />
@@ -349,11 +337,7 @@ const Modal = ({ id, agentId, propertyId }) => {
                       ></input>
                     </div>
                     <div
-                      className="modalBtn childBtn"
-                      style={{
-                        justifyContent: "space-between",
-                        marginTop: "40px",
-                      }}
+                      className="modalBtn childBtn justify-content-between mt_40"
                     >
                       <button
                         data-bs-dismiss="modal"

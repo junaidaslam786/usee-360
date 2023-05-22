@@ -49,7 +49,8 @@ class ServiceDetails extends Component {
                 <div className="widget-2 ltn__menu-widget ltn__menu-widget-2 text-uppercase">
                   <ul className="go-top">
                     <li className="active">
-                      <Link to="#" style={{ pointerEvents: "none" }}>
+                      <Link to="#" className="pointer_none"
+                       >
                         Properties
                         <span>
                           <i className="fas fa-arrow-right" />
