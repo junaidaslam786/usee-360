@@ -43,8 +43,8 @@ export const findCurrentTimeSlot = (timeslots) => {
 
 export const getUserDetailsFromJwt = () => {
   try {
-    const customerToken = JSON.parse(localStorage.getItem("customerToken"));
-    const agentToken = JSON.parse(localStorage.getItem("agentToken"));
+    const customerToken = getLoginToken(true);
+    const agentToken = getLoginToken();
     const decoded = jwt.verify(agentToken || customerToken, process.env.REACT_APP_JWT_SECRET_KEY);
     return decoded;
   } catch (err) {
@@ -107,4 +107,8 @@ export const currentTimezoneBasedTime = () => {
 
 export const convertGmtToTime = (time, format) => {
   return time ? moment.tz(time, "HH:mm:ss", "GMT").tz(JSON.parse(localStorage.getItem("userTimezone"))).format(format ? format : "HH:mm") : "-";
+}
+
+export const getLoginToken = (isCustomer) => {
+  return JSON.parse(localStorage.getItem(isCustomer ? "customerToken" : "agentToken"));
 }

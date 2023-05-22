@@ -3,56 +3,7 @@ import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import { Calendar } from "react-modern-calendar-datepicker";
 import ResponseHandler from "../global-components/respones-handler";
 import axios from "axios";
-
-const colourStyles = {
-  // ...colourStyles,
-  menu: (provided, state) => ({
-    ...provided,
-    marginTop: 0,
-    marginBottom: 0,
-  }),
-  menuList: (provided, state) => ({
-    ...provided,
-    paddingTop: 0,
-    paddingBottom: 0,
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    backgroundColor: state.isSelected ? "#9eea9f" : "#fff",
-    color: state.isSelected ? "#171b2a;" : "#171b2a;",
-    fontFamily: "var(--ltn__body-font)",
-    "&:hover": {
-      backgroundColor: state.isSelected ? "#9eea9f" : "#9eea9f",
-      color: "#171b2a;",
-    },
-  }),
-  control: (base, state) => ({
-    ...base,
-    transition: "none",
-    border: state.isFocused ? "1px solid #888" : "1px solid #dadada",
-    // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : 0,
-    color: "#d9d9d9",
-    backgroundColor: "#fff",
-    "&:hover": {
-      border: state.isFocused ? "1px solid #00cb04" : "1px solid #00cb04",
-    },
-    "&:focus-within": {
-      border: state.isFocused ? "1px solid #00cb04" : "none",
-      boxShadow: state.isFocused
-        ? "0 0 0 0.125em rgba(249, 81, 146, 0.25)"
-        : "none",
-    },
-    fontWeight: "600",
-    fontFamily: "var(--ltn__body-font)",
-    cursor: "pointer",
-  }),
-  placeholder: (provided, state) => ({
-    ...provided,
-    color: "#d9d9d9",
-    fontSize: "16px",
-  }),
-};
+import Select from "react-select";
 
 const Modal = ({ id, agentId, propertyId }) => {
   const [slots, setSlots] = useState([]);
@@ -61,9 +12,10 @@ const Modal = ({ id, agentId, propertyId }) => {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
-  const [supervisor, setSupervisor] = useState(false);
+  const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
   const [success, setSuccess] = useState();
   const [errors, setErrors] = useState();
+  const [users, setUsers] = useState([]);
 
   const handleClick = (id) => {
     setTimeSlotId(id);
@@ -86,7 +38,7 @@ const Modal = ({ id, agentId, propertyId }) => {
     setErrors([]);
   };
 
-  async function loadSlots() {
+  const loadSlots = async () => {
     await axios
       .get(
         `${process.env.REACT_APP_API_URL}/iframe/list-slots?agent=${agentId}`,
@@ -101,7 +53,16 @@ const Modal = ({ id, agentId, propertyId }) => {
       });
   }
 
-  async function bookAppointmentHandler(e) {
+  const loadUsersToAllocate = async () => {
+    return fetch(`${process.env.REACT_APP_API_URL}/iframe/to-allocate?user=${agentId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((data) => data.json());
+  };
+
+  const bookAppointmentHandler = async (e) => {
     e.preventDefault();
 
     const payload = {
@@ -110,64 +71,97 @@ const Modal = ({ id, agentId, propertyId }) => {
       email,
       productId: propertyId,
       type: "appointment",
-      appointmentDate: appointmentDate.year + "-" + appointmentDate.month + "-" + appointmentDate.day,
+      appointmentDate: appointmentDate.year + "-" + formatMonth(appointmentDate.month) + "-" + appointmentDate.day,
       timeSlotId: Number(timeSlotId),
-      isAssignedToSupervisor: supervisor,
+      allotedAgent: selectedAllocatedAgent.value,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
 
-    await axios
+    const formResponse = await axios
       .post(`${process.env.REACT_APP_API_URL}/iframe/appointment`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((response) => {
-        setSuccessHandler(response.data.message);
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setAppointmentDate(null);
-        setTimeSlotId(null);
-        setSupervisor(false);
+        if (response?.status !== 201) {
+          setErrorHandler(
+            "Unable to create appointment, please try again later"
+          );
+        }
+
+        // console.log("create-iframe-appointment-response", response);
+
+        return response.data;
       })
       .catch((error) => {
+        console.log("create-iframe-appointment-error", error);
         if (error?.response?.data?.errors) {
           setErrorHandler(error.response.data.errors, "error", true);
         } else if (error?.response?.data?.message) {
           setErrorHandler(error.response.data.message);
         } else {
-          setErrorHandler("Unable to add to wishlist, please try again later");
+          setErrorHandler("Unable to create appointment, please try again later");
         }
-      });
+      }
+    );
+
+    if (formResponse) {
+      setSuccessHandler("Appointment created successfully");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setAppointmentDate(null);
+      setTimeSlotId(null);
+      setSelectedAllocatedAgent(false);
+    }
   }
 
-  async function checkAvailability(id) {
-    const payload = {
+  const checkAvailability = async (id) => {
+    console.log('appointmentDate', appointmentDate);
+    await axios.post(`${process.env.REACT_APP_API_URL}/iframe/check-availability`,
+    {
       userId: agentId,
-      date: appointmentDate.year + "-" + appointmentDate.month + "-" + appointmentDate.day,
+      date: appointmentDate.year + "-" + formatMonth(appointmentDate.month) + "-" + appointmentDate.day,
       time: Number(id),
-    };
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+        console.log('iframe-checkAvailability-response', response);
+        if (!response || !response?.data?.success) {
+          setErrorHandler(`Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to staff.`);
+        }
+        
+        return true;
+    }).catch(error => {
+      console.log('iframe-checkAvailability-error', error);
+      setErrorHandler(error?.response?.data?.message ? error.response.data.message : "Unable to check availability, please try again later.");
+    });
+  }
 
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/iframe/check-availability`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        if (!response.data.success) {
-          setErrorHandler("Time slot already booked.");
-        }
-      });
+  const formatMonth = (month) => {
+    return month < 10 ? `0${month}` : month;
   }
 
   useEffect(() => {
+    const fetchUsersToAllocate = async () => {
+      const response = await loadUsersToAllocate();
+      if (response?.length > 0) {
+        setUsers(response.map((userDetail) => {
+          return {
+            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+            value: userDetail.userId
+          }
+        }));
+      }
+    }
+
+    fetchUsersToAllocate();
     loadSlots();
-  }, []);
+  }, [propertyId]);
 
   return (
     <div>
@@ -209,16 +203,24 @@ const Modal = ({ id, agentId, propertyId }) => {
                       className="ltn__quick-view-modal-inner col-12 col-lg-6 centered"
                     >
                       <div>
-                        <div className="ml_n10"
-                        >
-                          <h2
-                            className="calenderModalHeading mb_10"
-                          >
+                        <div className="ml_n10">
+                          <h2 className="calenderModalHeading mb_10">
                             Pick a Time Slot
                           </h2>
-                          <ResponseHandler errors={errors} />
                         </div>
+                        <ResponseHandler errors={errors} success={success}/>
                         <div className="modal-product-item mt-4">
+                          <div className="row">
+                            <div className="input-item">
+                              <label>Assign To Staff</label>
+                              <Select 
+                                classNamePrefix="custom-select"
+                                options={users} 
+                                onChange={(e) => setSelectedAllocatedAgent(e)}
+                                value={selectedAllocatedAgent}
+                              />
+                            </div>
+                          </div>
                           <div className="row">
                             {slots &&
                               slots.map((item, index) => {
@@ -240,17 +242,6 @@ const Modal = ({ id, agentId, propertyId }) => {
                               })}
                           </div>
                         </div>
-                        <input
-                          type="checkbox"
-                          id="supervisor"
-                          onChange={(e) => setSupervisor(e.target.checked)}
-                          checked={supervisor}
-                          className="mt_10"
-                        />
-                        <label for="supervisor" className="ml_5"
-                         >
-                          Select Supervisor
-                        </label>
                       </div>
                     </div>
                   ) : null}

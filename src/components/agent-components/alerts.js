@@ -3,13 +3,13 @@ import Layout from "./layouts/layout";
 import { Link, useHistory } from "react-router-dom";
 import { USER_ALERT_MODE, USER_ALERT_TYPE, DEFAULT_CURRENCY } from "../../constants";
 import { 
-  formatCreatedAtTimestamp,
+  formatCreatedAtTimestamp, getLoginToken,
 } from "../../utils";
 import ViewAppointment from "./appointments/view-appointment";
 
 export default function Alerts() {
   const [list, setList] = useState([]);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const [appointmentView, setAppointmentView] = useState(null);
   const [offerView, setOfferView] = useState({});
   const openViewModal = useRef(null);
@@ -62,7 +62,7 @@ export default function Alerts() {
 
   const formatAlertText = (alert) => {
     let text = "";
-    const customerName = `<b>${alert.user.firstName} ${alert.user.lastName}</b>`;
+    const customerName = `<b>${alert.customerAlertUser.firstName} ${alert.customerAlertUser.lastName}</b>`;
     const productTitle = `<b>"${alert.product.title}"</b>`;
   
     switch(alert.alertMode) {
@@ -82,6 +82,9 @@ export default function Alerts() {
         break;
       case USER_ALERT_MODE.OFFER: 
         text = `${customerName} made an offer to the property ${productTitle}`;
+        if (alert.alertType == USER_ALERT_TYPE.OFFER_DELETED) {
+          text = `${customerName} has deleted the offer of the property ${productTitle}`;
+        }
 
         break;
       case USER_ALERT_MODE.APPOINTMENT: 

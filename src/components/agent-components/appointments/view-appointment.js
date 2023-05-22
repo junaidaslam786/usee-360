@@ -25,14 +25,13 @@ export default function ViewAppointment(props) {
             customerPic: `${process.env.REACT_APP_API_URL}/${props.appointment.customerUser.profileImage}`,
             agentName: `${props.appointment.agentUser.firstName} ${props.appointment.agentUser.lastName}`,
             agentPic: `${process.env.REACT_APP_API_URL}/${props.appointment.agentUser.profileImage}`,
-            supervisorName: props.appointment?.allotedAgentUser ? `${props.appointment.allotedAgentUser.firstName} ${props.appointment.allotedAgentUser.lastName}` : null,
+            allotedAgentName: props.appointment?.allotedAgentUser ? `${props.appointment.allotedAgentUser.firstName} ${props.appointment.allotedAgentUser.lastName}` : null,
             properties: props.appointment.products,
             status: props.appointment.status
         };
 
         setAppointmentView(appointmentViewDetail);
     }
-    
   }, [props.appointment]);
 
   return (
@@ -102,10 +101,10 @@ export default function ViewAppointment(props) {
                                     <div className="col-lg-6">
                                         <div>
                                             <h5 className="p-0 m-0">
-                                                {appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : "Agent Name"}
+                                                { `${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name` }
                                             </h5>
                                             <p className="p-0 m-o">
-                                                {appointmentView.supervisorName ? appointmentView.supervisorName : appointmentView?.agentName || "N/A"}
+                                                {appointmentView.allotedAgentName ? appointmentView.allotedAgentName : appointmentView?.agentName || "N/A"}
                                             </p>
                                         </div>
                                         <div>
@@ -141,7 +140,7 @@ export default function ViewAppointment(props) {
                                         (appointmentView.status === APPOINTMENT_STATUS.PENDING || appointmentView.status === APPOINTMENT_STATUS.INPROGRESS) && (
                                             <div className="col-lg-12 mt-20">
                                                 {
-                                                    appointmentView.allotedAgent === userDetail.id ? (
+                                                    appointmentView.allotedAgent === userDetail.id && (
                                                         <Link
                                                             to={{
                                                                 pathname: `/precall/${appointmentView.id}/agent`,
@@ -152,8 +151,6 @@ export default function ViewAppointment(props) {
                                                         >
                                                             <button className="py-2" data-bs-dismiss="modal">JOIN CALL</button>
                                                         </Link>
-                                                    ) : (
-                                                        <div className='supervisor-text'>Assigned to supervisor</div>
                                                     )
                                                 }
                                             </div>

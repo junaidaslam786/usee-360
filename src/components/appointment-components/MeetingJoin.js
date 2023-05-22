@@ -318,7 +318,7 @@ const MeetingJoin = (props) => {
               if(userType === 'agent') {
                 addLogEntry('left', "Customer has left the meeting");
               } else if(userType === 'customer') {
-                addLogEntry('left', "Agent has left the meeting");
+                addLogEntry('left', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting`);
               }
             },
             'signal:custom-disconnect': function (event) {
@@ -327,7 +327,7 @@ const MeetingJoin = (props) => {
                 addLogEntry('left', "Customer has left the meeting by clicking on the endcall button");
                 addLogEntry('completed', "Appointment got completed as customer has ended the call");
               } else if(userType === 'customer') {
-                addLogEntry('left', "Agent has left the meeting by clicking on the endcall button");
+                addLogEntry('left', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting by clicking on the endcall button`);
                 addLogEntry('completed', "Appointment got completed as agent has ended the call");
               }
               session.disconnect();
@@ -430,7 +430,7 @@ const MeetingJoin = (props) => {
                 addLogEntry('joined', "Customer has joined the meeting");
               } else if(userType === "agent") {
                 setAgentJoined(true);
-                addLogEntry('joined', "Agent has joined the meeting");
+                addLogEntry('joined', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has joined the meeting`);
               }
             }
           });

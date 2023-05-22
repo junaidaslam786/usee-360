@@ -70,11 +70,7 @@ export default function ViewAppointment(props) {
                                     </div>
                                     <div className="col-lg-6">
                                         <div>
-                                            <h5 className="p-0 m-0">
-                                                {
-                                                    appointmentView.allotedAgent !== appointmentView.agentId ? "Supervisor Name" : `${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name`
-                                                }
-                                            </h5>
+                                            <h5 className="p-0 m-0">{`${process.env.REACT_APP_AGENT_ENTITY_LABEL} Name`}</h5>
                                             <p className="p-0 m-o">{appointmentView?.agentName || "N/A"}</p>
                                         </div>
                                         <div>

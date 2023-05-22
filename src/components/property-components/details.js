@@ -11,7 +11,7 @@ import {
   PRODUCT_LOG_TYPE 
 } from "../../constants";
 import Slideshow from "../Slideshow";
-import { formatCreatedAtTimestamp } from "../../utils";
+import { formatCreatedAtTimestamp, getLoginToken } from "../../utils";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -26,7 +26,7 @@ export default function PropertyDetails() {
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
   const history = useHistory();
 
   const params = useParams();

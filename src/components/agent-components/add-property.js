@@ -9,12 +9,13 @@ import ResponseHandler from '../global-components/respones-handler';
 import { 
   PROPERTY_TYPES, RESIDENTIAL_PROPERTY, 
   COMMERCIAL_PROPERTY, PROPERTY_CATEGORY_TYPES, 
-  PRICE_TYPE, UNITS, BEDROOMS 
+  PRICE_TYPE, UNITS, BEDROOMS, AGENT_TYPE 
 } from '../../constants';
-import { getUserDetailsFromJwt } from "../../utils";
+import { getLoginToken, getUserDetailsFromJwt } from "../../utils";
 
 export default function AddProperty(props) {
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
+  
   const userDetail = getUserDetailsFromJwt();
 
   const [id, setId] = useState(null);
@@ -38,7 +39,7 @@ export default function AddProperty(props) {
   const [latitude, setLatitude] = useState("");
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
-  // const [allotedToUsers, setAllotedToUsers] = useState([]);
+  const [allotedToUsers, setAllotedToUsers] = useState([]);
   // const [categoryFields, setCategoryFields] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
@@ -51,7 +52,7 @@ export default function AddProperty(props) {
   const [success, setSuccess] = useState(null);
   const [propertySubTypeOptions, setPropertySubTypeOptions] = useState(null);
   const [deedTitle, setDeedTitle] = useState("");
-  // const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const history = useHistory();
 
   const loadCategoryFields = async () => {
@@ -64,28 +65,29 @@ export default function AddProperty(props) {
     }).then((data) => data.json());
   };
 
-  // const loadUsersToAllocate = async () => {
-  //   const response = await fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   }).then((data) => data.json());
-  //   if (response) {
-  //     const formattedUsers = response.map((userDetail) => {
-  //       return {
-  //         label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-  //         value: userDetail.userId
-  //       }
-  //     });
-  //     // setUsers(formattedUsers);
+  const loadUsersToAllocate = async () => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.json());
 
-  //     return formattedUsers;
-  //   }
+    if (response) {
+      const formattedUsers = response.map((userDetail) => {
+        return {
+          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+          value: userDetail.userId
+        }
+      });
+      setUsers(formattedUsers);
 
-  //   return true;
-  // };
+      return formattedUsers;
+    }
+
+    return true;
+  };
 
   const loadPropertyFields = async (propertyId) => {
     return fetch(`${process.env.REACT_APP_API_URL}/property/${propertyId}`, {
@@ -184,11 +186,11 @@ export default function AddProperty(props) {
       successMsg = "Property updated successfully.";
     }
 
-    // if (allotedToUsers.length > 0) {
-    //   for (let i = 0; i < allotedToUsers.length; i++) {
-    //     formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
-    //   }
-    // }
+    if (allotedToUsers && allotedToUsers.length > 0) {
+      for (let i = 0; i < allotedToUsers.length; i++) {
+        formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
+      }
+    }
 
     setLoading(true);
     let formResponse = null;
@@ -340,12 +342,12 @@ export default function AddProperty(props) {
     //   if (response) setCategoryFields(response.categoryFields);
     // };
 
-    // const fetchUsersToAllocate = async () => {
-    //   await loadUsersToAllocate();
-    // }
+    const fetchUsersToAllocate = async () => {
+      await loadUsersToAllocate();
+    }
 
     // fetchCategoryFields();
-    // fetchUsersToAllocate();
+    fetchUsersToAllocate();
 
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: 24.466667, lng: 54.366669 },
@@ -400,7 +402,7 @@ export default function AddProperty(props) {
       setId(props.id);
 
       const fetchPropertyDetails = async () => {
-        // const usersArray = await loadUsersToAllocate();
+        const usersArray = await loadUsersToAllocate();
 
         const response = await loadPropertyFields(props.id);
         if (response?.id) {
@@ -500,13 +502,14 @@ export default function AddProperty(props) {
             setPropertyDocuments(response.productDocuments);
           }
 
-          // if (response.productAllocations.length > 0) {
-          //   const newAllotedUsers = [];
-          //   response.productAllocations.forEach((productAllocation => {
-          //     newAllotedUsers.push(usersArray.find((user) => user.value == productAllocation.user.id));
-          //   }));
-          //   setAllotedToUsers(newAllotedUsers);
-          // }
+          if (response?.productAllocations?.length > 0 && usersArray.length > 0) {
+            const newAllotedUsers = [];
+            response.productAllocations.forEach((productAllocation => {
+              newAllotedUsers.push(usersArray.find((user) => user.value == productAllocation.user.id));
+            }));
+            
+            setAllotedToUsers(newAllotedUsers);
+          }
         }
       };
 
@@ -800,23 +803,28 @@ export default function AddProperty(props) {
             </div>
           </div>
         </div>
-        {/* <div className="row">
-          <div className="col-md-12">
-            <div className="input-item">
-              <label>Allotted To *</label>
-              <div className="input-item ltn__z-index-99">
-                <Select 
-                  isMulti
-                  options={users} 
-                  onChange={(e) => setAllotedToUsers(e)}
-                  value={allotedToUsers}
-                  required
-                />
+        {
+          userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Allotted To</label>
+                  <div className="input-item ltn__z-index-99">
+                    <Select 
+                      classNamePrefix="custom-select"
+                      isMulti
+                      options={users} 
+                      onChange={(e) => setAllotedToUsers(e)}
+                      value={allotedToUsers}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div> */}
-        {/* <br /> */}
+            </div> 
+          )
+        }
+        
+        <br />
         
         <ResponseHandler errors={errors} success={success}/>
         <div className="row">

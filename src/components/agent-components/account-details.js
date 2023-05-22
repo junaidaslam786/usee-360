@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "./layouts/layout";
 import axios from "axios";
 import ResponseHandler from "../global-components/respones-handler";
-import SupervisorDetails from "../agent-components/supervisor-details";
 import { AGENT_TYPE, USER_TYPE } from "../../constants";
 import TimezoneDetail from "../global-components/timezone-detail";
+import { getLoginToken } from "../../utils";
 
 export default function AccountDetails() {
   const [agentId, setAgentId] = useState();
@@ -36,7 +36,8 @@ export default function AccountDetails() {
 
   const code = useRef();
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
+  
   const getUser = async () => {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/user/profile`,
@@ -410,11 +411,6 @@ export default function AccountDetails() {
               </div>
             </form>
             <TimezoneDetail type={USER_TYPE.AGENT} />
-            {
-              agentType === AGENT_TYPE.AGENT && (
-                <SupervisorDetails />
-              )
-            }
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
               <ResponseHandler errors={errorPass} success={successPass} />

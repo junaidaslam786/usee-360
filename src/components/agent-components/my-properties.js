@@ -7,6 +7,7 @@ import { AGENT_TYPE } from "../../constants";
 import { 
   getUserDetailsFromJwt,
   formatCreatedAtTimestamp,
+  getLoginToken,
 } from "../../utils";
 
 export default function MyProperties() {
@@ -23,9 +24,8 @@ export default function MyProperties() {
   const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const loadAllList = async (search = '', page = 1) => {
-    setSearch(search);
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/property/list?search=${search}&page=${page}&size=10`,
       {
@@ -156,82 +156,96 @@ export default function MyProperties() {
   return (
     <Layout>
       <div className="ltn__myaccount-tab-content-inner">
-        <div className="ltn__my-properties-table table-responsive">
-          <div className="input-item">
-            <input
-              type="text"
-              placeholder="Search..."
-              onChange={(e) => loadAllList(e.target.value)}
-            />
+        <div className="row mb-50">
+          <div className="col-md-9">
+            <div className="input-item">
+              <input
+                type="text"
+                placeholder="Search..."
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
+          <div className="col-md-3">
+            <button 
+              className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
+              onClick={(e) => loadAllList(search)}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        <div className="ltn__my-properties-table table-responsive">
           <table className="table">
             <thead>
               <tr>
                 <th scope="col">My Properties</th>
                 <th scope="col" />
                 <th scope="col">Date Added</th>
-                {
-                  userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
-                    <React.Fragment>
-                      <th scope="col">Actions</th>
-                      <th scope="col">Delete</th>
-                    </React.Fragment>
-                  )
-                }
+                <th scope="col">Actions</th>
+                <th scope="col">Delete</th>
               </tr>
             </thead>
             <tbody>
-              {list && list.length === 0 ? (
-                <tr>
-                  <td className="no-data">No Data!</td>
-                </tr>
-              ) : (
-                list.map((element, i) => (
-                  <tr key={i}>
-                    <td className="ltn__my-properties-img go-top">
-                      <div className="myProperties-img">
-                        <img
-                        src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
-                        alt="#"
-                      />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="ltn__my-properties-info">
-                        <h6 className="mb-10 go-top">
-                          <Link to={`/agent/property-details/${element.id}`}>
-                            {element?.title}
-                          </Link>
-                        </h6>
-                        <small>
-                          <i className="icon-placeholder" /> {element?.address}
-                        </small>
-                      </div>
-                    </td>
-                    <td>{ element?.createdAt ? formatCreatedAtTimestamp(element.createdAt, "MMMM D, YYYY") : "-" }</td>
-                    {
-                      userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
-                        <React.Fragment>
-                          <td>
-                            <Link to={`/agent/edit-property/${element.id}`}>
-                              Edit
-                            </Link>
-                          </td>
-                          <td>
-                            <button
-                              data-bs-toggle="modal"
-                              data-bs-target="#ltn_delete_property_modal"
-                              onClick={() => handleDeleteButtonClick(element.id)}
-                            >
-                              <i className="fa-solid fa-trash-can" />
-                            </button>
-                          </td>
-                        </React.Fragment>
-                      )
-                    }
+              {
+                list && list.length === 0 ? (
+                  <tr>
+                    <td className="no-data">No Data!</td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  list.map((element, i) => (
+                    <tr key={i}>
+                      <td className="ltn__my-properties-img go-top">
+                        <div className="myProperties-img">
+                          <img
+                          src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
+                          alt="#"
+                        />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="ltn__my-properties-info">
+                          <h6 className="mb-10 go-top">
+                            <Link to={`/agent/property-details/${element.id}`}>
+                              {element?.title}
+                            </Link>
+                          </h6>
+                          <small>
+                            <i className="icon-placeholder" /> {element?.address}
+                          </small>
+                        </div>
+                      </td>
+                      <td>{ element?.createdAt ? formatCreatedAtTimestamp(element.createdAt, "MMMM D, YYYY") : "-" }</td>
+                      {
+                        userDetail?.id === element.userId ? (
+                          <React.Fragment>
+                            <td>
+                              <Link to={`/agent/edit-property/${element.id}`}>
+                                Edit
+                              </Link>
+                            </td>
+                            <td>
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#ltn_delete_property_modal"
+                                onClick={() => handleDeleteButtonClick(element.id)}
+                              >
+                                <i className="fa-solid fa-trash-can" />
+                              </button>
+                            </td>
+                          </React.Fragment>
+                        ) : (
+                          <React.Fragment>
+                            <td></td>
+                            <td></td>
+                          </React.Fragment>
+                        )
+                      }
+                    </tr>
+                  ))
+                )
+              }
             </tbody>
           </table>
           <div className="ltn__pagination-area text-center">

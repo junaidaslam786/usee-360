@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { 
   formatAppointmentDate,
-  convertGmtToTime 
+  convertGmtToTime, 
+  getLoginToken
 } from "../../../utils";
 import ViewAppointment from "./view-appointment";
 
@@ -12,7 +13,7 @@ export default function CompletedAppointments(props) {
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
 
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";

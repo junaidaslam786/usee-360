@@ -8,14 +8,17 @@ import {
   checkTimeOver, 
   findCurrentTimeSlot, 
   formatSlotFromTime,
+  getLoginToken,
+  getUserDetailsFromJwt
 } from "../../utils";
+import { AGENT_TYPE } from "../../constants";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
-  // const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [properties, setProperties] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  // const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
+  const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
   const [selectedAllocatedProperties, setSelectedAllocatedProperties] =
     useState([]);
   const [timeslots, setTimeslots] = useState([]);
@@ -26,10 +29,10 @@ export default function AddAppointment() {
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState();
-  const [isChecked, setIsChecked] = useState(false);
   const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useState(false);
+  const userDetail = getUserDetailsFromJwt();
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
 
   const loadCustomers = async (searchQuery) => {
     let response = await fetch(
@@ -50,15 +53,15 @@ export default function AddAppointment() {
     }
   };
 
-  // const loadUsersToAllocate = async () => {
-  //   return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   }).then((data) => data.json());
-  // };
+  const loadUsersToAllocate = async () => {
+    return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.json());
+  };
 
   const loadAgentAvailabilitySlots = async () => {
     let response = await fetch(
@@ -195,8 +198,7 @@ export default function AddAppointment() {
       customerLastName: customerLastName,
       customerPhone: customerPhoneNumber,
       customerEmail: customerEmail,
-      isAssignedToSupervisor: isChecked
-      // allotedAgent: selectedAllocatedAgent
+      allotedAgent: selectedAllocatedAgent.value
     };
 
     setLoading(true);
@@ -239,18 +241,13 @@ export default function AddAppointment() {
     if (formResponse) {
       setSuccessHandler("Appointment created successfully");
       setSelectedCustomer("");
-      // setSelectedAllocatedAgent("");
+      setSelectedAllocatedAgent("");
       setSelectedAllocatedProperties("");
       setEmail("");
       setPhone("");
       setDate("");
       setTime("");
-      setIsChecked(false);
     }
-  };
-
-  const checkHandler = () => {
-    setIsChecked(!isChecked);
   };
 
   const printSelectedTime = () => {
@@ -276,17 +273,17 @@ export default function AddAppointment() {
   };
 
   useEffect(() => {
-    // const fetchUsersToAllocate = async () => {
-    //   const response = await loadUsersToAllocate();
-    //   if (response) {
-    //     setUsers(response.map((userDetail) => {
-    //       return {
-    //         label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-    //         value: userDetail.userId
-    //       }
-    //     }));
-    //   }
-    // }
+    const fetchUsersToAllocate = async () => {
+      const response = await loadUsersToAllocate();
+      if (response) {
+        setUsers(response.map((userDetail) => {
+          return {
+            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+            value: userDetail.userId
+          }
+        }));
+      }
+    }
 
     const fetchPropertiesToAllocate = async () => {
       const response = await loadPropertiesToAllocate();
@@ -319,7 +316,7 @@ export default function AddAppointment() {
       }
     }
 
-    // fetchUsersToAllocate();
+    fetchUsersToAllocate();
     fetchPropertiesToAllocate();
     fetchAgentAvailabilitySlots();
   }, []);
@@ -483,29 +480,22 @@ export default function AddAppointment() {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
-                  <div className="input-item mt-50">
-                    <label className="checkbox-item">
-                      Assign to Supervisor
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={checkHandler}
-                      />
-                      <span className="checkmark" />
-                    </label>
-                  </div>
-                </div>
-                {/* <div className="col-md-6">
-                  <div className="input-item">
-                    <Select 
-                      options={users} 
-                      onChange={(e) => setSelectedAllocatedAgent(e)}
-                      value={selectedAllocatedAgent}
-                      required
-                    />
-                  </div>
-                </div> */}
+                {
+                  userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
+                    <div className="col-md-6">
+                      <div className="input-item">
+                        <label>Assign To</label>
+                        <Select 
+                          classNamePrefix="custom-select"
+                          options={users} 
+                          onChange={(e) => setSelectedAllocatedAgent(e)}
+                          value={selectedAllocatedAgent}
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+                
                 <div className="btn-wrapper">
                   <ResponseHandler errors={errors} success={success} />
                   <button

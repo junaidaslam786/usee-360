@@ -2,9 +2,10 @@ import React, { useState, useCallback, useEffect } from "react";
 import axios from 'axios';
 import ResponseHandler from '../../global-components/respones-handler';
 import { useHistory } from 'react-router';
+import { getLoginToken } from "../../../utils";
 
 export default function UploadPropertyDocument(props) {
-    const token = JSON.parse(localStorage.getItem("agentToken"));
+    const token = getLoginToken();
     const [propertyDocuments, setPropertyDocuments] = useState([{ id: 0, title: '', file: null }]);
     const [newDocuments, setNewDocuments] = useState([{ title: '', file: null }]);
     const [uploadErrors, setUploadErrors] = useState([]);

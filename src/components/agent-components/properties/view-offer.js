@@ -3,6 +3,7 @@ import axios from "axios";
 import ResponseHandler from "../../global-components/respones-handler";
 import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
 import { useHistory } from "react-router";
+import { getLoginToken } from "../../../utils";
 
 export default function ViewOffer(props) {
     const [list, setList] = useState([]);
@@ -24,7 +25,7 @@ export default function ViewOffer(props) {
     const closeModal = useRef(null);
     const history = useHistory();
 
-    const token = JSON.parse(localStorage.getItem("agentToken"));
+    const token = getLoginToken();
 
     const updateOfferStatus = async (formData) => {
         const responseHandlerType = formData.status === OFFER_STATUS.REJECTED ? "reject" : "offer";

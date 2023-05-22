@@ -5,6 +5,7 @@ import axios from "axios";
 import ViewOffer from "./properties/view-offer";
 import { PROPERTY_TYPES, PROPERTY_CATEGORY_TYPES, BEDROOMS, UNITS, VIRTUAL_TOUR_TYPE, DEFAULT_CURRENCY } from "../../constants";
 import Slideshow from "../Slideshow";
+import { getLoginToken } from "../../utils";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -18,7 +19,8 @@ export default function PropertyDetails() {
 
   const params = useParams();
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
+  
   async function loadProperty() {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/property/${params.id}`, {

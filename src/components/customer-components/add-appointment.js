@@ -3,8 +3,9 @@ import AsyncSelect from "react-select/async";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
-import { checkTimeOver, findCurrentTimeSlot, formatSlotFromTime } from "../../utils";
+import { checkTimeOver, findCurrentTimeSlot, formatSlotFromTime, getLoginToken } from "../../utils";
 import { useLocation } from "react-router-dom";
+import Select from "react-select";
 
 export default function AddAppointment() {
   const [defaultPropertyOptions, setDefaultPropertyOptions] = useState([]);
@@ -18,13 +19,13 @@ export default function AddAppointment() {
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState();
-  const [isChecked, setIsChecked] = useState(false);
   const location = useLocation();
   const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useState(false);
+  const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
+  const [users, setUsers] = useState([]);
+  const token = getLoginToken(true);
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
-
-  async function loadProperty(id) {
+  const loadProperty = async (id) => {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/property/${id}`,
       {
@@ -78,6 +79,16 @@ export default function AddAppointment() {
     }
   };
 
+  const loadUsersToAllocate = async (user) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/agent/user/to-allocate?user=${user}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.json());
+  };
+
   const loadAgentAvailabilitySlots = async (agent) => {
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/agent/availability/list-slots?agent=${agent}`,
@@ -116,7 +127,7 @@ export default function AddAppointment() {
     }).then((response) => {
         console.log('checkAvailability-response', response);
         if (!response || !response?.data?.success) {
-          setErrorHandler(`Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to supervisor.`);
+          setErrorHandler(`Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to staff.`);
         }
         
         return true;
@@ -133,7 +144,7 @@ export default function AddAppointment() {
       property: selectedAllocatedProperty.value,
       appointmentDate: date,
       timeSlotId: time,
-      isAssignedToSupervisor: isChecked
+      allotedAgent: selectedAllocatedAgent.value
     };
 
     setLoading(true);
@@ -179,13 +190,23 @@ export default function AddAppointment() {
       setSelectedAllocatedPropertyAgent(0);
       setDate("");
       setTime("");
-      setIsChecked(false);
     }
   };
 
   const selectedAllocatedPropertyHandler = async (e) => {
     setSelectedAllocatedProperty(e);
     setSelectedAllocatedPropertyAgent(e.userId);
+
+    const usersToAllocate = await loadUsersToAllocate(e.userId);
+    if (usersToAllocate?.length > 0) {
+      setUsers(usersToAllocate.map((userDetail) => {
+        return {
+          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+          value: userDetail.userId
+        }
+      }));
+    }
+
     const response = await loadAgentAvailabilitySlots(e.userId);
     if (response) {
       const timeSlotsResponse = response.map((timeSlot) => {
@@ -231,10 +252,6 @@ export default function AddAppointment() {
 
     setTime(nextSlot.value);
   }
-
-  const checkHandler = () => {
-    setIsChecked(!isChecked);
-  };
 
   const printSelectedTime = () => {
     const selectedTime = timeslots.find((slot) => slot.value === time);
@@ -377,15 +394,13 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-6">
                   <div className="input-item">
-                    <label className="checkbox-item">
-                      Assign to Supervisor
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={checkHandler}
-                      />
-                      <span className="checkmark" />
-                    </label>
+                    <label>Assign To Staff</label>
+                    <Select 
+                      classNamePrefix="custom-select"
+                      options={users} 
+                      onChange={(e) => setSelectedAllocatedAgent(e)}
+                      value={selectedAllocatedAgent}
+                    />
                   </div>
                 </div>
                 <div className="btn-wrapper">

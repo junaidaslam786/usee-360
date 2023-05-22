@@ -3,7 +3,7 @@ import Layout from "./layouts/layout";
 import "../Availability/index.css";
 import options from "../Availability/avaliabilityData";
 import ResponseHandler from '../global-components/respones-handler';
-import { formatSlotFromTime } from "../../utils";
+import { formatSlotFromTime, getLoginToken } from "../../utils";
 
 export default function Availability() {
 
@@ -24,7 +24,7 @@ export default function Availability() {
     }
   };
 
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
 
   const loadAllList = async () => {
     let response = await fetch(

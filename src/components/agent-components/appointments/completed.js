@@ -4,7 +4,8 @@ import Modal from 'react-modal';
 import { 
   getUserDetailsFromJwt,
   formatAppointmentDate,
-  convertGmtToTime 
+  convertGmtToTime, 
+  getLoginToken
 } from "../../../utils";
 import ViewAppointment from "./view-appointment";
 
@@ -18,7 +19,7 @@ export default function CompletedAppointments(props) {
   const [notes, setNotes] = useState('');
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const userDetail = getUserDetailsFromJwt();
   const [showNotesList, setShowNotesList] = useState(false);
   const [notesList, setNotesList] = useState([]);
@@ -26,6 +27,8 @@ export default function CompletedAppointments(props) {
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
     appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&startDate=${props.startDate}&endDate=${props.endDate}`: ""}`;
+    appendQuery = props?.selectedUser ? `&selectedUser=${props.selectedUser}` : "";
+    
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10&type=completed${appendQuery}`,
       {

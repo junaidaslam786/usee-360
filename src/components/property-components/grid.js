@@ -7,6 +7,7 @@ import {
   BEDROOMS,
   UNITS,
 } from "../../constants";
+import { getLoginToken } from "../../utils";
 
 export default function PropertyGrid() {
   const [currentPage, setCurrentPage] = useState();
@@ -19,7 +20,7 @@ export default function PropertyGrid() {
   const [address, setAddress] = useState();
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
 
   const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
