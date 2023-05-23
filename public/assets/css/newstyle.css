@@ -689,5 +689,27 @@
 }
 .customPadding{
   width: unset !important;
-  padding: 0 10px !important;  
+  padding: 0 10px !important; 
+} 
+.nice-select.video-selector1{
+    width: 49%;
+    background-color: #e2e2e2 !important;
+}
+.nice-select.video-selector2{
+    width: 49%;
+    background-color: #e2e2e2 !important;
+}
+.newStyling{
+    width: 55px !important;
+    background-color: #e2e2e2 !important;
+    height: 43px !important;
+    border-radius: 6px !important;
+    margin: -3px 3px !important;
+}
+.newStyling i{
+    font-size: 18px !important;
+}
+.video-join-call{
+    padding: 5px 0;
+    border-radius: 4px;
 }

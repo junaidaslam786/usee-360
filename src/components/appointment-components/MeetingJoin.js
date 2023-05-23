@@ -29,6 +29,10 @@ const MeetingJoin = (props) => {
     appointment,
     userType,
     appointmentId,
+    backgroundImage,
+    videoStreamingVal,
+    audioStreamingVal,
+    filter
   } = props;
 
   const token = getToken(userType);
@@ -69,11 +73,11 @@ const MeetingJoin = (props) => {
   }
 
   const publicUrl = `${process.env.PUBLIC_URL}/`;
-  const [videoStreaming, setVideoStreaming] = useState(true);
-  const [audioStreaming, setAudioStreaming] = useState(true);
+  const [videoStreaming, setVideoStreaming] = useState(videoStreamingVal);
+  const [audioStreaming, setAudioStreaming] = useState(audioStreamingVal);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [publisher, setPublisher] = useState(null);
-  const [screenPublisher, setScreenPublisher] = useState(null);
+  const [publisher, setPublisher] = useState('');
+  const [screenPublisher, setScreenPublisher] = useState('');
   const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
@@ -377,8 +381,8 @@ const MeetingJoin = (props) => {
             insertMode: "append",
             audioFallbackEnabled: true,
             facingMode: "user",
-            publishVideo: true,
-            publishAudio: true,
+            publishVideo: videoStreamingVal,
+            publishAudio: audioStreamingVal,
             name:
               userType === "customer"
                 ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
@@ -390,6 +394,19 @@ const MeetingJoin = (props) => {
           if (audioInputDeviceId || videoDeviceId) {
             publisherOptions.audioSource = audioInputDeviceId;
             publisherOptions.videoSource = videoDeviceId;
+          }
+          if (OT.hasMediaProcessorSupport()) {
+            if(filter && filter === "blur") {
+              publisherOptions.videoFilter = {
+                type: "backgroundBlur",
+                blurStrength: "high",
+              };
+            } else if (filter && filter === "background" && backgroundImage) {
+              publisherOptions.videoFilter = {
+                type: "backgroundReplacement",
+                backgroundImgUrl: `${process.env.REACT_APP_API_URL}/${backgroundImage}`,
+              };
+            }
           }
           const publisher = OT.initPublisher(
             "publisher",

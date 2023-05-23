@@ -223,7 +223,7 @@ export default function UpcomingAppointments(props) {
                   </div>
                     <div>
                       <button className="status-buttons completed mt-lg-2" onClick={() => handleNotesModal(element.id)}>
-                        <i class="fa-solid fa-check completed-icon"></i>
+                        <i className="fa-solid fa-check completed-icon"></i>
                         Completed</button>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ export default function UpcomingAppointments(props) {
                       </button>
                   </div>
                   <div>
-                      <button className="status-buttons cancelled mt-lg-2" onClick={() => handleConfirm(element.id)}><i class="fa-solid fa-xmark cancelled-icon"></i>Cancelled</button>
+                      <button className="status-buttons cancelled mt-lg-2" onClick={() => handleConfirm(element.id)}><i className="fa-solid fa-xmark cancelled-icon"></i>Cancelled</button>
                     </div>
                   </div>
                 </div>
