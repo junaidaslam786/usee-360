@@ -681,13 +681,14 @@ const MeetingJoin = (props) => {
 
   return (
     <div id="meetingBody">
-      <div id="main" className="row" style={{ margin: "0" }}>
+      <div id="main" className="row m_0"
+      >
         <div id="members" className="col col-sm-9 col-md-3 col-lg-3 bg-sm-dark">
           <div>
             <center>
               <img
                 src={`${publicUrl}assets/img/meeting-logo.png`}
-                style={{ width: "130px", margin: "25px 0 16px 0" }}
+                className='w_130 custom_margin'
               />
             </center>
           </div>
@@ -725,7 +726,7 @@ const MeetingJoin = (props) => {
             <iframe
               src={virtualTourUrl}
               id="prop_tour_link"
-              style={{ width: "100%", height: "100%" }}
+              className="w_100 h_100"
             ></iframe>
           )}
           {virtualTourVideo && (
@@ -754,36 +755,44 @@ const MeetingJoin = (props) => {
 
         <div className="d-flex align-items-center">
           {videoStreaming === true && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
+            <span
+             className="video-icon cursor_pointer" onClick={() => toggleVideo()}>
               <i className="fa-solid fa-video"></i>
             </span>
           )}
           {videoStreaming === false && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleVideo()}>
+            <span
+             className="video-icon cursor_pointer" onClick={() => toggleVideo()}>
               <i className="fa-solid fa-video-slash"></i>
             </span>
           )}
           {audioStreaming === true && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
+            <span
+             className="video-icon cursor_pointer"
+              onClick={() => toggleAudio()}>
               <i className="fa-solid fa-microphone"></i>
             </span>
           )}
           {audioStreaming === false && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleAudio()}>
+            <span
+             className="video-icon cursor_pointer" onClick={() => toggleAudio()}>
               <i className="fa-solid fa-microphone-slash"></i>
             </span>
           )}
           {screenSharing === true && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
+            <span
+             className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
               <i className="fa-solid fa-laptop"></i>
             </span>
           )}
           {screenSharing === false && (
-            <span style={{"cursor": "pointer"}} className="video-icon" onClick={() => toggleScreenSharing()}>
+            <span
+             className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
               <i className="fa-solid fa-laptop"></i>
             </span>
           )}
-          <span style={{"cursor": "pointer"}} className="video-icon end-call" onClick={() => setConfirmEndModal(true)}>
+          <span
+           className="video-icon end-call cursor_pointer" onClick={() => setConfirmEndModal(true)}>
             <i className="fa-solid fa-phone-slash"></i>
           </span>
         </div>
@@ -818,12 +827,7 @@ const MeetingJoin = (props) => {
         <form id="Chatform" encType="multipart/form-data" action="">
           <div>
             <img
-              style={{
-                position: "absolute",
-                height: "32px",
-                maxWidth: "32px",
-                left: "0",
-              }}
+            className="chatForm_Avatar1"
               src={`${publicUrl}assets/img/icons/attach-file.png`}
             />
             <input type="file" id="file" name="file" onChange={getUrl} />
@@ -833,12 +837,7 @@ const MeetingJoin = (props) => {
 
           <div>
             <img
-              style={{
-                position: "absolute",
-                height: "32px",
-                maxWidth: "32px",
-                right: "0",
-              }}
+            className="chatForm_Avatar2"
               src={`${publicUrl}assets/img/icons/send-icon.png`}
             />
             <input type="submit" id="submit" name="submit" />

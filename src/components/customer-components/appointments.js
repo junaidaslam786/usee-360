@@ -12,10 +12,9 @@ export default function Appointments() {
       <div className="ltn__myaccount-tab-content-inner">
         <div className="ltn__my-properties-table table-responsive">
           <ul
-            className="nav nav-pills pb-2"
+            className="nav nav-pills pb-2 custom_divider"
             id="pills-tab"
             role="tablist"
-            style={{ borderBottom: "1px solid #e5eaee", margin: "0 10px" }}
           >
             <li className="nav-item" role="presentation">
               <button

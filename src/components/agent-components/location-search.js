@@ -263,7 +263,8 @@ export default function LocationSearch() {
 
   return (
     <div className="map-container">
-      <div style={{ position: "relative", zIndex: "999" }}>
+      <div className="custom_position"
+      >
         <button
           className={`open-button ${active ? "" : "closed-button"}`}
           onClick={handleActive}
@@ -278,7 +279,7 @@ export default function LocationSearch() {
           alt="Logo"
           height="80"
           onClick={handleLogoClick}
-          style={{ cursor: "pointer" }}
+          className="cursor_pointer"
         />
         <p>
           You can search the properties in a specific area by drawing shapes on

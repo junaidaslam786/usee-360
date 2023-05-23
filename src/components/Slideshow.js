@@ -11,7 +11,7 @@ const Slideshow = (props) => {
         {fadeImages.map((fadeImage, index) => (
           <div key={index}>
             <img
-              style={{ width: "100%" }}
+            className="w_100"
               src={`${process.env.REACT_APP_API_URL}/${fadeImage.image}`}
             />
           </div>

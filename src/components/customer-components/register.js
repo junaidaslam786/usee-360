@@ -36,7 +36,6 @@ export default function Register() {
       className="otp-input"
       {...props}
       autoFocus={index === 0}
-      style={{ width: '60px', height: '60px', margin: '0 0.5rem', fontSize: '1.5rem', border: '1px solid gray',userSelect:"none" }}
     />
   );
   

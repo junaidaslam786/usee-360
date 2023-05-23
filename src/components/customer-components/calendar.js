@@ -118,7 +118,8 @@ export default function CustomerCalendar() {
           const endTime= eventData.end?.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit' });
           return (
             <div>
-              <p style={{"color":"#171b2a"}}>{startTime}-{endTime}</p>
+              <p className="text_dark_blue"
+              >{startTime}-{endTime}</p>
             </div>
           );
         }}

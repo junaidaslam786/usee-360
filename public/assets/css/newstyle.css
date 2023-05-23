@@ -713,3 +713,103 @@
     padding: 5px 0;
     border-radius: 4px;
 }
+.w_100{
+    width: 100%;
+}
+.h_100{
+    height: 100%;
+}
+.cursor_pointer{
+    cursor: pointer;
+}
+.pointer_none{
+    pointer-events: none;
+}
+.custom_divider{
+    border-bottom: 1px solid #e5eaee;
+    margin: 0 10px;
+}
+.modalBtn .modal_close{
+    background-color: #dadada;
+    color: black;
+}
+.modalBtn .modal_submit{
+    background-color: #3e2837;
+}
+.ml_10{
+    margin-left: 10px;
+}
+.text_dark_blue{
+    color: #171b2a;
+}
+.custom_position{
+    position: relative;
+    z-index: 999;
+}
+.w_130{
+    width: 130px;
+}
+.text_greenish{
+    color: #00cb04;
+}
+.custom_margin{
+    margin: 25px 0 16px 0;
+}
+.m_0{
+    margin: 0;
+}
+.chatForm_Avatar1{
+     position: absolute;
+    height: 32px;
+    max-width: 32px;
+    left: 0;
+}
+.chatForm_Avatar2{
+     position: absolute;
+    height: 32px;
+    max-width: 32px;
+    right: 0;
+}
+.centered{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.h_70{
+    height: 70px;
+}
+.mh_562{
+    min-height: 562px;
+}
+.ml_n10{
+    margin-left: 10px;
+}
+.mb_10{
+    margin-bottom: 10px;
+}
+.mt_10{
+    margin-top: 10px;
+}
+.ml_5{
+    margin-left: 5px;
+}
+.ml_15{
+    margin-left: 15px;
+}
+.mr_20{
+    margin-right: 20px;
+}
+.pt_40{
+    padding-top: 40px;
+}
+.mt_40{
+    margin-top: 40px;
+}
+.otp input{
+    width: 60px !important;
+    height: 60px;
+    margin: 0 0.5rem;
+    font-size: 1.5rem;
+    border: 1px solid gray;
+    user-select: none;
+}

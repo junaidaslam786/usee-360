@@ -303,11 +303,15 @@ const AccessTable = (props) => {
       {canJoin && <div className="container">
         <div className="logo_wrap text-center">
             <center>
-              <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} style={{"width":"130px"}} /></a>
+              <a href="https://usee-360.com" target="_blank"><img src={`${publicUrl}assets/img/meeting-logo.png`} 
+              className="w_130"
+               /></a>
             </center>
             <center>
             <h1> Visit your new home <br/>
-                <span style={{color:'#00cb04'}}> from home.</span>
+                <span
+                className='text_greenish'
+                > from home.</span>
               </h1>
             </center>
         </div>
