@@ -3,8 +3,7 @@ import AsyncSelect from "react-select/async";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
-import { checkTimeOver, findCurrentTimeSlot } from "../../utils";
-import moment from "moment";
+import { checkTimeOver, findCurrentTimeSlot, formatSlotFromTime } from "../../utils";
 import { useLocation } from "react-router-dom";
 
 export default function AddAppointment() {
@@ -103,7 +102,7 @@ export default function AddAppointment() {
       return;
     }
 
-    await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`,
+    await axios.post(`${process.env.REACT_APP_API_URL}/customer/appointment/check-availability`,
     {
       userId: selectedAllocatedPropertyAgent,
       date,
@@ -117,8 +116,9 @@ export default function AddAppointment() {
     }).then((response) => {
         console.log('checkAvailability-response', response);
         if (!response || !response?.data?.success) {
-          setErrorHandler(`Sorry! ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to supervisor.`);
+          setErrorHandler(`Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to supervisor.`);
         }
+        
         return true;
     }).catch(error => {
       console.log('checkAvailability-error', error);
@@ -283,7 +283,6 @@ export default function AddAppointment() {
     setDate(dateValue);
 
     const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
-    
     if (currentSlot) { 
       const foundSlot = availabilityTimeSlots.find((time) => time.value === currentSlot.value);
 
@@ -294,13 +293,11 @@ export default function AddAppointment() {
       const nextSlot = !isTimeExpired ? foundSlot : availabilityTimeSlots.find((time) => time.value === currentSlot.value + 1);
 
       if (!nextSlot) {
-        console.log('no slot');
         setAnySlotAvailableForToday(false);
         return false;
       }
 
       setAnySlotAvailableForToday(true);
-
       return nextSlot;
     }
 
@@ -437,7 +434,7 @@ export default function AddAppointment() {
                                 return (
                                   <div className="col-4 col-sm-3 px-1 py-1" key={index}>
                                     <div onClick={() => setTime(item.value)} className={ time === item.value ? "bgNew" : "timeCards" }>
-                                      <p>{ item?.fromTime ? moment(item.fromTime, "hh:mm:ss").format("HH:mm") : "-" }</p>
+                                      <p>{ item?.fromTime ? formatSlotFromTime(item.fromTime) : "-" }</p>
                                     </div>
                                   </div>
                                 );

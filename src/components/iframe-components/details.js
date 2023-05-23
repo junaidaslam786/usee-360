@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import {
   PROPERTY_TYPES,
   PROPERTY_CATEGORY_TYPES,
@@ -13,6 +12,7 @@ import {
 import Slideshow from "../Slideshow";
 import Modal from "./dateTimeModal";
 import ResponseHandler from '../global-components/respones-handler';
+import { formatCreatedAtTimestamp } from "../../utils";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -168,7 +168,7 @@ export default function PropertyDetails() {
                   </li>
                   <li className="ltn__blog-date">
                     <i className="far fa-calendar-alt" />
-                    {moment(property.createdAt).format("MMMM Do, YYYY")}
+                    { property?.createdAt ? formatCreatedAtTimestamp(property.createdAt, "MMMM Do, YYYY") : "-"}
                   </li>
                 </ul>
               </div>

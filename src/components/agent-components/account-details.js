@@ -3,7 +3,8 @@ import Layout from "./layouts/layout";
 import axios from "axios";
 import ResponseHandler from "../global-components/respones-handler";
 import SupervisorDetails from "../agent-components/supervisor-details";
-import { AGENT_TYPE } from "../../constants";
+import { AGENT_TYPE, USER_TYPE } from "../../constants";
+import TimezoneDetail from "../global-components/timezone-detail";
 
 export default function AccountDetails() {
   const [agentId, setAgentId] = useState();
@@ -408,12 +409,12 @@ export default function AccountDetails() {
                 </button>
               </div>
             </form>
+            <TimezoneDetail type={USER_TYPE.AGENT} />
             {
               agentType === AGENT_TYPE.AGENT && (
                 <SupervisorDetails />
               )
             }
-            
             <h4 className="title-2 mt-100">Change Password</h4>
             <form onSubmit={updatePassword}>
               <ResponseHandler errors={errorPass} success={successPass} />

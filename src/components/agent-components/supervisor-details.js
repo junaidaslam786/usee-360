@@ -169,7 +169,7 @@ export default function SupervisorDetails() {
                         <div></div>
                         </div>
                     ) : (
-                        "Save Changes"
+                        "Update Supervisor Details"
                     )}
                     </button>
                 </div>

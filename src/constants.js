@@ -160,3 +160,10 @@ export const PRODUCT_LOG_TYPE = {
     SNAGLIST_APPROVED: "snaglist_approved",
     VIEWED: "viewed",
 };
+
+export const APPOINTMENT_STATUS = {
+    PENDING: "pending",
+    INPROGRESS: "inprogress",
+    COMPLETED: "completed",
+    CANCELLED: "cancelled",
+};

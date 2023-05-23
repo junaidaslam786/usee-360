@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 class Page_header extends Component {
   render() {
     const HeaderTitle = this.props.headertitle;
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
     const Subheader = this.props.subheader ? this.props.subheader : HeaderTitle;
     const CustomClass = this.props.customclass ? this.props.customclass : "";
     const Img = this.props.Img ? this.props.Img : "14.jpg";

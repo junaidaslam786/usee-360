@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import parse from "html-react-parser";
 
 class ServiceV2 extends Component {
   render() {
-    const publicUrl = `${process.env.PUBLIC_URL}/`;
-
     return (
       <div className="ltn__feature-area pt-90 pb-90 go-top">
         <div className="container">

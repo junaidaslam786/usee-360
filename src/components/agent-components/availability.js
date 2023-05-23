@@ -3,6 +3,7 @@ import Layout from "./layouts/layout";
 import "../Availability/index.css";
 import options from "../Availability/avaliabilityData";
 import ResponseHandler from '../global-components/respones-handler';
+import { formatSlotFromTime } from "../../utils";
 
 export default function Availability() {
 
@@ -181,7 +182,7 @@ export default function Availability() {
                                         selectedSlots.includes(item.id) ? "timeCards" : "bgNew"
                                       }
                                     >
-                                      <p>{item.fromTime}</p>
+                                      <p>{ item?.fromTime ? formatSlotFromTime(item?.fromTime) : "-" }</p>
                                     </div>
                                   </div>
                                 );

@@ -4,8 +4,11 @@ import Select from "react-select";
 import axios from "axios";
 import Layout from "./layouts/layout";
 import ResponseHandler from "../global-components/respones-handler";
-import { checkTimeOver, findCurrentTimeSlot } from "../../utils";
-import moment from "moment";
+import { 
+  checkTimeOver, 
+  findCurrentTimeSlot, 
+  formatSlotFromTime,
+} from "../../utils";
 
 export default function AddAppointment() {
   const [customers, setCustomers] = useState([]);
@@ -86,13 +89,19 @@ export default function AddAppointment() {
     }).then((data) => data.json());
   };
 
-  const checkAvailability = async () => {
+  const checkAvailability = async (customerId) => {
     if (!time || !date) {
       return;
     }
 
-    await axios.post(`${process.env.REACT_APP_API_URL}/agent/user/check-availability`,
+    let customerIdRequest = customerId;
+    if (selectedCustomer?.value) {
+      customerIdRequest = selectedCustomer.value;
+    }
+
+    await axios.post(`${process.env.REACT_APP_API_URL}/agent/appointment/check-availability`,
     {
+      customerId: customerIdRequest,
       date,
       time,
     },
@@ -104,8 +113,9 @@ export default function AddAppointment() {
     }).then((response) => {
         console.log('checkAvailability-response', response);
         if (!response || !response?.data?.success) {
-          setErrorHandler("Sorry this timeslot is not available. Please choose another timeslot.");
+          setErrorHandler("Unfortunately, this timeslot is not available. Please choose another timeslot.");
         }
+        
         return true;
     }).catch(error => {
       console.log('checkAvailability-error', error);
@@ -130,7 +140,7 @@ export default function AddAppointment() {
     }
   };
 
-  const selectedCustomerHandler = (e) => {
+  const selectedCustomerHandler = async (e) => {
     setSelectedCustomer(e);
     if (!email) {
       setEmail("");
@@ -140,13 +150,13 @@ export default function AddAppointment() {
       setPhone("");
     }
 
-    const currentCustomer = customers.find(
-      (customer) => customer.id == e.value
-    );
+    const currentCustomer = customers.find((customerValue) => customerValue.id == e.value);
     if (currentCustomer) {
       setEmail(currentCustomer.email);
       setPhone(currentCustomer.phoneNumber || "");
     }
+
+    await checkAvailability(currentCustomer.id);
   };
 
   const handleSubmit = async (e) => {
@@ -161,9 +171,7 @@ export default function AddAppointment() {
     customerEmail = email;
     customerPhoneNumber = phone;
 
-    const customer = customers.find(
-      (customer) => (customer.id = selectedCustomer.value)
-    );
+    const customer = customers.find((customerValue) => (customerValue.id === selectedCustomer.value));
     if (customer) {
       customerId = customer.id;
       customerFirstName = customer.firstName;
@@ -348,7 +356,6 @@ export default function AddAppointment() {
     setDate(dateValue);
 
     const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
-    
     if (currentSlot) { 
       const foundSlot = availabilityTimeSlots.find((time) => time.value === currentSlot.value);
 
@@ -359,13 +366,11 @@ export default function AddAppointment() {
       const nextSlot = !isTimeExpired ? foundSlot : availabilityTimeSlots.find((time) => time.value === currentSlot.value + 1);
 
       if (!nextSlot) {
-        console.log('no slot');
         setAnySlotAvailableForToday(false);
         return false;
       }
 
       setAnySlotAvailableForToday(true);
-
       return nextSlot;
     }
 
@@ -407,7 +412,7 @@ export default function AddAppointment() {
                 </div>
                 <div className="col-md-4">
                   <button
-                    disabled={!(anySlotAvailableForToday && selectedAllocatedProperties)}
+                    disabled={!(anySlotAvailableForToday && selectedAllocatedProperties.length > 0)}
                     type="button"
                     className="btn theme-btn-2 request-now-btn"
                     onClick={handleButtonClick}
@@ -547,7 +552,7 @@ export default function AddAppointment() {
                                 return (
                                   <div className="col-4 col-sm-3 px-1 py-1" key={index}>
                                     <div onClick={() => setTime(item.value)} className={ time === item.value ? "bgNew" : "timeCards" }>
-                                      <p>{ item?.fromTime ? moment(item.fromTime, "hh:mm:ss").format("HH:mm") : "-" }</p>
+                                      <p>{ item?.fromTime ? formatSlotFromTime(item.fromTime) : "-" }</p>
                                     </div>
                                   </div>
                                 );

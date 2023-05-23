@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import "./index.css";
+import { setMomentDefaultTimezone } from "./utils"; 
 
 import Home from "./pages/home";
 import PropertyGrid from "./pages/property-grid";
@@ -69,6 +70,9 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     }
   }
 
+  // console.log('agent-current-timezone', JSON.parse(localStorage.getItem("userTimezone")));
+  setMomentDefaultTimezone();
+
   return (
     <Route
       {...restOfProps}
@@ -91,6 +95,9 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
       isAuthenticated = true;
     }
   }
+
+  // console.log('customer-current-timezone', JSON.parse(localStorage.getItem("userTimezone")));
+  setMomentDefaultTimezone();
 
   return (
     <Route

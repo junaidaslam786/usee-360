@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import axios from "axios";
 import Layout from "./layouts/layout";
+import { formatCreatedAtTimestamp } from "../../utils";
 
 export default function MyWishlist() {
   const [list, setList] = useState([]);
@@ -83,7 +83,7 @@ export default function MyWishlist() {
                       </div>
                     </td>
                     <td>
-                      {moment(element?.product?.createdAt).format("MMMM D, YYYY")}
+                      { element?.product?.createdAt ? formatCreatedAtTimestamp(element.product.createdAt, "MMMM D, YYYY") : "-" }
                     </td>
                     <td>
                       <button
