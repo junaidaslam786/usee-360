@@ -10,13 +10,16 @@ export default function LocationSearch() {
   const [radius, setRadius] = useState(300);
   const [active, setActive] = useState(true);
   const [circle, setCirle] = useState(null);
-  const [polygon, setPolygon] = useState(null);
+  const [polygonState, setPolygonState] = useState(null);
+  const [drawingManagerState, setDrawingManagerState] = useState('');
   const [properties, setProperties] = useState([]);
   const [markers, setMarkers] = useState([]);
 
   let map;
   let newMarkers = [];
   let centerMarker = null;
+  let drawingManager;
+  let polygon;
   const history = useHistory();
 
   useEffect(() => {
@@ -71,14 +74,14 @@ export default function LocationSearch() {
     map.addListener("click", function (event) {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
-      const infowindow = new google.maps.InfoWindow({
-        content: "Clicked location: " + lat + ", " + lng,
-      });
-      infowindow.setPosition(event.latLng);
-      infowindow.open(map);
+      // const infowindow = new google.maps.InfoWindow({
+      //   content: "Clicked location: " + lat + ", " + lng,
+      // });
+      // infowindow.setPosition(event.latLng);
+      // infowindow.open(map);
     });
 
-    const drawingManager = new google.maps.drawing.DrawingManager({
+    drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
@@ -108,6 +111,12 @@ export default function LocationSearch() {
       function (drawnPolygon) {
         if (polygon) {
           polygon.setMap(null);
+          setProperties([]);
+          if (newMarkers.length > 0) {
+            newMarkers.map((marker) => {
+              marker.setMap(null);
+            });
+          }
         }
 
         google.maps.event.addListener(
@@ -117,14 +126,29 @@ export default function LocationSearch() {
             searchByPolygon(drawnPolygon);
           }
         );
-        setPolygon(drawnPolygon);
+        polygon = drawnPolygon;
+        setPolygonState(drawnPolygon);
         searchByPolygon(drawnPolygon);
         drawingManager.setDrawingMode(null);
       }
     );
-
+    setDrawingManagerState(drawingManager);
     drawingManager.setMap(map);
   }, []);
+
+  function handleReset() {
+    if (polygonState) {
+      setProperties([]);
+      if (markers.length > 0) {
+        markers.map((marker) => {
+          marker.setMap(null);
+        });
+      }
+      polygonState.setMap(null);
+      setPolygonState(null);
+      drawingManagerState.setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
+    }
+  }
 
   function searchByPolygon(drawnPolygon) {
     const polygonCoords = drawnPolygon
@@ -168,6 +192,7 @@ export default function LocationSearch() {
               );
             });
           });
+          setMarkers(newMarkers);
         }
       })
       .catch((error) => {
@@ -270,6 +295,12 @@ export default function LocationSearch() {
           onClick={handleActive}
         >
           {active ? "Close Search" : "Open Search"}
+        </button>
+        <button
+          className={`open-button-reset ${active ? "" : "closed-button-reset"}`}
+          onClick={handleReset}
+        >
+          Reset
         </button>
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
