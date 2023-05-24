@@ -138,15 +138,15 @@ export default function LocationSearch() {
 
   function handleReset() {
     if (polygonState) {
+      polygonState.setMap(null);
+      setPolygonState(null);
+      drawingManagerState.setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
       setProperties([]);
       if (markers.length > 0) {
         markers.map((marker) => {
           marker.setMap(null);
         });
       }
-      polygonState.setMap(null);
-      setPolygonState(null);
-      drawingManagerState.setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
     }
   }
 
