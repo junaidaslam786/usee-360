@@ -6,6 +6,8 @@ import axios from "axios";
 import Slideshow from "../Slideshow";
 import { USER_TYPE } from "../../constants";
 import Modal from 'react-modal';
+import StreetViewMap from "../map-components/street-view-map";
+import DocumentModal from "../global-components/document-modal";
 const fs = require("fs");
 
 function getToken(userType) {
@@ -81,7 +83,7 @@ const MeetingJoin = (props) => {
   const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
-  const [selectedProperty, setSelectedProperty] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState(appointment.products[0].id);
   const [virtualTourUrl, setVirtualTourUrl] = useState('');
   const [virtualTourVideo, setVirtualTourVideo] = useState('');
   const [productImages, setProductImages] = useState('');
@@ -91,6 +93,14 @@ const MeetingJoin = (props) => {
   const [showCancelBtn, setShowCancelBtn] = useState(true);
   const [confirmCancelModal, setConfirmCancelModal] = useState(false);
   const [confirmEndModal, setConfirmEndModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDocumentOpen, setIsDocumentOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [propertyDocuments, setPropertyDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState('');
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [wishlistProperties, setWishlistProperties] = useState([]);
 
   const getPropertiesList = async () => {
     return fetch(
@@ -130,6 +140,14 @@ const MeetingJoin = (props) => {
         setVirtualTourVideo(null);
         setProductImages(null);
         setDefaultImage(true);
+        if(propertyData) {
+          const pairs = [];
+          for (let i = 0; i < propertyData.productDocuments.length; i += 2) {
+            const pair = propertyData.productDocuments.slice(i, i + 2);
+            pairs.push(pair);
+          }
+          setPropertyDocuments(pairs);
+        }
         if (
           propertyData.virtualTourType === "url" &&
           propertyData.virtualTourUrl
@@ -151,6 +169,8 @@ const MeetingJoin = (props) => {
           setProductImages(propertyData.productImages);
           setDefaultImage(false);
         }
+        setLatitude(parseFloat(propertyData.latitude));
+        setLongitude(parseFloat(propertyData.longitude));
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -634,6 +654,69 @@ const MeetingJoin = (props) => {
     );
   };
 
+  function isAddedToWishlist(propertyId) {
+    return wishlistProperties.find(
+      ({ productId }) =>
+        productId === propertyId
+    );
+  }
+
+  async function removeWishList(ID) {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
+      await axios
+        .delete(
+          `${process.env.REACT_APP_API_URL}/customer/wishlist/remove/${ID}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then(() => {
+          loadWishlistProperties();
+        });
+    }
+  }
+
+  async function addToWishList(ID) {
+    if (!token) {
+      history.push(
+        "/customer/login?returnUrl=" +
+          encodeURIComponent(window.location.pathname)
+      );
+    } else {
+      await axios
+        .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/add/${ID}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          loadWishlistProperties();
+        });
+    }
+  }
+
+  async function loadWishlistProperties() {
+    await axios
+      .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setWishlistProperties(response.data);
+      });
+  }
+
   async function handlePropertyChange(event) {
     setSelectedProperty(event.target.value);
     if (userType === USER_TYPE.AGENT) {
@@ -679,6 +762,27 @@ const MeetingJoin = (props) => {
     setShowCancelBtn(false);
   }
 
+  const openPropertyModal = () => {
+    setIsOpen(true);
+  };
+
+  const closePropertyModal = () => {
+    setIsOpen(false);
+  };
+
+  const closeDocumentModal = () => {
+    setIsDocumentOpen(false);
+  }
+
+  const closeLocationModal = () => {
+    setIsLocationOpen(false);
+  }
+
+  const handleDocumentModalOpen = (file) => {
+    setSelectedDocument(file);
+    setIsDocumentOpen(true);
+  }
+
   return (
     <div id="meetingBody">
       <div id="main" className="row m_0"
@@ -711,6 +815,42 @@ const MeetingJoin = (props) => {
           )}
           <div id="publisher"></div>
           <div id="subscribers"></div>
+          <div id="show-property-documents">
+            <button className="property-modal-button" onClick={openPropertyModal}>
+              <i className="fa-solid fa-list"></i>
+            </button>
+            {isOpen && (
+              <div className="property-modal-container">
+                <button className="property-close-button" onClick={closePropertyModal}>
+                  X
+                </button>
+                <div className="property-modal-content">
+                  {propertyDocuments.map((pair, index) => (
+                    <div className="buttons-row" key={index}>
+                      {pair.map((record, subIndex) => (
+                        <div className="buttons-col" key={subIndex}>
+                          <button className="options-buttons" onClick={() => handleDocumentModalOpen(record.file)}>{record.title}</button>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                  <div className="buttons-row">
+                    <div className="buttons-col">
+                      <button className="options-buttons" onClick={() => setIsLocationOpen(true)}>Street View</button>
+                    </div>
+                    {userType === 'customer' && <div className="buttons-col">
+                      <button
+                        className="options-buttons"
+                        onClick={() => { isAddedToWishlist(selectedProperty) ? removeWishList(selectedProperty) : addToWishList(selectedProperty); }}
+                      >
+                        { isAddedToWishlist(selectedProperty) ? "Remove from wishlist" : "Add to wishlist" }
+                      </button>
+                    </div>}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div
           id="screen-preview"
@@ -779,13 +919,13 @@ const MeetingJoin = (props) => {
               <i className="fa-solid fa-microphone-slash"></i>
             </span>
           )}
-          {screenSharing === true && (
+          {screenSharing === true && userType === 'agent' && (
             <span
              className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
               <i className="fa-solid fa-laptop"></i>
             </span>
           )}
-          {screenSharing === false && (
+          {screenSharing === false && userType === 'agent' && (
             <span
              className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
               <i className="fa-solid fa-laptop"></i>
@@ -873,6 +1013,8 @@ const MeetingJoin = (props) => {
           <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>No</button>
         </div>
       </Modal>
+      <DocumentModal isOpen={isDocumentOpen} onClose={closeDocumentModal} documentUrl={`${process.env.REACT_APP_API_URL}/${selectedDocument}`} />
+      <StreetViewMap latitude={latitude} longitude={longitude} isOpen={isLocationOpen} onClose={closeLocationModal} />
     </div>
   );
 };
