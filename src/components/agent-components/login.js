@@ -3,17 +3,22 @@ import { Link } from "react-router-dom";
 import ResponseHandler from "../global-components/respones-handler";
 import axios from "axios";
 import { USER_TYPE } from "../../constants";
-// import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import OtpInput from "react-otp-input";
-// import {
-//   getAuth,
-//   signInWithPhoneNumber,
-//   RecaptchaVerifier,
-// } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+} from "firebase/auth";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [password, setPassword] = useState();
+  const [verified, setVerified] = useState(true);
+  const [otpType, setOtpType] = useState();
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState([]);
   const [resetPassErrors, setResetPassErrors] = useState([]);
@@ -29,63 +34,83 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const formResponse = await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/auth/login`,
-        {
-          email,
-          password,
-          type: USER_TYPE.AGENT,
-        },
-        {
+    if(!verified) {
+      otpType === 'phoneNumber'
+        ? sendOtpPhoneNumber()
+        : updateProfile();
+    }
+
+    else {
+      const payload = {
+        email,
+        password,
+        type: USER_TYPE.AGENT
+      };
+
+      const formResponse = await axios
+        .post(`${process.env.REACT_APP_API_URL}/auth/login`, payload, {
           headers: {
             "Content-Type": "application/json",
           },
+        })
+        .then((response) => {
+          if (response?.status !== 200) {
+            setErrorHandler("login", "Unable to login, please try again later");
+            setLoading(false);
+          }
+          return response.data;
+        })
+        .catch((error) => {
+          if (error?.response?.data?.errors) {
+            setErrorHandler("login", error.response.data.errors, "error", true);
+          } else if (error?.response?.data?.message) {
+            setErrorHandler("login", error.response.data.message);
+          } else {
+            setErrorHandler("login", "Unable to login, please try again later");
+          }
+          setLoading(false);
+        });
+
+      if (formResponse?.token) {
+        setToken(formResponse.token);
+        setFirstName(formResponse.user.firstName);
+        setLastName(formResponse.user.lastName);
+        setPhoneNumber(formResponse.user.phoneNumber);
+
+        if (formResponse?.user?.timezone) {
+          localStorage.setItem("userTimezone", JSON.stringify(formResponse.user.timezone));
         }
-      )
-      .then((response) => {
-        if (response?.status !== 200) {
-          setErrorHandler("login", "Unable to login, please try again later");
-        }
-        setLoading(false);
-        return response.data;
-      })
-      .catch((error) => {
-        if (error?.response?.data?.errors) {
-          setErrorHandler("login", error.response.data.errors, "error", true);
-        } else if (error?.response?.data?.message) {
-          setErrorHandler("login", error.response.data.message);
+        
+        if (!formResponse.user.otpVerified || formResponse.user.signupStep != 2) {
+          setLoading(false);
+          setVerified(false);
+          const auth = getAuth();
+          window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
+          window.recaptchaVerifier.render();
         } else {
-          setErrorHandler("login", "Unable to login, please try again later");
+          localStorage.removeItem("customerToken");
+          localStorage.setItem("agentToken", JSON.stringify(formResponse.token));
+          const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/agent/dashboard";
+          window.location = returnUrl;
         }
-        setLoading(false);
-      });
-
-    if (formResponse?.token) {
-      setToken(formResponse.token);
-
-      if (formResponse?.user?.timezone) {
-        localStorage.setItem("userTimezone", JSON.stringify(formResponse.user.timezone));
-      }
-      
-      if (!formResponse.user.otpVerified || formResponse.user.signupStep != 2) {
-        const code = Math.floor(100000 + Math.random() * 900000);
-        updateProfile(formResponse.token, formResponse.user.firstName, formResponse.user.lastName, formResponse.user.email, code);
-      } else {
-        localStorage.removeItem("customerToken");
-        localStorage.setItem("agentToken", JSON.stringify(formResponse.token));
-        const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/agent/dashboard";
-        window.location = returnUrl;
       }
     }
   };
 
-  const updateProfile = async (token, firstName, lastName, email, code) => {
+  const updateProfile = async () => {
     let formData = new FormData();
+    const code = Math.floor(100000 + Math.random() * 900000);
+
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
-    formData.append("otpCode", code);
-
+    
+    if(otpType === 'phoneNumber') {
+      formData.append("otpVerified", true);
+      formData.append("signupStep", 2);
+    } else {
+      formData.append("otpCode", code);
+    }
+    
     await axios
       .put(`${process.env.REACT_APP_API_URL}/user/profile`, formData, {
         headers: {
@@ -94,7 +119,14 @@ export default function Login() {
         },
       })
       .then(() => {
-        sendOTP(firstName, email, code);
+        if(otpType === 'phoneNumber') {
+          localStorage.removeItem("customerToken");
+          localStorage.setItem("agentToken", JSON.stringify(token));
+          const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/agent/dashboard";
+          window.location = returnUrl;
+        } else {
+          sendOtpEmail(code);
+        }
       })
       .catch(() => {
         setErrorHandler("login", "Some error occurred, please try again");
@@ -102,9 +134,10 @@ export default function Login() {
       });
   };
 
-  const sendOTP = async (name, email, code) => {
+  const sendOtpEmail = async (code) => {
     let formData = new FormData();
-    formData.append("name", name);
+
+    formData.append("name", firstName);
     formData.append("email", email);
     formData.append("otp", code);
 
@@ -122,13 +155,13 @@ export default function Login() {
         if (error?.response?.data?.errors) {
           setErrorHandler(error.response.data.errors, "error", true);
         } else {
-          setErrorHandler("Unable to send OTP, please try again later");
+          setErrorHandler("login", "Unable to send OTP, please try again later");
         }
         setLoading(false);
       });
   }
 
-  const validateOTP = async (e) => {
+  const validateOtpEmail = async (e) => {
     e.preventDefault();
     setLoading(true);
     
@@ -143,6 +176,7 @@ export default function Login() {
         },
       })
       .then(() => {
+        localStorage.removeItem("customerToken");
         localStorage.setItem("agentToken", JSON.stringify(token));
         const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/agent/dashboard";
         window.location = returnUrl;
@@ -156,33 +190,47 @@ export default function Login() {
       });
   }
 
-  // const validateOTP = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
+  const sendOtpPhoneNumber = async () => {
+    const auth = getAuth();
+    const appVerifier = window.recaptchaVerifier;
 
-  //   await window.confirmationResult
-  //     .confirm(otp)
-  //     .then(() => {
-  //       updateProfile();
-  //     })
-  //     .catch(() => {
-  //       setErrorHandler("login", "Invalid Code");
-  //       setLoading(false);
-  //     });
-  // };
+    await signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        setLoading(false);
+        setForm1(false);
+        setForm2(true);
+      })
+      .catch(() => {
+        setErrorHandler("login", "Unable to send code to phone number, please try again");
+        setLoading(false);
+      });
+  };
+
+  const validateOtpPhoneNumber = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    await window.confirmationResult
+      .confirm(otp)
+      .then(() => {
+        updateProfile();
+      })
+      .catch(() => {
+        setErrorHandler("login", "Invalid Code");
+        setLoading(false);
+      });
+  };
 
   const forgotPasswordSubmit = async (e) => {
     e.preventDefault();
 
     const formResponse = await axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/auth/forgot-password?email=${forgotEmail}&type=agent`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .get(`${process.env.REACT_APP_API_URL}/auth/forgot-password?email=${forgotEmail}&type=agent`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
         if (response?.status !== 200) {
           setErrorHandler("reset", "Unable to reset password, please try again later");
@@ -247,21 +295,17 @@ export default function Login() {
   const handleChange = (otp) => setOtp(otp);
 
   useEffect(() => {
-    // const firebaseConfig = {
-    //   apiKey: process.env.REACT_APP_API_KEY,
-    //   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    //   projectId: process.env.REACT_APP_PROJECT_ID,
-    //   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    //   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-    //   appId: process.env.REACT_APP_APP_ID,
-    //   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-    // };
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_API_KEY,
+      authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+      projectId: process.env.REACT_APP_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+      appId: process.env.REACT_APP_APP_ID,
+      measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+    };
 
-    // initializeApp(firebaseConfig);
-
-    // const auth = getAuth();
-    // window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
-    // window.recaptchaVerifier.render();
+    initializeApp(firebaseConfig);
   }, []);
 
   return (
@@ -288,21 +332,39 @@ export default function Login() {
                     className="ltn__form-box contact-form-box"
                   >
                     <ResponseHandler errors={errors} />
-                    <input
-                      type="text"
-                      name="email"
-                      placeholder="Email*"
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Password*"
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    {/* <div id="recaptcha-container" className="mb-30"></div> */}
+                    {verified ? (
+                    <div>
+                      <input
+                        type="text"
+                        name="email"
+                        placeholder="Email*"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password*"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>) : (
+                    <div>
+                      <label>Verify By: </label>
+                      <div onChange={(e) => setOtpType(e.target.value)}>
+                        <label className="checkbox-item" style={{ marginRight: "20px" }}>
+                          Phone Number
+                          <input type="radio" name="otpType" value="phoneNumber" required/>
+                          <span className="checkmark" />
+                        </label>
+                        <label className="checkbox-item">
+                          Email Address
+                          <input type="radio" name="otpType" value="emailAddress" />
+                          <span className="checkmark" />
+                        </label>
+                      </div>
+                      <div id="recaptcha-container" className="mb-4 mt-3"></div>
+                    </div>)}
                     <div className="btn-wrapper mt-0">
                       <button
                         className="theme-btn-1 btn btn-block"
@@ -351,7 +413,7 @@ export default function Login() {
           {form2 ? (
             <form
               className="ltn__form-box contact-form-box contact-form-login digit-group text-center"
-              onSubmit={validateOTP}
+              onSubmit={otpType === "phoneNumber" ? validateOtpPhoneNumber : validateOtpEmail}
             >
               <p className="text-center">Validate OTP (One Time Passcode)</p>
               <ResponseHandler errors={errors} />

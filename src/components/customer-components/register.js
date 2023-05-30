@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ResponseHandler from "../global-components/respones-handler";
 import axios from "axios";
-// import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import OtpInput from "react-otp-input";
-// import {
-//   getAuth,
-//   signInWithPhoneNumber,
-//   RecaptchaVerifier,
-// } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+} from "firebase/auth";
 
 export default function Register() {
   const [firstName, setFirstName] = useState();
@@ -17,6 +17,7 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  const [otpType, setOtpType] = useState();
   const [token, setToken] = useState();
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState();
@@ -41,7 +42,7 @@ export default function Register() {
   
   const handleChange = (otp) => setOtp(otp);
 
-  const registerCustomer = async (code) => {
+  const registerCustomer = async (code = "") => {
     let formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -76,10 +77,40 @@ export default function Register() {
       });
   }
 
-  const sendOTP = async (e) => {
+  const updateProfile = async () => { 
+    let formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("otpVerified", true);
+    formData.append("signupStep", 2);
+  
+    await axios
+      .put(`${process.env.REACT_APP_API_URL}/user/profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        localStorage.removeItem("agentToken");
+        localStorage.setItem("customerToken", JSON.stringify(token));
+        const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/customer/dashboard";
+        window.location = returnUrl;
+      })
+      .catch((error) => {
+        if (error?.response?.data?.errors) {
+          setErrorHandler(error.response.data.errors, "error", true);
+        } else {
+          setErrorHandler("Unable to send OTP, please try again later");
+        }
+        setLoading(false);
+      });
+  };
+
+  const sendOtpEmail = async (e) => {
     e.preventDefault();
-    
     setLoading(true);
+    
     const code = Math.floor(100000 + Math.random() * 900000);
     
     let formData = new FormData();
@@ -105,7 +136,7 @@ export default function Register() {
       });
   }
 
-  const validateOTP = async (e) => {
+  const validateOtpEmail = async (e) => {
     e.preventDefault();
     setLoading(true);
     
@@ -120,6 +151,7 @@ export default function Register() {
         },
       })
       .then(() => {
+        localStorage.removeItem("agentToken");
         localStorage.setItem("customerToken", JSON.stringify(token));
         const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/customer/dashboard";
         window.location = returnUrl;
@@ -133,55 +165,55 @@ export default function Register() {
       });
   }
 
-  // const sendOTP = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
+  const sendOtpPhoneNumber = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  //   const auth = getAuth();
-  //   const appVerifier = window.recaptchaVerifier;
+    const auth = getAuth();
+    const appVerifier = window.recaptchaVerifier;
 
-  //   await signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-  //     .then((confirmationResult) => {
-  //       window.confirmationResult = confirmationResult;
-  //       registerCustomer();
-  //     })
-  //     .catch(() => {
-  //       setErrorHandler("Unable to send code to phone number, please try again");
-  //       setLoading(false);
-  //     });
-  // };
+    await signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        registerCustomer();
+      })
+      .catch(() => {
+        setErrorHandler("Unable to send code to phone number, please try again");
+        setLoading(false);
+      });
+  };
 
-  // const validateOTP = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
+  const validateOtpPhoneNumber = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  //   await window.confirmationResult
-  //     .confirm(otp)
-  //     .then(() => {
-  //       updateProfile();
-  //     })
-  //     .catch(() => {
-  //       setErrorHandler("Invalid Code");
-  //       setLoading(false);
-  //     });
-  // };
+    await window.confirmationResult
+      .confirm(otp)
+      .then(() => {
+        updateProfile();
+      })
+      .catch(() => {
+        setErrorHandler("Invalid Code");
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    // const firebaseConfig = {
-    //   apiKey: process.env.REACT_APP_API_KEY,
-    //   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    //   projectId: process.env.REACT_APP_PROJECT_ID,
-    //   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    //   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-    //   appId: process.env.REACT_APP_APP_ID,
-    //   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-    // };
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_API_KEY,
+      authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+      projectId: process.env.REACT_APP_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+      appId: process.env.REACT_APP_APP_ID,
+      measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+    };
 
-    // initializeApp(firebaseConfig);
+    initializeApp(firebaseConfig);
 
-    // const auth = getAuth();
-    // window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
-    // window.recaptchaVerifier.render();
+    const auth = getAuth();
+    window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
+    window.recaptchaVerifier.render();
   }, []);
 
   return (
@@ -203,7 +235,7 @@ export default function Register() {
             <div className="account-login-inner">
               {form1 ? (
                 <form
-                  onSubmit={sendOTP}
+                  onSubmit={otpType === "phoneNumber" ? sendOtpPhoneNumber : sendOtpEmail}
                   className="ltn__form-box contact-form-box"
                 >
                   <div className="row">
@@ -267,8 +299,21 @@ export default function Register() {
                         required
                       />
                     </div>
+                    <label>Verify By: </label>
+                    <div onChange={(e) => setOtpType(e.target.value)}>
+                      <label className="checkbox-item" style={{ marginRight: "20px" }}>
+                        Phone Number
+                        <input type="radio" name="otpType" value="phoneNumber" required/>
+                        <span className="checkmark" />
+                      </label>
+                      <label className="checkbox-item">
+                        Email Address
+                        <input type="radio" name="otpType" value="emailAddress" />
+                        <span className="checkmark" />
+                      </label>
+                    </div>
                   </div>
-                  {/* <div id="recaptcha-container" className="mb-30"></div> */}
+                  <div id="recaptcha-container" className="mt-4 mb-4"></div>
                   <ResponseHandler errors={errors}/>
                   <div className="btn-wrapper text-center">
                     <button
@@ -292,7 +337,7 @@ export default function Register() {
               {form2 ? (
                 <form
                   className="ltn__form-box contact-form-box digit-group"
-                  onSubmit={validateOTP}
+                  onSubmit={otpType === "phoneNumber" ? validateOtpPhoneNumber : validateOtpEmail}
                 >
                   <p className="text-center">Validate OTP (One Time Passcode)</p>
                   <ResponseHandler errors={errors} />
