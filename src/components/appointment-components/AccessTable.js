@@ -57,6 +57,7 @@ const AccessTable = (props) => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedBackground, setSelectedBackground] = useState('');
   const [publisher, setPublisher] = useState('');
+  const [session, setSession] = useState('');
   const [selectedVideoDevice, setSelectedVideoDevice] = useState('');
   const [selectedAudioOutput, setSelectedAudioOutput] = useState('');
   const [appointment, setAppointment] = useState('');
@@ -167,7 +168,8 @@ const AccessTable = (props) => {
         } else {
           setBrowserStatus(2);
         }
-        const session = OT.initSession("46869314", appointmentt.sessionId);
+        // We are giving a hard-coded value for session id because if we use actaull session id it will effect the wworking of session
+        const session = OT.initSession("46869314", '1_MX40Njg2OTMxNH5-MTY4NTQyNjk0NjMzMX5oWHJES3RyNmR1MnZHQnFTa3hWNWwvS2J-fn4');
         // initialize the publisher
         const publisherOptions = {
           insertMode: "append",
@@ -184,7 +186,6 @@ const AccessTable = (props) => {
           publisherOptions,
           (error) => {}
         );
-        setPublisher(publisher);
         session.connect(tokToken, (error) => {
           if (error) {
             if (error.name === "OT_NOT_CONNECTED") {
@@ -194,9 +195,11 @@ const AccessTable = (props) => {
             }
           } else {
             // If the connection is successful, publish the publisher to the session
-            session.publish(publisher, (error) => {});
+            //session.publish(publisher, (error) => {});
           }
         });
+        setPublisher(publisher);
+        setSession(session);
         navigator.mediaDevices
           .getUserMedia({ audio: true, video: true })
           .then((stream) => {
@@ -248,6 +251,14 @@ const AccessTable = (props) => {
   
       fetchData();
     }
+    return () => {
+      if (session) {
+        session.disconnect();
+      }
+      if (publisher) {
+        publisher.destroy();
+      }
+    };
   }, []);
 
   function handleHing() {
