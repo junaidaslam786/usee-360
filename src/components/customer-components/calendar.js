@@ -8,13 +8,13 @@ import ViewAppointment from "./appointments/view-appointment";
 import { 
   convertGmtToTime 
 } from "../../utils";
+import { getLoginToken } from "../../utils";
 
 export default function CustomerCalendar() {
   const [userAppointments, setUserAppointments] = useState([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
-
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
 
   const loadAllList = async () => {
     let response = await fetch(

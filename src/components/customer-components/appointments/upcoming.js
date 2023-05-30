@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { 
   formatAppointmentDate,
-  convertGmtToTime 
+  convertGmtToTime, 
+  getLoginToken
 } from "../../../utils";
 import ViewAppointment from "./view-appointment";
 
@@ -12,7 +13,7 @@ export default function UpcomingAppointments(props) {
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
 
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
@@ -91,8 +92,8 @@ export default function UpcomingAppointments(props) {
                 <div>
                   <div className="ltn__my-properties-info appointment-info">
                     <h6 className="mb-10 go-top overflow-dots">
-                      {element?.agentUser?.firstName}{" "}
-                      {element?.agentUser?.lastName}
+                      {element?.allotedAgentUser?.firstName}{" "}
+                      {element?.allotedAgentUser?.lastName}
                     </h6>
                     <small>
                       <i className="icon-clock" />{" "}
@@ -173,7 +174,8 @@ export default function UpcomingAppointments(props) {
               </ul>
             </div>
           </div>
-      )}
+        )
+      }
 
       <span
         ref={openViewModal}

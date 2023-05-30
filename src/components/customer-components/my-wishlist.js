@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Layout from "./layouts/layout";
-import { formatCreatedAtTimestamp } from "../../utils";
+import { formatCreatedAtTimestamp, getLoginToken } from "../../utils";
 
 export default function MyWishlist() {
   const [list, setList] = useState([]);
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
   const loadAllList = async () => {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/customer/wishlist/list`, {

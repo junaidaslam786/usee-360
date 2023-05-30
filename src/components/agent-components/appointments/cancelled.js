@@ -5,6 +5,7 @@ import {
   getUserDetailsFromJwt,
   formatAppointmentDate,
   convertGmtToTime,
+  getLoginToken,
 } from "../../../utils";
 import ViewAppointment from "./view-appointment";
 
@@ -15,7 +16,7 @@ export default function CancelledAppointments() {
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState('');
   const userDetail = getUserDetailsFromJwt();

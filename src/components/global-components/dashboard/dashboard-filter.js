@@ -14,9 +14,10 @@ import CustomerCompletedAppointments from "../../customer-components/appointment
 
 import "./dashboard-filter.css";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import { getLoginToken } from "../../../utils";
 
 export default function DashboardFilter(props) {
-    const token = props?.type === USER_TYPE.AGENT ? JSON.parse(localStorage.getItem("agentToken")) : JSON.parse(localStorage.getItem("customerToken"));;
+    const token = props?.type === USER_TYPE.AGENT ? getLoginToken() : getLoginToken(true);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [selectedFilter, setSelectedFilter] = useState(DASHBOARD_FILTER_VALUE.CUSTOM);

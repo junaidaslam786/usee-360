@@ -4,6 +4,7 @@ import {
   getUserDetailsFromJwt,
   formatAppointmentDate,
   convertGmtToTime,
+  getLoginToken,
 } from "../../../utils";
 import Modal from 'react-modal';
 import ViewAppointment from "./view-appointment";
@@ -19,13 +20,15 @@ export default function UpcomingAppointments(props) {
   const [selectedAppointment, setSelectedAppointment] = useState('');
   const [notes, setNotes] = useState('');
   const openViewModal = useRef(null);
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const userDetail = getUserDetailsFromJwt();
   const history = useHistory();
 
   const loadAllList = async (page = 1) => {
     let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
     appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&startDate=${props.startDate}&endDate=${props.endDate}`: ""}`;
+    appendQuery = props?.selectedUser ? `&selectedUser=${props.selectedUser}` : "";
+
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/agent/appointment/list?page=${page}&size=10&type=upcoming${appendQuery}`,
       {
@@ -68,7 +71,7 @@ export default function UpcomingAppointments(props) {
     }
   };
 
-  async function addNote(notes) {
+  const addNote = async (notes) => {
     const requestData = {
       userId: userDetail.id,
       userType: "agent",
@@ -90,7 +93,7 @@ export default function UpcomingAppointments(props) {
     }
   }
 
-  async function updateStatus(status) {
+  const updateStatus = async (status) => {
     const requestData = {
       id: selectedAppointment,
       status,
@@ -195,17 +198,19 @@ export default function UpcomingAppointments(props) {
                 <div className="tabInner-data">
                   <div className="me-lg-2">
                     <div>
-                    {element.allotedAgent === userDetail.id ? (
-                      <Link
-                        to={{
-                          pathname: `/precall/${element.id}/agent`,
-                        }}
-                      >
-                        <button className="joinCall">Join Call</button>
-                      </Link>
-                    ) : (
-                      <button className="supervisor-btn">Assigned to supervisor</button>
-                    )}
+                    {
+                      element.allotedAgent === userDetail.id ? (
+                        <Link
+                          to={{
+                            pathname: `/precall/${element.id}/agent`,
+                          }}
+                        >
+                          <button className="joinCall">Join Call</button>
+                        </Link>
+                      ) : (
+                        <button className="supervisor-btn">Assigned to {`${element.allotedAgentUser.firstName} ${element.allotedAgentUser.lastName}`}</button>
+                      )
+                    }
                   </div>
                     <div>
                       <button className="status-buttons completed mt-lg-2" onClick={() => handleNotesModal(element.id)}>

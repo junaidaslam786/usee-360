@@ -102,6 +102,16 @@ export const AGENT_TYPE = {
     STAFF: "staff",
 };
 
+export const AGENT_TYPE_LABEL = {
+    "manager": "Manager",
+    "staff": "Staff",
+};
+
+export const AGENT_TYPES = [
+    { value: "manager", label: "Manager" },
+    { value: "staff", label: "Staff" },
+];
+
 export const USER_ALERT_MODE = {
     WISHLIST: "wishlist",
     INTEREST: "interest",
@@ -116,6 +126,7 @@ export const USER_ALERT_TYPE = {
     INTERESTED: 1,
     NOT_INTERESTED: 2,
     OFFER: 1,
+    OFFER_DELETED: 2,
     APPOINTMENT: 1,
     SNAGLIST_UPDATED: 1,
     SNAGLIST_APPROVED: 2,

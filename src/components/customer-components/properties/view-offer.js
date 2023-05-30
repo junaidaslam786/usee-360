@@ -3,7 +3,7 @@ import axios from "axios";
 import ResponseHandler from "../../global-components/respones-handler";
 import { useHistory } from "react-router";
 import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
-import { getUserDetailsFromJwt } from "../../../utils";
+import { getLoginToken, getUserDetailsFromJwt } from "../../../utils";
 
 export default function ViewOffer(props) {
     const [productId, setProductId] = useState(0);
@@ -25,7 +25,7 @@ export default function ViewOffer(props) {
     const [isApprovedByCustomer, setIsApprovedByCustomer] = useState(false);
     const history = useHistory();
 
-    const token = JSON.parse(localStorage.getItem("customerToken"));
+    const token = getLoginToken(true);
     const userDetail = getUserDetailsFromJwt();
 
     const makeOfferSubmit = async (e) => {
@@ -376,7 +376,7 @@ export default function ViewOffer(props) {
                                                             <form className="ltn__form-box" onSubmit={handleSnagListFormSubmit}>
                                                                 <div className="btn-wrapper mt-0">
                                                                     <div className="row mb-50">
-                                                                        <b>{isApprovedByAgent ? "Approved by agent" : "Not yet approved by agent"}</b>
+                                                                        <b>{isApprovedByAgent ? `Approved by ${process.env.REACT_APP_AGENT_ENTITY_LABEL}` : `Not yet approved by ${process.env.REACT_APP_AGENT_ENTITY_LABEL}`}</b>
                                                                     </div>
                                                                     <div className="ltn__my-properties-table table-responsive">
                                                                         <table className="table">

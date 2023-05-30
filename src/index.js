@@ -33,8 +33,9 @@ import AgentPropertyDetails from "./pages/agent/property-details";
 import AgentAppointments from "./pages/agent/appointments";
 import AgentAddAppointment from "./pages/agent/add-appointment";
 import AgentAlerts from "./pages/agent/alerts";
-import AgentMyCalendarPage from "./pages/agent/my-calendar";
-import AgentAvailabilityPage from "./pages/agent/my-availability";
+import AgentMyCalendar from "./pages/agent/my-calendar";
+import AgentAvailability from "./pages/agent/my-availability";
+import AgentUsers from "./pages/agent/users";
 
 import CustomerRegister from "./pages/customer/register";
 import CustomerLogin from "./pages/customer/login";
@@ -42,7 +43,7 @@ import CustomerResetPassword from "./pages/customer/reset-password";
 import CustomerDashboard from "./pages/customer/dashboard";
 import CustomerAppointments from "./pages/customer/appointments";
 import CustomerAddAppointment from "./pages/customer/add-appointment";
-import CustomerMyCalendarPage from "./pages/customer/my-calendar";
+import CustomerMyCalendar from "./pages/customer/my-calendar";
 import CustomerWishlist from "./pages/customer/wishlist";
 import CustomerPropertyDetails from "./pages/customer/property-details";
 import CustomerProfile from "./pages/customer/profile";
@@ -142,8 +143,11 @@ class Root extends Component {
             <AgentRoute path="/agent/appointments" component={AgentAppointments} />
             <AgentRoute path="/agent/add-appointment" component={AgentAddAppointment} />
             <AgentRoute path="/agent/alerts" component={AgentAlerts} />
-            <AgentRoute path="/agent/calendar" component={AgentMyCalendarPage} />
-            <AgentRoute path="/agent/my-availability" component={AgentAvailabilityPage} />
+            <AgentRoute path="/agent/calendar" component={AgentMyCalendar} />
+            <AgentRoute path="/agent/my-availability" component={AgentAvailability} />
+            <AgentRoute path="/agent/users" component={ () => <AgentUsers page="users" /> }/>
+            <AgentRoute path="/agent/add-user" component={ () => <AgentUsers page="add-user" /> }/>
+            <AgentRoute path="/agent/user-details/:id" component={ () => <AgentUsers page="user-details" /> }/>
             
             {/* Client Routes */}
             <Route path="/customer/register" component={CustomerRegister} />
@@ -154,7 +158,7 @@ class Root extends Component {
             <CustomerRoute path="/customer/dashboard" component={CustomerDashboard} />
             <CustomerRoute path="/customer/appointments" component={CustomerAppointments} />
             <CustomerRoute path="/customer/add-appointment" component={CustomerAddAppointment} />
-            <CustomerRoute path="/customer/calendar" component={CustomerMyCalendarPage} />
+            <CustomerRoute path="/customer/calendar" component={CustomerMyCalendar} />
             <CustomerRoute path="/customer/wishlist" component={CustomerWishlist} />
             <CustomerRoute path="/customer/property-details/:id" component={CustomerPropertyDetails} />
             <CustomerRoute path="/customer/profile" component={CustomerProfile} />

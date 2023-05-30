@@ -51,6 +51,7 @@ export default function Register() {
     formData.append("confirmPassword", confirmPassword);
     formData.append("signupStep", 1);
     formData.append("otpCode", code);
+    formData.append("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
 
     await axios
       .post(`${process.env.REACT_APP_API_URL}/auth/register-customer`, formData, {

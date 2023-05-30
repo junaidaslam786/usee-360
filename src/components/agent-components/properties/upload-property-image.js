@@ -2,9 +2,10 @@ import React, { useState, useCallback, useEffect } from "react";
 import Dropzone from "react-dropzone";
 import axios from 'axios';
 import ResponseHandler from '../../global-components/respones-handler';
+import { getLoginToken } from "../../../utils";
 
 export default function UploadPropertyImage(props) {
-    const token = JSON.parse(localStorage.getItem("agentToken"));
+    const token = getLoginToken();
     const [propertyImages, setPropertyImages] = useState([]);
     const [uploadErrors, setUploadErrors] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState("");

@@ -13,6 +13,7 @@ import {
   PRODUCT_LOG_TYPE 
 } from "../../constants";
 import Slideshow from "../Slideshow";
+import { getLoginToken } from "../../utils";
 
 export default function PropertyDetails() {
   const [property, setProperty] = useState({});
@@ -27,7 +28,7 @@ export default function PropertyDetails() {
 
   const params = useParams();
 
-  const token = JSON.parse(localStorage.getItem("customerToken"));
+  const token = getLoginToken(true);
 
   async function loadProperty() {
     await axios

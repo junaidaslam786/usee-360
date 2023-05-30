@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { AGENT_TYPE } from "../../constants";
-import { getUserDetailsFromJwt } from "../../utils";
+import { getLoginToken, getUserDetailsFromJwt } from "../../utils";
 
 export default function Sidebar() {
   const [count, setCount] = useState();
   const history = useHistory();
-  const token = JSON.parse(localStorage.getItem("agentToken"));
+  const token = getLoginToken();
   const userDetail = getUserDetailsFromJwt();
 
   function handleClick() {
@@ -51,36 +51,26 @@ export default function Sidebar() {
         Account Details
         <i className="fas fa-user" />
       </NavLink>
-      {
-        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
-          <NavLink to="/agent/properties">
-            My Properties
-            <i className="fa-solid fa-list" />
-          </NavLink>
-        )
-      }
+      
+      <NavLink to="/agent/properties">
+        My Properties
+        <i className="fa-solid fa-list" />
+      </NavLink>
 
-      {
-        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
-          <NavLink to="/agent/add-property">
-            Add Property
-            <i className="fa-solid fa-map-location-dot" />
-          </NavLink>
-        )
-      }
+      <NavLink to="/agent/add-property">
+        Add Property
+        <i className="fa-solid fa-map-location-dot" />
+      </NavLink>
       
       <NavLink to="/agent/appointments">
         Appointments
         <i className="fa-solid fa-clock" />
       </NavLink>
-      {
-        userDetail?.agent?.agentType === AGENT_TYPE.AGENT && (
-          <NavLink to="/agent/add-appointment">
-            Add Appointments
-            <i className="fa-solid fa-calendar-check"></i>
-          </NavLink>
-        )
-      }
+      
+      <NavLink to="/agent/add-appointment">
+        Add Appointments
+        <i className="fa-solid fa-calendar-check"></i>
+      </NavLink>
       
       <NavLink to="/agent/alerts">
         Alerts
@@ -89,14 +79,26 @@ export default function Sidebar() {
           <span className="badge rounded-pill bg-danger alert-badge">{count}</span>
         </span>
       </NavLink>
+
       <NavLink to="/agent/calendar">
         My Calendar
           <i className="fa-solid fa-calendar" />
       </NavLink>
+
       <NavLink to="/agent/my-availability">
         My Availability
         <i className="fa-sharp fa-solid fa-check-to-slot"/>
       </NavLink>
+
+      {
+        (userDetail?.agent?.agentType === AGENT_TYPE.AGENT || userDetail?.agent?.agentType === AGENT_TYPE.MANAGER) && (
+          <NavLink to="/agent/users">
+            Users
+            <i className="fas fa-users" />
+          </NavLink>
+        )
+      }
+
       <a onClick={handleClick} href="#">
         Logout
         <i className="fas fa-sign-out-alt" />
