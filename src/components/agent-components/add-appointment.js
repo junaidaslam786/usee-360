@@ -159,7 +159,9 @@ export default function AddAppointment() {
       setPhone(currentCustomer.phoneNumber || "");
     }
 
-    await checkAvailability(currentCustomer.id);
+    if (currentCustomer?.id) {
+      await checkAvailability(currentCustomer.id);
+    }
   };
 
   const handleSubmit = async (e) => {

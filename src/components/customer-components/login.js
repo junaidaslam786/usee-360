@@ -72,6 +72,7 @@ export default function Login() {
           const code = Math.floor(100000 + Math.random() * 900000);
           updateProfile(formResponse.token, formResponse.user.firstName, formResponse.user.lastName, formResponse.user.email, code);
         } else {
+          localStorage.removeItem("agentToken");
           localStorage.setItem("customerToken", JSON.stringify(formResponse.token));
           const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || "/customer/dashboard";
           window.location = returnUrl;

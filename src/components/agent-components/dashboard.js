@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "./layouts/layout";
 import DashboardFilter from "../global-components/dashboard/dashboard-filter";
 import { getUserDetailsFromJwt } from "../../utils";
-import { USER_TYPE } from "../../constants";
+import { AGENT_TYPE_LABEL, USER_TYPE } from "../../constants";
 
 export default function Dashboard() {
     const userDetail = getUserDetailsFromJwt();
@@ -18,7 +18,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="author-info">
-                <h6>{process.env.REACT_APP_AGENT_ENTITY_LABEL}</h6>
+                <h6>{userDetail?.agent?.agentType ? AGENT_TYPE_LABEL[userDetail.agent.agentType] : process.env.REACT_APP_AGENT_ENTITY_LABEL}</h6>
                 <h2>{userDetail.name}</h2>
                 <div className="footer-address">
                   <ul>
