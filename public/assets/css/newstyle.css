@@ -374,6 +374,7 @@
     border-radius: 4px;
     width: 118px;
     background-color: #edecec;
+    margin-right: 10px;
 }
 .tab-data .center {
     display: flex;
@@ -492,6 +493,8 @@
     font-size: 20px;
     font-weight: 600;
     color: #071c1f;
+    border-bottom: 1px solid #00c800;
+    margin-bottom: 1rem;
 }
 
 .ltn__popular-post-widget ul li:hover {
@@ -697,6 +700,7 @@
 .nice-select.video-selector1{
     width: 49%;
     background-color: #e2e2e2 !important;
+    margin-top: 8px;
 }
 .nice-select.video-selector2{
     width: 49%;
@@ -722,7 +726,7 @@
 .h_100{
     height: 100%;
 }
-.cursor_pointer{
+.cursor_pointer {
     cursor: pointer;
 }
 .pointer_none{
@@ -808,6 +812,7 @@
 .mt_40{
     margin-top: 40px;
 }
+
 .otp input{
     width: 60px !important;
     height: 60px;
@@ -816,6 +821,7 @@
     border: 1px solid gray;
     user-select: none;
 }
+
 .document-modal {
     position: absolute;
     top: 46.9%;
@@ -823,7 +829,7 @@
     transform: translate(-50%, -50%);
     height: 93.5%;
     width: 75%;
-    background-color: grey;
+    background-color: #000;
     padding: 30px;
     border-radius: 4px;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -954,4 +960,195 @@
 .ltn__blog-brief {
     overflow: hidden;
     flex: 0 0 65%;
+}
+
+.site-logo-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ltn__header-user-appointment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ltn__header-user-appointment .user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.user-info .user-name {
+    font-size: 1rem;
+    color: #000;
+    padding: 0rem 1rem;
+    border-right: 2px solid #00cb04;
+}
+  
+.flex-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.quick-appointment-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    color: black;
+    background: white;
+    border: 1px solid #abb2b9;
+    box-shadow: 0 16px 32px 0 rgba(7, 28, 31, 0.1); 
+}
+  
+.create-property-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    color: black;
+    background: white;
+    border: 1px solid #abb2b9;
+    box-shadow: 0 16px 32px 0 rgba(7, 28, 31, 0.1); 
+}
+  
+.quick-appointment-btn:hover {
+    font-size: 1rem;
+    color: #fff;
+    background: #00cb04;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    border: 1px solid transparent;
+}
+  
+.create-property-btn:hover {
+    font-size: 1rem;
+    color: #fff;
+    background: #00cb04;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    border: 1px solid #abb2b9;
+}
+  
+@media screen and (max-width: 991px) {
+    .ltn__header-user-appointment {
+        padding-left: 1rem;
+    }
+
+    .flex-wrapper {
+        flex-direction: column;
+    } 
+
+    .create-property-btn {
+        margin-bottom: 0.5rem;
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .quick-appointment-btn {
+        margin-bottom: 0.5rem;
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+  
+.user-icon img {
+    border-radius: 50%;
+    width: 60px;
+}
+
+.modal-header .close {
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    padding: 0;
+    right: -16px !important;
+    left: auto;
+    top: -16px !important;
+    opacity: 1;
+    z-index: 1;
+    -webkit-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+    
+.ltn__header-area {
+    z-index: 99 !important;
+    position: relative;
+}
+
+.MyModalOverlay {
+    z-index: 9999 !important;
+}
+
+.permission-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+  
+.permission-tags .badge {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    color: black;
+}
+
+.street-view-div {
+    margin-top: 30px;
+    margin-right: 30px;
+    height: 92%;
+}
+
+.user-detail-nav-pills { 
+    border-bottom: 1px solid #e5eaee;
+    margin: 0 10px;
+}
+
+.testing_results {
+    background: none !important ;
+    box-shadow: 0px 3px 10px 6px #e2e2e2;
+    border: 2px solid rgb(0, 203, 4);
+}
+
+.testing_secn {
+    border-right: 1px solid #00cb04 !important;
+}
+
+.right-border {
+    border-right: 1.5px solid #00c800 !important;
+}
+
+.modal-body .modalHeading {
+    border-bottom: 1px solid #00c800;
+    margin-bottom: 1rem;
+}
+
+.modal-product-info textarea {
+    min-height: 330px !important;
+}
+
+.theme-btn-:focus .theme-btn-1:active {
+    box-shadow: none !important;
+    color: #fff !important;
+}
+
+.document-modal-div {
+    cursor: pointer;
+    width: 100%; 
+    height: 100%;
+    object-fit: contain;
 }

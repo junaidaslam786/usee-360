@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Navbar from '../components/global-components/navbar';
-import Banner from '../components/section-components/banner-v3';
-import Aboutv1 from '../components/section-components/about-v1';
-import Servicev1 from '../components/section-components/service-v1';
-import Category from '../components/section-components/category-v1';
-import History from '../components/section-components/history';
-import CallToActionV1 from '../components/section-components/call-to-action-v1';
-import Footer from '../components/global-components/footer';
+import Navbar from '../components/global/navbar';
+import Banner from '../components/homepage/section/banner-v3';
+import Aboutv1 from '../components/homepage/section/about-v1';
+import Servicev1 from '../components/homepage/section/service-v1';
+import Category from '../components/homepage/section/category-v1';
+import History from '../components/homepage/section/history';
+import CallToActionV1 from '../components/homepage/section/call-to-action-v1';
+import Footer from '../components/global/footer';
 
 function HomePage() {
   return (

@@ -1,0 +1,383 @@
+#meetingBody {
+  overflow-x: hidden;
+}
+
+#main {
+  display: flex;
+}
+
+#members {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid;
+}
+
+/* #publisher {
+  width: 100%;
+  height: auto;
+} */
+
+#publisher > div {
+  border-radius: 10px;
+}
+
+#subscribers {
+  margin: 0 auto;
+  overflow-y: scroll;
+  padding-top: 10px;
+}
+
+#subscribers > div {
+  border-radius: 10px;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+#chatOptions {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  right: 50%;
+  transform: translate(50%, 0);
+  padding: 10px;
+  background: #00c800;
+  width: 100%;
+  z-index: 12;
+}
+
+#chatOptions img {
+  width: 30px;
+  height: auto;
+  border: 1px solid white;
+  border-radius: 50%;
+  margin: 0 10px;
+  padding: 5px;
+  background: ghostwhite;
+}
+
+#chatOptions img:hover {
+  cursor: pointer;
+}
+
+#ChatIcon {
+  width: 30px;
+  height: auto;
+  border: 1px solid white;
+  border-radius: 50%;
+  margin: 0 10px;
+  padding: 5px;
+  position: fixed;
+  bottom: 10px;
+  right: 10%;
+  background: ghostwhite;
+  z-index: 12;
+  position: fixed;
+}
+
+#chatArea {
+  width: 30%;
+  height: 80vh;
+  position: absolute;
+  z-index: 9999;
+  top: 20px;
+  right: 0;
+  border: 2px solid white;
+  border-radius: 20px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background: #27b52770;
+  backdrop-filter: blur(3px);
+  padding-top: 5px;
+}
+
+#chatArea p p {
+  margin: 3px auto;
+  background: rgb(241 215 215 / 17%);
+  width: 90%;
+  border-radius: 5px;
+  color: #ffffff;
+  padding-left: 5px;
+}
+
+#history {
+  width: 100%;
+  height: 84%;
+}
+
+#Chatform {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 40px;
+}
+:focus {
+  border: 1px solid;
+}
+
+#Chatform div {
+  height: 32px;
+  width: 32px;
+  margin: 5px;
+  position: relative;
+}
+
+#Chatform input[type="file"] {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  z-index: 0;
+  max-width: 32px;
+  height: 32px;
+  display: block;
+  padding: 0;
+}
+
+#Chatform input[type="submit"] {
+  position: relative;
+  opacity: 0;
+  z-index: 0;
+  max-width: 32px;
+  height: 32px;
+  display: block;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+#msgTxt {
+  margin-bottom: 0;
+  border: none;
+}
+:focus {
+  border: none;
+}
+
+.slide-in {
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.slide-out {
+  display: none;
+}
+
+#screen-preview {
+  object-fit: cover;
+  object-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+#screen-preview iframe,
+#screen-preview video {
+  max-height: calc(100% - 100px);
+  max-width: 100%;
+}
+
+@keyframes slide-in {
+  100% {
+    transform: translateX(-2%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  100% {
+    -webkit-transform: translateX(-2%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+
+  100% {
+    -webkit-transform: translateX(-100%);
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #chatArea {
+    width: 80vw;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  #chatArea {
+    width: 95vw;
+  }
+}
+
+.select-margin {
+  margin-bottom: 10px;
+  background: #00c800;
+  font-weight: bold;
+  color: #fff;
+  font-size: 15px;
+}
+
+.download-file-link {
+  display: inline-block;
+  background-color: #7c8c91;
+  color: white;
+  padding: 3px;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.download-file-link:hover {
+  background-color: #005a7e;
+}
+
+.minimize-chat {
+  text-align: end;
+}
+
+.minimize-button {
+  margin-right: 5px;
+  padding-top: 0px;
+}
+
+.call-meeting-button {
+  border: 2px solid red;
+  border-radius: 4px;
+  background-color: red;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+.MyModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.MyModalOverlay {
+  z-index: 9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.MyNotes {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.property-modal-container {
+  position: fixed;
+  bottom: 55px;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  z-index: 13;
+  width: 25%;
+  border-right: 2px solid;
+  height: 250px;
+  overflow: auto;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: inset 0 0 3px 3px #00c800;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.property-modal-content {
+  padding: 30px 20px 12px 0px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.property-modal-button {
+  position: fixed;
+  left: 356px;
+  background: #00c800;
+  bottom: 58px;
+  border-radius: 12px;
+  border: 0px;
+  color: white;
+  padding: 5px 15px
+}
+
+.property-close-button {
+  padding: 0px 8px 0px 8px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: white;
+  background-color: #00c800;
+  border: none;
+  border-radius: 2px;
+  font-weight: bold;
+}
+
+.buttons-row {
+  display: flex;
+  /* justify-content: space-between;
+  margin-bottom: 10px; */
+}
+
+.buttons-col {
+  /* flex: 1;
+  margin-right: 10px; */
+}
+
+.options-buttons {
+  background: #00c800;
+  color: white;
+  border-radius: 4px;
+  width: max-content;
+  padding: 0.5rem 2rem; 
+  margin: 5px;
+  border: 1px solid #1c1d1e;
+  /* Add more styles as needed for the button */
+}

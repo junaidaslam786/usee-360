@@ -1,12 +1,12 @@
 import React from "react";
-import MeetingJoin from '../components/appointment-components/MeetingJoin';
-import AccessTable from '../components/appointment-components/AccessTable';
+import MeetingJoin from '../components/meeting/MeetingJoin';
+import AccessTable from '../components/meeting/AccessTable';
 import { useHistory, useParams } from 'react-router-dom';
 
 const Meeting = (props) => {
   let { id, usertype } = useParams();
   const history = useHistory();
-  if(!props.location.state) {
+  if (!props.location.state) {
     history.push(`/precall/${id}/${usertype}`);
     return (
       <div>

@@ -182,3 +182,20 @@ export const APPOINTMENT_STATUS = {
     COMPLETED: "completed",
     CANCELLED: "cancelled",
 };
+
+export const CMS_PAGE_TYPE = {
+    NEWS: "news",
+    BLOGS: "blogs",
+};
+
+export const AGENT_USER_ACCESS_TYPE_VALUE = {
+    ADD_PROPERTY: "add_property",
+    EDIT_PROPERTY: "edit_property",
+    DELETE_PROPERTY: "delete_property",
+}
+
+export const AGENT_USER_ACCESS_TYPE = [
+    { value: "add_property", label: "Add Property" },
+    { value: "edit_property", label: "Edit Property" },
+    { value: "delete_property", label: "Delete Property" },
+];

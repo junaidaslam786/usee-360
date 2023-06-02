@@ -1,5 +1,5 @@
 import React from "react";
-import AccessTable from '../components/appointment-components/AccessTable';
+import AccessTable from '../components/meeting/AccessTable';
 import { useParams } from 'react-router-dom';
 
 const Precall = (props) => {

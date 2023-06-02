@@ -15,8 +15,6 @@ export const checkTimeOver = (date, time) => {
     currentDate.setSeconds(0);
     currentDate.setMilliseconds(0);
 
-    // console.log('givenDate', givenDate.toString());
-    // console.log('currentDate', currentDate.toString());
     return givenDate < currentDate;
 }
 
@@ -41,11 +39,14 @@ export const findCurrentTimeSlot = (timeslots) => {
   return null;
 }
 
-export const getUserDetailsFromJwt = () => {
+export const getUserDetailsFromJwt = (token) => {
   try {
-    const customerToken = getLoginToken(true);
-    const agentToken = getLoginToken();
-    const decoded = jwt.verify(agentToken || customerToken, process.env.REACT_APP_JWT_SECRET_KEY);
+    let tokenToDecode = token;
+    if (!tokenToDecode) {
+      tokenToDecode = getLoginToken();
+    }
+    
+    const decoded = jwt.verify(tokenToDecode, process.env.REACT_APP_JWT_SECRET_KEY);
     return decoded;
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
@@ -58,12 +59,11 @@ export const getUserDetailsFromJwt = () => {
 }
 
 export const convertTimestampToDateTime = (timestamp, format) => {
-  // console.log('convertTimestampToDateTime-timezone', getMomentDefaultTimezone());
   return timestamp ? moment.unix(timestamp / 1000).format(format ? format : "HH:mm") : "-";
 }
 
 export const setMomentDefaultTimezone = () => {
-  moment.tz.setDefault(JSON.parse(localStorage.getItem("userTimezone")));
+  moment.tz.setDefault(getUserTimezone());
 }
 
 export const getMomentDefaultTimezone = () => {
@@ -71,44 +71,64 @@ export const getMomentDefaultTimezone = () => {
 }
 
 export const formatSlotFromTime = (fromTime, sourceFormat, targetFromat) => {
-  // console.log('formatSlotFromTime-timezone', getMomentDefaultTimezone());
   return fromTime ? moment(fromTime, (sourceFormat ? sourceFormat : "hh:mm:ss")).format(targetFromat ? targetFromat : "HH:mm") : "-";
 }
 
 export const formatCreatedAtTimestamp = (createdAt, format) => {
-  // console.log('formatCreatedAtTimestamp-timezone', getMomentDefaultTimezone());
   return createdAt ? moment.utc(createdAt).format(format ? format : "D/MM/YYYY") : "-";
 }
 
 export const formatAppointmentDate = (appointmentDate, format) => {
-  // console.log('formatAppointmentDate-timezone', getMomentDefaultTimezone());
   return appointmentDate ? moment(appointmentDate).format(format ? format : "D/MM/YYYY") : "-";
 }
 
 export const addTimeInTimestamp = (timestamp, time, type) => {
-  // console.log('addTimeInTimestamp-timezone', getMomentDefaultTimezone());
   return timestamp ? (moment.unix(timestamp / 1000).add(time ? time : 0, type ? type : 'minutes').unix() * 1000) : "-";
 }
 
 export const convertTimeToTimezoneBasedTime = (time) => {
-  // console.log('convertTimeToTimezoneBasedTime-timezone', getMomentDefaultTimezone());
-  return time ? moment.tz(time, "HH:mm", JSON.parse(localStorage.getItem("userTimezone"))).format("HH:mm") : "-";
+  return time ? moment.tz(time, "HH:mm", getUserTimezone()).format("HH:mm") : "-";
 }
 
 export const currentTimezoneBasedDate = () => {
-  // console.log('currentTimezoneBasedDate-timezone', getMomentDefaultTimezone());
   return moment(new Date()).format("YYYY-MM-DD");
 }
 
 export const currentTimezoneBasedTime = () => {
-  // console.log('currentTimezoneBasedDate-timezone', getMomentDefaultTimezone());
   return moment(new Date()).format("HH:mm");
 }
 
 export const convertGmtToTime = (time, format) => {
-  return time ? moment.tz(time, "HH:mm:ss", "GMT").tz(JSON.parse(localStorage.getItem("userTimezone"))).format(format ? format : "HH:mm") : "-";
+  return time ? moment.tz(time, "HH:mm:ss", "GMT").tz(getUserTimezone()).format(format ? format : "HH:mm") : "-";
 }
 
-export const getLoginToken = (isCustomer) => {
-  return JSON.parse(localStorage.getItem(isCustomer ? "customerToken" : "agentToken"));
+export const getLoginToken = () => {
+  return JSON.parse(localStorage.getItem("userToken"));
+}
+
+export const removeLoginToken = () => {
+  return localStorage.removeItem("userToken");
+}
+
+export const setLoginToken = (token) => {
+  localStorage.setItem("userToken", JSON.stringify(token));
+}
+
+export const getUserTimezone = () => {
+  return JSON.parse(localStorage.getItem("userTimezone"));
+}
+
+export const setUserTimezone = (timezone) => {
+  localStorage.setItem("userTimezone", JSON.stringify(timezone));
+}
+
+export const setResponseHandler = (responseMessage, isSuccess = false) => {
+  let response = { errors: responseMessage, success: "" };
+
+  if (isSuccess) {
+    response.errors = [];
+    response.success = responseMessage;
+  }
+
+  return response;
 }
