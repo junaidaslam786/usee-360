@@ -11,6 +11,8 @@ import {
 import Select from "react-select";
 import AuthService from "../../services/auth";
 import OtpVerification from "../partial/otp-verification";
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 
 export default function RegisterAgent(props) {
   const [companyName, setCompanyName] = useState("");
@@ -48,6 +50,11 @@ export default function RegisterAgent(props) {
     formData.append("licenseNo", licenseNo);
     formData.append("signupStep", 1);
     formData.append("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    if(!isValidPhoneNumber(phoneNumber)) {
+      props.responseHandler(["Invalid Phone Number"]);
+      return;
+    }
 
     setLoading(true);
     const formResponse = await AuthService.register(formData, USER_TYPE.AGENT);
@@ -209,12 +216,13 @@ export default function RegisterAgent(props) {
                         />
                       </div>
                     </div>
-                    <small>Phone Number Hint: +971 5XXXX XXXX</small>
-                    <input
+                    <small>Phone Number: {phoneNumber}</small>
+                    <PhoneInput
                       type="text"
-                      name="phoneNumber"
+                      defaultCountry="AE"
                       placeholder="Phone Number*"
-                      onChange={(e) => setPhoneNumberHandler(e.target.value)}
+                      onChange={(e) => setPhoneNumberHandler(e)}
+                      limitMaxLength={true}
                       value={phoneNumber}
                       required
                     />

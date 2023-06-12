@@ -18195,3 +18195,7 @@ input[readonly] {
     margin: 0 2px;
     padding: 0;
 }
+
+.PhoneInput {
+    --PhoneInputCountryFlag-height: 30px;
+}

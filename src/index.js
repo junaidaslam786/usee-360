@@ -25,6 +25,8 @@ import IframePropertyGrid from "./components/homepage/iframe/grid";
 import HomePages from "./pages";
 import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
+const userDetail = getUserDetailsFromJwt();
+
 function checkIfHasRouteAccess(path) {
   let redirectRoute = false;
   const userDetail = getUserDetailsFromJwt();
@@ -71,6 +73,11 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     }
   }
 
+  if (!userDetail?.agent) {
+    history.push("/customer/dashboard");
+    return null;
+  }
+
   if (checkIfHasRouteAccess(restOfProps?.path)) {
     history.push("/agent/dashboard");
   }
@@ -90,6 +97,8 @@ function AgentRoute({ component: Component, ...restOfProps }) {
 function CustomerRoute({ component: Component, ...restOfProps }) {
   let isAuthenticated = false;
   const token = getLoginToken();
+  const history = useHistory();
+
   if (token) {
     const decodedJwt = JSON.parse(atob(token.split(".")[1]));
     if (decodedJwt.exp * 1000 < Date.now()) {
@@ -98,6 +107,11 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
     } else {
       isAuthenticated = true;
     }
+  }
+
+  if (userDetail?.agent) {
+    history.push("/agent/dashboard");
+    return null;
   }
 
   setMomentDefaultTimezone();

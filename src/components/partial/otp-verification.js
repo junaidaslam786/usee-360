@@ -61,7 +61,7 @@ export default function OtpVerification({ user, token, responseHandler }) {
         setvalidationForm(true);
       })
       .catch((error) => {
-        responseHandler("Unable to send code to phone number, please try again");
+        responseHandler(["Unable to send code to phone number, please try again"]);
       });
       setLoading(false);
   };

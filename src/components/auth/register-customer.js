@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import AuthService from "../../services/auth";
 import { USER_TYPE } from "../../constants";
 import OtpVerification from "../partial/otp-verification";
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 
 export default function RegisterCustomer(props) {
   const [firstName, setFirstName] = useState("");
@@ -28,6 +30,11 @@ export default function RegisterCustomer(props) {
     formData.append("confirmPassword", confirmPassword);
     formData.append("signupStep", 1);
     formData.append("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    if(!isValidPhoneNumber(phoneNumber)) {
+      props.responseHandler(["Invalid Phone Number"]);
+      return;
+    }
 
     setLoading(true);
     const formResponse = await AuthService.register(formData, USER_TYPE.CUSTOMER);
@@ -118,12 +125,13 @@ export default function RegisterCustomer(props) {
                       value={email}
                       required
                     />
-                    <small>Phone Number Hint: +971 5XXXX XXXX</small>
-                    <input
+                    <small>Phone Number: {phoneNumber}</small>
+                    <PhoneInput
                       type="text"
-                      name="phoneNumber"
-                      placeholder="PhoneNumber*"
-                      onChange={(e) => setPhoneNumberHandler(e.target.value)}
+                      defaultCountry="AE"
+                      placeholder="Phone Number*"
+                      onChange={(e) => setPhoneNumberHandler(e)}
+                      limitMaxLength={true}
                       value={phoneNumber}
                       required
                     />
