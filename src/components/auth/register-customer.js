@@ -127,6 +127,7 @@ export default function RegisterCustomer(props) {
                     />
                     <small>Phone Number: {phoneNumber}</small>
                     <PhoneInput
+                      className="phoneInput"
                       type="text"
                       defaultCountry="AE"
                       placeholder="Phone Number*"

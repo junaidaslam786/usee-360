@@ -218,6 +218,7 @@ export default function RegisterAgent(props) {
                     </div>
                     <small>Phone Number: {phoneNumber}</small>
                     <PhoneInput
+                      className="phoneInput"
                       type="text"
                       defaultCountry="AE"
                       placeholder="Phone Number*"
