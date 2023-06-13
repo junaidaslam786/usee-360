@@ -70,16 +70,16 @@ function AgentRoute({ component: Component, ...restOfProps }) {
       isAuthenticated = false;
     } else {
       isAuthenticated = true;
+
+      if (!userDetail?.agent) {
+        history.push("/customer/dashboard");
+        return null;
+      }
+    
+      if (checkIfHasRouteAccess(restOfProps?.path)) {
+        history.push("/agent/dashboard");
+      }
     }
-  }
-
-  if (!userDetail?.agent) {
-    history.push("/customer/dashboard");
-    return null;
-  }
-
-  if (checkIfHasRouteAccess(restOfProps?.path)) {
-    history.push("/agent/dashboard");
   }
 
   setMomentDefaultTimezone();
@@ -106,12 +106,12 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
       isAuthenticated = false;
     } else {
       isAuthenticated = true;
-    }
-  }
 
-  if (userDetail?.agent) {
-    history.push("/agent/dashboard");
-    return null;
+      if (userDetail?.agent) {
+        history.push("/agent/dashboard");
+        return null;
+      }
+    }
   }
 
   setMomentDefaultTimezone();
