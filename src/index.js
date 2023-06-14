@@ -152,9 +152,9 @@ class Root extends Component {
             <Route path="/services" component={Services} />
 
             {/* Agent Routes */}
-            <Route path="/agent/register" component={ () => <HomePages page="register" type="agent" /> }/>
-            <Route path="/agent/login" component={ () => <HomePages page="login" type="agent" /> }/>
-            <Route path="/agent/reset-password/:token" component={ () => <HomePages page="reset-password" type="agent" /> }/>
+            <Route path="/agent/register" component={ () => <HomePages page="register" type="agent" hideBookDemo="true" /> }/>
+            <Route path="/agent/login" component={ () => <HomePages page="login" type="agent" hideBookDemo="true" /> }/>
+            <Route path="/agent/reset-password/:token" component={ () => <HomePages page="reset-password" type="agent" hideBookDemo="true" /> }/>
 
             {/* Agent Protected Routes */}
             <AgentRoute path="/agent/dashboard" component={ () => <AgentPages page="dashboard" /> }/>
@@ -174,9 +174,9 @@ class Root extends Component {
             <AgentRoute path="/agent/add-appointment" component={ () => <AgentPages page="add-appointment" /> }/>
             
             {/* Client Routes */}
-            <Route path="/customer/register" component={ () => <HomePages page="register" type="customer" /> }/>
-            <Route path="/customer/login" component={ () => <HomePages page="login" type="customer" /> }/>
-            <Route path="/customer/reset-password/:token" component={ () => <HomePages page="reset-password" type="customer" /> }/>
+            <Route path="/customer/register" component={ () => <HomePages page="register" type="customer" hideBookDemo="true" /> }/>
+            <Route path="/customer/login" component={ () => <HomePages page="login" type="customer" hideBookDemo="true" /> }/>
+            <Route path="/customer/reset-password/:token" component={ () => <HomePages page="reset-password" type="customer" hideBookDemo="true" /> }/>
 
             {/* Client Protected Routes */}
             <CustomerRoute path="/customer/dashboard" component={ () => <CustomerPages page="dashboard" /> }/>

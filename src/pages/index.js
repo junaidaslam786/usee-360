@@ -24,7 +24,7 @@ import Footer from "../components/global/footer";
 import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
 
-export default function HomePages({ page, type, isBookDemo = true }) {
+export default function HomePages({ page, type, hideBookDemo }) {
     const [responseMessage, setResponseMessage] = useState();
 
     const setResponseMessageHandler = (response, isSuccess = false) => {
@@ -134,13 +134,13 @@ export default function HomePages({ page, type, isBookDemo = true }) {
 
     return (
         <div>
-            <Navbar page={pageType}/>
+            <Navbar page={pageType} hideBookDemo={hideBookDemo} />
             <PageHeader headertitle={pageTitle} subheader={pageSubTitle} />
             {ComponentToRender && (
                 <ComponentToRender {...componentProps} />
             )}
             {
-                isBookDemo && (
+                !hideBookDemo && (
                     <CallToActonV1 />
                 )
             }

@@ -8,7 +8,7 @@ import {
   COMMERCIAL_PROPERTY, PROPERTY_CATEGORY_TYPES, 
   PRICE_TYPE, UNITS, BEDROOMS, AGENT_TYPE 
 } from '../../../constants';
-import { getUserDetailsFromJwt } from "../../../utils";
+import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
 import PropertyService from "../../../services/agent/property";
 
@@ -24,7 +24,7 @@ export default function Add(props) {
   const [propertySubType, setPropertySubType] = useState("");
   const [propertyCategoryType, setPropertyCategoryType] = useState();
   const [priceType, setPriceType] = useState();
-  const [unit, setUnit] = useState();
+  const [unit, setUnit] = useState("");
   const [area, setArea] = useState(0);
   const [bedrooms, setBedrooms] = useState();
   const [featuredImage, setFeaturedImage] = useState(null);
@@ -321,68 +321,16 @@ export default function Add(props) {
 
           if (response.productMetaTags.length > 0) {
             response.productMetaTags.sort((a,b) => a.categoryField.id - b.categoryField.id);
-            let responsePropertyType;
-            let responsePropertyCategoryType;
-            response.productMetaTags.forEach((metaTag) => {
-              switch (metaTag.categoryField.id) {
-                case 1:
-                  responsePropertyType = PROPERTY_TYPES.find(
-                    (property) => property.value == metaTag.value
-                  );
 
-                  setPropertyType(responsePropertyType);
-                  break;
-                case 2:
-                  responsePropertyCategoryType = PROPERTY_CATEGORY_TYPES.find(
-                    (category) => category.value == metaTag.value
-                  );
-
-                  setPropertyCategoryType(responsePropertyCategoryType);
-                  break;
-                case 3:
-                  setUnit(
-                    UNITS.find((unit) => unit.value == metaTag.value)
-                  );
-                  break;
-                case 4:
-                  setArea(metaTag.value);
-                  break;
-                case 5:
-                  setBedrooms(
-                    BEDROOMS.find(
-                      (bedroom) => bedroom.value == metaTag.value
-                    )
-                  );
-                  break;
-                case 6:
-                  if (responsePropertyType && responsePropertyType.value === 'residential') {
-                    setPropertySubType(RESIDENTIAL_PROPERTY.find(
-                      (subType) => subType.value == metaTag.value
-                    ));
-                  }
-
-                  break;
-                case 7:
-                  if (responsePropertyType && responsePropertyType.value === 'commercial') {
-                    setPropertySubType(COMMERCIAL_PROPERTY.find(
-                      (subType) => subType.value == metaTag.value
-                    ));
-                  }
-
-                  break;
-                case 8:
-                  if (responsePropertyCategoryType && responsePropertyCategoryType.value === 'rent') {
-                    setPriceType(PRICE_TYPE.find(
-                      (priceType) => priceType.value == metaTag.value
-                    ));
-                  }
-
-                  break;
-                case 9:
-                  setDeedTitle(metaTag.value);
-                  break;
-              }
-            });
+            const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag, subTypeMetaTag, priceTypeMetaTag, deedTitleMetaTag } = setPropertyMetaData(response.productMetaTags);
+            setPropertyType(typeMetaTag);
+            setPropertyCategoryType(categoryTypeMetaTag);
+            setUnit(unitMetaTag);
+            setArea(areaMetaTag);
+            setBedrooms(bedroomsMetaTag);
+            setPropertySubType(subTypeMetaTag);
+            setPriceType(priceTypeMetaTag);
+            setDeedTitle(deedTitleMetaTag)
           }
 
           if (response.productImages) {

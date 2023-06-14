@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  DEFAULT_CURRENCY,
-  PROPERTY_CATEGORY_TYPES,
   BEDROOMS,
-  UNITS,
 } from "../../../constants";
 import HomepageService from "../../../services/homepage";
 import Select from "react-select";
+import { formatPrice, loadPropertyMetaData } from "../../../utils";
 
 export default function IframePropertyGrid() {
   const [currentPage, setCurrentPage] = useState();
@@ -68,67 +66,6 @@ export default function IframePropertyGrid() {
       setCurrentPage(response.page);
       setTotalPages(response.totalPage);
     }
-  }
-
-  const loadPropertyMetaData = (property, type) => {
-    let metaData = "";
-    let metaTag;
-
-    if (property?.productMetaTags?.length > 0) {
-      switch (type) {
-        case "categoryType":
-          metaTag = property.productMetaTags.find(
-            (meta) => meta.categoryField.id === 2
-          );
-          if (metaTag) {
-            metaData = PROPERTY_CATEGORY_TYPES.find(
-              (property) => property.value == metaTag.value
-            );
-            metaData = metaData?.value === "sale" ? "Buy" : "Rent";
-          } else {
-            metaData = "Rent";
-          }
-
-          break;
-
-        case "unit":
-          metaTag = property.productMetaTags.find(
-            (meta) => meta.categoryField.id === 3
-          );
-          if (metaTag) {
-            metaData = UNITS.find(
-              (property) => property.value == metaTag.value
-            );
-            metaData = metaData?.label ? metaData.label : "Square Ft";
-          } else {
-            metaData = "Square Ft";
-          }
-          break;
-
-        case "area":
-          metaTag = property.productMetaTags.find(
-            (meta) => meta.categoryField.id === 4
-          );
-          metaData = metaTag ? metaTag.value : 0;
-          break;
-
-        case "bedroom":
-          metaTag = property.productMetaTags.find(
-            (meta) => meta.categoryField.id === 5
-          );
-          if (metaTag) {
-            metaData = BEDROOMS.find(
-              (property) => property.value == metaTag.value
-            );
-            metaData = metaData?.label ? metaData.label : "No";
-          } else {
-            metaData = "No";
-          }
-          break;
-      }
-    }
-
-    return metaData;
   }
 
   useEffect(() => {
@@ -421,7 +358,7 @@ export default function IframePropertyGrid() {
                               <div className="product-info-bottom">
                                 <div className="product-price">
                                   <span>
-                                    {DEFAULT_CURRENCY} {element.price}
+                                    { formatPrice(element.price) }
                                   </span>
                                 </div>
                               </div>
@@ -484,7 +421,7 @@ export default function IframePropertyGrid() {
                                   </div>
                                   <div className="product-price">
                                     <span>
-                                      {DEFAULT_CURRENCY} {element.price}
+                                      { formatPrice(element.price) }
                                     </span>
                                   </div>
                                 </div>

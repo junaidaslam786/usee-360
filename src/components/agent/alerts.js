@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { USER_ALERT_MODE, USER_ALERT_TYPE, DEFAULT_CURRENCY } from "../../constants";
+import { USER_ALERT_MODE, USER_ALERT_TYPE } from "../../constants";
 import { 
-  formatCreatedAtTimestamp,
+  formatCreatedAtTimestamp, formatPrice,
 } from "../../utils";
 import ViewAppointment from "./appointments/view-appointment";
 import AlertService from "../../services/agent/alert";
@@ -181,7 +181,7 @@ export default function Alerts() {
                             <tbody>
                               <tr>
                                 <td>
-                                  {DEFAULT_CURRENCY} { offerView.amount }
+                                  { formatPrice(offerView.amount) }
                                 </td>
                                 <td>
                                   { offerView.notes }

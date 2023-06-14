@@ -7,7 +7,7 @@ class CallToActonV1 extends Component {
     return (
       <div>
         {
-          !getLoginToken() ? (
+          !getLoginToken() && (
             <div className="ltn__call-to-action-area call-to-action-6 before-bg-bottom">
               <div className="container">
                 <div className="row">
@@ -28,7 +28,7 @@ class CallToActonV1 extends Component {
                 </div>
               </div>
             </div>
-          ) : null
+          )
         }
       </div>
     );

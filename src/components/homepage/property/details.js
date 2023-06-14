@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { 
-  PROPERTY_TYPES, 
-  PROPERTY_CATEGORY_TYPES, 
-  BEDROOMS, 
-  UNITS, 
   VIRTUAL_TOUR_TYPE, 
-  DEFAULT_CURRENCY,
   PRODUCT_LOG_TYPE 
 } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
-import { formatCreatedAtTimestamp, getLoginToken } from "../../../utils";
+import { formatCreatedAtTimestamp, formatPrice, getLoginToken, setPropertyMetaData } from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import PropertyService from "../../../services/agent/property";
@@ -37,35 +32,15 @@ export default function PropertyDetails(props) {
     const response = await HomepageService.propertyDetail(params.id);
     if (response) {
       setProperty(response);
-      response.productMetaTags.forEach((metaTag) => {
-        switch (metaTag.categoryField.id) {
-          case 1:
-            setPropertyType(PROPERTY_TYPES.find(
-              (property) => property.value == metaTag.value
-            ));
-            break;
-          case 2:
-            setPropertyCategoryType(PROPERTY_CATEGORY_TYPES.find(
-              (category) => category.value == metaTag.value
-            ));
-            break;
-          case 3:
-            setPropertyUnit(
-              UNITS.find((unit) => unit.value == metaTag.value)
-            );
-            break;
-          case 4:
-            setPropertyArea(metaTag.value);
-            break;
-          case 5:
-            setPropertyBedrooms(
-              BEDROOMS.find(
-                (bedroom) => bedroom.value == metaTag.value
-              )
-            );
-            break;
-        }
-      });
+      
+      if (response?.productMetaTags) {
+        const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response.productMetaTags);
+        setPropertyType(typeMetaTag);
+        setPropertyCategoryType(categoryTypeMetaTag);
+        setPropertyUnit(unitMetaTag);
+        setPropertyArea(areaMetaTag);
+        setPropertyBedrooms(bedroomsMetaTag);
+      }
 
       setAgentImage(response?.user?.profileImage);
       setAgentName(
@@ -195,7 +170,7 @@ export default function PropertyDetails(props) {
                 </span>{" "}
                 {property.address}
               </label>
-              <h2 className="mb-50">{DEFAULT_CURRENCY} {property.price}</h2>
+              <h2 className="mb-50">{ formatPrice(property.price) }</h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>

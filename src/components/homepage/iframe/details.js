@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  PROPERTY_TYPES,
-  PROPERTY_CATEGORY_TYPES,
-  BEDROOMS,
-  UNITS,
   VIRTUAL_TOUR_TYPE,
-  DEFAULT_CURRENCY,
 } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
 import Modal from "./dateTimeModal";
-import { formatCreatedAtTimestamp } from "../../../utils";
+import { formatCreatedAtTimestamp, formatPrice, setPropertyMetaData } from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import IframeService from "../../../services/iframe";
 
@@ -36,37 +31,15 @@ export default function IframePropertyDetails() {
     const response = await HomepageService.propertyDetail(params.propertyId);
     if (response) {
       setProperty(response);
-      response.productMetaTags.forEach((metaTag) => {
-        switch (metaTag.categoryField.id) {
-          case 1:
-            setPropertyType(
-              PROPERTY_TYPES.find(
-                (property) => property.value == metaTag.value
-              )
-            );
-            break;
-          case 2:
-            setPropertyCategoryType(
-              PROPERTY_CATEGORY_TYPES.find(
-                (category) => category.value == metaTag.value
-              )
-            );
-            break;
-          case 3:
-            setPropertyUnit(
-              UNITS.find((unit) => unit.value == metaTag.value)
-            );
-            break;
-          case 4:
-            setPropertyArea(metaTag.value);
-            break;
-          case 5:
-            setPropertyBedrooms(
-              BEDROOMS.find((bedroom) => bedroom.value == metaTag.value)
-            );
-            break;
-        }
-      });
+      
+      if (response?.productMetaTags) {
+        const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response.productMetaTags);
+        setPropertyType(typeMetaTag);
+        setPropertyCategoryType(categoryTypeMetaTag);
+        setPropertyUnit(unitMetaTag);
+        setPropertyArea(areaMetaTag);
+        setPropertyBedrooms(bedroomsMetaTag);
+      }
 
       setAgentImage(response?.user?.profileImage);
       setAgentName(`${response?.user?.firstName} ${response?.user?.lastName}`);
@@ -164,7 +137,7 @@ export default function IframePropertyDetails() {
                 {property.address}
               </label>
               <h2 className="mb-50">
-                {DEFAULT_CURRENCY} {property.price}
+                { formatPrice(property.price) }
               </h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>

@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import ViewOffer from "./view-offer";
 import { 
-  PROPERTY_TYPES, 
-  PROPERTY_CATEGORY_TYPES, 
-  BEDROOMS, 
-  UNITS, 
-  VIRTUAL_TOUR_TYPE, 
-  DEFAULT_CURRENCY,
+  VIRTUAL_TOUR_TYPE,
   PRODUCT_LOG_TYPE 
 } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
 import WishlistService from "../../../services/customer/wishlist";
 import PropertyService from "../../../services/agent/property";
+import { formatPrice, setPropertyMetaData } from "../../../utils";
 
 export default function Details(props) {
   const [property, setProperty] = useState({});
@@ -31,35 +27,14 @@ export default function Details(props) {
     if (response) {
       setProperty(response);
 
-      response.productMetaTags.forEach((metaTag) => {
-        switch (metaTag.categoryField.id) {
-          case 1:
-            setPropertyType(PROPERTY_TYPES.find(
-              (property) => property.value == metaTag.value
-            ));
-            break;
-          case 2:
-            setPropertyCategoryType(PROPERTY_CATEGORY_TYPES.find(
-              (category) => category.value == metaTag.value
-            ));
-            break;
-          case 3:
-            setPropertyUnit(
-              UNITS.find((unit) => unit.value == metaTag.value)
-            );
-            break;
-          case 4:
-            setPropertyArea(metaTag.value);
-            break;
-          case 5:
-            setPropertyBedrooms(
-              BEDROOMS.find(
-                (bedroom) => bedroom.value == metaTag.value
-              )
-            );
-            break;
-        }
-      });
+      if (response?.productMetaTags) {
+        const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
+        setPropertyType(typeMetaTag);
+        setPropertyCategoryType(categoryTypeMetaTag);
+        setPropertyUnit(unitMetaTag);
+        setPropertyArea(areaMetaTag);
+        setPropertyBedrooms(bedroomsMetaTag);
+      }
 
       if (response?.productImages?.length > 0) {
         setPropertyImages(response.productImages);
@@ -146,7 +121,7 @@ export default function Details(props) {
           </small>
         </div>
         <div className="col-md-2">
-          <h3>{DEFAULT_CURRENCY} {property.price}</h3>
+          <h3>{ formatPrice(property.price) }</h3>
         </div>
       </div>
       <div className="row property-details">

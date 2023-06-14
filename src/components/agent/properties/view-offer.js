@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
+import { OFFER_STATUS, SNAG_LIST } from "../../../constants";
 import { useHistory } from "react-router";
 import PropertyService from "../../../services/agent/property";
+import { formatPrice } from "../../../utils";
 
 export default function ViewOffer(props) {
     const [list, setList] = useState([]);
@@ -169,7 +170,7 @@ export default function ViewOffer(props) {
                                     </td>
                                     <td></td>
                                     <td>
-                                        {DEFAULT_CURRENCY} {element.amount}
+                                        { formatPrice(element.amount) }
                                     </td>
                                     <td>{element.notes}</td>
                                     <td>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { OFFER_STATUS, SNAG_LIST, DEFAULT_CURRENCY } from "../../../constants";
-import { getUserDetailsFromJwt } from "../../../utils";
+import { OFFER_STATUS, SNAG_LIST } from "../../../constants";
+import { formatPrice, getUserDetailsFromJwt } from "../../../utils";
 import PropertyService from "../../../services/customer/property";
 
 export default function ViewOffer(props) {
@@ -195,7 +195,7 @@ export default function ViewOffer(props) {
                                 list.map((element, i) => (
                                     <tr key={i}>
                                         <td>
-                                            {DEFAULT_CURRENCY} {element.amount}
+                                            { formatPrice(element.amount) }
                                         </td>
                                         <td>{element.notes}</td>
                                         <td>

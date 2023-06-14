@@ -91,7 +91,7 @@ export default function Navbar(props) {
                           </ul>
                         </li>
                         {
-                          (props?.page !== 'login' && props?.page !== 'register') && (!getLoginToken()) ? (
+                          (!props?.hideBookDemo && !getLoginToken()) ? (
                             <li className="listItems">
                               <Link to="/demo">Book a Demo</Link>
                             </li>

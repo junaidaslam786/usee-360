@@ -1,6 +1,16 @@
 import jwt from 'jsonwebtoken';
 import moment from "moment";
 import 'moment-timezone';
+import {
+  PROPERTY_TYPES, 
+  PROPERTY_CATEGORY_TYPES,
+  BEDROOMS,
+  UNITS,
+  RESIDENTIAL_PROPERTY,
+  COMMERCIAL_PROPERTY,
+  PRICE_TYPE,
+  DEFAULT_CURRENCY,
+} from './constants';
 
 export const checkTimeOver = (date, time) => {
     const difdate = date;
@@ -131,4 +141,142 @@ export const setResponseHandler = (responseMessage, isSuccess = false) => {
   }
 
   return response;
+}
+
+export const formatPrice = (price) => {
+  const formatter = new Intl.NumberFormat('en-US');
+  return `${DEFAULT_CURRENCY} ${formatter.format(price)}`;
+}
+
+export const loadPropertyMetaData = (property, type) => {
+  let metaData = "";
+  let metaTag;
+  const productMetaTags = property?.productMetaTags ? property.productMetaTags : [];
+
+  if (productMetaTags.length > 0) {
+    switch (type) {
+      case "categoryType":
+        metaTag = productMetaTags.find(
+          (meta) => meta.categoryField.id === 2
+        );
+        if (metaTag) {
+          metaData = PROPERTY_CATEGORY_TYPES.find(
+            (property) => property.value == metaTag.value
+          );
+          metaData = metaData?.value === "sale" ? "Buy" : "Rent";
+        } else {
+          metaData = "Rent";
+        }
+
+        break;
+
+      case "unit":
+        metaTag = productMetaTags.find(
+          (meta) => meta.categoryField.id === 3
+        );
+        if (metaTag) {
+          metaData = UNITS.find(
+            (property) => property.value == metaTag.value
+          );
+          metaData = metaData?.label ? metaData.label : "Square Ft";
+        } else {
+          metaData = "Square Ft";
+        }
+        break;
+
+      case "area":
+        metaTag = productMetaTags.find(
+          (meta) => meta.categoryField.id === 4
+        );
+        metaData = metaTag ? metaTag.value : 0;
+        break;
+
+      case "bedroom":
+        metaTag = productMetaTags.find(
+          (meta) => meta.categoryField.id === 5
+        );
+        if (metaTag) {
+          metaData = BEDROOMS.find(
+            (property) => property.value == metaTag.value
+          );
+          metaData = metaData?.label ? metaData.label : "No";
+        } else {
+          metaData = "No";
+        }
+        break;
+    }
+  }
+
+  return metaData;
+}
+
+export const setPropertyMetaData = (productMetaTags) => {
+  let typeMetaTag;
+  let categoryTypeMetaTag;
+  let unitMetaTag;
+  let areaMetaTag;
+  let bedroomsMetaTag;
+  let subTypeMetaTag;
+  let priceTypeMetaTag;
+  let deedTitleMetaTag;
+
+  if (productMetaTags.length > 0) {
+    productMetaTags.forEach((metaTag) => {
+      switch (metaTag.categoryField.id) {
+        case 1:
+          typeMetaTag = PROPERTY_TYPES.find(
+            (property) => property.value == metaTag.value
+          );
+          break;
+        case 2:
+          categoryTypeMetaTag = PROPERTY_CATEGORY_TYPES.find(
+            (category) => category.value == metaTag.value
+          );
+          break;
+        case 3:
+          unitMetaTag = UNITS.find((unit) => unit.value == metaTag.value);
+          break;
+        case 4:
+          areaMetaTag = metaTag.value;
+          break;
+        case 5:
+          bedroomsMetaTag = BEDROOMS.find((bedroom) => bedroom.value == metaTag.value);
+          break;
+        case 6:
+          if (typeMetaTag && typeMetaTag.value === 'residential') {
+            subTypeMetaTag = RESIDENTIAL_PROPERTY.find(
+              (subType) => subType.value == metaTag.value
+            );
+          }
+          break;
+        case 7:
+          if (typeMetaTag && typeMetaTag.value === 'commercial') {
+            subTypeMetaTag = COMMERCIAL_PROPERTY.find(
+              (subType) => subType.value == metaTag.value
+            );
+          }
+          break;
+        case 8:
+          if (categoryTypeMetaTag && categoryTypeMetaTag.value === 'rent') {
+            priceTypeMetaTag = PRICE_TYPE.find((priceType) => priceType.value == metaTag.value);
+          }
+
+          break;
+        case 9:
+          deedTitleMetaTag = metaTag.value;
+          break;
+      }
+    });
+  }
+
+  return {
+    typeMetaTag,
+    categoryTypeMetaTag,
+    unitMetaTag,
+    areaMetaTag,
+    bedroomsMetaTag,
+    subTypeMetaTag,
+    priceTypeMetaTag,
+    deedTitleMetaTag
+  }
 }
