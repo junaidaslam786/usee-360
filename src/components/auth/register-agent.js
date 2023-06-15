@@ -227,6 +227,7 @@ export default function RegisterAgent(props) {
                       value={phoneNumber}
                       required
                     />
+                    <small>Password must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character.</small>
                     <div className="row">
                       <div className="col-md-6">
                         <input

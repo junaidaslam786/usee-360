@@ -16,7 +16,7 @@ export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
 
-  const [id, setId] = useState(null);
+  const [id, setId] = useState();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState();
@@ -240,53 +240,55 @@ export default function Add(props) {
 
     fetchUsersToAllocate();
 
-    const map = new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 24.466667, lng: 54.366669 },
-      zoom: 17,
-    });
-
-    setMap(map);
-
-    const marker = new window.google.maps.Marker({
-      position: map.getCenter(),
-      map,
-      draggable: true,
-    });
-
-    setMarker(marker);
-
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("autocomplete")
-    );
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
-
-      setAddress(place.formatted_address);
-      setAddressFields(place);
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-
-      marker.setPosition(place.geometry.location);
-    });
-
-    marker.addListener("dragend", () => {
-      const position = marker.getPosition();
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ location: position }, (results, status) => {
-        if (status === "OK") {
-          setAddressFields(results[0]);
-          if (results[0]) {
-            setAddress(results[0].formatted_address);
-          }
-        }
+    if ((id && latitude && longitude) || !id) {
+      const map = new window.google.maps.Map(document.getElementById("map"), {
+        center: { lat: latitude ? parseFloat(latitude) : 24.466667, lng: longitude ? parseFloat(longitude) : 54.366669 },
+        zoom: 17,
       });
-    });
-  }, []);
+  
+      setMap(map);
+  
+      const marker = new window.google.maps.Marker({
+        position: map.getCenter(),
+        map,
+        draggable: true,
+      });
+  
+      setMarker(marker);
+  
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
+  
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          window.alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+  
+        setAddress(place.formatted_address);
+        setAddressFields(place);
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);
+  
+        marker.setPosition(place.geometry.location);
+      });
+  
+      marker.addListener("dragend", () => {
+        const position = marker.getPosition();
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ location: position }, (results, status) => {
+          if (status === "OK") {
+            setAddressFields(results[0]);
+            if (results[0]) {
+              setAddress(results[0].formatted_address);
+            }
+          }
+        });
+      });
+    }
+  }, [latitude, longitude]);
 
   useEffect(() => {
     if (params?.id) {
@@ -598,7 +600,13 @@ export default function Add(props) {
           </div>
           <div className="col-lg-12 mb-map">
             <div className="property-details-google-map mb-60">
-              <div id="map" className="map" />
+              {
+                ((id && latitude && longitude) || !id) ? (
+                  <div id="map" className="map" />
+                ) : (
+                  "Loading..."
+                )
+              }
             </div>
           </div>
           <div className="col-md-6">

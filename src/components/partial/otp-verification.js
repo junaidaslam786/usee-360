@@ -6,15 +6,17 @@ import {
   signInWithPhoneNumber,
   RecaptchaVerifier,
 } from "firebase/auth";
-import { USER_TYPE } from "../../constants";
 import AuthService from "../../services/auth";
 import { setLoginToken } from "../../utils";
 
 export default function OtpVerification({ user, token, responseHandler }) {
   const [otpType, setOtpType] = useState();
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
+  const [loadingResend, setLoadingResend] = useState(false);
   const [preVerificationForm, setpreVerificationForm] = useState(true);
   const [validationForm, setvalidationForm] = useState(false);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
   const [otp, setOtp] = useState("");
 
   const renderInput = (props, index) => (
@@ -27,12 +29,24 @@ export default function OtpVerification({ user, token, responseHandler }) {
   
   const handleChange = (otp) => setOtp(otp);
 
-  const sendOtpEmail = async (e) => {
+  const processOtpEmail = async (e) => {
     e.preventDefault();
-
+    
     setLoading(true);
-    const formResponse = await AuthService.sendOtp({ userId: user.id });
+    await sendOtpEmail();
     setLoading(false);
+  };
+
+  const processOtpPhoneNumber = async (e) => {
+    e.preventDefault();
+    
+    setLoading(true);
+    await sendOtpPhoneNumber();
+    setLoading(false);
+  };
+
+  const sendOtpEmail = async () => {
+    const formResponse = await AuthService.sendOtp({ userId: user.id });
 
     if (formResponse?.error && formResponse?.message) {
       responseHandler(formResponse.message);
@@ -43,13 +57,13 @@ export default function OtpVerification({ user, token, responseHandler }) {
       responseHandler(formResponse.message, true);
       setpreVerificationForm(false);
       setvalidationForm(true);
-    } 
+      setMinutes(1);
+    }
+
+    return;
   }
 
-  const sendOtpPhoneNumber = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const sendOtpPhoneNumber = async (resend = false) => {
     const auth = getAuth();
     const appVerifier = window.recaptchaVerifier;
 
@@ -59,12 +73,34 @@ export default function OtpVerification({ user, token, responseHandler }) {
         window.confirmationResult = confirmationResult;
         setpreVerificationForm(false);
         setvalidationForm(true);
+        setMinutes(1);
+
+        if (!resend) {
+          window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
+          window.recaptchaVerifier.render();
+        }
       })
-      .catch((error) => {
+      .catch(() => {
         responseHandler(["Unable to send code to phone number, please try again"]);
       });
-      setLoading(false);
   };
+
+  const resendOtp = async (e) => {
+    e.preventDefault();
+
+    if (!(minutes === 0 && seconds === 0)) {
+      responseHandler(["OTP already sent, please wait."]);
+      return;
+    }
+
+    setLoadingResend(true);
+    if (otpType === "phoneNumber") {
+      await sendOtpPhoneNumber(true);
+    } else {
+      await sendOtpEmail();
+    }
+    setLoadingResend(false);
+  }
 
   const validateOtp = async (e) => {
     e.preventDefault();
@@ -91,7 +127,6 @@ export default function OtpVerification({ user, token, responseHandler }) {
       }, token);
       setLoading(false);
 
-      console.log('formResponse', formResponse);
       if (formResponse?.error && formResponse?.message) {
         responseHandler(formResponse.message);
         return;
@@ -112,6 +147,26 @@ export default function OtpVerification({ user, token, responseHandler }) {
       window.location = returnUrl;
     }, 1000);
   }
+
+  useEffect(() => {
+    let myInterval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(myInterval);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
 
   useEffect(() => {
     const firebaseConfig = {
@@ -136,7 +191,7 @@ export default function OtpVerification({ user, token, responseHandler }) {
       {
         preVerificationForm ? (
           <form
-            onSubmit={ otpType === "phoneNumber" ? sendOtpPhoneNumber : sendOtpEmail }
+            onSubmit={ otpType === "phoneNumber" ? processOtpPhoneNumber : processOtpEmail }
             className="ltn__form-box contact-form-box"
           >
             <div className="row">
@@ -196,6 +251,11 @@ export default function OtpVerification({ user, token, responseHandler }) {
                 renderInput={renderInput}
               />
             </div>
+            {otpType === "phoneNumber" ? (
+              <div className="mt-4 mb-4" style={{ textAlign: "center" }}>
+                <div id="recaptcha-container" style={{ display: "inline-block" }}></div>
+              </div>
+            ) : null}
             <div className="btn-wrapper text-center">
               <button
                 className="theme-btn-1 btn reverse-color btn-block"
@@ -214,6 +274,33 @@ export default function OtpVerification({ user, token, responseHandler }) {
                   )
                 }
               </button>
+
+              <button
+                disabled={!(minutes === 0 && seconds === 0)}
+                className="btn btn-effect-3 btn-white"
+                type="button"
+                onClick={resendOtp}
+              >
+                {
+                  loadingResend ? (
+                    <div className="lds-ring">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    "Resend OTP"
+                  )
+                }
+              </button>
+
+              {
+               !(minutes === 0 && seconds === 0) && (
+                <h5 className="text-center mt-20">
+                  <span>Time Remaining: {minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
+                </h5>
+              )} 
             </div>
           </form>
         ) : null

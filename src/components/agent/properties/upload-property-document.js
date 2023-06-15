@@ -27,18 +27,26 @@ export default function UploadPropertyDocument(props) {
         e.preventDefault();
 
         let countFiles = 0;
+        let isDocumentNameMissing = false;
         const formData = new FormData();
         newDocuments.forEach((document) => {
-            if (document.title && document.file) {
-                formData.append("titles", document.title);
-                formData.append("files", document.file);
-                countFiles++;
+            if (!document.title) {
+                isDocumentNameMissing = true;
+                return;
             }
+
+            if (!document.file) {
+                return;
+            }
+
+            formData.append("titles", document.title);
+            formData.append("files", document.file);
+            countFiles++;
         });
         formData.append("productId", props.id);
 
         if (countFiles === 0) {
-            props.responseHandler(["Please upload document first"]);
+            props.responseHandler(isDocumentNameMissing ? ["Document name is required."] : ["Please upload document"]);
             return;
         }
 
@@ -117,6 +125,7 @@ export default function UploadPropertyDocument(props) {
                                     <div className="input-item">
                                         <input 
                                             className="mb-0"
+                                            placeholder="Enter Document Title*"
                                             type="text"
                                             value={element.title}
                                             onChange={(event) => handleTitleChange(index, event) }
