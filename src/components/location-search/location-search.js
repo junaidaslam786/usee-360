@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import "./location-search.css";
 import HomepageService from "../../services/homepage";
+import { formatPrice } from "../../utils";
 
 export default function LocationSearch() {
   const [mapstate, setMap] = useState(null);
@@ -334,7 +335,7 @@ export default function LocationSearch() {
                 </div>
                 <div className="product-info-bottom">
                   <div className="product-price">
-                    <span>${element.price}</span>
+                    <span>{ formatPrice(element.price) }</span>
                   </div>
                   <div className="product-price">
                     <button className="btn theme-btn-2 request-now-btn" onClick={() => {window.open(
