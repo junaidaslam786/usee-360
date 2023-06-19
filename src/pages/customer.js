@@ -70,7 +70,7 @@ export default function CustomerPages({ page }) {
             <InsideNavbar />
             <PageHeader headertitle={pageTitle} />
             <CustomerLayout ComponentToRender={ComponentToRender} componentProps={componentProps}/>
-            <ResponseHandler response={responseMessage} />
+            <ResponseHandler response={responseMessage} type={USER_TYPE.CUSTOMER} />
         </div>
     );
 }

@@ -30,8 +30,8 @@ class ContactInfo extends Component {
                 </div>
                 <h3>Phone Number</h3>
                 <p>
-                  Tel UK: +44 078 080 55833 <br/>
-                  Tel UAE: +971 050 181 3399
+                  Tel UK: +44 (0)78 080 55833 <br/>
+                  Tel UAE: +971 (0) 50 181 3399
                 </p>
               </div>
             </div>

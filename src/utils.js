@@ -16,15 +16,10 @@ export const checkTimeOver = (date, time) => {
     const difdate = date;
     const parts = difdate.split("-");
     const fpdate = parts[0]+'-'+parts[1]+'-'+parts[2];
-
-    const givenDate = new Date(fpdate+'T'+time);
-    const currentDate = new Date();
-
-    givenDate.setSeconds(0);
-    givenDate.setMilliseconds(0);
-    currentDate.setSeconds(0);
-    currentDate.setMilliseconds(0);
-
+    
+    const givenDate = moment.tz(`${fpdate}${time}`, 'YYYY-MM-DD HH:mm:ss', getUserTimezone()).format("ddd MMM D YYYY HH:mm:00 [GMT]ZZ (zz)");
+    const currentDate = moment(new Date()).tz(getUserTimezone()).format("ddd MMM D YYYY HH:mm:00 [GMT]ZZ (zz)");
+    
     return givenDate < currentDate;
 }
 
@@ -117,7 +112,9 @@ export const getLoginToken = () => {
 }
 
 export const removeLoginToken = () => {
-  return localStorage.removeItem("userToken");
+  localStorage.removeItem("userToken");
+  localStorage.removeItem("userTimezone");
+  return true;
 }
 
 export const setLoginToken = (token) => {

@@ -30,31 +30,34 @@ export default function PropertyDetails(props) {
 
   const loadProperty = async () => {
     const response = await HomepageService.propertyDetail(params.id);
-    if (response) {
-      setProperty(response);
-      
-      if (response?.productMetaTags) {
-        const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response.productMetaTags);
-        setPropertyType(typeMetaTag);
-        setPropertyCategoryType(categoryTypeMetaTag);
-        setPropertyUnit(unitMetaTag);
-        setPropertyArea(areaMetaTag);
-        setPropertyBedrooms(bedroomsMetaTag);
-      }
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
+    }
 
-      setAgentImage(response?.user?.profileImage);
-      setAgentName(
-        `${response?.user?.firstName} ${response?.user?.lastName}`
-      );
+    setProperty(response);
+    
+    if (response?.productMetaTags) {
+      const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response.productMetaTags);
+      setPropertyType(typeMetaTag);
+      setPropertyCategoryType(categoryTypeMetaTag);
+      setPropertyUnit(unitMetaTag);
+      setPropertyArea(areaMetaTag);
+      setPropertyBedrooms(bedroomsMetaTag);
+    }
 
-      if (response?.productImages?.length > 0) {
-        setPropertyImages([{ id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', image: response.featuredImage }, ...response.productImages]);
-      }
+    setAgentImage(response?.user?.profileImage);
+    setAgentName(
+      `${response?.user?.firstName} ${response?.user?.lastName}`
+    );
 
-      if (response?.productDocuments?.length > 0) {
-        setPropertyDocuments(response.productDocuments);
-      }
-    };
+    if (response?.productImages?.length > 0) {
+      setPropertyImages([{ id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', image: response.featuredImage }, ...response.productImages]);
+    }
+
+    if (response?.productDocuments?.length > 0) {
+      setPropertyDocuments(response.productDocuments);
+    }
   }
 
   const makeOfferHandler = () => {

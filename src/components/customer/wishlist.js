@@ -8,6 +8,11 @@ export default function Wishlist(props) {
 
   const loadAllList = async () => {
     const response = await WishlistService.list();
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
+    }
+    
     setList(response);
   };
 

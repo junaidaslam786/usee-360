@@ -121,7 +121,7 @@ export default function AgentPages({ page }) {
             <InsideNavbar />
             <PageHeader headertitle={pageTitle} />
             <AgentLayout ComponentToRender={ComponentToRender} componentProps={componentProps}/>
-            <ResponseHandler response={responseMessage} />
+            <ResponseHandler response={responseMessage} type={USER_TYPE.AGENT} />
         </div>
     );
 }

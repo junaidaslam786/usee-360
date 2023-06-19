@@ -20,26 +20,29 @@ export default function Details(props) {
   const loadProperty = async () => {
     const response = await PropertyService.detail(params.id);
 
-    if (response) {
-      setProperty(response);
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
+    }
 
-      if (response?.productMetaTags) {
-        const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
-        setPropertyType(typeMetaTag);
-        setPropertyCategoryType(categoryTypeMetaTag);
-        setPropertyUnit(unitMetaTag);
-        setPropertyArea(areaMetaTag);
-        setPropertyBedrooms(bedroomsMetaTag);
-      }
+    setProperty(response);
 
-      if (response?.productImages?.length > 0) {
-        setPropertyImages(response.productImages);
-      }
+    if (response?.productMetaTags) {
+      const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
+      setPropertyType(typeMetaTag);
+      setPropertyCategoryType(categoryTypeMetaTag);
+      setPropertyUnit(unitMetaTag);
+      setPropertyArea(areaMetaTag);
+      setPropertyBedrooms(bedroomsMetaTag);
+    }
 
-      if (response?.productDocuments?.length > 0) {
-        setPropertyDocuments(response.productDocuments);
-      }
-    };
+    if (response?.productImages?.length > 0) {
+      setPropertyImages(response.productImages);
+    }
+
+    if (response?.productDocuments?.length > 0) {
+      setPropertyDocuments(response.productDocuments);
+    }
   }
 
   useEffect(() => {

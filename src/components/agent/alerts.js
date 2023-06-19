@@ -9,7 +9,7 @@ import AlertService from "../../services/agent/alert";
 import PropertyService from "../../services/agent/property";
 import AppointmentService from "../../services/agent/appointment";
 
-export default function Alerts() {
+export default function Alerts(props) {
   const [list, setList] = useState([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const [offerView, setOfferView] = useState({});
@@ -104,6 +104,11 @@ export default function Alerts() {
   useEffect(() => {
     const fetchAllAlerts = async () => {
       const response = await AlertService.list();
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
+      }
+
       setList(response);
     };
 

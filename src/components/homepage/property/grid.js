@@ -103,11 +103,14 @@ export default function PropertyGrid(props) {
     }
 
     const response = await HomepageService.listProperties("", payload);
-    if (response?.data) {
-      setProperties(response.data);
-      setCurrentPage(response.page);
-      setTotalPages(response.totalPage);
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
     }
+
+    setProperties(response.data);
+    setCurrentPage(response.page);
+    setTotalPages(response.totalPage);
   }
 
   const loadWishlistProperties = async () => {

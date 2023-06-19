@@ -27,6 +27,11 @@ export default function Profile(props) {
   
   const getUser = async () => {
     const jsonData = await ProfileService.getProfile();
+    if (jsonData?.error && jsonData?.message) {
+      props.responseHandler(jsonData.message);
+      return;
+    }
+
     setUser(jsonData);
     setAgentId(jsonData.agent.userId);
     setFirstName(jsonData.firstName);

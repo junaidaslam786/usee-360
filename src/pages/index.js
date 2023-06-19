@@ -144,7 +144,7 @@ export default function HomePages({ page, type, hideBookDemo }) {
                     <CallToActonV1 />
                 )
             }
-            <ResponseHandler response={responseMessage} />
+            <ResponseHandler response={responseMessage} type={type} />
             <Footer page={pageType}/>
         </div>
     );

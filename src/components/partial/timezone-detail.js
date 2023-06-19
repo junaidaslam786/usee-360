@@ -28,6 +28,7 @@ export default function TimezoneDetail(props) {
     useEffect(() => {
         if (props?.user) {
             setTimezone(props.user.timezone);
+            setUserTimezone(props.user.timezone);
         }
     }, [props.user]);
 

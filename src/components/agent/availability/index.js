@@ -22,97 +22,100 @@ export default function Index(props) {
 
   const loadAllList = async () => {
     let response = await AvailabilityService.list();
-    if (response) {
-      const assocArray = response.reduce((acc, obj) => {
-        const key = obj.dayId;
-        const value = { ...obj.agentTimeSlot, status:  obj.status };
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        if (!userId) setUserId(obj.userId);
-        acc[key].push(value);
-        return acc;
-      }, {});
-
-      const currentTimeSlots = [
-        {
-          id: 1,
-          image: "/assets/img/week-days/monday.png",
-          title: "Monday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 2,
-          image: "/assets/img/week-days/tuesday.png",
-          title: "Tuesday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 3,
-          image: "/assets/img/week-days/wednesday.png",
-          title: "Wednesday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 4,
-          image: "/assets/img/week-days/thursday.png",
-          title: "Thursday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 5,
-          image: "/assets/img/week-days/friday.png",
-          title: "Friday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 6,
-          image: "/assets/img/week-days/saturday.png",
-          title: "Saturday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-        {
-          id: 7,
-          image: "/assets/img/week-days/sunday.png",
-          title: "Sunday",
-          desc: "24 slots enabled. Click edit button to view and edit.",
-          btnText: "Edit",
-          count: 24,
-        },
-      ];
-
-      for (const [key, value] of Object.entries(assocArray)) {
-        value.sort((a, b) => {
-          if (a.id < b.id) {
-            return -1;
-          } else if (a.id > b.id) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-
-        const count = value.filter(obj => obj.status === true).length;
-        const objToUpdate = currentTimeSlots.find(obj => parseInt(obj.id) === parseInt(key));
-        objToUpdate.count = count;
-        assocArray[key] = value;
-      }
-      
-      setTimeSlots(currentTimeSlots);
-      setTimeOptions(assocArray);
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
     }
+
+    const assocArray = response.reduce((acc, obj) => {
+      const key = obj.dayId;
+      const value = { ...obj.agentTimeSlot, status:  obj.status };
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      if (!userId) setUserId(obj.userId);
+      acc[key].push(value);
+      return acc;
+    }, {});
+
+    const currentTimeSlots = [
+      {
+        id: 1,
+        image: "/assets/img/week-days/monday.png",
+        title: "Monday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 2,
+        image: "/assets/img/week-days/tuesday.png",
+        title: "Tuesday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 3,
+        image: "/assets/img/week-days/wednesday.png",
+        title: "Wednesday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 4,
+        image: "/assets/img/week-days/thursday.png",
+        title: "Thursday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 5,
+        image: "/assets/img/week-days/friday.png",
+        title: "Friday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 6,
+        image: "/assets/img/week-days/saturday.png",
+        title: "Saturday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+      {
+        id: 7,
+        image: "/assets/img/week-days/sunday.png",
+        title: "Sunday",
+        desc: "24 slots enabled. Click edit button to view and edit.",
+        btnText: "Edit",
+        count: 24,
+      },
+    ];
+
+    for (const [key, value] of Object.entries(assocArray)) {
+      value.sort((a, b) => {
+        if (a.id < b.id) {
+          return -1;
+        } else if (a.id > b.id) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
+      const count = value.filter(obj => obj.status === true).length;
+      const objToUpdate = currentTimeSlots.find(obj => parseInt(obj.id) === parseInt(key));
+      objToUpdate.count = count;
+      assocArray[key] = value;
+    }
+    
+    setTimeSlots(currentTimeSlots);
+    setTimeOptions(assocArray);
   };
 
   useEffect(() => {

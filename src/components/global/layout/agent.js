@@ -13,7 +13,7 @@ export default function AgentLayout({ ComponentToRender, componentProps }) {
                                 <div className="row">
                                     <div className="col-lg-4">
                                         <div className="ltn__tab-menu-list mb-50">
-                                            <Sidebar type={USER_TYPE.AGENT} />
+                                            <Sidebar type={USER_TYPE.AGENT} {...componentProps} />
                                         </div>
                                     </div>
                                     <div className="col-lg-8">

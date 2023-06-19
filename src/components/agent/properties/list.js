@@ -72,15 +72,19 @@ export default function List(props) {
 
     const fetchRemoveReasons = async () => {
       const response = await PropertyService.listRemovalReasons();
-      if (response)
-        setRemoveReasons(
-          response.map((reason) => {
-            return {
-              label: reason.reason,
-              value: reason.id,
-            };
-          })
-        );
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
+      }
+      
+      setRemoveReasons(
+        response.map((reason) => {
+          return {
+            label: reason.reason,
+            value: reason.id,
+          };
+        })
+      );
     };
 
     fetchAllProperties();

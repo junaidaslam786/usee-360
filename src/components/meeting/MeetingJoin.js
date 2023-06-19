@@ -69,10 +69,11 @@ const MeetingJoin = (props) => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [wishlistProperties, setWishlistProperties] = useState([]);
+  const [unReadMessages, setUnReadMessages] = useState({});
 
   const getPropertiesList = async () => {
     const propertyData = await PropertyService.toAllocate();
-    if (propertyData) {
+    if (propertyData?.length > 0) {
       setPropertiesList(propertyData.map((property) => {
         return { label: property.title, value: property.id };
       }));
@@ -367,6 +368,23 @@ const MeetingJoin = (props) => {
     setIsDocumentOpen(true);
   }
 
+  const handleIncreaseUnReadMessages = (senderConnectionId, receiverConnectionId) => {
+    const slider = document.getElementById("chatArea");
+    if (senderConnectionId !== receiverConnectionId && slider.classList.contains("slide-out")) {
+      setUnReadMessages((prevCounts) => ({
+        ...prevCounts,
+        [receiverConnectionId]: (prevCounts[receiverConnectionId] || 0) + 1,
+      }));
+    }
+  }
+
+  const handleResetUnReadMessages = (receiverConnectionId) => {
+    setUnReadMessages((prevCounts) => ({
+      ...prevCounts,
+      [receiverConnectionId]: 0,
+    }));
+  }
+
   useEffect(() => {
     if (token) {
       const fetchData = async () => {
@@ -503,6 +521,8 @@ const MeetingJoin = (props) => {
               msg.appendChild(a);
               msgHistory.appendChild(msg);
               msg.scrollIntoView();
+
+              handleIncreaseUnReadMessages(event.from.connectionId, session.connection.connectionId);
             } else {
               const msg = document.createElement("p");
               msg.textContent = `${event.data}`;
@@ -512,6 +532,8 @@ const MeetingJoin = (props) => {
                   : "theirs";
               msgHistory.appendChild(msg);
               msg.scrollIntoView();
+
+              handleIncreaseUnReadMessages(event.from.connectionId, session.connection.connectionId);
             }
           });
 
@@ -798,17 +820,24 @@ const MeetingJoin = (props) => {
         </div>
 
         <div id="toggle">
-          <img
-            id="ChatIcon2"
-            src={`${publicUrl}assets/img/icons/chat.png`}
-            onClick={() => {
-              let slider = document.getElementById("chatArea");
+          <span className="position-relative">
+            <img
+              id="ChatIcon2"
+              src={`${publicUrl}assets/img/icons/chat.png`}
+              onClick={() => {
+                let slider = document.getElementById("chatArea");
 
-              let isOpen = slider.classList.contains("slide-in");
+                if (slider.classList.contains("slide-out") && session?.connection?.connectionId) {
+                  handleResetUnReadMessages(session.connection.connectionId);
+                }
 
-              slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
-            }}
-          />
+                let isOpen = slider.classList.contains("slide-in");
+
+                slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
+              }}
+            />
+            <span className="badge rounded-pill bg-danger meeting-badge">{session?.connection?.connectionId ? unReadMessages[session.connection.connectionId] || 0 : 0}</span>
+          </span>
         </div>
       </div>
       <div id="chatArea" className={"slide-out"}>

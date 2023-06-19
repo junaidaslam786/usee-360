@@ -5,7 +5,7 @@ import { getUserDetailsFromJwt, removeLoginToken } from "../../utils";
 import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE, USER_TYPE } from "../../constants";
 import AlertService from "../../services/agent/alert";
 
-export default function Sidebar({ type }) {
+export default function Sidebar({ type, responseHandler }) {
   const history = useHistory();
   const [count, setCount] = useState();
   const userDetail = getUserDetailsFromJwt()
@@ -17,10 +17,16 @@ export default function Sidebar({ type }) {
 
   useEffect(() => {
     const fetchAlertCount = async () => {
-      const response = await AlertService.unReadCount();
-      if (response) {
+        const response = await AlertService.unReadCount();
+        if (response?.error && response?.message) {
+            responseHandler(response.message);
+            setTimeout(() => {
+                handleClick();
+            }, 2000);
+            return;
+        }
+
         setCount(response);
-      }
     };
 
     fetchAlertCount();

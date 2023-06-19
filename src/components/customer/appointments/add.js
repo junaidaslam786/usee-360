@@ -107,19 +107,22 @@ export default function Add(props) {
     }
 
     const response = await AvailabilityService.listSlots({ agent: e.userId });
-    if (response) {
-      const timeSlotsResponse = response.map((timeSlot) => {
-        return {
-          label: timeSlot.textShow,
-          value: timeSlot.id,
-          fromTime: timeSlot.fromTime,
-          toTime: timeSlot.toTime
-        }
-      });
-
-      setTimeslots(timeSlotsResponse);
-      selectNextSlot(timeSlotsResponse);
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
     }
+
+    const timeSlotsResponse = response.map((timeSlot) => {
+      return {
+        label: timeSlot.textShow,
+        value: timeSlot.id,
+        fromTime: timeSlot.fromTime,
+        toTime: timeSlot.toTime
+      }
+    });
+
+    setTimeslots(timeSlotsResponse);
+    selectNextSlot(timeSlotsResponse);
   };
 
   const handleButtonClick = (event) => {

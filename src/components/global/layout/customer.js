@@ -13,7 +13,7 @@ export default function CustomerLayout({ ComponentToRender, componentProps }) {
                                 <div className="row">
                                     <div className="col-lg-4">
                                         <div className="ltn__tab-menu-list mb-50">
-                                            <Sidebar type={USER_TYPE.CUSTOMER} />
+                                            <Sidebar type={USER_TYPE.CUSTOMER} {...componentProps} />
                                         </div>
                                     </div>
                                     <div className="col-lg-8">

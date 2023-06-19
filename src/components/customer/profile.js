@@ -13,9 +13,16 @@ export default function Profile(props) {
   const [profileImage, setProfileImage] = useState();
   const [profileImagePreview, setProfileImagePreview] = useState();
   const [loading, setLoading] = useState();
+  const [user, setUser] = useState();
 
   const getUser = async () => {
     const jsonData = await ProfileService.getProfile();
+    if (jsonData?.error && jsonData?.message) {
+      props.responseHandler(jsonData.message);
+      return;
+    }
+    
+    setUser(jsonData);
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
     setPhoneNumber(jsonData.phoneNumber);
@@ -152,7 +159,7 @@ export default function Profile(props) {
               </button>
             </div>
           </form>
-          <TimezoneDetail type={USER_TYPE.CUSTOMER} responseHandler={props.responseHandler}/>
+          <TimezoneDetail type={USER_TYPE.CUSTOMER} user={user} responseHandler={props.responseHandler}/>
           <UpdatePassword responseHandler={props.responseHandler}/>
         </div>
       </div>

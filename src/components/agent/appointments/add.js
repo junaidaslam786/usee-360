@@ -77,6 +77,7 @@ export default function Add(props) {
 
   const selectedCustomerHandler = async (e) => {
     setSelectedCustomer(e);
+
     if (!email) {
       setEmail("");
     }
@@ -91,7 +92,9 @@ export default function Add(props) {
       setPhone(currentCustomer.phoneNumber || "");
     }
 
-    await checkAvailability(currentCustomer.id);
+    if (currentCustomer?.id) {
+      await checkAvailability(currentCustomer.id);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -215,45 +218,55 @@ export default function Add(props) {
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
       const response = await AgentUserService.toAllocate();
-      if (response) {
-        setUsers(response.map((userDetail) => {
-          return {
-            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-            value: userDetail.userId
-          }
-        }));
+
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
       }
+
+      setUsers(response.map((userDetail) => {
+        return {
+          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+          value: userDetail.userId
+        }
+      }));
     }
 
     const fetchPropertiesToAllocate = async () => {
       const response = await PropertyService.toAllocate();
-      if (response) {
-        setProperties(
-          response.map((property) => {
-            return {
-              label: property.title,
-              value: property.id,
-            };
-          })
-        );
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
       }
+
+      setProperties(
+        response.map((property) => {
+          return {
+            label: property.title,
+            value: property.id,
+          };
+        })
+      );
     };
 
     const fetchAgentAvailabilitySlots = async () => {
       const response = await AvailabilityService.listSlots();
-      if (response) {
-        const timeSlotsResponse = response.map((timeSlot) => {
-          return {
-            label: timeSlot.textShow,
-            value: timeSlot.id,
-            fromTime: timeSlot.fromTime,
-            toTime: timeSlot.toTime
-          }
-        });
-
-        setTimeslots(timeSlotsResponse);
-        selectNextSlot(timeSlotsResponse);
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
       }
+
+      const timeSlotsResponse = response.map((timeSlot) => {
+        return {
+          label: timeSlot.textShow,
+          value: timeSlot.id,
+          fromTime: timeSlot.fromTime,
+          toTime: timeSlot.toTime
+        }
+      });
+
+      setTimeslots(timeSlotsResponse);
+      selectNextSlot(timeSlotsResponse);
     }
 
     fetchUsersToAllocate();

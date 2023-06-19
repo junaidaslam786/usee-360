@@ -23,13 +23,13 @@ export default function Navbar(props) {
                       </a>
                     </li>
                     <li>
-                      <a href="tel:07808055833">
-                        <i className="icon-call" /> Tel UK: +44 078 080 55833
+                      <a href="tel:+4407808055833">
+                        <i className="icon-call" /> Tel UK: +44 (0)78 080 55833
                       </a>
                     </li>
                     <li>
-                      <a href="tel:0501813399">
-                        <i className="icon-call" /> Tel UAE: +971 050 181 3399
+                      <a href="tel:+9710501813399">
+                        <i className="icon-call" /> Tel UAE: +971 (0) 50 181 3399
                       </a>
                     </li>
                   </ul>

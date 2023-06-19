@@ -93,7 +93,7 @@ class Footer_v1 extends Component {
                         </div>
                         <div className="footer-address-info">
                           <p>
-                            <a href="tel:07808055833">+44 078 080 55833</a>
+                            <a href="tel:+4407808055833">+44 (0)78 080 55833</a>
                           </p>
                         </div>
                       </li>
@@ -102,7 +102,7 @@ class Footer_v1 extends Component {
                           <i className="icon-call" />
                         </div>
                         <div className="footer-address-info">
-                          <a href="tel:0501813399">+971 050 181 3399</a>
+                          <a href="tel:+9710501813399">+971 (0) 50 181 3399</a>
                         </div>
                       </li>
                       <li>

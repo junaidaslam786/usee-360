@@ -25,7 +25,7 @@ export default function Add(props) {
   const [propertyCategoryType, setPropertyCategoryType] = useState();
   const [priceType, setPriceType] = useState();
   const [unit, setUnit] = useState("");
-  const [area, setArea] = useState(0);
+  const [area, setArea] = useState("");
   const [bedrooms, setBedrooms] = useState();
   const [featuredImage, setFeaturedImage] = useState(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
@@ -52,19 +52,20 @@ export default function Add(props) {
 
   const loadUsersToAllocate = async () => {
     const response = await UserService.toAllocate();
-    if (response) {
-      const formattedUsers = response.map((userDetail) => {
-        return {
-          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId
-        }
-      });
-      setUsers(formattedUsers);
-
-      return formattedUsers;
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
+      return;
     }
 
-    return true;
+    const formattedUsers = response.map((userDetail) => {
+      return {
+        label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+        value: userDetail.userId
+      }
+    });
+    setUsers(formattedUsers);
+
+    return formattedUsers;
   };
 
   const handleSubmit = async (e) => {
@@ -495,24 +496,26 @@ export default function Add(props) {
           </div>
           <div className="col-md-6">
             <div className="input-item">
-              <label>Area</label>
+              <label>Area *</label>
               <input
                 type="number"
                 placeholder="0"
                 onChange={(e) => setArea(e.target.value)}
                 value={area}
+                required
               />
             </div>
           </div>
           <div className="col-md-6">
             <div className="input-item">
-              <label>Unit</label>
+              <label>Unit *</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
                   options={UNITS}
                   onChange={(e) => setUnit(e)}
                   value={unit}
+                  required
                 />
               </div>
             </div>

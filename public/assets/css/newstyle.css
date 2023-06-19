@@ -1156,3 +1156,9 @@
 .phoneInput .PhoneInputCountry {
     height: 64px !important;
 }
+
+.meeting-badge {
+    position: absolute;
+    top: -8px;
+    right: -5px;
+}
