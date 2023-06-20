@@ -28,7 +28,7 @@ div#status_container {
 }
 
 .testing_res {
-  width: 50%;
+  width: 100%;
 }
 
 .single_drow {
@@ -109,4 +109,10 @@ p.userror {
 
 p.palert {
   color: red;
+}
+
+@media screen and (max-width: 1366px) {
+.testing_res select {
+  width: 100% !important;
+}
 }

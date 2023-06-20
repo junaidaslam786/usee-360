@@ -5,14 +5,15 @@ import { USER_TYPE } from "../../constants";
 import OtpVerification from "../partial/otp-verification";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
+import PasswordChecklist from "react-password-checklist"
 
 export default function RegisterCustomer(props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadOTpForm, setLoadOTpForm] = useState(false);
   const [user, setUser] = useState(null);
@@ -52,6 +53,13 @@ export default function RegisterCustomer(props) {
     }
   }
 
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  }
+
+  const handleConfirmPassword = (e) => {
+    setConfirmPassword(e.target.value);
+  }
   const setPhoneNumberHandler = async (phoneNumber) => {
     setPhoneNumber(phoneNumber);
 
@@ -127,7 +135,7 @@ export default function RegisterCustomer(props) {
                     />
                     <small>Phone Number: {phoneNumber}</small>
                     <PhoneInput
-                      className="phoneInput"
+                    className="custom"
                       type="text"
                       defaultCountry="AE"
                       placeholder="Phone Number*"
@@ -143,9 +151,9 @@ export default function RegisterCustomer(props) {
                           type="password"
                           name="password"
                           placeholder="Password*"
-                          onChange={(e) => setPassword(e.target.value)}
+                          onChange={handlePassword}
                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
-                          title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
+                          title="Must Contain 10 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                           required
                         />
                       </div>
@@ -154,12 +162,24 @@ export default function RegisterCustomer(props) {
                           type="password"
                           name="confirmpassword"
                           placeholder="Confirm Password*"
-                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          onChange={handleConfirmPassword}
                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
                           title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
                           required
                         />
                       </div>
+                      <PasswordChecklist
+                      rules={["minLength", "specialChar", "number", "capital"]}
+                      minLength={8}
+                      value={password}
+                      valueAgain={confirmPassword}
+                      messages={{
+                        minLength: "Must be 8 characters.",
+                        specialChar: "Must contains special character.",
+                        number: "Must contains a number.",
+                        capital: "Must contains a capital letter.",
+                      }}
+                    />
                     </div>
                     <div className="btn-wrapper text-center">
                       <button

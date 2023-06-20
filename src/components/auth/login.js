@@ -4,6 +4,7 @@ import AuthService from "../../services/auth";
 import { USER_TYPE } from "../../constants";
 import { setLoginToken, setUserTimezone } from "../../utils";
 import OtpVerification from "../partial/otp-verification";
+import PasswordChecklist from "react-password-checklist";
 
 export default function Login({ type, responseHandler }) {
   const [email, setEmail] = useState();
@@ -30,22 +31,23 @@ export default function Login({ type, responseHandler }) {
       responseHandler(formResponse.message);
       return;
     }
-    
+
     if (formResponse?.token) {
       setToken(formResponse.token);
 
       if (formResponse?.user?.timezone) {
-        setUserTimezone(formResponse.user.timezone)
+        setUserTimezone(formResponse.user.timezone);
       }
-      
+
       if (!formResponse.user.otpVerified || formResponse.user.signupStep != 2) {
         setUser(formResponse.user);
         setLoadOTpForm(true);
         return;
-      } 
+      }
 
       setLoginToken(formResponse.token);
-      const returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || `/${type}/dashboard`;
+      const returnUrl =
+        new URLSearchParams(window.location.search).get("returnUrl") || `/${type}/dashboard`;
       window.location = returnUrl;
     }
   };
@@ -78,7 +80,11 @@ export default function Login({ type, responseHandler }) {
                 <h1 className="section-title">
                   Sign In
                   <br />
-                  To Your { type === USER_TYPE.CUSTOMER ? process.env.REACT_APP_CUSTOMER_ENTITY_LABEL : process.env.REACT_APP_AGENT_ENTITY_LABEL} Account
+                  To Your{" "}
+                  {type === USER_TYPE.CUSTOMER
+                    ? process.env.REACT_APP_CUSTOMER_ENTITY_LABEL
+                    : process.env.REACT_APP_AGENT_ENTITY_LABEL}{" "}
+                  Account
                 </h1>
               </div>
             </div>
@@ -86,15 +92,10 @@ export default function Login({ type, responseHandler }) {
           <div className="row">
             <div className="col-lg-6">
               <div className="account-login-inner">
-              {
-                loadOTpForm ? (
+                {loadOTpForm ? (
                   <OtpVerification user={user} token={token} responseHandler={responseHandler} />
                 ) : (
-                  <form
-                    onSubmit={handleSubmit}
-                    className="ltn__form-box contact-form-box"
-                  >
-                    
+                  <form onSubmit={handleSubmit} className="ltn__form-box contact-form-box">
                     <input
                       type="text"
                       name="email"
@@ -109,11 +110,9 @@ export default function Login({ type, responseHandler }) {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+                  
                     <div className="btn-wrapper mt-0">
-                      <button
-                        className="theme-btn-1 btn btn-block"
-                        type="submit"
-                      >
+                      <button className="theme-btn-1 btn btn-block" type="submit">
                         {loading ? (
                           <div className="lds-ring">
                             <div></div>
@@ -137,18 +136,14 @@ export default function Login({ type, responseHandler }) {
                       </a>
                     </div>
                   </form>
-                )
-              }
+                )}
               </div>
             </div>
             <div className="col-lg-6">
               <div className="account-create text-center pt-50">
                 <h4>DON'T HAVE AN ACCOUNT?</h4>
                 <div className="btn-wrapper go-top">
-                  <Link
-                    to={`/${type}/register`}
-                    className="theme-btn-1 btn black-btn"
-                  >
+                  <Link to={`/${type}/register`} className="theme-btn-1 btn black-btn">
                     CREATE ACCOUNT
                   </Link>
                 </div>
@@ -158,11 +153,7 @@ export default function Login({ type, responseHandler }) {
         </div>
       </div>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area----">
-        <div
-          className="modal fade"
-          id="ltn_forget_password_modal"
-          tabIndex={-1}
-        >
+        <div className="modal fade" id="ltn_forget_password_modal" tabIndex={-1}>
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -183,14 +174,8 @@ export default function Login({ type, responseHandler }) {
                       <div className="col-12">
                         <div className="modal-product-info text-center p-0">
                           <h4>FORGET PASSWORD?</h4>
-                          <p className="added-cart">
-                            {" "}
-                            Enter you registered email.
-                          </p>
-                          <form
-                            onSubmit={forgotPasswordSubmit}
-                            className="ltn__form-box"
-                          >
+                          <p className="added-cart"> Enter you registered email.</p>
+                          <form onSubmit={forgotPasswordSubmit} className="ltn__form-box">
                             <input
                               type="email"
                               name="email"
@@ -199,10 +184,7 @@ export default function Login({ type, responseHandler }) {
                               value={forgotEmail}
                             />
                             <div className="btn-wrapper mt-0">
-                              <button
-                                className="theme-btn-1 btn btn-full-width-2"
-                                type="submit"
-                              >
+                              <button className="theme-btn-1 btn btn-full-width-2" type="submit">
                                 Submit
                               </button>
                             </div>

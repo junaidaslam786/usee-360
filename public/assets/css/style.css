@@ -462,6 +462,11 @@ textarea {
     font-family: var(--ltn__body-font);
 }
 
+select {
+    font-family: var(--ltn__body-font);
+    width: 100%;
+}
+
 pre,
 code,
 kbd,

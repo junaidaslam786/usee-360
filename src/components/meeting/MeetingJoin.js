@@ -408,7 +408,7 @@ const MeetingJoin = (props) => {
                   insertMode: "append",
                   nameDisplayMode: "on",
                   width: "100%",
-                  height: "250px",
+                  height: "195px",
                 };
                 const subscriber = session.subscribe(
                   event.stream,
@@ -550,7 +550,7 @@ const MeetingJoin = (props) => {
                 : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
             nameDisplayMode: "on",
             width: "100%",
-            height: "250px",
+            height: "195px",
           };
 
           if (audioInputDeviceId || videoDeviceId) {
