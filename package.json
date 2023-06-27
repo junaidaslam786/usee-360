@@ -30,6 +30,7 @@
     "react-modal": "^3.16.1",
     "react-modern-calendar-datepicker": "^3.1.6",
     "react-otp-input": "^3.0.2",
+    "react-password-checklist": "^1.4.3",
     "react-phone-number-input": "^3.2.23",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",

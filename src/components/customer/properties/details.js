@@ -161,7 +161,7 @@ export default function Details(props) {
           {
             propertyDocuments && (
               propertyDocuments.map((element, index) => (
-                <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3" key={index}>View {element.title}</a>
+                <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3 w-100" key={index}>View {element.title}</a>
               )
             ))
           }

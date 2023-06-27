@@ -705,6 +705,7 @@
 .nice-select.video-selector2{
     width: 49%;
     background-color: #e2e2e2 !important;
+    margin: 8px 0px 0px 5px;
 }
 .newStyling{
     width: 55px !important;
@@ -1162,3 +1163,29 @@
     top: -8px;
     right: -5px;
 }
+    .custom .PhoneInputCountry {
+        height: 64px !important;
+    }
+
+    /* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #27b52770; 
+    border-radius: 10px;
+    margin-right: 5px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #00c800; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00c800; 
+  }

@@ -13,6 +13,7 @@ import AuthService from "../../services/auth";
 import OtpVerification from "../partial/otp-verification";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
+import PasswordChecklist from "react-password-checklist"
 
 export default function RegisterAgent(props) {
   const [companyName, setCompanyName] = useState("");
@@ -251,6 +252,18 @@ export default function RegisterAgent(props) {
                           required
                         />
                       </div>
+                      <PasswordChecklist
+                      rules={["minLength", "specialChar", "number", "capital"]}
+                      minLength={8}
+                      value={password}
+                      valueAgain={confirmPassword}
+                      messages={{
+                        minLength: "Must be 8 characters.",
+                        specialChar: "Must contains special character.",
+                        number: "Must contains a number.",
+                        capital: "Must contains a capital letter.",
+                      }}
+                    />
                     </div>
                     {/* <div id="recaptcha-container" className="mb-30"></div> */}
                     
