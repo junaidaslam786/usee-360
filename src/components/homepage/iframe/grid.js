@@ -133,9 +133,6 @@ export default function IframePropertyGrid() {
                           loadProperties("filter");
                         }}
                       >
-                        <option selected disabled value="null">
-                          Default Sorting
-                        </option>
                         <option value={"ASC"}>
                           Sort by price: low to high
                         </option>

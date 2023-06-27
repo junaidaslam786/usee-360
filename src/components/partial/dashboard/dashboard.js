@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardFilter from "./dashboard-filter";
-import { getUserDetailsFromJwt } from "../../../utils";
+import { getUserDetailsFromJwt, removeLoginToken } from "../../../utils";
 import { AGENT_TYPE, AGENT_TYPE_LABEL, USER_TYPE } from "../../../constants";
+import { useHistory } from "react-router-dom";
 
 export default function Dashboard({ type }) {
+    const history = useHistory();
     const userDetail = getUserDetailsFromJwt();
+
+    useEffect(() => {
+      if (!userDetail) {
+        removeLoginToken();
+        history.push(`/${type}/login`);
+      }
+    }, [userDetail]);
 
     return (
         <React.Fragment>
@@ -22,7 +31,7 @@ export default function Dashboard({ type }) {
                       type === USER_TYPE.CUSTOMER 
                       ? process.env.REACT_APP_CUSTOMER_ENTITY_LABEL 
                       : (
-                        userDetail?.agent?.agentType !== AGENT_TYPE.AGENT
+                        (userDetail && userDetail?.agent?.agentType !== AGENT_TYPE.AGENT)
                         ? AGENT_TYPE_LABEL[userDetail.agent.agentType] 
                         : process.env.REACT_APP_AGENT_ENTITY_LABEL
                       )

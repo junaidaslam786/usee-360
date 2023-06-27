@@ -321,7 +321,7 @@ const MeetingJoin = (props) => {
   }
 
   const isAddedToWishlist = (propertyId) => {
-    return wishlistProperties.find(({ productId }) => productId === propertyId);
+    return wishlistProperties.length < 0 ? false : wishlistProperties.find(({ productId }) => productId === propertyId);
   }
 
   const removeWishList = async (propertyId) => {
@@ -344,7 +344,10 @@ const MeetingJoin = (props) => {
 
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
-    setWishlistProperties(response);
+
+    if (response?.length > 0) {
+      setWishlistProperties(response);
+    }
   }
 
   const openPropertyModal = () => {
@@ -396,6 +399,7 @@ const MeetingJoin = (props) => {
           setSelectedProperty(appointment.products[0].id);
         } else if (userType === USER_TYPE.CUSTOMER) {
           await getPropertyDetail(appointment.products[0].id);
+          await loadWishlistProperties();
         }
 
         if (!publisher) {
@@ -433,7 +437,7 @@ const MeetingJoin = (props) => {
                     subscriberDisconnectedNotification.style.visibility = "hidden";
                   },
                 });
-                if (userType == "customer") {
+                if (userType == USER_TYPE.CUSTOMER) {
                   setAgentJoined(true);
                 } else if (userType == "agent") {
                   setCustomerJoined(true);
@@ -490,9 +494,9 @@ const MeetingJoin = (props) => {
               session.disconnect();
             },
             sessionDisconnected: function sessionDisconnectHandler(event) {
-              if (userType === "agent") {
+              if (userType === USER_TYPE.AGENT) {
                 history.push("/agent/dashboard");
-              } else if (userType === "customer") {
+              } else if (userType === USER_TYPE.CUSTOMER) {
                 history.push("/customer/dashboard");
               }
             },
@@ -504,9 +508,9 @@ const MeetingJoin = (props) => {
 
           const msgHistory = document.querySelector("#history");
           session.on("signal:msg", async (event) => {
-            if (userType === "customer" && event.data.includes("PROPERTY_ID")) {
+            if (userType === USER_TYPE.CUSTOMER && event.data.includes("PROPERTY_ID")) {
               await getPropertyDetail(event.data.split(":")[1]);
-            } else if (userType === "agent" && event.data.includes("PROPERTY_ID")) {
+            } else if (userType === USER_TYPE.AGENT && event.data.includes("PROPERTY_ID")) {
             } else if (event.data.includes("::")) {
               const msg = document.createElement("p");
               const content = event.data.split("::");
@@ -545,7 +549,7 @@ const MeetingJoin = (props) => {
             publishVideo: videoStreamingVal,
             publishAudio: audioStreamingVal,
             name:
-              userType === "customer"
+              userType === USER_TYPE.CUSTOMER
                 ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
                 : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
             nameDisplayMode: "on",
@@ -590,10 +594,10 @@ const MeetingJoin = (props) => {
             } else {
               // If the connection is successful, publish the publisher to the session
               session.publish(publisher, (error) => {});
-              if (userType === "customer") {
+              if (userType === USER_TYPE.CUSTOMER) {
                 setCustomerJoined(true);
                 addLogEntry('joined', "Customer has joined the meeting");
-              } else if (userType === "agent") {
+              } else if (userType === USER_TYPE.AGENT) {
                 setAgentJoined(true);
                 addLogEntry('joined', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has joined the meeting`);
               }
@@ -604,29 +608,31 @@ const MeetingJoin = (props) => {
           const form = document.querySelector("form");
           const msgTxt = document.querySelector("#msgTxt");
 
-          // Send a signal once the user enters data in the form
-          form.addEventListener("submit", (event) => {
-            event.preventDefault();
-            if (msgTxt.value) {
-              const name =
-              userType === "customer"
-                ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-                : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
-              session.signal(
-                {
-                  type: "msg",
-                  data: `${name}: ${msgTxt.value}`,
-                },
-                (error) => {
-                  if (error) {
-                    //handleError(error);
-                  } else {
-                    msgTxt.value = "";
+          if (form) {
+            // Send a signal once the user enters data in the form
+            form.addEventListener("submit", (event) => {
+              event.preventDefault();
+              if (msgTxt.value) {
+                const name =
+                userType === USER_TYPE.CUSTOMER
+                  ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+                  : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+                session.signal(
+                  {
+                    type: "msg",
+                    data: `${name}: ${msgTxt.value}`,
+                  },
+                  (error) => {
+                    if (error) {
+                      //handleError(error);
+                    } else {
+                      msgTxt.value = "";
+                    }
                   }
-                }
-              );
-            }
-          });
+                );
+              }
+            });
+          }
         }
       }
 
@@ -641,6 +647,36 @@ const MeetingJoin = (props) => {
       setShowCancelBtn(false);
     } 
   }, [agentJoined, customerJoined]);
+
+  /*
+  useEffect(() => {
+    // this is removing the video stream if user click back button in call
+    return () => {
+      // Function to run when the mutation we're interested in occurs
+      const handleMutation = (mutationsList, observer) => {
+        for (let mutation of mutationsList) {
+          if (mutation.type === 'childList') {
+            const elements = document.querySelectorAll('.OT_widget-container');
+            if (elements.length > 1) {
+              const lastElement = elements[elements.length - 1];
+              lastElement.parentNode.remove();
+              observer.disconnect();  // Stop observing once we've done the operation
+            }
+          }
+        }
+      };
+
+      // Create a new observer
+      const observer = new MutationObserver(handleMutation);
+
+      // Start observing the document with the configured parameters
+      observer.observe(document.body, { childList: true, subtree: true });
+      
+      // Clean up function
+      return () => observer.disconnect();
+    }
+  }, []);
+  */
 
   return (
     <div id="meetingBody">

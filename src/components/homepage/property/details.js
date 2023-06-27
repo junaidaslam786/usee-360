@@ -78,7 +78,10 @@ export default function PropertyDetails(props) {
 
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
-    setWishlistProperties(response);
+
+    if (response?.length > 0) {
+      setWishlistProperties(response);
+    }
   }
 
   const addToWishList = async (propertyId) => {
@@ -114,7 +117,7 @@ export default function PropertyDetails(props) {
   }
 
   const isAddedToWishlist = (propertyId) => {
-    return wishlistProperties.find(({ productId }) => productId === propertyId);
+    return wishlistProperties.length < 0 ? false : wishlistProperties.find(({ productId }) => productId === propertyId);
   }
 
   useEffect(() => {

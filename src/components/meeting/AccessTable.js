@@ -143,7 +143,7 @@ const AccessTable = (props) => {
       const fetchData = async () => {
         const appointmentDetail = await getAppointmentDetail();
         setLoading(false);
-        if (appointmentDetail.status === APPOINTMENT_STATUS.PENDING || appointmentDetail.status === APPOINTMENT_STATUS.INPROGRESS) {
+        if (appointmentDetail?.status && (appointmentDetail.status === APPOINTMENT_STATUS.PENDING || appointmentDetail.status === APPOINTMENT_STATUS.INPROGRESS)) {
           const tokToken = await getSessionToken(appointmentDetail);
 
           if (detect.getAPISupported().isWebRTCSupported) {
@@ -255,6 +255,36 @@ const AccessTable = (props) => {
   
     }
   }, []);
+
+  /*
+  useEffect(() => {
+    // this is removing the video stream if user click back button in call
+    return () => {
+      // Function to run when the mutation we're interested in occurs
+      const handleMutation = (mutationsList, observer) => {
+        for (let mutation of mutationsList) {
+          if (mutation.type === 'childList') {
+            const elements = document.querySelectorAll('.OT_widget-container');
+            if (elements.length > 1) {
+              const lastElement = elements[elements.length - 1];
+              lastElement.parentNode.remove();
+              observer.disconnect();  // Stop observing once we've done the operation
+            }
+          }
+        }
+      };
+
+      // Create a new observer
+      const observer = new MutationObserver(handleMutation);
+
+      // Start observing the document with the configured parameters
+      observer.observe(document.body, { childList: true, subtree: true });
+      
+      // Clean up function
+      return () => observer.disconnect();
+    }
+  }, []);
+  */
 
   return (
     <main className="main">
