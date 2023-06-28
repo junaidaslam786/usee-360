@@ -70,6 +70,19 @@ const MeetingJoin = (props) => {
   const [longitude, setLongitude] = useState(0);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [unReadMessages, setUnReadMessages] = useState({});
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const getPropertiesList = async () => {
     const propertyData = await PropertyService.toAllocate();
@@ -408,11 +421,13 @@ const MeetingJoin = (props) => {
           session.on({
             streamCreated: (event) => {
               if (event.stream.videoType === "camera") {
+                const screenHeight = window.innerHeight;
+                const height = screenHeight <= 690 ? "165px" : "195px";
                 const subscriberOptions = {
                   insertMode: "append",
                   nameDisplayMode: "on",
                   width: "100%",
-                  height: "195px",
+                  height: {height},
                 };
                 const subscriber = session.subscribe(
                   event.stream,
@@ -541,6 +556,9 @@ const MeetingJoin = (props) => {
             }
           });
 
+          const screenHeight = window.innerHeight;
+                const height = screenHeight <= 690 ? "165px" : "195px";
+
           // initialize the publisher
           const publisherOptions = {
             insertMode: "append",
@@ -554,7 +572,7 @@ const MeetingJoin = (props) => {
                 : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
             nameDisplayMode: "on",
             width: "100%",
-            height: "195px",
+            height: {height},
           };
 
           if (audioInputDeviceId || videoDeviceId) {

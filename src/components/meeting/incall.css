@@ -398,3 +398,9 @@
   height: 77%;
 }
 }
+
+@media screen and (max-height: 695px) {
+  #history {
+    height: 75%;
+  }
+  }

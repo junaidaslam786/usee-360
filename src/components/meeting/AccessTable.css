@@ -163,6 +163,21 @@ a button {
 }
 
 .OT_publisher {
+  height: 195px;
   border-radius: 5px;
   border: 2px solid rgb(0, 203, 4)
+}
+
+.OT_subscriber {
+  height: 195px;
+}
+
+
+@media screen and (max-height: 690px) {
+  .OT_publisher {
+height: 165px;
+  }
+  .OT_subscriber {
+    height: 165px;
+  }
 }
