@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import InsideNavbar from "../components/global/inside-navbar";
 import PageHeader from "../components/global/header";
-import MyProfile from "../components/agent/profile";
+import MyProfile from "../components/agent/profile/profile";
 import Alerts from "../components/agent/alerts";
 import Dashboard from "../components/partial/dashboard/dashboard";
 import Availability from "../components/agent/availability/index";

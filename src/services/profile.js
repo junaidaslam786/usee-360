@@ -1,4 +1,4 @@
-import { httpGet, httpPut } from "../rest-api";
+import { httpDelete, httpGet, httpPost, httpPut } from "../rest-api";
 
 const apiUrlPrefix = 'user';
 
@@ -65,6 +65,42 @@ const ProfileService = {
 
     if (response?.status && response.status !== 200) {
       return { error: true, message: ["Unable to update timezone, please try again later"] };
+    }
+
+    return response.data;
+  },
+
+  uploadCallBackgroundImage: async (reqBody) => {
+    const response = await httpPost(`${apiUrlPrefix}/call-background-image`, reqBody, true);
+
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message = ["Unable to upload call background images, please try again later"];
+      }
+      
+      return response;
+    }
+
+    if (response?.status !== 200) {
+      return { error: true, message: ["Unable to upload call background images, please try again later"] };
+    }
+
+    return response.data;
+  },
+
+  deleteCallBackgroundImage: async (reqBody) => {
+    const response = await httpDelete(`${apiUrlPrefix}/call-background-image`, reqBody);
+
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message = ["Unable to delete call background image, please try again later"];
+      }
+      
+      return response;
+    }
+
+    if (response?.status !== 200) {
+      return { error: true, message: ["Unable to delete call background image, please try again later"] };
     }
 
     return response.data;

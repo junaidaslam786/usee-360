@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { USER_TYPE } from "../../constants";
-import TimezoneDetail from "../partial/timezone-detail";
-import ProfileService from "../../services/profile";
-import { setLoginToken } from "../../utils";
-import UpdatePassword from "../partial/update-password";
+import { USER_TYPE } from "../../../constants";
+import TimezoneDetail from "../../partial/timezone-detail";
+import ProfileService from "../../../services/profile";
+import { setLoginToken } from "../../../utils";
+import UpdatePassword from "../../partial/update-password";
+import UploadCallBackgroundImage from "./upload-call-background-image";
 
 export default function Profile(props) {
   const [agentId, setAgentId] = useState();
@@ -23,6 +24,8 @@ export default function Profile(props) {
   const [profileImagePreview, setProfileImagePreview] = useState();
   const [loading, setLoading] = useState();
   const [user, setUser] = useState();
+  const [callBackgroundImages, setCallBackgroundImages] = useState([]);
+
   const code = useRef();
   
   const getUser = async () => {
@@ -66,6 +69,10 @@ export default function Profile(props) {
         ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
         : ""
     );
+
+    if (jsonData.userCallBackgroundImages) {
+      setCallBackgroundImages(jsonData.userCallBackgroundImages);
+    }
   };
 
   const updateProfile = async (e) => {
@@ -298,6 +305,11 @@ export default function Profile(props) {
             </form>
             <TimezoneDetail type={USER_TYPE.AGENT} user={user} responseHandler={props.responseHandler} />
             <UpdatePassword responseHandler={props.responseHandler} />
+            {
+              user?.id && (
+                <UploadCallBackgroundImage id={user.id} images={callBackgroundImages} responseHandler={props.responseHandler} />
+              )
+            }
             <h4 className="title-2 mt-100">Embeded Code</h4>
             <div className="row mb-50">
               <div className="col-lg-10">

@@ -7,6 +7,7 @@ import { APPOINTMENT_STATUS, USER_TYPE } from '../../constants';
 import { getLoginToken, removeLoginToken } from '../../utils';
 import AppointmentService from '../../services/agent/appointment';
 import CustomerAppointmentService from '../../services/customer/appointment';
+import ProfileService from '../../services/profile';
 
 const AccessTable = (props) => {
   const { appointmentId, userType } = props;
@@ -47,9 +48,7 @@ const AccessTable = (props) => {
   const [showBackground, setShowBackground] = useState(false);
   const [videoStreaming, setVideoStreaming] = useState(true);
   const [audioStreaming, setAudioStreaming] = useState(true);
-  const detect = new RTCDetect();
-
-  const backgrounds = [
+  const [backgrounds, setBackgrounds] = useState([
     {
       "name": "Video Meeting 1",
       "url" : `${publicUrl}assets/video-background/video-meeting-1.jpeg`
@@ -66,7 +65,8 @@ const AccessTable = (props) => {
       "name": "Video Meeting 4",
       "url" : `${publicUrl}assets/video-background/video-meeting-4.jpg`
     }
-  ];
+  ]);
+  const detect = new RTCDetect();
 
   const getAppointmentDetail = async () => {
     const appointmentData = userType === USER_TYPE.CUSTOMER 
@@ -138,10 +138,27 @@ const AccessTable = (props) => {
     }
   }
 
+  const getUser = async () => {
+    const jsonData = await ProfileService.getProfile();
+    if (jsonData.userCallBackgroundImages) {
+      debugger;
+      let backgroundImages = backgrounds;
+      backgroundImages.push(...jsonData.userCallBackgroundImages.map((image) => {
+        return {
+          name: image.name,
+          url: `${process.env.REACT_APP_API_URL}/${image.url}`
+        }
+      }));
+      setBackgrounds(backgroundImages);
+    }
+  };
+
   useEffect(() => {
     if (token) { 
       const fetchData = async () => {
         const appointmentDetail = await getAppointmentDetail();
+        await getUser();
+
         setLoading(false);
         if (appointmentDetail?.status && (appointmentDetail.status === APPOINTMENT_STATUS.PENDING || appointmentDetail.status === APPOINTMENT_STATUS.INPROGRESS)) {
           const tokToken = await getSessionToken(appointmentDetail);
