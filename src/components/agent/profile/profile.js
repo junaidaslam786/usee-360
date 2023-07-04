@@ -5,6 +5,7 @@ import ProfileService from "../../../services/profile";
 import { setLoginToken } from "../../../utils";
 import UpdatePassword from "../../partial/update-password";
 import UploadCallBackgroundImage from "./upload-call-background-image";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Profile(props) {
   const [agentId, setAgentId] = useState();
@@ -27,53 +28,53 @@ export default function Profile(props) {
   const [callBackgroundImages, setCallBackgroundImages] = useState([]);
 
   const code = useRef();
-  
-  const getUser = async () => {
-    const jsonData = await ProfileService.getProfile();
-    if (jsonData?.error && jsonData?.message) {
-      props.responseHandler(jsonData.message);
-      return;
-    }
 
-    setUser(jsonData);
-    setAgentId(jsonData.agent.userId);
-    setFirstName(jsonData.firstName);
-    setLastName(jsonData.lastName);
-    setCompanyPosition(
-      jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
-    );
-    setPhoneNumber(jsonData.phoneNumber);
-    setMobileNumber(
-      jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
-    );
-    setCompanyName(
-      jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
-    );
-    setCompanyAddress(
-      jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
-    );
-    setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
-    setCity(jsonData?.cityName ? jsonData.cityName : "");
-    setMortgageAdvisorEmail(
-      jsonData?.agent?.mortgageAdvisorEmail
-        ? jsonData.agent.mortgageAdvisorEmail
-        : ""
-    );
-    setCompanyLogoPreview(
-      jsonData?.agent?.companyLogo
-        ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
-        : ""
-    );
-    setProfileImagePreview(
-      jsonData?.profileImage
-        ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
-        : ""
-    );
+  // const getUser = async () => {
+  //   const jsonData = await ProfileService.getProfile();
+  //   if (jsonData?.error && jsonData?.message) {
+  //     props.responseHandler(jsonData.message);
+  //     return;
+  //   }
 
-    if (jsonData.userCallBackgroundImages) {
-      setCallBackgroundImages(jsonData.userCallBackgroundImages);
-    }
-  };
+  //   setUser(jsonData);
+  //   setAgentId(jsonData.agent.userId);
+  //   setFirstName(jsonData.firstName);
+  //   setLastName(jsonData.lastName);
+  //   setCompanyPosition(
+  //     jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
+  //   );
+  //   setPhoneNumber(jsonData.phoneNumber);
+  //   setMobileNumber(
+  //     jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
+  //   );
+  //   setCompanyName(
+  //     jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
+  //   );
+  //   setCompanyAddress(
+  //     jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
+  //   );
+  //   setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
+  //   setCity(jsonData?.cityName ? jsonData.cityName : "");
+  //   setMortgageAdvisorEmail(
+  //     jsonData?.agent?.mortgageAdvisorEmail
+  //       ? jsonData.agent.mortgageAdvisorEmail
+  //       : ""
+  //   );
+  //   setCompanyLogoPreview(
+  //     jsonData?.agent?.companyLogo
+  //       ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
+  //       : ""
+  //   );
+  //   setProfileImagePreview(
+  //     jsonData?.profileImage
+  //       ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
+  //       : ""
+  //   );
+
+  //   if (jsonData.userCallBackgroundImages) {
+  //     setCallBackgroundImages(jsonData.userCallBackgroundImages);
+  //   }
+  // };
 
   const updateProfile = async (e) => {
     e.preventDefault();
@@ -123,19 +124,67 @@ export default function Profile(props) {
 
   const copyApiCode = (e) => {
     e.preventDefault();
-    navigator.clipboard.writeText(
-      code.current.value
-    );
+    navigator.clipboard.writeText(code.current.value);
 
     props.responseHandler("Code Copied Successfully!", true);
-  }
+  };
 
   useEffect(() => {
+    let isMounted = true;
     const getUserProfile = async () => {
-      await getUser();
+      const jsonData = await ProfileService.getProfile();
+      if (jsonData?.error && jsonData?.message) {
+        props.responseHandler(jsonData.message);
+        return;
+      }
+
+      if (isMounted) {
+        setUser(jsonData);
+        setAgentId(jsonData.agent.userId);
+        setFirstName(jsonData.firstName);
+        setLastName(jsonData.lastName);
+        setCompanyPosition(
+          jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
+        );
+        setPhoneNumber(jsonData.phoneNumber);
+        setMobileNumber(
+          jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
+        );
+        setCompanyName(
+          jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
+        );
+        setCompanyAddress(
+          jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
+        );
+        setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
+        setCity(jsonData?.cityName ? jsonData.cityName : "");
+        setMortgageAdvisorEmail(
+          jsonData?.agent?.mortgageAdvisorEmail
+            ? jsonData.agent.mortgageAdvisorEmail
+            : ""
+        );
+        setCompanyLogoPreview(
+          jsonData?.agent?.companyLogo
+            ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
+            : ""
+        );
+        setProfileImagePreview(
+          jsonData?.profileImage
+            ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
+            : ""
+        );
+
+        if (jsonData.userCallBackgroundImages) {
+          setCallBackgroundImages(jsonData.userCallBackgroundImages);
+        }
+      }
     };
 
     getUserProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -303,13 +352,19 @@ export default function Profile(props) {
                 </button>
               </div>
             </form>
-            <TimezoneDetail type={USER_TYPE.AGENT} user={user} responseHandler={props.responseHandler} />
+            <TimezoneDetail
+              type={USER_TYPE.AGENT}
+              user={user}
+              responseHandler={props.responseHandler}
+            />
             <UpdatePassword responseHandler={props.responseHandler} />
-            {
-              user?.id && (
-                <UploadCallBackgroundImage id={user.id} images={callBackgroundImages} responseHandler={props.responseHandler} />
-              )
-            }
+            {user?.id && (
+              <UploadCallBackgroundImage
+                id={user.id}
+                images={callBackgroundImages}
+                responseHandler={props.responseHandler}
+              />
+            )}
             <h4 className="title-2 mt-100">Embeded Code</h4>
             <div className="row mb-50">
               <div className="col-lg-10">

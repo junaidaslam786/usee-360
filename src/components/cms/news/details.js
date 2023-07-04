@@ -11,7 +11,7 @@ export default function NewsDetails() {
   const loadNews = async () => {
     const formResponse = await CmsService.detail(params.id);
     setNews(formResponse);
-  }
+  };
 
   useEffect(() => {
     loadNews();
@@ -26,7 +26,16 @@ export default function NewsDetails() {
               <div className="ltn__page-details-inner ltn__blog-details-inner">
                 <div className="ltn__blog-meta">
                   <div className="ltn__blog-img">
-                    <img src={ process.env.REACT_APP_API_URL + "/" + news.featuredImageFile } alt="#" />
+                    <img
+                      src={
+                        news.featuredImageFile
+                          ? process.env.REACT_APP_API_URL.concat(
+                              `/${news.featuredImageFile}`
+                            )
+                          : null
+                      }
+                      alt={news.title}
+                    />
                   </div>
                 </div>
                 <h2 className="ltn__blog-title">{news.title}</h2>
@@ -46,13 +55,17 @@ export default function NewsDetails() {
                   </ul>
                 </div>
                 <p dangerouslySetInnerHTML={{ __html: news.description }} />
-                {
-                  news?.file && (
-                    <div className="row">
-                      <a href={process.env.REACT_APP_API_URL + "/" + news.file} target="blank" className="btn theme-btn-1 mb-3 w-25">Download</a>
-                    </div>
-                  )
-                }
+                {news?.file && (
+                  <div className="row">
+                    <a
+                      href={process.env.REACT_APP_API_URL + "/" + news.file}
+                      target="blank"
+                      className="btn theme-btn-1 mb-3 w-25"
+                    >
+                      Download
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

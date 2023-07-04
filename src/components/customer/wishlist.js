@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { formatCreatedAtTimestamp } from "../../utils";
 import WishlistService from "../../services/customer/wishlist";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Wishlist(props) {
-  const [list, setList] = useState([]);
+  const [list, setList] = useStateIfMounted([]);
 
   const loadAllList = async () => {
     const response = await WishlistService.list();
@@ -12,7 +13,7 @@ export default function Wishlist(props) {
       props.responseHandler(response.message);
       return;
     }
-    
+
     setList(response);
   };
 
@@ -58,9 +59,9 @@ export default function Wishlist(props) {
                   <td className="ltn__my-properties-img go-top">
                     <div className="myProperties-img">
                       <img
-                      src={`${process.env.REACT_APP_API_URL}/${element?.product?.featuredImage}`}
-                      alt="#"
-                    />
+                        src={`${process.env.REACT_APP_API_URL}/${element?.product?.featuredImage}`}
+                        alt="#"
+                      />
                     </div>
                   </td>
                   <td>
@@ -79,7 +80,12 @@ export default function Wishlist(props) {
                     </div>
                   </td>
                   <td>
-                    { element?.createdAt ? formatCreatedAtTimestamp(element.createdAt, "MMMM D, YYYY") : "-" }
+                    {element?.createdAt
+                      ? formatCreatedAtTimestamp(
+                          element.createdAt,
+                          "MMMM D, YYYY"
+                        )
+                      : "-"}
                   </td>
                   <td>
                     <button

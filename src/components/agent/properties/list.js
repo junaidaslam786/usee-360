@@ -1,26 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
-import { 
+import {
   getUserDetailsFromJwt,
-  formatCreatedAtTimestamp
+  formatCreatedAtTimestamp,
 } from "../../../utils";
 import PropertyService from "../../../services/agent/property";
 import { AGENT_USER_ACCESS_TYPE_VALUE } from "../../../constants";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function List(props) {
-  const [currentPage, setCurrentPage] = useState();
-  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useStateIfMounted();
+  const [totalPages, setTotalPages] = useStateIfMounted();
   const [search, setSearch] = useState();
   const [propertyIdToDelete, setPropertyIdToDelete] = useState(0);
   const [removeReason, setRemoveReason] = useState();
   const [notes, setNotes] = useState("");
-  const [list, setList] = useState([]);
-  const [removeReasons, setRemoveReasons] = useState([]);
+  const [list, setList] = useStateIfMounted([]);
+  const [removeReasons, setRemoveReasons] = useStateIfMounted([]);
   const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
-  const loadAllList = async (search = '', page = 1) => {
+  const loadAllList = async (search = "", page = 1) => {
     const response = await PropertyService.list({ search, page });
     if (response?.data) {
       setList(response.data);
@@ -62,8 +63,12 @@ export default function List(props) {
   };
 
   const canDoThis = (accessModule) => {
-    return userDetail?.agentAccessLevels ? userDetail.agentAccessLevels.find((level) => level.accessLevel === accessModule) : false;
-  }
+    return userDetail?.agentAccessLevels
+      ? userDetail.agentAccessLevels.find(
+          (level) => level.accessLevel === accessModule
+        )
+      : false;
+  };
 
   useEffect(() => {
     const fetchAllProperties = async () => {
@@ -76,7 +81,7 @@ export default function List(props) {
         props.responseHandler(response.message);
         return;
       }
-      
+
       setRemoveReasons(
         response.map((reason) => {
           return {
@@ -104,7 +109,7 @@ export default function List(props) {
           </div>
         </div>
         <div className="col-md-3">
-          <button 
+          <button
             className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
             onClick={(e) => loadAllList(search)}
           >
@@ -125,61 +130,68 @@ export default function List(props) {
             </tr>
           </thead>
           <tbody>
-            {
-              list && list.length === 0 ? (
-                <tr>
-                  <td className="no-data">No Data!</td>
-                </tr>
-              ) : (
-                list.map((element, i) => (
-                  <tr key={i}>
-                    <td className="ltn__my-properties-img go-top">
-                      <div className="myProperties-img">
-                        <img
+            {list && list.length === 0 ? (
+              <tr>
+                <td className="no-data">No Data!</td>
+              </tr>
+            ) : (
+              list.map((element, i) => (
+                <tr key={i}>
+                  <td className="ltn__my-properties-img go-top">
+                    <div className="myProperties-img">
+                      <img
                         src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
                         alt="#"
                       />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="ltn__my-properties-info">
-                        <h6 className="mb-10 go-top">
-                          <Link to={`/agent/property-details/${element?.id}`}>
-                            {element?.title}
-                          </Link>
-                        </h6>
-                        <small>
-                          <i className="icon-placeholder" /> {element?.address}
-                        </small>
-                      </div>
-                    </td>
-                    <td>{ element?.createdAt ? formatCreatedAtTimestamp(element.createdAt, "MMMM D, YYYY") : "-" }</td>
-                    <td>
-                      {
-                        (userDetail?.id === element?.userId || canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY)) && (
-                          <Link to={`/agent/edit-property/${element?.id}`}>
-                            Edit
-                          </Link>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="ltn__my-properties-info">
+                      <h6 className="mb-10 go-top">
+                        <Link to={`/agent/property-details/${element?.id}`}>
+                          {element?.title}
+                        </Link>
+                      </h6>
+                      <small>
+                        <i className="icon-placeholder" /> {element?.address}
+                      </small>
+                    </div>
+                  </td>
+                  <td>
+                    {element?.createdAt
+                      ? formatCreatedAtTimestamp(
+                          element.createdAt,
+                          "MMMM D, YYYY"
                         )
-                      }
-                    </td>
-                    <td>
-                      {
-                        (userDetail?.id === element?.userId || canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.DELETE_PROPERTY)) && (
-                          <button
-                            data-bs-toggle="modal"
-                            data-bs-target="#ltn_delete_property_modal"
-                            onClick={() => handleDeleteButtonClick(element?.id)}
-                          >
-                              <i className="fa-solid fa-trash-can" />                            
-                          </button>
-                        )
-                      }
-                    </td>
-                  </tr>
-                ))
-              )
-            }
+                      : "-"}
+                  </td>
+                  <td>
+                    {(userDetail?.id === element?.userId ||
+                      canDoThis(
+                        AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY
+                      )) && (
+                      <Link to={`/agent/edit-property/${element?.id}`}>
+                        Edit
+                      </Link>
+                    )}
+                  </td>
+                  <td>
+                    {(userDetail?.id === element?.userId ||
+                      canDoThis(
+                        AGENT_USER_ACCESS_TYPE_VALUE.DELETE_PROPERTY
+                      )) && (
+                      <button
+                        data-bs-toggle="modal"
+                        data-bs-target="#ltn_delete_property_modal"
+                        onClick={() => handleDeleteButtonClick(element?.id)}
+                      >
+                        <i className="fa-solid fa-trash-can" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         <div className="ltn__pagination-area text-center">

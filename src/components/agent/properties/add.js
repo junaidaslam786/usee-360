@@ -1,53 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
 import UploadPropertyImage from "./upload-property-image";
 import UploadPropertyDocument from "./upload-property-document";
-import { 
-  PROPERTY_TYPES, RESIDENTIAL_PROPERTY, 
-  COMMERCIAL_PROPERTY, PROPERTY_CATEGORY_TYPES, 
-  PRICE_TYPE, UNITS, BEDROOMS, AGENT_TYPE 
-} from '../../../constants';
+import {
+  PROPERTY_TYPES,
+  RESIDENTIAL_PROPERTY,
+  COMMERCIAL_PROPERTY,
+  PROPERTY_CATEGORY_TYPES,
+  PRICE_TYPE,
+  UNITS,
+  BEDROOMS,
+  AGENT_TYPE,
+} from "../../../constants";
 import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
 import PropertyService from "../../../services/agent/property";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
 
-  const [id, setId] = useState();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState();
-  const [propertyType, setPropertyType] = useState("");
-  const [propertySubType, setPropertySubType] = useState("");
-  const [propertyCategoryType, setPropertyCategoryType] = useState();
-  const [priceType, setPriceType] = useState();
-  const [unit, setUnit] = useState("");
-  const [area, setArea] = useState("");
-  const [bedrooms, setBedrooms] = useState();
-  const [featuredImage, setFeaturedImage] = useState(null);
-  const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [region, setRegion] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [propertyImages, setPropertyImages] = useState([]);
-  const [propertyDocuments, setPropertyDocuments] = useState([]);
-  const [allotedToUsers, setAllotedToUsers] = useState([]);
-  const [loading, setLoading] = useState();
-  const [virtualTourType, setVirtualTourType] = useState("");
-  const [virtualTourVideo, setVirtualTourVideo] = useState("");
-  const [virtualTourUrl, setVirtualTourUrl] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-  const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
-  const [propertySubTypeOptions, setPropertySubTypeOptions] = useState(null);
-  const [deedTitle, setDeedTitle] = useState("");
-  const [users, setUsers] = useState([]);
+  const [id, setId] = useStateIfMounted();
+  const [title, setTitle] = useStateIfMounted("");
+  const [description, setDescription] = useStateIfMounted("");
+  const [price, setPrice] = useStateIfMounted();
+  const [propertyType, setPropertyType] = useStateIfMounted("");
+  const [propertySubType, setPropertySubType] = useStateIfMounted("");
+  const [propertyCategoryType, setPropertyCategoryType] = useStateIfMounted();
+  const [priceType, setPriceType] = useStateIfMounted();
+  const [unit, setUnit] = useStateIfMounted("");
+  const [area, setArea] = useStateIfMounted("");
+  const [bedrooms, setBedrooms] = useStateIfMounted();
+  const [featuredImage, setFeaturedImage] = useStateIfMounted(null);
+  const [featuredImagePreview, setFeaturedImagePreview] =
+    useStateIfMounted(null);
+  const [address, setAddress] = useStateIfMounted("");
+  const [city, setCity] = useStateIfMounted("");
+  const [postalCode, setPostalCode] = useStateIfMounted("");
+  const [region, setRegion] = useStateIfMounted("");
+  const [longitude, setLongitude] = useStateIfMounted("");
+  const [latitude, setLatitude] = useStateIfMounted("");
+  const [propertyImages, setPropertyImages] = useStateIfMounted([]);
+  const [propertyDocuments, setPropertyDocuments] = useStateIfMounted([]);
+  const [allotedToUsers, setAllotedToUsers] = useStateIfMounted([]);
+  const [loading, setLoading] = useStateIfMounted();
+  const [virtualTourType, setVirtualTourType] = useStateIfMounted("");
+  const [virtualTourVideo, setVirtualTourVideo] = useStateIfMounted("");
+  const [virtualTourUrl, setVirtualTourUrl] = useStateIfMounted("");
+  const [isChecked, setIsChecked] = useStateIfMounted(false);
+  const [map, setMap] = useStateIfMounted(null);
+  const [marker, setMarker] = useStateIfMounted(null);
+  const [propertySubTypeOptions, setPropertySubTypeOptions] =
+    useStateIfMounted(null);
+  const [deedTitle, setDeedTitle] = useStateIfMounted("");
+  const [users, setUsers] = useStateIfMounted([]);
   const history = useHistory();
 
   const loadUsersToAllocate = async () => {
@@ -60,8 +68,8 @@ export default function Add(props) {
     const formattedUsers = response.map((userDetail) => {
       return {
         label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-        value: userDetail.userId
-      }
+        value: userDetail.userId,
+      };
     });
     setUsers(formattedUsers);
 
@@ -163,14 +171,17 @@ export default function Add(props) {
     }
 
     setLoading(true);
-    const formResponse = apiUrl === "update" ? await PropertyService.update(formdata) : await PropertyService.add(formdata);       
+    const formResponse =
+      apiUrl === "update"
+        ? await PropertyService.update(formdata)
+        : await PropertyService.add(formdata);
     setLoading(false);
 
     if (formResponse?.error && formResponse?.message) {
       props.responseHandler(formResponse.message);
       return;
     }
-    
+
     if (formResponse) {
       setFeaturedImage(null);
       setVirtualTourVideo(null);
@@ -237,45 +248,48 @@ export default function Add(props) {
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
       await loadUsersToAllocate();
-    }
+    };
 
     fetchUsersToAllocate();
 
     if ((id && latitude && longitude) || !id) {
       const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: latitude ? parseFloat(latitude) : 24.466667, lng: longitude ? parseFloat(longitude) : 54.366669 },
+        center: {
+          lat: latitude ? parseFloat(latitude) : 24.466667,
+          lng: longitude ? parseFloat(longitude) : 54.366669,
+        },
         zoom: 17,
       });
-  
+
       setMap(map);
-  
+
       const marker = new window.google.maps.Marker({
         position: map.getCenter(),
         map,
         draggable: true,
       });
-  
+
       setMarker(marker);
-  
+
       const autocomplete = new window.google.maps.places.Autocomplete(
         document.getElementById("autocomplete")
       );
-  
+
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry) {
           window.alert("No details available for input: '" + place.name + "'");
           return;
         }
-  
+
         setAddress(place.formatted_address);
         setAddressFields(place);
         map.setCenter(place.geometry.location);
         map.setZoom(17);
-  
+
         marker.setPosition(place.geometry.location);
       });
-  
+
       marker.addListener("dragend", () => {
         const position = marker.getPosition();
         const geocoder = new window.google.maps.Geocoder();
@@ -323,9 +337,20 @@ export default function Add(props) {
           }
 
           if (response.productMetaTags.length > 0) {
-            response.productMetaTags.sort((a,b) => a.categoryField.id - b.categoryField.id);
+            response.productMetaTags.sort(
+              (a, b) => a.categoryField.id - b.categoryField.id
+            );
 
-            const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag, subTypeMetaTag, priceTypeMetaTag, deedTitleMetaTag } = setPropertyMetaData(response.productMetaTags);
+            const {
+              typeMetaTag,
+              categoryTypeMetaTag,
+              unitMetaTag,
+              areaMetaTag,
+              bedroomsMetaTag,
+              subTypeMetaTag,
+              priceTypeMetaTag,
+              deedTitleMetaTag,
+            } = setPropertyMetaData(response.productMetaTags);
             setPropertyType(typeMetaTag);
             setPropertyCategoryType(categoryTypeMetaTag);
             setUnit(unitMetaTag);
@@ -333,7 +358,7 @@ export default function Add(props) {
             setBedrooms(bedroomsMetaTag);
             setPropertySubType(subTypeMetaTag);
             setPriceType(priceTypeMetaTag);
-            setDeedTitle(deedTitleMetaTag)
+            setDeedTitle(deedTitleMetaTag);
           }
 
           if (response.productImages) {
@@ -344,12 +369,19 @@ export default function Add(props) {
             setPropertyDocuments(response.productDocuments);
           }
 
-          if (response?.productAllocations?.length > 0 && usersArray.length > 0) {
+          if (
+            response?.productAllocations?.length > 0 &&
+            usersArray.length > 0
+          ) {
             const newAllotedUsers = [];
-            response.productAllocations.forEach((productAllocation => {
-              newAllotedUsers.push(usersArray.find((user) => user.value == productAllocation.user.id));
-            }));
-            
+            response.productAllocations.forEach((productAllocation) => {
+              newAllotedUsers.push(
+                usersArray.find(
+                  (user) => user.value == productAllocation.user.id
+                )
+              );
+            });
+
             setAllotedToUsers(newAllotedUsers);
           }
         }
@@ -360,21 +392,29 @@ export default function Add(props) {
   }, [params.id]);
 
   useEffect(() => {
-    setPropertySubTypeOptions(propertyType?.value == 'residential' ? RESIDENTIAL_PROPERTY : COMMERCIAL_PROPERTY);
+    setPropertySubTypeOptions(
+      propertyType?.value == "residential"
+        ? RESIDENTIAL_PROPERTY
+        : COMMERCIAL_PROPERTY
+    );
   }, [propertyType]);
 
   return (
     <React.Fragment>
-      <form encType="multipart/form-data" onSubmit={handleSubmit} className="ltn__myaccount-tab-content-inner mb-50">
+      <form
+        encType="multipart/form-data"
+        onSubmit={handleSubmit}
+        className="ltn__myaccount-tab-content-inner mb-50"
+      >
         <h4 className="title-2">Property Description</h4>
         <div className="row mb-custom">
           <div className="col-md-6">
             <div className="input-item">
               <label>Property Type *</label>
               <div className="input-item">
-                <Select 
+                <Select
                   classNamePrefix="custom-select"
-                  options={PROPERTY_TYPES} 
+                  options={PROPERTY_TYPES}
                   onChange={(e) => setPropertyTypeHandler(e)}
                   value={propertyType}
                   required
@@ -400,9 +440,9 @@ export default function Add(props) {
             <div className="input-item">
               <label>Property Category Type *</label>
               <div className="input-item">
-                <Select 
+                <Select
                   classNamePrefix="custom-select"
-                  options={PROPERTY_CATEGORY_TYPES} 
+                  options={PROPERTY_CATEGORY_TYPES}
                   onChange={(e) => setPropertyCategoryTypeHandler(e)}
                   value={propertyCategoryType}
                   required
@@ -417,7 +457,7 @@ export default function Add(props) {
                 Road, SM1)
               </label>
               <input
-              className="mb-custom"
+                className="mb-custom"
                 type="text"
                 value={title}
                 placeholder="Property Name"
@@ -430,29 +470,27 @@ export default function Add(props) {
             <div className="input-item">
               <label>Description</label>
               <textarea
-              className="mb-custom"
+                className="mb-custom"
                 value={description}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
           </div>
-          {
-            userDetail && userDetail.agent.jobTitle === 'landlord' && (
-              <div className="col-md-12">
-                <div className="input-item">
-                  <label> Deed Title *</label>
-                  <input
-                    type="text"
-                    value={deedTitle}
-                    placeholder="Deed Title"
-                    onChange={(e) => setDeedTitle(e.target.value)}
-                    required
-                  />
-                </div>
+          {userDetail && userDetail.agent.jobTitle === "landlord" && (
+            <div className="col-md-12">
+              <div className="input-item">
+                <label> Deed Title *</label>
+                <input
+                  type="text"
+                  value={deedTitle}
+                  placeholder="Deed Title"
+                  onChange={(e) => setDeedTitle(e.target.value)}
+                  required
+                />
               </div>
-            )
-          }
+            </div>
+          )}
           <div className="col-md-12">
             <div className="input-item">
               <label>Price *</label>
@@ -466,20 +504,19 @@ export default function Add(props) {
               />
             </div>
           </div>
-          {
-            propertyCategoryType?.value === 'rent' && (
-              <div className="col-md-12">
-                <div className="input-item">
-                  <label>Price Type</label>
-                  <Select 
-                    classNamePrefix="custom-select"
-                    options={PRICE_TYPE} 
-                    onChange={(e) => setPriceType(e)}
-                    value={priceType}
-                    required
-                  />
-                </div>
+          {propertyCategoryType?.value === "rent" && (
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Price Type</label>
+                <Select
+                  classNamePrefix="custom-select"
+                  options={PRICE_TYPE}
+                  onChange={(e) => setPriceType(e)}
+                  value={priceType}
+                  required
+                />
               </div>
+            </div>
           )}
           <div className="col-md-12">
             <div className="input-item">
@@ -603,13 +640,11 @@ export default function Add(props) {
           </div>
           <div className="col-lg-12 mb-map">
             <div className="property-details-google-map mb-60">
-              {
-                ((id && latitude && longitude) || !id) ? (
-                  <div id="map" className="map" />
-                ) : (
-                  "Loading..."
-                )
-              }
+              {(id && latitude && longitude) || !id ? (
+                <div id="map" className="map" />
+              ) : (
+                "Loading..."
+              )}
             </div>
           </div>
           <div className="col-md-6">
@@ -652,59 +687,68 @@ export default function Add(props) {
             </div>
           </div>
         </div>
-        {
-          userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
-            <div className="row">
-              <div className="col-md-12">
-                <div className="input-item">
-                  <label>Allotted To</label>
-                  <div className="input-item ltn__z-index-99">
-                    <Select 
-                      classNamePrefix="custom-select"
-                      isMulti
-                      options={users} 
-                      onChange={(e) => setAllotedToUsers(e)}
-                      value={allotedToUsers}
-                    />
-                  </div>
+        {userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
+          <div className="row">
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Allotted To</label>
+                <div className="input-item ltn__z-index-99">
+                  <Select
+                    classNamePrefix="custom-select"
+                    isMulti
+                    options={users}
+                    onChange={(e) => setAllotedToUsers(e)}
+                    value={allotedToUsers}
+                  />
                 </div>
               </div>
-            </div> 
-          )
-        }
-        
+            </div>
+          </div>
+        )}
+
         <br />
         <div className="row">
           <div className="col-md-12">
-          {
-            !id && (
-              <div className="alert alert-warning mb-btn" role="alert"> Add Images/Documents by clicking Next button </div>
-            )
-          }
-          <button
-            disabled={loading}
-            type="submit"
-            className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
-          >
-            {loading ? (
-              <div className="lds-ring">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+            {!id && (
+              <div className="alert alert-warning mb-btn" role="alert">
+                {" "}
+                Add Images/Documents by clicking Next button{" "}
               </div>
-            ) : (
-              id ? "Update Property" : "Next"
             )}
-          </button>
-        </div>
+            <button
+              disabled={loading}
+              type="submit"
+              className="btn theme-btn-1 btn-effect-1 text-uppercase ltn__z-index-m-1"
+            >
+              {loading ? (
+                <div className="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : id ? (
+                "Update Property"
+              ) : (
+                "Next"
+              )}
+            </button>
+          </div>
         </div>
       </form>
 
       {id && (
         <div className="row mb-50">
-          <UploadPropertyImage id={id} images={propertyImages} responseHandler={props.responseHandler} />
-          <UploadPropertyDocument id={id} documents={propertyDocuments} responseHandler={props.responseHandler} />
+          <UploadPropertyImage
+            id={id}
+            images={propertyImages}
+            responseHandler={props.responseHandler}
+          />
+          <UploadPropertyDocument
+            id={id}
+            documents={propertyDocuments}
+            responseHandler={props.responseHandler}
+          />
         </div>
       )}
     </React.Fragment>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
-import { 
-  checkTimeOver, 
-  findCurrentTimeSlot, 
-  formatSlotFromTime
+import {
+  checkTimeOver,
+  findCurrentTimeSlot,
+  formatSlotFromTime,
 } from "../../../utils";
 import { useLocation } from "react-router-dom";
 import Select from "react-select";
@@ -14,13 +14,17 @@ import AvailabilityService from "../../../services/agent/availability";
 
 export default function Add(props) {
   const [defaultPropertyOptions, setDefaultPropertyOptions] = useState([]);
-  const [selectedAllocatedProperty, setSelectedAllocatedProperty] = useState([]);
-  const [selectedAllocatedPropertyAgent, setSelectedAllocatedPropertyAgent] = useState(0);
+  const [selectedAllocatedProperty, setSelectedAllocatedProperty] = useState(
+    []
+  );
+  const [selectedAllocatedPropertyAgent, setSelectedAllocatedPropertyAgent] =
+    useState(0);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [timeslots, setTimeslots] = useState([]);
   const [loading, setLoading] = useState();
-  const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useState(false);
+  const [anySlotAvailableForToday, setAnySlotAvailableForToday] =
+    useState(false);
   const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
   const [users, setUsers] = useState([]);
   const location = useLocation();
@@ -60,7 +64,9 @@ export default function Add(props) {
     }
 
     if (!response) {
-      props.responseHandler([`Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to staff.`]);
+      props.responseHandler([
+        `Unfortunately, ${process.env.REACT_APP_AGENT_ENTITY_LABEL} is not available at this timeslot. Please choose another timeslot or assign it to staff.`,
+      ]);
     }
   };
 
@@ -71,7 +77,7 @@ export default function Add(props) {
       property: selectedAllocatedProperty.value,
       appointmentDate: date,
       timeSlotId: time,
-      allotedAgent: selectedAllocatedAgent.value
+      allotedAgent: selectedAllocatedAgent.value,
     };
 
     setLoading(true);
@@ -98,12 +104,14 @@ export default function Add(props) {
 
     const usersToAllocate = await UserService.toAllocate(e.userId);
     if (usersToAllocate?.length > 0) {
-      setUsers(usersToAllocate.map((userDetail) => {
-        return {
-          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId
-        }
-      }));
+      setUsers(
+        usersToAllocate.map((userDetail) => {
+          return {
+            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+            value: userDetail.userId,
+          };
+        })
+      );
     }
 
     const response = await AvailabilityService.listSlots({ agent: e.userId });
@@ -117,8 +125,8 @@ export default function Add(props) {
         label: timeSlot.textShow,
         value: timeSlot.id,
         fromTime: timeSlot.fromTime,
-        toTime: timeSlot.toTime
-      }
+        toTime: timeSlot.toTime,
+      };
     });
 
     setTimeslots(timeSlotsResponse);
@@ -129,20 +137,22 @@ export default function Add(props) {
     const nextSlot = selectNextSlot();
     if (!nextSlot) {
       props.responseHandler(["Slot is not available, select another slot"]);
-      
+
       return;
     }
 
     setTime(nextSlot.value);
-  }
+  };
 
   const printSelectedTime = () => {
     const selectedTime = timeslots.find((slot) => slot.value === time);
-    return selectedTime?.fromTime  ? selectedTime.fromTime : "";
+    return selectedTime?.fromTime ? selectedTime.fromTime : "";
   };
 
   const selectNextSlot = (currentTimeSlots) => {
-    const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
+    const availabilityTimeSlots = currentTimeSlots
+      ? currentTimeSlots
+      : timeslots;
     const now = new Date();
 
     // Format the date and time values to be used as input values
@@ -150,14 +160,20 @@ export default function Add(props) {
     setDate(dateValue);
 
     const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
-    if (currentSlot) { 
-      const foundSlot = availabilityTimeSlots.find((time) => time.value === currentSlot.value);
+    if (currentSlot) {
+      const foundSlot = availabilityTimeSlots.find(
+        (time) => time.value === currentSlot.value
+      );
 
       // check if current slot expired
       const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
 
       // if current slot expired, then select next slot
-      const nextSlot = !isTimeExpired ? foundSlot : availabilityTimeSlots.find((time) => time.value === currentSlot.value + 1);
+      const nextSlot = !isTimeExpired
+        ? foundSlot
+        : availabilityTimeSlots.find(
+            (time) => time.value === currentSlot.value + 1
+          );
 
       if (!nextSlot) {
         setAnySlotAvailableForToday(false);
@@ -169,7 +185,7 @@ export default function Add(props) {
     }
 
     return false;
-  }
+  };
 
   const setDateHandler = (e) => {
     const now = new Date();
@@ -179,15 +195,15 @@ export default function Add(props) {
       // Format the date and time values to be used as input values
       dateValue = now.toISOString().slice(0, 10);
     }
-    
+
     setDate(dateValue);
-  }
+  };
 
   useEffect(() => {
     if (date && time) {
       const callCheckAvailability = async () => {
         await checkAvailability();
-      }
+      };
 
       callCheckAvailability();
     }
@@ -195,7 +211,7 @@ export default function Add(props) {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const idParam = searchParams.get('id');
+    const idParam = searchParams.get("id");
 
     if (idParam) {
       const loadUserSelectedProperty = async () => {
@@ -209,11 +225,10 @@ export default function Add(props) {
           setDefaultPropertyOptions([defaultOption]);
           selectedAllocatedPropertyHandler(defaultOption);
         }
-      }
-  
+      };
+
       loadUserSelectedProperty();
     }
-    
   }, [location]);
 
   return (
@@ -232,7 +247,7 @@ export default function Add(props) {
                     cacheOptions
                     loadOptions={loadProperties}
                     defaultOptions={defaultPropertyOptions}
-                    onChange={(e) => selectedAllocatedPropertyHandler(e) }
+                    onChange={(e) => selectedAllocatedPropertyHandler(e)}
                     value={selectedAllocatedProperty}
                     placeholder="Type to search"
                     required
@@ -241,7 +256,9 @@ export default function Add(props) {
               </div>
               <div className="col-md-4">
                 <button
-                  disabled={!(anySlotAvailableForToday && selectedAllocatedProperty)}
+                  disabled={
+                    !(anySlotAvailableForToday && selectedAllocatedProperty)
+                  }
                   type="button"
                   className="btn theme-btn-2 request-now-btn"
                   onClick={handleButtonClick}
@@ -270,23 +287,22 @@ export default function Add(props) {
                     type="text"
                     placeholder="Choose time"
                     readOnly
-                    value={ printSelectedTime() }
+                    value={printSelectedTime()}
                   />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="input-item">
                   <label>Assign To Staff</label>
-                  <Select 
+                  <Select
                     classNamePrefix="custom-select"
-                    options={users} 
+                    options={users}
                     onChange={(e) => setSelectedAllocatedAgent(e)}
                     value={selectedAllocatedAgent}
                   />
                 </div>
               </div>
               <div className="btn-wrapper">
-                
                 <button
                   type="submit"
                   className="btn theme-btn-1 btn-effect-1 text-uppercase"
@@ -313,7 +329,12 @@ export default function Add(props) {
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
@@ -323,23 +344,40 @@ export default function Add(props) {
                     <div className="row">
                       <div className="col-12">
                         <div className="modalHeading">
-                          <h2>Select Time slots - { date }</h2>
+                          <h2>Select Time slots - {date}</h2>
                         </div>
                         <div className="row">
-                          {
-                            timeslots && timeslots.map((item, index) => {
+                          {timeslots &&
+                            timeslots.map((item, index) => {
                               return (
-                                <div className="col-4 col-sm-3 px-1 py-1" key={index}>
-                                  <div onClick={() => setTime(item.value)} className={ time === item.value ? "bgNew" : "timeCards" }>
-                                    <p>{ item?.fromTime ? formatSlotFromTime(item.fromTime) : "-" }</p>
+                                <div
+                                  className="col-4 col-sm-3 px-1 py-1"
+                                  key={index}
+                                >
+                                  <div
+                                    onClick={() => setTime(item.value)}
+                                    className={
+                                      time === item.value
+                                        ? "bgNew"
+                                        : "timeCards"
+                                    }
+                                  >
+                                    <p>
+                                      {item?.fromTime
+                                        ? formatSlotFromTime(item.fromTime)
+                                        : "-"}
+                                    </p>
                                   </div>
                                 </div>
                               );
-                            })
-                          }
+                            })}
                         </div>
                         <div className="modalBtn">
-                          <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                          <button
+                            type="button"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          >
                             Close
                           </button>
                         </div>

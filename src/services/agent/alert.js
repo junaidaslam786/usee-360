@@ -1,4 +1,4 @@
-import { httpGet } from '../../rest-api';
+import { httpGet } from "../../rest-api";
 
 const apiUrlPrefix = "agent/alert";
 
@@ -8,9 +8,11 @@ const AlertService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to list alerts, please try again later"];
+        response.error.message = [
+          "Unable to list alerts, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -22,9 +24,11 @@ const AlertService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to list alert count, please try again later"];
+        response.error.message = [
+          "Unable to list alert count, please try again later",
+        ];
       }
-      
+
       return response;
     }
 

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { USER_ALERT_MODE, USER_ALERT_TYPE } from "../../constants";
-import { 
-  formatCreatedAtTimestamp, formatPrice,
-} from "../../utils";
+import { formatCreatedAtTimestamp, formatPrice } from "../../utils";
 import ViewAppointment from "./appointments/view-appointment";
 import AlertService from "../../services/agent/alert";
 import PropertyService from "../../services/agent/property";
 import AppointmentService from "../../services/agent/appointment";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Alerts(props) {
-  const [list, setList] = useState([]);
+  const [list, setList] = useStateIfMounted([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const [offerView, setOfferView] = useState({});
   const openViewModal = useRef(null);
@@ -21,46 +20,51 @@ export default function Alerts(props) {
     let text = "";
     const customerName = `<b>${alert.customerAlertUser.firstName} ${alert.customerAlertUser.lastName}</b>`;
     const productTitle = `<b>"${alert.product.title}"</b>`;
-  
-    switch(alert.alertMode) {
-      case USER_ALERT_MODE.WISHLIST: 
+
+    switch (alert.alertMode) {
+      case USER_ALERT_MODE.WISHLIST:
         text = `${customerName} removed the property ${productTitle} from wishlist`;
         if (alert.alertType == USER_ALERT_TYPE.WISHLIST_ADDED) {
           text = `${customerName} added the property ${productTitle} to wishlist`;
         }
-        
+
         break;
-      case USER_ALERT_MODE.INTEREST: 
+      case USER_ALERT_MODE.INTEREST:
         text = `${customerName} is interested in property ${productTitle}`;
         if (alert.alertType == USER_ALERT_TYPE.NOT_INTERESTED) {
           text = `${customerName} is not interested in property ${productTitle}`;
         }
 
         break;
-      case USER_ALERT_MODE.OFFER: 
+      case USER_ALERT_MODE.OFFER:
         text = `${customerName} made an offer to the property ${productTitle}`;
         if (alert.alertType == USER_ALERT_TYPE.OFFER_DELETED) {
           text = `${customerName} has deleted the offer of the property ${productTitle}`;
         }
 
         break;
-      case USER_ALERT_MODE.APPOINTMENT: 
+      case USER_ALERT_MODE.APPOINTMENT:
         text = `${customerName} made an appointment for the property ${productTitle}`;
 
         break;
-      case USER_ALERT_MODE.SNAGLIST: 
+      case USER_ALERT_MODE.SNAGLIST:
         text = `${customerName} has updated the snaglist for the property ${productTitle}`;
         if (alert.alertType == USER_ALERT_TYPE.SNAGLIST_APPROVED) {
           text = `${customerName} has approved the snaglist for the property ${productTitle}`;
         }
-        
+
         break;
       default:
         break;
     }
-    
-    return <p onClick={() => handleAlertClick(alert)} dangerouslySetInnerHTML={{ __html: text }} />;
-  }
+
+    return (
+      <p
+        onClick={() => handleAlertClick(alert)}
+        dangerouslySetInnerHTML={{ __html: text }}
+      />
+    );
+  };
 
   const handleAlertClick = async (alert) => {
     if (alert.alertMode === USER_ALERT_MODE.OFFER) {
@@ -74,7 +78,7 @@ export default function Alerts(props) {
     if (alert.alertMode === USER_ALERT_MODE.SNAGLIST) {
       history.push(`/agent/property-details/${alert.productId}`);
     }
-  }
+  };
 
   const handleViewOfferButtonClick = async (id) => {
     if (id) {
@@ -108,10 +112,8 @@ export default function Alerts(props) {
         props.responseHandler(response.message);
         return;
       }
-
       setList(response);
     };
-
     fetchAllAlerts();
   }, []);
 
@@ -129,12 +131,14 @@ export default function Alerts(props) {
                     <i className="fa-solid fa-bell" />
                   </div>
                   <div className="popular-post-widget-brief">
-                    { formatAlertText(element) }
+                    {formatAlertText(element)}
                     <div className="ltn__blog-meta">
                       <ul>
                         <li className="ltn__blog-date">
                           <i className="far fa-calendar-alt" />
-                          { element?.createdAt ? formatCreatedAtTimestamp(element.createdAt) : "-" }
+                          {element?.createdAt
+                            ? formatCreatedAtTimestamp(element.createdAt)
+                            : "-"}
                         </li>
                       </ul>
                     </div>
@@ -150,7 +154,11 @@ export default function Alerts(props) {
         data-bs-toggle="modal"
         data-bs-target="#appointment-details"
       ></span>
-      <ViewAppointment target="appointment-details" appointment={appointmentView}/>
+      <ViewAppointment
+        target="appointment-details"
+        appointment={appointmentView}
+      />
+
       <span
         ref={openOfferModal}
         data-bs-toggle="modal"
@@ -180,17 +188,16 @@ export default function Alerts(props) {
                             <thead>
                               <tr>
                                 <th scope="col">Amount</th>
-                                <th scope="col">{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } comment</th>
+                                <th scope="col">
+                                  {process.env.REACT_APP_CUSTOMER_ENTITY_LABEL}{" "}
+                                  comment
+                                </th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr>
-                                <td>
-                                  { formatPrice(offerView.amount) }
-                                </td>
-                                <td>
-                                  { offerView.notes }
-                                </td>
+                                <td>{formatPrice(offerView.amount)}</td>
+                                <td>{offerView.notes}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -199,9 +206,11 @@ export default function Alerts(props) {
                     </div>
                     <div className="row mt-20">
                       <div className="col-lg-4">
-                        <Link to={`/agent/property-details/${offerView?.productId}`}>
-                          <button 
-                            className="btn theme-btn-1 btn-effect-1 text-uppercase" 
+                        <Link
+                          to={`/agent/property-details/${offerView?.productId}`}
+                        >
+                          <button
+                            className="btn theme-btn-1 btn-effect-1 text-uppercase"
                             data-bs-dismiss="modal"
                           >
                             View Property

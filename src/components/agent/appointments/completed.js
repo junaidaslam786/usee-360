@@ -1,34 +1,47 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import Modal from 'react-modal';
-import { 
+import Modal from "react-modal";
+import {
   getUserDetailsFromJwt,
   formatAppointmentDate,
-  convertGmtToTime
+  convertGmtToTime,
 } from "../../../utils";
 import ViewAppointment from "./view-appointment";
 import AppointmentService from "../../../services/agent/appointment";
 import { APPOINTMENT_STATUS, USER_TYPE } from "../../../constants";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Completed(props) {
-  const [currentPage, setCurrentPage] = useState();
-  const [totalPages, setTotalPages] = useState();
-  const [list, setList] = useState([]);
+  const [currentPage, setCurrentPage] = useStateIfMounted();
+  const [totalPages, setTotalPages] = useStateIfMounted();
+  const [list, setList] = useStateIfMounted([]);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState('');
-  const [notes, setNotes] = useState('');
+  const [selectedAppointment, setSelectedAppointment] = useState("");
+  const [notes, setNotes] = useState("");
   const [appointmentView, setAppointmentView] = useState(null);
   const userDetail = getUserDetailsFromJwt();
   const [showNotesList, setShowNotesList] = useState(false);
   const [notesList, setNotesList] = useState([]);
   const openViewModal = useRef(null);
-  
+
   const loadAllList = async (page = 1) => {
-    let appendQuery = props?.selectedFilter ? `&filter=${props?.selectedFilter}`: "";
-    appendQuery = `${appendQuery}${(props?.startDate && props?.endDate) ? `&startDate=${props.startDate}&endDate=${props.endDate}`: ""}`;
-    appendQuery = `${appendQuery}${props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""}`;
-    
-    const response = await AppointmentService.list({ type: APPOINTMENT_STATUS.COMPLETED, page, appendQuery });
+    let appendQuery = props?.selectedFilter
+      ? `&filter=${props?.selectedFilter}`
+      : "";
+    appendQuery = `${appendQuery}${
+      props?.startDate && props?.endDate
+        ? `&startDate=${props.startDate}&endDate=${props.endDate}`
+        : ""
+    }`;
+    appendQuery = `${appendQuery}${
+      props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
+    }`;
+
+    const response = await AppointmentService.list({
+      type: APPOINTMENT_STATUS.COMPLETED,
+      page,
+      appendQuery,
+    });
     if (response?.data) {
       setList(response.data);
       setCurrentPage(parseInt(response.page));
@@ -51,7 +64,7 @@ export default function Completed(props) {
       userId: userDetail.id,
       userType: USER_TYPE.AGENT,
       id: selectedAppointment,
-      notes
+      notes,
     };
 
     const formResponse = await AppointmentService.addNote(requestData);
@@ -61,20 +74,20 @@ export default function Completed(props) {
     }
 
     props.responseHandler("Note added successfully.", true);
-    setNotes('');
-    
+    setNotes("");
+
     await loadAllList();
     setIsNotesModalOpen(false);
-  }
+  };
 
   const handleNotesModalCancel = () => {
     setIsNotesModalOpen(false);
-  }
+  };
 
   const handleNotesModal = (id) => {
     setSelectedAppointment(id);
     setIsNotesModalOpen(true);
-  }
+  };
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
@@ -98,10 +111,14 @@ export default function Completed(props) {
                 <div className="ltn__my-properties-img go-top center ltn__my-properties-imgNew">
                   <div>
                     <h1 className="appointment-date mb-1 text-center">
-                      { element?.appointmentDate ? formatAppointmentDate(element.appointmentDate, "D") : "-" }
+                      {element?.appointmentDate
+                        ? formatAppointmentDate(element.appointmentDate, "D")
+                        : "-"}
                     </h1>
                     <h3 className="appointment-date mb-0 text-center">
-                      { element?.appointmentDate ? formatAppointmentDate(element.appointmentDate, "MMM") : "-" }
+                      {element?.appointmentDate
+                        ? formatAppointmentDate(element.appointmentDate, "MMM")
+                        : "-"}
                     </h3>
                   </div>
                 </div>
@@ -113,12 +130,27 @@ export default function Completed(props) {
                     </h6>
                     <small>
                       <i className="icon-clock" />{" "}
-                      { element?.appointmentTimeGmt ? convertGmtToTime(element.appointmentTimeGmt) : "-" }
+                      {element?.appointmentTimeGmt
+                        ? convertGmtToTime(element.appointmentTimeGmt)
+                        : "-"}
                     </small>
                   </div>
                   <div className="mt-2 ms-4">
-                    <button className="status-buttons" onClick={() => handleNotesModal(element.id)}>Add Notes</button>
-                    <button className="status-buttons ms-1" onClick={() => {setShowNotesList(true); setNotesList(element.appointmentNotes);}}>Show Notes</button>
+                    <button
+                      className="status-buttons"
+                      onClick={() => handleNotesModal(element.id)}
+                    >
+                      Add Notes
+                    </button>
+                    <button
+                      className="status-buttons ms-1"
+                      onClick={() => {
+                        setShowNotesList(true);
+                        setNotesList(element.appointmentNotes);
+                      }}
+                    >
+                      Show Notes
+                    </button>
                   </div>
                 </div>
               </div>
@@ -136,58 +168,57 @@ export default function Completed(props) {
           ))
         )}
 
-        {
-          list && list.length > 0 && (
-            <div className="ltn__pagination-area text-center">
-              <div className="ltn__pagination">
-                <ul>
-                  <li>
-                    <Link
-                      to="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (currentPage !== 1) {
-                          loadAllList(currentPage - 1);
-                        }
-                      }}
+        {list && list.length > 0 && (
+          <div className="ltn__pagination-area text-center">
+            <div className="ltn__pagination">
+              <ul>
+                <li>
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage !== 1) {
+                        loadAllList(currentPage - 1);
+                      }
+                    }}
+                  >
+                    <i className="fas fa-angle-double-left" />
+                  </Link>
+                </li>
+                {Array.from(Array(totalPages), (e, i) => {
+                  return (
+                    <li
+                      key={i}
+                      className={currentPage == i + 1 ? "active" : null}
                     >
-                      <i className="fas fa-angle-double-left" />
-                    </Link>
-                  </li>
-                  {Array.from(Array(totalPages), (e, i) => {
-                    return (
-                      <li
-                        key={i}
-                        className={currentPage == i + 1 ? "active" : null}
+                      <Link
+                        to="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          loadAllList(i + 1);
+                        }}
                       >
-                        <Link
-                          to="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            loadAllList(i + 1);
-                          }}
-                        >
-                          {i + 1}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                  <li>
-                    <Link
-                      to="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (currentPage !== totalPages) {
-                          loadAllList(currentPage + 1);
-                        }
-                      }}
-                    >
-                      <i className="fas fa-angle-double-right" />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+                        {i + 1}
+                      </Link>
+                    </li>
+                  );
+                })}
+                <li>
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage !== totalPages) {
+                        loadAllList(currentPage + 1);
+                      }
+                    }}
+                  >
+                    <i className="fas fa-angle-double-right" />
+                  </Link>
+                </li>
+              </ul>
             </div>
+          </div>
         )}
       </div>
 
@@ -196,7 +227,10 @@ export default function Completed(props) {
         data-bs-toggle="modal"
         data-bs-target="#completed-appointment-details"
       ></span>
-      <ViewAppointment target="completed-appointment-details" appointment={appointmentView}/>
+      <ViewAppointment
+        target="completed-appointment-details"
+        appointment={appointmentView}
+      />
       <Modal
         isOpen={isNotesModalOpen}
         onRequestClose={() => setIsNotesModalOpen(false)}
@@ -206,12 +240,19 @@ export default function Completed(props) {
       >
         <h2>Add some notes to remember</h2>
         <label>Add Note</label>
-        <textarea
-          onChange={(e) => setNotes(e.target.value)}
-          value={notes}
-        />
-        <button className="btn theme-btn-1 modal-btn-custom" onClick={handleNotesModalSubmit}>Submit</button>
-        <button className="btn theme-btn-2 modal-btn-custom" onClick={handleNotesModalCancel}>Cancel</button>
+        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
+        <button
+          className="btn theme-btn-1 modal-btn-custom"
+          onClick={handleNotesModalSubmit}
+        >
+          Submit
+        </button>
+        <button
+          className="btn theme-btn-2 modal-btn-custom"
+          onClick={handleNotesModalCancel}
+        >
+          Cancel
+        </button>
       </Modal>
       <Modal
         isOpen={showNotesList}
@@ -222,13 +263,22 @@ export default function Completed(props) {
       >
         <h2>Notes</h2>
         <div className="notes-scrollable-container">
-        {notesList.length ? (
-          notesList.map((element, i) => (
-            <p key={i} className="notes-list">{element.notes}</p>
-          ))
-        ) : <span></span>}
+          {notesList.length ? (
+            notesList.map((element, i) => (
+              <p key={i} className="notes-list">
+                {element.notes}
+              </p>
+            ))
+          ) : (
+            <span></span>
+          )}
         </div>
-        <button className="theme-btn-2 modal-btn-custom" onClick={() => setShowNotesList(false)}>Close</button>
+        <button
+          className="theme-btn-2 modal-btn-custom"
+          onClick={() => setShowNotesList(false)}
+        >
+          Close
+        </button>
       </Modal>
     </React.Fragment>
   );

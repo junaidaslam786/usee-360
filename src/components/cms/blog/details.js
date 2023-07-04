@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CmsService from "../../../services/cms";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function BlogDetails() {
   let publicUrl = process.env.REACT_APP_PUBLIC_URL + "/";
 
-  const [blog, setBlog] = useState({});
+  const [blog, setBlog] = useStateIfMounted({});
   const params = useParams();
 
   const loadBlog = async () => {
     const formResponse = await CmsService.detail(params.id);
     setBlog(formResponse);
-  }
+  };
 
   useEffect(() => {
     loadBlog();
@@ -26,7 +27,14 @@ export default function BlogDetails() {
               <div className="ltn__page-details-inner ltn__blog-details-inner">
                 <div className="ltn__blog-meta">
                   <div className="ltn__blog-img">
-                    <img src={ process.env.REACT_APP_API_URL + "/" + blog.featuredImageFile } alt="#" />
+                    <img
+                      src={
+                        process.env.REACT_APP_API_URL +
+                        "/" +
+                        blog.featuredImageFile
+                      }
+                      alt="#"
+                    />
                   </div>
                 </div>
                 <h2 className="ltn__blog-title">{blog.title}</h2>
@@ -46,13 +54,17 @@ export default function BlogDetails() {
                   </ul>
                 </div>
                 <p dangerouslySetInnerHTML={{ __html: blog.description }} />
-                {
-                  blog?.file && (
-                    <div className="row">
-                      <a href={process.env.REACT_APP_API_URL + "/" + blog.file} target="blank" className="btn theme-btn-1 mb-3 w-25">Download</a>
-                    </div>
-                  )
-                }
+                {blog?.file && (
+                  <div className="row">
+                    <a
+                      href={process.env.REACT_APP_API_URL + "/" + blog.file}
+                      target="blank"
+                      className="btn theme-btn-1 mb-3 w-25"
+                    >
+                      Download
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

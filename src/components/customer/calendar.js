@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import ViewAppointment from "./appointments/view-appointment";
-import { 
-  convertGmtToTime 
-} from "../../utils";
+import { convertGmtToTime } from "../../utils";
 import AppointmentService from "../../services/customer/appointment";
 import AvailabilityService from "../../services/agent/availability";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Calendar() {
-  const [userAppointments, setUserAppointments] = useState([]);
-  const [appointmentView, setAppointmentView] = useState(null);
+  const [userAppointments, setUserAppointments] = useStateIfMounted([]);
+  const [appointmentView, setAppointmentView] = useStateIfMounted(null);
   const openViewModal = useRef(null);
 
   const loadAllList = async () => {
@@ -20,13 +19,25 @@ export default function Calendar() {
     if (response?.data) {
       const agentTimeSlots = await AvailabilityService.listSlots({ all: true });
       let appointmentSlot;
-      const calendarData = response.data.map(appointment => {
-        appointmentSlot = agentTimeSlots.find((slot) => slot.fromTime === convertGmtToTime(appointment.appointmentTimeGmt, "HH:mm:ss"));
-        return { 
+      const calendarData = response.data.map((appointment) => {
+        appointmentSlot = agentTimeSlots.find(
+          (slot) =>
+            slot.fromTime ===
+            convertGmtToTime(appointment.appointmentTimeGmt, "HH:mm:ss")
+        );
+        return {
           id: appointment?.id,
-          start: `${appointment.appointmentDate}T${appointmentSlot?.fromTime ? appointmentSlot.fromTime : convertGmtToTime(appointment.appointmentTimeGmt)}`,
-          end: `${appointment.appointmentDate}T${appointmentSlot?.toTime ? appointmentSlot.toTime : convertGmtToTime(appointment.appointmentTimeGmt)}`,
-        }
+          start: `${appointment.appointmentDate}T${
+            appointmentSlot?.fromTime
+              ? appointmentSlot.fromTime
+              : convertGmtToTime(appointment.appointmentTimeGmt)
+          }`,
+          end: `${appointment.appointmentDate}T${
+            appointmentSlot?.toTime
+              ? appointmentSlot.toTime
+              : convertGmtToTime(appointment.appointmentTimeGmt)
+          }`,
+        };
       });
 
       setUserAppointments(calendarData);
@@ -42,7 +53,7 @@ export default function Calendar() {
   }, []);
 
   const handleEventClick = (info) => {
-    handleViewAppointmentButtonClick(info.event.id)
+    handleViewAppointmentButtonClick(info.event.id);
   };
 
   const handleViewAppointmentButtonClick = async (id) => {
@@ -60,21 +71,30 @@ export default function Calendar() {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth, timeGridWeek, timeGridDay'
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth, timeGridWeek, timeGridDay",
         }}
         initialView="timeGridDay"
         events={userAppointments}
-        eventColor={'#00c800'}
+        eventColor={"#00c800"}
         eventContent={(eventInfo) => {
           const eventData = eventInfo.event;
-          const startTime= eventData.start?.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit' });
-          const endTime= eventData.end?.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit' });
+          const startTime = eventData.start?.toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const endTime = eventData.end?.toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+          });
           return (
             <div>
-              <p className="text_dark_blue"
-              >{startTime}-{endTime}</p>
+              <p className="text_dark_blue">
+                {startTime}-{endTime}
+              </p>
             </div>
           );
         }}
@@ -85,7 +105,10 @@ export default function Calendar() {
         data-bs-toggle="modal"
         data-bs-target="#appointment-details"
       ></span>
-      <ViewAppointment target="appointment-details" appointment={appointmentView}/>
+      <ViewAppointment
+        target="appointment-details"
+        appointment={appointmentView}
+      />
     </React.Fragment>
   );
 }

@@ -1,6 +1,6 @@
 import { httpDelete, httpGet, httpPost, httpPut } from "../rest-api";
 
-const apiUrlPrefix = 'user';
+const apiUrlPrefix = "user";
 
 const ProfileService = {
   getProfile: async () => {
@@ -8,9 +8,11 @@ const ProfileService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to get profile, please try again later"];
+        response.error.message = [
+          "Unable to get profile, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -22,9 +24,11 @@ const ProfileService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update profile, please try again later"];
+        response.error.message = [
+          "Unable to update profile, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -36,13 +40,19 @@ const ProfileService = {
     formdata.append("current", currentPassword);
     formdata.append("password", newPassword);
 
-    const response = await httpPut(`${apiUrlPrefix}/update-password`, formdata, true);
+    const response = await httpPut(
+      `${apiUrlPrefix}/update-password`,
+      formdata,
+      true
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update password, please try again later"];
+        response.error.message = [
+          "Unable to update password, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -53,54 +63,84 @@ const ProfileService = {
     let formdata = new FormData();
     formdata.append("timezone", timezone);
 
-    const response = await httpPut(`${apiUrlPrefix}/update-timezone`, formdata, true);
+    const response = await httpPut(
+      `${apiUrlPrefix}/update-timezone`,
+      formdata,
+      true
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update timezone, please try again later"];
+        response.error.message = [
+          "Unable to update timezone, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status && response.status !== 200) {
-      return { error: true, message: ["Unable to update timezone, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to update timezone, please try again later"],
+      };
     }
 
     return response.data;
   },
 
   uploadCallBackgroundImage: async (reqBody) => {
-    const response = await httpPost(`${apiUrlPrefix}/call-background-image`, reqBody, true);
+    const response = await httpPost(
+      `${apiUrlPrefix}/call-background-image`,
+      reqBody,
+      true
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to upload call background images, please try again later"];
+        response.error.message = [
+          "Unable to upload call background images, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to upload call background images, please try again later"] };
+      return {
+        error: true,
+        message: [
+          "Unable to upload call background images, please try again later",
+        ],
+      };
     }
 
     return response.data;
   },
 
   deleteCallBackgroundImage: async (reqBody) => {
-    const response = await httpDelete(`${apiUrlPrefix}/call-background-image`, reqBody);
+    const response = await httpDelete(
+      `${apiUrlPrefix}/call-background-image`,
+      reqBody
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to delete call background image, please try again later"];
+        response.error.message = [
+          "Unable to delete call background image, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to delete call background image, please try again later"] };
+      return {
+        error: true,
+        message: [
+          "Unable to delete call background image, please try again later",
+        ],
+      };
     }
 
     return response.data;

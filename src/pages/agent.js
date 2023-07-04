@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import InsideNavbar from "../components/global/inside-navbar";
 import PageHeader from "../components/global/header";
 import MyProfile from "../components/agent/profile/profile";
@@ -20,108 +19,111 @@ import { USER_TYPE } from "../constants";
 import ResponseHandler from "../components/partial/response-handler";
 import AgentLayout from "../components/global/layout/agent";
 import { setResponseHandler } from "../utils";
-import { useParams } from 'react-router';
+import { useParams } from "react-router";
 
 export default function AgentPages({ page }) {
-    const { id } = useParams();
-    
-    const [responseMessage, setResponseMessage] = useState();
+  const { id } = useParams();
 
-    const setResponseMessageHandler = (response, isSuccess = false) => {
-        setResponseMessage(setResponseHandler(response, isSuccess));
-    }
+  const [responseMessage, setResponseMessage] = useState();
 
-    let pageTitle;
-    let ComponentToRender;
-    let componentProps = {
-        responseHandler: setResponseMessageHandler
-    };
+  const setResponseMessageHandler = (response, isSuccess = false) => {
+    setResponseMessage(setResponseHandler(response, isSuccess));
+  };
 
-    switch (page) {
-        case "dashboard":
-            pageTitle = "Dashboard";
-            ComponentToRender = Dashboard;
-            componentProps.type = USER_TYPE.AGENT;
-            break;
+  let pageTitle;
+  let ComponentToRender;
+  let componentProps = {
+    responseHandler: setResponseMessageHandler,
+  };
 
-        case "add-property":
-            pageTitle = "Add Property";
-            ComponentToRender = AddProperty;
-            break;
+  switch (page) {
+    case "dashboard":
+      pageTitle = "Dashboard";
+      ComponentToRender = Dashboard;
+      componentProps.type = USER_TYPE.AGENT;
+      break;
 
-        case "edit-property":
-            pageTitle = "Edit Property";
-            ComponentToRender = AddProperty;
-            break;
+    case "add-property":
+      pageTitle = "Add Property";
+      ComponentToRender = AddProperty;
+      break;
 
-        case "property-details":
-            pageTitle = "Property Details";
-            ComponentToRender = PropertyDetail;
-            break;
+    case "edit-property":
+      pageTitle = "Edit Property";
+      ComponentToRender = AddProperty;
+      break;
 
-        case "properties":
-            pageTitle = "My Properties";
-            ComponentToRender = MyProperties;
-            break;
+    case "property-details":
+      pageTitle = "Property Details";
+      ComponentToRender = PropertyDetail;
+      break;
 
-        case "add-appointment":
-            pageTitle = "Add Appointment";
-            ComponentToRender = AddAppointment;
-            break;
+    case "properties":
+      pageTitle = "My Properties";
+      ComponentToRender = MyProperties;
+      break;
 
-        case "appointments":
-            pageTitle = "My Appointments";
-            ComponentToRender = MyAppointments;
-            break;
+    case "add-appointment":
+      pageTitle = "Add Appointment";
+      ComponentToRender = AddAppointment;
+      break;
 
-        case "availability":
-            pageTitle = "My Availability";
-            ComponentToRender = Availability;
-            break;
+    case "appointments":
+      pageTitle = "My Appointments";
+      ComponentToRender = MyAppointments;
+      break;
 
-        case "calendar":
-            pageTitle = "My Calendar";
-            ComponentToRender = AgentCalendar;
-            break;
+    case "availability":
+      pageTitle = "My Availability";
+      ComponentToRender = Availability;
+      break;
 
-        case "alerts":
-            pageTitle = "Alerts";
-            ComponentToRender = Alerts;
-            break;
+    case "calendar":
+      pageTitle = "My Calendar";
+      ComponentToRender = AgentCalendar;
+      break;
 
-        case "add-user":
-            pageTitle = "Add User";
-            ComponentToRender = AddUser;
-            break;
+    case "alerts":
+      pageTitle = "Alerts";
+      ComponentToRender = Alerts;
+      break;
 
-        case "edit-user":
-            pageTitle = "Edit User";
-            componentProps.id = id;
-            ComponentToRender = EditUser;
-            break;
+    case "add-user":
+      pageTitle = "Add User";
+      ComponentToRender = AddUser;
+      break;
 
-        case "user-details":
-            pageTitle = "User Details";
-            ComponentToRender = UserDetail;
-            break;
+    case "edit-user":
+      pageTitle = "Edit User";
+      componentProps.id = id;
+      ComponentToRender = EditUser;
+      break;
 
-        case "users":
-            pageTitle = "Users";
-            ComponentToRender = Users;
-            break;
+    case "user-details":
+      pageTitle = "User Details";
+      ComponentToRender = UserDetail;
+      break;
 
-        default:
-            pageTitle = "My Profile";
-            ComponentToRender = MyProfile;
-            break;
-    }
+    case "users":
+      pageTitle = "Users";
+      ComponentToRender = Users;
+      break;
 
-    return (
-        <div>
-            <InsideNavbar />
-            <PageHeader headertitle={pageTitle} />
-            <AgentLayout ComponentToRender={ComponentToRender} componentProps={componentProps}/>
-            <ResponseHandler response={responseMessage} type={USER_TYPE.AGENT} />
-        </div>
-    );
+    default:
+      pageTitle = "My Profile";
+      ComponentToRender = MyProfile;
+      break;
+  }
+
+  return (
+    <div>
+      <InsideNavbar />
+      <PageHeader headertitle={pageTitle} />
+      <AgentLayout
+        ComponentToRender={ComponentToRender}
+        componentProps={componentProps}
+      />
+      <ResponseHandler response={responseMessage} type={USER_TYPE.AGENT} />
+    </div>
+  );
 }

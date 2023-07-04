@@ -4,18 +4,22 @@ import { useHistory } from "react-router-dom";
 import "./location-search.css";
 import HomepageService from "../../services/homepage";
 import { formatPrice } from "../../utils";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function LocationSearch() {
-  const [mapstate, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 24.466667, lng: 54.366669 });
-  const [centerAddress, setCenterAddress] = useState('');
+  const [mapstate, setMap] = useStateIfMounted(null);
+  const [center, setCenter] = useStateIfMounted({
+    lat: 24.466667,
+    lng: 54.366669,
+  });
+  const [centerAddress, setCenterAddress] = useStateIfMounted("");
   const [radius, setRadius] = useState(300);
   const [active, setActive] = useState(true);
-  const [circle, setCirle] = useState(null);
-  const [polygonState, setPolygonState] = useState(null);
-  const [drawingManagerState, setDrawingManagerState] = useState('');
-  const [properties, setProperties] = useState([]);
-  const [markers, setMarkers] = useState([]);
+  const [circle, setCirle] = useStateIfMounted(null);
+  const [polygonState, setPolygonState] = useStateIfMounted(null);
+  const [drawingManagerState, setDrawingManagerState] = useStateIfMounted("");
+  const [properties, setProperties] = useStateIfMounted([]);
+  const [markers, setMarkers] = useStateIfMounted([]);
 
   let map;
   let newMarkers = [];
@@ -28,7 +32,9 @@ export default function LocationSearch() {
     if (polygonState) {
       polygonState.setMap(null);
       setPolygonState(null);
-      drawingManagerState.setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
+      drawingManagerState.setDrawingMode(
+        window.google.maps.drawing.OverlayType.POLYGON
+      );
 
       setProperties([]);
       if (markers.length > 0) {
@@ -37,12 +43,17 @@ export default function LocationSearch() {
         });
       }
     }
-  }
+  };
 
   const searchByPolygon = async (drawnPolygon) => {
-    const polygonCoords = drawnPolygon.getPath().getArray().map((point) => `${point.lng()} ${point.lat()}`);
-    
-    const data = await HomepageService.searchByPolygon({ coordinates: polygonCoords });
+    const polygonCoords = drawnPolygon
+      .getPath()
+      .getArray()
+      .map((point) => `${point.lng()} ${point.lat()}`);
+
+    const data = await HomepageService.searchByPolygon({
+      coordinates: polygonCoords,
+    });
     if (data) {
       setProperties([]);
 
@@ -81,7 +92,7 @@ export default function LocationSearch() {
         setMarkers(newMarkers);
       }
     }
-  }
+  };
 
   const searchByCircle = async () => {
     const data = await HomepageService.searchByCircle({ radius, center });
@@ -101,11 +112,11 @@ export default function LocationSearch() {
         marker.addListener("click", function () {});
       });
     }
-  }
+  };
 
   const handleActive = () => {
     setActive(!active);
-  }
+  };
 
   const reverseGeocode = (geocoder, location) => {
     return new Promise((resolve, reject) => {
@@ -117,7 +128,7 @@ export default function LocationSearch() {
         }
       });
     });
-  }
+  };
 
   const addMarkerOnMap = (map, position, icon, icondimensions) => {
     const marker = new window.google.maps.Marker({
@@ -133,7 +144,7 @@ export default function LocationSearch() {
       },
     });
     return marker;
-  }
+  };
 
   const drawCircle = () => {
     if (circle) {
@@ -150,15 +161,15 @@ export default function LocationSearch() {
       fillColor: "#0000FF",
       fillOpacity: 0.35,
     });
-    
+
     mapstate.setOptions({ draggableCursor: "grab" });
     setCirle(newCircle);
     searchByCircle();
-  }
+  };
 
   const handleLogoClick = () => {
     history.push("/services/properties");
-  }
+  };
 
   useEffect(() => {
     const google = window.google;
@@ -167,7 +178,10 @@ export default function LocationSearch() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const currentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, };
+          const currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
           //const currentLocation = { lat: 24.466667, lng: 54.366669 };
           setCenter(currentLocation);
           map.setCenter(currentLocation);
@@ -305,7 +319,7 @@ export default function LocationSearch() {
           You can search the properties in a specific area by drawing shapes on
           maps.{" "}
         </p>
-        <br/>
+        <br />
         <p>Move center to your desired location</p>
         <input
           type="text"
@@ -335,13 +349,20 @@ export default function LocationSearch() {
                 </div>
                 <div className="product-info-bottom">
                   <div className="product-price">
-                    <span>{ formatPrice(element.price) }</span>
+                    <span>{formatPrice(element.price)}</span>
                   </div>
                   <div className="product-price">
-                    <button className="btn theme-btn-2 request-now-btn" onClick={() => {window.open(
-                    `${process.env.REACT_APP_PUBLIC_URL}/property-details/${element.id}`,
-                    "_blank"
-                  );}}>Open Details</button>
+                    <button
+                      className="btn theme-btn-2 request-now-btn"
+                      onClick={() => {
+                        window.open(
+                          `${process.env.REACT_APP_PUBLIC_URL}/property-details/${element.id}`,
+                          "_blank"
+                        );
+                      }}
+                    >
+                      Open Details
+                    </button>
                   </div>
                 </div>
               </div>

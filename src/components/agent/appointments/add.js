@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
-import { 
-  checkTimeOver, 
-  findCurrentTimeSlot, 
+import {
+  checkTimeOver,
+  findCurrentTimeSlot,
   formatSlotFromTime,
-  getUserDetailsFromJwt
+  getUserDetailsFromJwt,
 } from "../../../utils";
 import { AGENT_TYPE } from "../../../constants";
 import CustomerUserService from "../../../services/customer/user";
@@ -13,21 +13,24 @@ import AgentUserService from "../../../services/agent/user";
 import AvailabilityService from "../../../services/agent/availability";
 import PropertyService from "../../../services/agent/property";
 import AppointmentService from "../../../services/agent/appointment";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Add(props) {
   const [customers, setCustomers] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [properties, setProperties] = useState([]);
+  const [users, setUsers] = useStateIfMounted([]);
+  const [properties, setProperties] = useStateIfMounted([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
-  const [selectedAllocatedProperties, setSelectedAllocatedProperties] = useState([]);
-  const [timeslots, setTimeslots] = useState([]);
+  const [selectedAllocatedProperties, setSelectedAllocatedProperties] =
+    useState([]);
+  const [timeslots, setTimeslots] = useStateIfMounted([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useStateIfMounted("");
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState();
-  const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useState(false);
+  const [anySlotAvailableForToday, setAnySlotAvailableForToday] =
+    useStateIfMounted(false);
   const userDetail = getUserDetailsFromJwt();
 
   const checkAvailability = async (customerId) => {
@@ -52,7 +55,9 @@ export default function Add(props) {
     }
 
     if (!response) {
-      props.responseHandler(["Unfortunately, this timeslot is not available. Please choose another timeslot."]);
+      props.responseHandler([
+        "Unfortunately, this timeslot is not available. Please choose another timeslot.",
+      ]);
     }
   };
 
@@ -86,7 +91,9 @@ export default function Add(props) {
       setPhone("");
     }
 
-    const currentCustomer = customers.find((customerValue) => customerValue.id == e.value);
+    const currentCustomer = customers.find(
+      (customerValue) => customerValue.id == e.value
+    );
     if (currentCustomer) {
       setEmail(currentCustomer.email);
       setPhone(currentCustomer.phoneNumber || "");
@@ -109,7 +116,9 @@ export default function Add(props) {
     customerEmail = email;
     customerPhoneNumber = phone;
 
-    const customer = customers.find((customerValue) => (customerValue.id === selectedCustomer.value));
+    const customer = customers.find(
+      (customerValue) => customerValue.id === selectedCustomer.value
+    );
     if (customer) {
       customerId = customer.id;
       customerFirstName = customer.firstName;
@@ -133,7 +142,7 @@ export default function Add(props) {
       customerLastName: customerLastName,
       customerPhone: customerPhoneNumber,
       customerEmail: customerEmail,
-      allotedAgent: selectedAllocatedAgent.value
+      allotedAgent: selectedAllocatedAgent.value,
     };
 
     setLoading(true);
@@ -159,22 +168,24 @@ export default function Add(props) {
 
   const printSelectedTime = () => {
     const selectedTime = timeslots.find((slot) => slot.value === time);
-    return selectedTime?.fromTime  ? selectedTime.fromTime : "";
+    return selectedTime?.fromTime ? selectedTime.fromTime : "";
   };
 
   const handleButtonClick = (event) => {
     const nextSlot = selectNextSlot();
     if (!nextSlot) {
       props.responseHandler(["Slot is not available, select another slot"]);
-      
+
       return;
     }
 
     setTime(nextSlot.value);
-  }
+  };
 
   const selectNextSlot = (currentTimeSlots) => {
-    const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
+    const availabilityTimeSlots = currentTimeSlots
+      ? currentTimeSlots
+      : timeslots;
     const now = new Date();
 
     // Format the date and time values to be used as input values
@@ -182,14 +193,20 @@ export default function Add(props) {
     setDate(dateValue);
 
     const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
-    if (currentSlot) { 
-      const foundSlot = availabilityTimeSlots.find((time) => time.value === currentSlot.value);
+    if (currentSlot) {
+      const foundSlot = availabilityTimeSlots.find(
+        (time) => time.value === currentSlot.value
+      );
 
       // check if current slot expired
       const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
 
       // if current slot expired, then select next slot
-      const nextSlot = !isTimeExpired ? foundSlot : availabilityTimeSlots.find((time) => time.value === currentSlot.value + 1);
+      const nextSlot = !isTimeExpired
+        ? foundSlot
+        : availabilityTimeSlots.find(
+            (time) => time.value === currentSlot.value + 1
+          );
 
       if (!nextSlot) {
         setAnySlotAvailableForToday(false);
@@ -201,7 +218,7 @@ export default function Add(props) {
     }
 
     return false;
-  }
+  };
 
   const setDateHandler = (e) => {
     const now = new Date();
@@ -211,9 +228,9 @@ export default function Add(props) {
       // Format the date and time values to be used as input values
       dateValue = now.toISOString().slice(0, 10);
     }
-    
+
     setDate(dateValue);
-  }
+  };
 
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
@@ -224,13 +241,15 @@ export default function Add(props) {
         return;
       }
 
-      setUsers(response.map((userDetail) => {
-        return {
-          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId
-        }
-      }));
-    }
+      setUsers(
+        response.map((userDetail) => {
+          return {
+            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+            value: userDetail.userId,
+          };
+        })
+      );
+    };
 
     const fetchPropertiesToAllocate = async () => {
       const response = await PropertyService.toAllocate();
@@ -261,13 +280,13 @@ export default function Add(props) {
           label: timeSlot.textShow,
           value: timeSlot.id,
           fromTime: timeSlot.fromTime,
-          toTime: timeSlot.toTime
-        }
+          toTime: timeSlot.toTime,
+        };
       });
 
       setTimeslots(timeSlotsResponse);
       selectNextSlot(timeSlotsResponse);
-    }
+    };
 
     fetchUsersToAllocate();
     fetchPropertiesToAllocate();
@@ -278,7 +297,7 @@ export default function Add(props) {
     if (date && time) {
       const callCheckAvailability = async () => {
         await checkAvailability();
-      }
+      };
 
       callCheckAvailability();
     }
@@ -306,7 +325,12 @@ export default function Add(props) {
               </div>
               <div className="col-md-4">
                 <button
-                  disabled={!(anySlotAvailableForToday && selectedAllocatedProperties.length > 0)}
+                  disabled={
+                    !(
+                      anySlotAvailableForToday &&
+                      selectedAllocatedProperties.length > 0
+                    )
+                  }
                   type="button"
                   className="btn theme-btn-2 request-now-btn"
                   onClick={handleButtonClick}
@@ -335,13 +359,15 @@ export default function Add(props) {
                     type="text"
                     placeholder="Choose time"
                     readOnly
-                    value={ printSelectedTime() }
+                    value={printSelectedTime()}
                   />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="input-item">
-                  <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Name</label>
+                  <label>
+                    {process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Name
+                  </label>
                   <AsyncCreatableSelect
                     classNamePrefix="custom-select"
                     cacheOptions
@@ -355,10 +381,12 @@ export default function Add(props) {
               </div>
               <div className="col-md-6">
                 <div className="input-item">
-                  <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Email</label>
+                  <label>
+                    {process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Email
+                  </label>
                   <input
                     type="email"
-                    placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Email` }
+                    placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Email`}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -367,34 +395,33 @@ export default function Add(props) {
               </div>
               <div className="col-md-6">
                 <div className="input-item">
-                  <label>{ process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Phone</label>
+                  <label>
+                    {process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Phone
+                  </label>
                   <input
                     type="text"
-                    placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Phone` }
+                    placeholder={`${process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Phone`}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
                   />
                 </div>
               </div>
-              {
-                userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
-                  <div className="col-md-6">
-                    <div className="input-item">
-                      <label>Assign To</label>
-                      <Select 
-                        classNamePrefix="custom-select"
-                        options={users} 
-                        onChange={(e) => setSelectedAllocatedAgent(e)}
-                        value={selectedAllocatedAgent}
-                      />
-                    </div>
+              {userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
+                <div className="col-md-6">
+                  <div className="input-item">
+                    <label>Assign To</label>
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={users}
+                      onChange={(e) => setSelectedAllocatedAgent(e)}
+                      value={selectedAllocatedAgent}
+                    />
                   </div>
-                )
-              }
-              
+                </div>
+              )}
+
               <div className="btn-wrapper">
-                
                 <button
                   type="submit"
                   className="btn theme-btn-1 btn-effect-1 text-uppercase"
@@ -415,13 +442,18 @@ export default function Add(props) {
           </form>
         </div>
       </div>
-      
-      <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
+
+      {/* <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
         <div className="modal fade" id="ltn_api_code_modal" tabIndex={-1}>
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
@@ -431,25 +463,41 @@ export default function Add(props) {
                     <div className="row">
                       <div className="col-12">
                         <div className="modalHeading">
-                          <h2>Select Time slots - { date }</h2>
+                          <h2>Select Time slots - {date}</h2>
                         </div>
                         <div className="row">
-                          {
-                            timeslots && timeslots.map((item, index) => {
+                          {timeslots &&
+                            timeslots.map((item, index) => {
                               return (
-                                <div className="col-4 col-sm-3 px-1 py-1" key={index}>
-                                  <div onClick={() => setTime(item.value)} className={ time === item.value ? "bgNew" : "timeCards" }>
-                                    <p>{ item?.fromTime ? formatSlotFromTime(item.fromTime) : "-" }</p>
+                                <div
+                                  className="col-4 col-sm-3 px-1 py-1"
+                                  key={index}
+                                >
+                                  <div
+                                    onClick={() => setTime(item.value)}
+                                    className={
+                                      time === item.value
+                                        ? "bgNew"
+                                        : "timeCards"
+                                    }
+                                  >
+                                    <p>
+                                      {item?.fromTime
+                                        ? formatSlotFromTime(item.fromTime)
+                                        : "-"}
+                                    </p>
                                   </div>
                                 </div>
                               );
-                            })
-                          }
+                            })}
                         </div>
                         <div className="modalBtn">
-                          <button type="button"
-                          className="modal_close"
-                            data-bs-dismiss="modal" aria-label="Close">
+                          <button
+                            type="button"
+                            className="modal_close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          >
                             Close
                           </button>
                         </div>
@@ -461,7 +509,7 @@ export default function Add(props) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -5,9 +5,10 @@ import {
   COMMERCIAL_PROPERTY,
   BEDROOMS,
 } from "../../../constants";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function SearchForm() {
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useStateIfMounted();
   const [types, setTypes] = useState([]);
   const [flag, setFlag] = useState(false);
   const [bedrooms, setBedrooms] = useState([]);
@@ -17,8 +18,8 @@ export default function SearchForm() {
   const [rooms, setRooms] = useState();
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
-  const [lat, setLat] = useState();
-  const [lng, setLng] = useState();
+  const [lat, setLat] = useStateIfMounted();
+  const [lng, setLng] = useStateIfMounted();
   const [showLink, setShowLink] = useState(false);
 
   const handleFocus = () => {
@@ -79,6 +80,7 @@ export default function SearchForm() {
                         <select
                           className="nice-select"
                           onChange={(e) => setPropertyCategory(e.target.value)}
+                          defaultValue={"sale"}
                         >
                           <option value={"sale"}>Buy</option>
                           <option value={"rent"}>Rent</option>
@@ -89,8 +91,9 @@ export default function SearchForm() {
                         <select
                           className="nice-select"
                           onChange={(e) => handleChange(e.target.value)}
+                          defaultValue={"category"}
                         >
-                          <option selected disabled>
+                          <option value={"category"} disabled>
                             Category
                           </option>
                           <option value={"commercial"}>Commercial</option>
@@ -102,8 +105,9 @@ export default function SearchForm() {
                         <select
                           className="nice-select"
                           onChange={(e) => setPropertyType(e.target.value)}
+                          defaultValue="type"
                         >
-                          <option selected disabled>
+                          <option value={"type"} disabled>
                             Type
                           </option>
                           {types.map((element, index) => (
@@ -119,8 +123,9 @@ export default function SearchForm() {
                           <select
                             className="nice-select"
                             onChange={(e) => setRooms(e.target.value)}
+                            defaultValue="bedrooms"
                           >
-                            <option selected disabled>
+                            <option value={"bedrooms"} disabled>
                               No. of Bedrooms
                             </option>
                             {bedrooms.map((element, index) => (
@@ -158,6 +163,7 @@ export default function SearchForm() {
                           </Link>
                         )}
                       </div>
+
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Minimum Price</label>
                         <input

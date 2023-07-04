@@ -4,16 +4,17 @@ import { USER_TYPE } from "../../constants";
 import { setLoginToken } from "../../utils";
 import ProfileService from "../../services/profile";
 import UpdatePassword from "../partial/update-password";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Profile(props) {
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [city, setCity] = useState();
+  const [firstName, setFirstName] = useStateIfMounted();
+  const [lastName, setLastName] = useStateIfMounted();
+  const [phoneNumber, setPhoneNumber] = useStateIfMounted();
+  const [city, setCity] = useStateIfMounted();
   const [profileImage, setProfileImage] = useState();
-  const [profileImagePreview, setProfileImagePreview] = useState();
+  const [profileImagePreview, setProfileImagePreview] = useStateIfMounted();
   const [loading, setLoading] = useState();
-  const [user, setUser] = useState();
+  const [user, setUser] = useStateIfMounted();
 
   const getUser = async () => {
     const jsonData = await ProfileService.getProfile();
@@ -21,13 +22,17 @@ export default function Profile(props) {
       props.responseHandler(jsonData.message);
       return;
     }
-    
+
     setUser(jsonData);
     setFirstName(jsonData.firstName);
     setLastName(jsonData.lastName);
     setPhoneNumber(jsonData.phoneNumber);
     setCity(jsonData?.cityName ? jsonData.cityName : "");
-    setProfileImagePreview(jsonData?.profileImage ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}` : "");
+    setProfileImagePreview(
+      jsonData?.profileImage
+        ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
+        : ""
+    );
   };
 
   const updateProfile = async (e) => {
@@ -40,7 +45,7 @@ export default function Profile(props) {
     formdata.append("phoneNumber", phoneNumber);
     formdata.append("city", city);
     formdata.append("profileImage", profileImage);
-    
+
     setLoading(true);
     const formResponse = await ProfileService.updateProfile(formdata);
     setLoading(false);
@@ -61,7 +66,7 @@ export default function Profile(props) {
       setProfileImage(event.target.files[0]);
       setProfileImagePreview(URL.createObjectURL(event.target.files[0]));
     }
-  }
+  };
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -129,16 +134,14 @@ export default function Profile(props) {
                 />
               </div>
               <div className="col-md-6">
-                {
-                  profileImagePreview && (
-                    <img
-                      className="companyLogoCss"
-                      src={profileImagePreview}
-                      alt="No logo found"
-                      width="300px"
-                    />
-                  )
-                }
+                {profileImagePreview && (
+                  <img
+                    className="companyLogoCss"
+                    src={profileImagePreview}
+                    alt="No logo found"
+                    width="300px"
+                  />
+                )}
               </div>
             </div>
             <div className="btn-wrapper">
@@ -159,8 +162,12 @@ export default function Profile(props) {
               </button>
             </div>
           </form>
-          <TimezoneDetail type={USER_TYPE.CUSTOMER} user={user} responseHandler={props.responseHandler}/>
-          <UpdatePassword responseHandler={props.responseHandler}/>
+          <TimezoneDetail
+            type={USER_TYPE.CUSTOMER}
+            user={user}
+            responseHandler={props.responseHandler}
+          />
+          <UpdatePassword responseHandler={props.responseHandler} />
         </div>
       </div>
     </div>

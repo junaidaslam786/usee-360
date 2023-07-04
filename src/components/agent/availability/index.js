@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 import { formatSlotFromTime } from "../../../utils";
 import AvailabilityService from "../../../services/agent/availability";
+import { useStateIfMounted } from "use-state-if-mounted";
 
 export default function Index(props) {
   const [selectedDay, setSelectedDay] = useState(1);
   const [selectedDayTitle, setSelectedDayTitle] = useState("Monday");
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [timeOptions, setTimeOptions] = useState({});
-  const [timeSlots, setTimeSlots] = useState([]);
-  const [userId, setUserId] = useState('');
+  const [timeOptions, setTimeOptions] = useStateIfMounted({});
+  const [timeSlots, setTimeSlots] = useStateIfMounted([]);
+  const [userId, setUserId] = useStateIfMounted("");
   const closeModal = useRef(null);
 
   const handleClick = (index) => {
@@ -29,7 +30,7 @@ export default function Index(props) {
 
     const assocArray = response.reduce((acc, obj) => {
       const key = obj.dayId;
-      const value = { ...obj.agentTimeSlot, status:  obj.status };
+      const value = { ...obj.agentTimeSlot, status: obj.status };
       if (!acc[key]) {
         acc[key] = [];
       }
@@ -108,12 +109,14 @@ export default function Index(props) {
         }
       });
 
-      const count = value.filter(obj => obj.status === true).length;
-      const objToUpdate = currentTimeSlots.find(obj => parseInt(obj.id) === parseInt(key));
+      const count = value.filter((obj) => obj.status === true).length;
+      const objToUpdate = currentTimeSlots.find(
+        (obj) => parseInt(obj.id) === parseInt(key)
+      );
       objToUpdate.count = count;
       assocArray[key] = value;
     }
-    
+
     setTimeSlots(currentTimeSlots);
     setTimeOptions(assocArray);
   };
@@ -131,7 +134,7 @@ export default function Index(props) {
       userId,
       slotDay: selectedDay,
       timeSlots: selectedSlots,
-      allAvailable: false
+      allAvailable: false,
     });
   };
 
@@ -140,7 +143,7 @@ export default function Index(props) {
       userId,
       slotDay: selectedDay,
       timeSlots: selectedSlots,
-      allAvailable: true
+      allAvailable: true,
     });
   };
 
@@ -158,7 +161,7 @@ export default function Index(props) {
 
       props.responseHandler(response?.message, true);
     }
-  }
+  };
 
   return (
     <div className="ltn__myaccount-tab-content-inner">
@@ -170,12 +173,12 @@ export default function Index(props) {
             className="btn theme-btn-1 btn-effect-1"
             onClick={markAllAvailable}
           >
-          Mark All Availabile
+            Mark All Availabile
           </button>
         </div>
       </div>
-      {
-        timeSlots && timeSlots.map((item) => {
+      {timeSlots &&
+        timeSlots.map((item) => {
           return (
             <div className="availabilityCard" key={item.id}>
               <div className="availabilityFirstBox">
@@ -187,7 +190,10 @@ export default function Index(props) {
                 </div>
                 <div className="availabilityCardHeading">
                   <h1>{item.title}</h1>
-                  <p>{item.count} slots enabled. Click edit button to view and edit.</p>
+                  <p>
+                    {item.count} slots enabled. Click edit button to view and
+                    edit.
+                  </p>
                 </div>
               </div>
               <div>
@@ -196,8 +202,12 @@ export default function Index(props) {
                   data-bs-target="#ltn_api_code_modal"
                   onClick={(event) => {
                     setSelectedDay(item.id);
-                    setSelectedDayTitle(item.title)
-                    setSelectedSlots(timeOptions[item.id].filter(timeItem => timeItem.status).map(timeItem => timeItem.id));
+                    setSelectedDayTitle(item.title);
+                    setSelectedSlots(
+                      timeOptions[item.id]
+                        .filter((timeItem) => timeItem.status)
+                        .map((timeItem) => timeItem.id)
+                    );
                   }}
                 >
                   Edit
@@ -205,8 +215,7 @@ export default function Index(props) {
               </div>
             </div>
           );
-        })
-      }
+        })}
       <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
         <div className="modal fade" id="ltn_api_code_modal" tabIndex={-1}>
           <div className="modal-dialog modal-md" role="document">
@@ -227,30 +236,45 @@ export default function Index(props) {
                     <div className="row">
                       <div className="col-12">
                         <div className="modalHeading">
-                          <h2>Update Availability Times - {selectedDayTitle}</h2>
+                          <h2>
+                            Update Availability Times - {selectedDayTitle}
+                          </h2>
                           <p>Select Time slots</p>
                         </div>
                         <div className="row">
-                          {timeOptions && timeOptions[selectedDay] &&
+                          {timeOptions &&
+                            timeOptions[selectedDay] &&
                             timeOptions[selectedDay].map((item) => {
                               return (
-                                <div className="col-4 col-sm-3 px-1 py-1" key={item.id}>
+                                <div
+                                  className="col-4 col-sm-3 px-1 py-1"
+                                  key={item.id}
+                                >
                                   <div
                                     key={item.id}
                                     onClick={() => handleClick(item.id)}
                                     className={
-                                      selectedSlots.includes(item.id) ? "timeCards" : "bgNew"
+                                      selectedSlots.includes(item.id)
+                                        ? "timeCards"
+                                        : "bgNew"
                                     }
                                   >
-                                    <p>{ item?.fromTime ? formatSlotFromTime(item?.fromTime) : "-" }</p>
+                                    <p>
+                                      {item?.fromTime
+                                        ? formatSlotFromTime(item?.fromTime)
+                                        : "-"}
+                                    </p>
                                   </div>
                                 </div>
                               );
                             })}
                         </div>
                         <div className="modalBtn">
-                          <button className="modal_submit"
-                            onClick={handleSubmit}>Update
+                          <button
+                            className="modal_submit"
+                            onClick={handleSubmit}
+                          >
+                            Update
                           </button>
                           <button
                             type="button"
