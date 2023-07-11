@@ -11,7 +11,7 @@ export default function SearchForm() {
   const [types, setTypes] = useState([]);
   const [flag, setFlag] = useState(false);
   const [bedrooms, setBedrooms] = useState([]);
-  const [propertyCategory, setPropertyCategory] = useState();
+  const [propertyCategory, setPropertyCategory] = useState("sale");
   const [propertyCategoryType, setPropertyCategoryType] = useState();
   const [propertyType, setPropertyType] = useState();
   const [rooms, setRooms] = useState();
@@ -161,18 +161,30 @@ export default function SearchForm() {
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Minimum Price</label>
                         <input
-                          type="text"
-                          placeholder="Minimum Price"
+                          type="number"
+                          placeholder="100"
+                          min="0"
                           onChange={(e) => setMinPrice(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.charCode < 48) {
+                              e.preventDefault();
+                            }
+                          }}
                           className="m-0"
                         />
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Maximum Price</label>
                         <input
-                          type="text"
-                          placeholder="Maximum Price"
+                          type="number"
+                          placeholder="10000"
+                          min="0"
                           onChange={(e) => setMaxPrice(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.charCode < 48) {
+                              e.preventDefault();
+                            }
+                          }}
                           className="m-0"
                         />
                       </div>

@@ -3,12 +3,20 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { formatPrice, getLoginToken, loadPropertyMetaData } from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
+import {
+  RESIDENTIAL_PROPERTY,
+  COMMERCIAL_PROPERTY,
+  BEDROOMS,
+} from "../../../constants";
 
 export default function PropertyGrid(props) {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
   const [propertyCategoryFilter, setPropertyCategory] = useState();
   const [propertyCategoryTypeFilter, setPropertyCategoryType] = useState();
+  const [propertyTypeFilter, setPropertyType] = useState();
+  const [minPriceFilter, setMinPrice] = useState();
+  const [maxPriceFilter, setMaxPrice] = useState();
   const [latFilter, setLatFilter] = useState();
   const [lngFilter, setLngFilter] = useState();
   const [roomsFilter, setRooms] = useState();
@@ -22,7 +30,6 @@ export default function PropertyGrid(props) {
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = getLoginToken();
   const toggleButton = useRef(null);
-  const price = useRef(null);
   const sort = useRef(null);
   const history = useHistory();
   const location = useLocation();
@@ -48,15 +55,27 @@ export default function PropertyGrid(props) {
 
       if (propertyCategory) {
         payload.propertyCategory = propertyCategory;
+        if(search != "filter") {
+          setPropertyCategory(propertyCategory);
+        }
       }
       if (propertyCategoryType) {
         payload.propertyCategoryType = propertyCategoryType;
+        if(search != "filter") {
+          setPropertyCategoryType(propertyCategoryType);
+        }
       }
       if (propertyType) {
         payload.propertyType = propertyType;
+        if(search != "filter") {
+          setPropertyType(propertyType);
+        }
       }
       if (rooms) {
         payload.rooms = rooms;
+        if(search != "filter") {
+          setRooms(rooms);
+        }
       }
       if (lat) {
         payload.lat = lat;
@@ -66,9 +85,15 @@ export default function PropertyGrid(props) {
       }
       if (minPrice) {
         payload.minPrice = minPrice;
+        if(search != "filter") {
+          setMinPrice(minPrice);
+        }
       }
       if (maxPrice) {
         payload.maxPrice = maxPrice;
+        if(search != "filter") {
+          setMaxPrice(maxPrice);
+        }
       }
     }
 
@@ -79,6 +104,18 @@ export default function PropertyGrid(props) {
 
       if (propertyCategoryTypeFilter) {
         payload.propertyCategoryType = propertyCategoryTypeFilter;
+      }
+
+      if(propertyTypeFilter) {
+        payload.propertyType = propertyTypeFilter;
+      }
+
+      if(minPriceFilter) {
+        payload.minPrice = parseInt(minPriceFilter);
+      }
+
+      if(maxPriceFilter) {
+        payload.maxPrice = parseInt(maxPriceFilter);
       }
 
       if (roomsFilter) {
@@ -96,10 +133,6 @@ export default function PropertyGrid(props) {
       if (sort.current.value !== "null") {
         payload.sort = ["price", sort.current.value];
       }
-
-      let arr = price.current.value.split(" - ");
-      payload.minPrice = parseInt(arr[0]);
-      payload.maxPrice = parseInt(arr[1]);
     }
 
     const response = await HomepageService.listProperties("", payload);
@@ -555,13 +588,9 @@ export default function PropertyGrid(props) {
               <aside className="sidebar ltn__shop-sidebar">
                 <h3 className="mb-10">Advance Filters</h3>
                 <div className="widget ltn__menu-widget">
-                  <h4 className="ltn__widget-title">Property Category</h4>
+                  <h4 className="ltn__widget-title">I'm looking to</h4>
                   <ul>
-                    <div
-                      onChange={(e) => {
-                        setPropertyCategory(e.target.value);
-                      }}
-                    >
+                    <div>
                       <li>
                         <label className="checkbox-item">
                           Rent
@@ -569,6 +598,8 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategory"
                             value="rent"
+                            onChange={(e) => setPropertyCategory(e.target.value)}
+                            checked={propertyCategoryFilter === "rent"}
                           />
                           <span className="checkmark" />
                         </label>
@@ -580,6 +611,8 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategory"
                             value="sale"
+                            onChange={(e) => setPropertyCategory(e.target.value)}
+                            checked={propertyCategoryFilter === "sale"}
                           />
                           <span className="checkmark" />
                         </label>
@@ -587,13 +620,9 @@ export default function PropertyGrid(props) {
                     </div>
                   </ul>
                   <hr />
-                  <h4 className="ltn__widget-title">Type</h4>
+                  <h4 className="ltn__widget-title">Category</h4>
                   <ul>
-                    <div
-                      onChange={(e) => {
-                        setPropertyCategoryType(e.target.value);
-                      }}
-                    >
+                    <div>
                       <li>
                         <label className="checkbox-item">
                           Commercial
@@ -601,6 +630,8 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategoryType"
                             value="commercial"
+                            onChange={(e) => setPropertyCategoryType(e.target.value)}
+                            checked={propertyCategoryTypeFilter === "commercial"}
                           />
                           <span className="checkmark" />
                         </label>
@@ -612,110 +643,126 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategoryType"
                             value="residential"
+                            onChange={(e) => setPropertyCategoryType(e.target.value)}
+                            checked={propertyCategoryTypeFilter === "residential"}
                           />
                           <span className="checkmark" />
                         </label>
                       </li>
                     </div>
                   </ul>
+                  {propertyCategoryTypeFilter ? (
+                    <div>
+                      <hr />
+                      <h4 className="ltn__widget-title">Type</h4>
+                    </div>
+                  ) : null}
+                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "commercial" ? (
+                    <ul>
+                      <div>
+                        {COMMERCIAL_PROPERTY.map((el, index) => (
+                          <li key={index}>
+                            <label className="checkbox-item">
+                              {el.label}
+                              <input
+                                type="radio"
+                                name="propertyType"
+                                key={index}
+                                value={el.value}
+                                onChange={(e) => setPropertyType(e.target.value)}
+                                checked={propertyTypeFilter === el.value}
+                              />
+                              <span className="checkmark" />
+                            </label>
+                          </li>
+                        ))}
+                      </div>
+                    </ul>
+                  ) : null}
+                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                    <ul>
+                      <div>
+                        {RESIDENTIAL_PROPERTY.map((el, index) => (
+                          <li key={index}>
+                            <label className="checkbox-item">
+                              {el.label}
+                              <input
+                                type="radio"
+                                name="propertyType"
+                                key={index}
+                                value={el.value}
+                                onChange={(e) => setPropertyType(e.target.value)}
+                                checked={propertyTypeFilter === el.value}
+                              />
+                              <span className="checkmark" />
+                            </label>
+                          </li>
+                        ))}
+                      </div>
+                    </ul>
+                  ) : null}
                   <hr />
-                  <div className="widget--- ltn__price-filter-widget">
-                    <h4 className="ltn__widget-title ltn__widget-title-border---">
-                      Filter by price
-                    </h4>
-                    <div className="price_filter">
-                      <div className="price_slider_amount">
+                  <h4 className="ltn__widget-title">Filter by price</h4>
+                  <div className="row">
+                      <div className="col-md-6 p-2">
+                        <label>Min Price</label>
                         <input
-                          type="text"
-                          className="amount"
-                          name="price"
-                          ref={price}
-                          placeholder="Add Your Price"
+                          type="number"
+                          placeholder="100"
+                          min="0"
+                          onChange={(e) => setMinPrice(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.charCode < 48) {
+                              e.preventDefault();
+                            }
+                          }}                    
+                          value={minPriceFilter}
                         />
                       </div>
-                      <div className="slider-range" />
-                    </div>
+                      <div className="col-md-6 p-2">
+                        <label>Max Price</label>
+                        <input
+                          type="number"
+                          placeholder="10000"
+                          min="0"
+                          onChange={(e) => setMaxPrice(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.charCode < 48) {
+                              e.preventDefault();
+                            }
+                          }}
+                          value={maxPriceFilter}
+                        />
+                      </div>
                   </div>
-                  <hr />
-                  <h4 className="ltn__widget-title">Bedrooms</h4>
-                  <ul>
-                    <div
-                      onChange={(e) => {
-                        setRooms(e.target.value);
-                      }}
-                    >
-                      <li>
-                        <label className="checkbox-item">
-                          1
-                          <input type="radio" name="bedrooms" value="1" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          2
-                          <input type="radio" name="bedrooms" value="2" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          3
-                          <input type="radio" name="bedrooms" value="3" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          4
-                          <input type="radio" name="bedrooms" value="4" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          5
-                          <input type="radio" name="bedrooms" value="5" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          6
-                          <input type="radio" name="bedrooms" value="6" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          7
-                          <input type="radio" name="bedrooms" value="7" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          8
-                          <input type="radio" name="bedrooms" value="8" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          9
-                          <input type="radio" name="bedrooms" value="9" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          10
-                          <input type="radio" name="bedrooms" value="10" />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
+                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                    <div>
+                      <hr />
+                      <h4 className="ltn__widget-title">Rooms</h4>
                     </div>
-                  </ul>
+                  ) : null}
+                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                    <ul>
+                      <div>
+                        {BEDROOMS.map((el, index) => (
+                          <li key={index}>
+                            <label className="checkbox-item">
+                              {el.label}
+                              <input 
+                                type="radio" 
+                                name="bedrooms"
+                                key={index}
+                                value={el.value}
+                                onChange={(e) => setRooms(e.target.value)}
+                                checked={roomsFilter === el.value}
+                              />
+                              <span className="checkmark" />
+                            </label>
+                          </li>
+                        ))}
+                      </div>
+                    </ul>
+                  ) : null}
                 </div>
               </aside>
               <button
