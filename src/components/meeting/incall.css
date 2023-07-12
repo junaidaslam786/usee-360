@@ -327,6 +327,7 @@
 
 .property-modal-content {
   padding: 30px 20px 12px 0px;
+  width: 100%;
 }
 
 @keyframes slideIn {
@@ -378,10 +379,13 @@
   background: #00c800;
   color: white;
   border-radius: 4px;
-  width: max-content;
-  padding: 0.5rem 2rem; 
+  width: 95%;
+  padding: 0.5rem 2rem;
   margin: 5px;
   border: 1px solid #1c1d1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   /* Add more styles as needed for the button */
 }
 

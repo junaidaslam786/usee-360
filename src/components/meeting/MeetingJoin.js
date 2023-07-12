@@ -740,19 +740,19 @@ const MeetingJoin = (props) => {
                 </button>
                 <div className="property-modal-content">
                   {propertyDocuments.map((pair, index) => (
-                    <div className="buttons-row" key={index}>
+                    <div className="" key={index}>
                       {pair.map((record, subIndex) => (
-                        <div className="buttons-col" key={subIndex}>
+                        <div className="" key={subIndex}>
                           <button className="options-buttons" onClick={() => handleDocumentModalOpen(record.file)}>{record.title}</button>
                         </div>
                       ))}
                     </div>
                   ))}
-                  <div className="buttons-row">
-                    <div className="buttons-col">
+                  <div className="">
+                    <div className="">
                       <button className="options-buttons" onClick={() => setIsLocationOpen(true)}>Street View</button>
                     </div>
-                    {userType === 'customer' && <div className="buttons-col">
+                    {userType === 'customer' && <div className="">
                       <button
                         className="options-buttons"
                         onClick={() => { isAddedToWishlist(selectedProperty) ? removeWishList(selectedProperty) : addToWishList(selectedProperty); }}
