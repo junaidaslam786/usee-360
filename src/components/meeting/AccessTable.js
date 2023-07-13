@@ -114,13 +114,17 @@ const AccessTable = (props) => {
   }
 
   const toggleVideo = () => {
-    publisher.publishVideo(!videoStreaming);
-    setVideoStreaming(!videoStreaming);
+    if (publisher?.publishVideo) {
+      publisher.publishVideo(!videoStreaming);
+      setVideoStreaming(!videoStreaming);
+    }
   }
 
   const toggleAudio = () => {
-    publisher.publishAudio(!audioStreaming);
-    setAudioStreaming(!audioStreaming);
+    if (publisher?.publishAudio) {
+      publisher.publishAudio(!audioStreaming);
+      setAudioStreaming(!audioStreaming);
+    }
   }
 
   const handleBackgroundChange = (event) => {
