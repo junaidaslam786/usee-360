@@ -109,10 +109,9 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/log`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to create appointment log, please try again later"];
+      if (response?.error?.message?.length === 0) {
+        response.error.message = ["Unable to list appointment, please try again later"];
       }
-      
       return response;
     }
 

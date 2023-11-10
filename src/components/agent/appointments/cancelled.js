@@ -82,7 +82,7 @@ export default function Cancelled(props) {
     };
 
     fetchAllAppointments();
-  }, []);
+  }, [loadAllList]);
 
   return (
     <React.Fragment>

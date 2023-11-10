@@ -95,7 +95,7 @@ export default function Completed(props) {
     };
 
     fetchAllAppointments();
-  }, [props]);
+  }, [loadAllList]);
 
   return (
     <React.Fragment>
@@ -189,7 +189,7 @@ export default function Completed(props) {
                   return (
                     <li
                       key={i}
-                      className={currentPage == i + 1 ? "active" : null}
+                      className={currentPage === i + 1 ? "active" : null}
                     >
                       <Link
                         to="#"
