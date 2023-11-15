@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import {
@@ -24,30 +24,54 @@ export default function Completed(props) {
   const [notesList, setNotesList] = useState([]);
   const openViewModal = useRef(null);
 
-  const loadAllList = async (page = 1) => {
+  // const loadAllList = async (page = 1) => {
+  //   let appendQuery = props?.selectedFilter
+  //     ? `&filter=${props?.selectedFilter}`
+  //     : "";
+  //   appendQuery = `${appendQuery}${
+  //     props?.startDate && props?.endDate
+  //       ? `&startDate=${props.startDate}&endDate=${props.endDate}`
+  //       : ""
+  //   }`;
+  //   appendQuery = `${appendQuery}${
+  //     props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
+  //   }`;
+
+  //   const response = await AppointmentService.list({
+  //     type: APPOINTMENT_STATUS.COMPLETED,
+  //     page,
+  //     appendQuery,
+  //   });
+  //   if (response?.data) {
+  //     setList(response.data);
+  //     setCurrentPage(parseInt(response.page));
+  //     setTotalPages(parseInt(response.totalPage));
+  //   }
+  // };
+  const loadAllList = useCallback(async (page = 1) => {
     let appendQuery = props?.selectedFilter
       ? `&filter=${props?.selectedFilter}`
       : "";
-    appendQuery = `${appendQuery}${
-      props?.startDate && props?.endDate
-        ? `&startDate=${props.startDate}&endDate=${props.endDate}`
-        : ""
-    }`;
-    appendQuery = `${appendQuery}${
-      props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
-    }`;
-
+    appendQuery += props?.startDate && props?.endDate
+      ? `&startDate=${props.startDate}&endDate=${props.endDate}`
+      : "";
+    appendQuery += props?.selectedUser
+      ? `&selectedUser=${props.selectedUser}`
+      : "";
+  
     const response = await AppointmentService.list({
       type: APPOINTMENT_STATUS.COMPLETED,
       page,
       appendQuery,
     });
+  
     if (response?.data) {
       setList(response.data);
-      setCurrentPage(parseInt(response.page));
-      setTotalPages(parseInt(response.totalPage));
+      setCurrentPage(parseInt(response.page, 10));
+      setTotalPages(parseInt(response.totalPage, 10));
     }
-  };
+  }, [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]); // Dependencies
+  
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -91,7 +115,7 @@ export default function Completed(props) {
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
-      await loadAllList();
+      await loadAllList(1);
     };
 
     fetchAllAppointments();

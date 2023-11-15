@@ -30,6 +30,24 @@ const AuthService = {
 
     return response.data;
   },
+
+  refreshToken: async (refreshToken) => {
+    try {
+      const response = await httpPost(`${apiUrlPrefix}/refresh`, { refreshToken });
+
+      if (response?.error) {
+        // Handle any errors that occurred during the refresh token process
+        console.error('Error refreshing token:', response.error);
+        return { error: true, message: response.error.message };
+      }
+
+      // Assuming the new access token is in the response data
+      return { error: false, accessToken: response.data.accessToken };
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return { error: true, message: 'Failed to refresh token' };
+    }
+  },
   
   sendOtp: async (formData) => {
     const response = await httpPost(`${apiUrlPrefix}/send-otp`, formData);

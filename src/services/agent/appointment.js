@@ -7,7 +7,7 @@ const AppointmentService = {
     const response = await httpGet(`${apiUrlPrefix}/list?page=${page}&size=${size}&type=${type}${appendQuery}`);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to list appointment, please try again later"];
       }
       
@@ -21,7 +21,7 @@ const AppointmentService = {
     const response = await httpGet(`${apiUrlPrefix}/${id}`);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to get appointment details, please try again later"];
       }
       
@@ -35,7 +35,7 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/check-availability`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to check availability, please try again later"];
       }
       
@@ -49,7 +49,7 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/create`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to create appointment, please try again later"];
       }
       
@@ -67,7 +67,7 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/note`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to add note, please try again later"];
       }
       
@@ -81,7 +81,7 @@ const AppointmentService = {
     const response = await httpPut(`${apiUrlPrefix}/status`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to update status, please try again later"];
       }
       
@@ -95,7 +95,7 @@ const AppointmentService = {
     const response = await httpGet(`${apiUrlPrefix}/session-token/${id}`);
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response?.error?.message || response?.error?.message.length === 0) {
         response.error.message = ["Unable to get session token details, please try again later"];
       }
       
@@ -109,9 +109,10 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/log`, reqBody);
 
     if (response?.error) {
-      if (response?.error?.message?.length === 0) {
-        response.error.message = ["Unable to list appointment, please try again later"];
+      if (!response?.error?.message || response?.error?.message.length === 0) {
+        response.error.message = ["Unable to create appointment log, please try again later"];
       }
+      
       return response;
     }
 

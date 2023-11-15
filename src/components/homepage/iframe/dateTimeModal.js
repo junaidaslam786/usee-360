@@ -114,7 +114,7 @@ const Modal = ({ id, agentId, propertyId }) => {
 
     fetchUsersToAllocate();
     fetchSlots();
-  }, [propertyId]);
+  }, [propertyId, agentId, loadSlots]);
 
   return (
     <div>

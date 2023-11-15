@@ -97,7 +97,7 @@ export default function IframePropertyDetails() {
   useEffect(() => {
     window.scrollTo(0, 0);
     loadProperty();
-  }, []);
+  }, [loadProperty]);
 
   return (
     <div className="ltn__shop-details-area pb-10 mt-50 mb-50">

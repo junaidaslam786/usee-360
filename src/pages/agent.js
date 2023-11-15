@@ -20,6 +20,9 @@ import ResponseHandler from "../components/partial/response-handler";
 import AgentLayout from "../components/global/layout/agent";
 import { setResponseHandler } from "../utils";
 import { useParams } from "react-router";
+import PurchaseToken from "../components/agent/payments/purchase-token";
+import Payments from "../components/agent/payments/payments";
+import Wallet from "../components/agent/payments/Wallet";
 
 export default function AgentPages({ page }) {
   const { id } = useParams();
@@ -41,6 +44,21 @@ export default function AgentPages({ page }) {
       pageTitle = "Dashboard";
       ComponentToRender = Dashboard;
       componentProps.type = USER_TYPE.AGENT;
+      break;
+
+    case "payment":
+      pageTitle = "Payment";
+      ComponentToRender = Payments;
+      break;
+
+    case "purchase-token":
+      pageTitle = "Purchase Tokens";
+      ComponentToRender = PurchaseToken;
+      break;
+
+    case "wallet":
+      pageTitle = "Wallet";
+      ComponentToRender = Wallet;
       break;
 
     case "add-property":

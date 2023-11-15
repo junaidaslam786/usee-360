@@ -127,7 +127,7 @@ export default function Index(props) {
     };
 
     fetchAvailabilitySlots();
-  }, []);
+  }, [loadAllList]);
 
   const handleSubmit = async () => {
     await updateAvailability({

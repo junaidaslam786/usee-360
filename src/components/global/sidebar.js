@@ -59,6 +59,11 @@ export default function Sidebar({ type, responseHandler }) {
         <i className="fa-solid fa-calendar-check"></i>
       </NavLink>
 
+      <NavLink to={`/${type}/payment`}>
+        Payments
+        <i className="fa-solid fa-credit-card"></i>
+      </NavLink>
+
       {type === USER_TYPE.AGENT ? (
         <React.Fragment>
           <NavLink

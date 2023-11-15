@@ -99,7 +99,7 @@ export default function Details(props) {
 
     fetchAllWishlistProperties();
     markPropertyViewed();
-  }, []);
+  }, [loadProperty, params.id]);
 
   return (
     <section>
