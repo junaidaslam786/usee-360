@@ -64,6 +64,11 @@ export default function Sidebar({ type, responseHandler }) {
         <i className="fa-solid fa-credit-card"></i>
       </NavLink>
 
+      <NavLink to={`/${type}/analytics-page`}>
+        Analytics
+        <i className="fa-solid fa-analytics"></i>
+      </NavLink>
+
       {type === USER_TYPE.AGENT ? (
         <React.Fragment>
           <NavLink

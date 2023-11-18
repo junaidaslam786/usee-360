@@ -158,14 +158,14 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
   );
 }
 
-const stripePromise = loadStripe("your_publishable_key");
+
 
 const App = () => {
   return (
     <BrowserRouter basename="/">
       <div>
         <AuthProvider>
-          <Elements stripe={stripePromise}>
+          
             <Switch>
               {/* Main Routes */}
               <Route exact path="/" component={Home} />
@@ -319,6 +319,30 @@ const App = () => {
                 path="/agent/wallet"
                 component={() => <AgentPages page="wallet" />}
               />
+              <AgentRoute
+                path="/agent/invoice"
+                component={() => <AgentPages page="invoice" />}
+              />
+              <AgentRoute
+                path="/agent/paid-services"
+                component={() => <AgentPages page="paid-services" />}
+              />
+              <AgentRoute
+                path="/agent/analytics-page"
+                component={() => <AgentPages page="analytics-page" />}
+              />
+              <AgentRoute
+                path="/agent/property-listing"
+                component={() => <AgentPages page="property-listing" />}
+              />
+              <AgentRoute
+                path="/agent/video-call"
+                component={() => <AgentPages page="video-call" />}
+              />
+              <AgentRoute
+                path="/agent/api-subscription"
+                component={() => <AgentPages page="api-subscription" />}
+              />
               {/* <AgentRoute path="/agent/purchase-token" component={PurchaseToken} /> */}
 
               {/* Client Routes */}
@@ -398,7 +422,7 @@ const App = () => {
 
               <Route path="*" component={() => <HomePages page="error" />} />
             </Switch>
-          </Elements>
+          
         </AuthProvider>
       </div>
     </BrowserRouter>

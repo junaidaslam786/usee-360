@@ -98,3 +98,11 @@ export const generateHeaders = (token = "", isMultipart = false) => {
 
   return requestHeaders;
 }
+
+// Add a new function in rest-api.js to generate headers for Stripe requests
+export const generateStripeHeaders = () => {
+  return {
+    "Authorization": `Bearer ${process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY}`,
+    "Content-Type": "application/x-www-form-urlencoded"
+  };
+}

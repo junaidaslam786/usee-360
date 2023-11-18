@@ -23,6 +23,12 @@ import { useParams } from "react-router";
 import PurchaseToken from "../components/agent/payments/purchase-token";
 import Payments from "../components/agent/payments/payments";
 import Wallet from "../components/agent/payments/Wallet";
+import InvoicePage from "../components/agent/payments/InvoicePage";
+import PaidServices from "../components/agent/payments/paid-services";
+import AnalyticsPage from "../components/agent/analytics/analytics-main";
+import VideoCall from "../components/agent/analytics/VideoCall";
+import APISubscription from "../components/agent/analytics/APISubscription";
+import PropertyListing from "../components/agent/analytics/PropertyListing";
 
 export default function AgentPages({ page }) {
   const { id } = useParams();
@@ -59,6 +65,33 @@ export default function AgentPages({ page }) {
     case "wallet":
       pageTitle = "Wallet";
       ComponentToRender = Wallet;
+      break;
+
+    case "invoice":
+      pageTitle = "Invoice";
+      ComponentToRender = InvoicePage;
+      break;
+
+    case "paid-services":
+      pageTitle = "Paid Services";
+      ComponentToRender = PaidServices;
+      break;
+
+    case "analytics-page":
+      pageTitle = "Analytics Page";
+      ComponentToRender = AnalyticsPage;
+      break;
+    case "video-call":
+      pageTitle = "Video Call";
+      ComponentToRender = VideoCall;
+      break;
+    case "api-subscription":
+      pageTitle = "API Subscription";
+      ComponentToRender = APISubscription;
+      break;
+    case "property-listing":
+      pageTitle = "Property Listing";
+      ComponentToRender = PropertyListing;
       break;
 
     case "add-property":

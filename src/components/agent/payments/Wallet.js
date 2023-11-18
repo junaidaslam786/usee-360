@@ -2,6 +2,9 @@
 import React from 'react';
 
 import profileImg from '../../../logo192.png';
+import { getUserDetailsFromJwt } from '../../../utils';
+
+
 
 const Wallet = ({ totalTokens }) => {
   // Hardcoded transactions array
@@ -10,6 +13,11 @@ const Wallet = ({ totalTokens }) => {
     { id: 2, service: 'Service B', amount: 50, color: '#ff4500' }, // Example transaction
     { id: 3, service: 'Service C', amount: 75, color: '#808080' }, // Example transaction
   ];
+
+  // const userDetails = getUserDetailsFromJwt();
+  // console.log(userDetails)
+  const userDetails = JSON.stringify(localStorage.getItem('userDetails'));
+  console.log(userDetails);
 
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>

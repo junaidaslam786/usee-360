@@ -10,7 +10,7 @@ const PaymentPage = () => {
   const [showCardForm, setShowCardForm] = useState(false);
 
   // Get user details using the getUserDetailsFromJwt utility function
-  const userDetails = getUserDetailsFromJwt(localStorage.getItem("token"));
+  const userDetails = getUserDetailsFromJwt();
 
   const handleConnectWithStripe = () => {
     setShowCardForm(true); // This will display the CardForm
@@ -29,9 +29,9 @@ const PaymentPage = () => {
       <nav>
         {/* Other navigation links */}
         <ul>
-          <li><Link to="/agent/purchase-token">Purchase Tokens</Link></li>
-          <li><Link to="/agent/wallet">Wallet</Link></li>
-          <li><Link to="/paid-services">Paid Services</Link></li>
+          <li style={{listStyleType:'none'}}><Link to="/agent/purchase-token"><i style={{marginRight:'1vmin'}} class="fa-solid fa-coins"></i>Purchase Tokens</Link></li>
+          <li style={{listStyleType:'none'}}><Link to="/agent/wallet"><i style={{marginRight:'1vmin'}} class="fa-solid fa-wallet"></i>Wallet</Link></li>
+          <li style={{listStyleType:'none'}}><Link to="/agent/paid-services"><i style={{marginRight:'1vmin'}} class="fa-solid fa-dollar-sign"></i>Paid Services</Link></li>
         </ul>
       </nav>
       
@@ -42,13 +42,12 @@ const PaymentPage = () => {
         </button>
       )}
       
-      {/* Show CardForm when showCardForm is true */}
-      {showCardForm && (
+      
         <CardForm
           userDetails={userDetails}
           onSuccessfulPayment={handleSuccessfulPayment}
         />
-      )}
+      
     </div>
   );
 };

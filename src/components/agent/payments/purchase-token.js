@@ -1,38 +1,80 @@
 // PurchaseToken.js
 import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom'; // Import useHistory for redirection
-import { getUserDetailsFromJwt } from '../../../utils'; // Update the import path as needed
-import StripeService from '../../../services/agent/stripe-service'; // Update the import path as needed
+import { getUserDetailsFromJwt } from '../../../utils'; 
+import StripeService from '../../../services/agent/stripe-service'; 
+import UserService from '../../../services/agent/user';
 
 const PurchaseToken = () => {
     const [tokenQuantity, setTokenQuantity] = useState(1); // Default to 1 for initial quantity
-    // const [userDetails, setUserDetails] = useState(null); // State to store user details
+    const [customerId, setCustomerId] = useState(null);
+    const [config, setConfig] = useState(null);
     const history = useHistory(); // Hook for navigation
 
-    const userDetails = getUserDetailsFromJwt();
 
-    // useEffect(() => {
-    //     // Get user details from JWT token stored in localStorage
-    //     const userDetailsFromJwt = getUserDetailsFromJwt(localStorage.getItem('token'));
-    //     setUserDetails(userDetailsFromJwt);
-    // }, []);
+    useEffect(() => {
+        // Fetch user details on component mount
+        const fetchUserDetails = async () => {
+          try {
+            // Assuming you are storing the user ID in local storage or you get it from the auth context
+            const userId = getUserDetailsFromJwt();
+            const response = await UserService.detail(userId.id);
+            // const customerId = response.user.stripeCustomerId;
+            console.log(response.user.stripeCustomerId);
+            if (!response.error) {
+                setCustomerId(response.user.stripeCustomerId);
+              
+            } else {
+              console.error('Failed to fetch user details:', response.error);
+            }
+          } catch (error) {
+            console.error('Error fetching user details:', error);
+          }
+        };
+    
+        fetchUserDetails();
+      }, []);
+
+      useEffect(() => {
+        // Call getConfigByKey when the component mounts
+        const fetchConfig = async () => {
+          try {
+            const configKey = 'tokenPrice'; // Replace with the actual key you need
+            const configValue = await StripeService.getConfigByKey(configKey);
+            console.log('Fetched config value:', configValue);
+            setConfig(configValue.configValue);
+          } catch (error) {
+            console.error('Error fetching configuration:', error);
+          }
+        };
+    
+        fetchConfig();
+      }, []);
+
+    //   console.log(userDetails.user);
+
+  
+    const handleChangePage = () => {
+        history.push('/agent/invoice');
+    }
 
     const handleTokenQuantityChange = (event) => {
         setTokenQuantity(event.target.value);
     };
 
     const handlePurchase = async () => {
-        if (!userDetails) {
-            console.error('User details are not available.');
+        if (!customerId) {
+            console.error('Stripe customer ID is not available.');
             return;
         }
 
-        const pricePerToken = 50; // Example fixed price per token
+        // const pricePerToken = config ? config : 10;
+        const pricePerToken = 10;
         const totalAmount = tokenQuantity * pricePerToken;
         try {
             const purchaseResponse = await StripeService.createInvoice(
-                userDetails.stripeCustomerId,
-                'prod_OxkEHqzEUtR6P5', // The actual product ID
+                customerId,
+                // 'prod_OxkEHqzEUtR6P5', // The actual product ID
                 'price_id', // The actual price ID
                 tokenQuantity,
                 totalAmount
@@ -62,10 +104,10 @@ const PurchaseToken = () => {
                 />
             </div>
             <div>
-                <p>Total Amount: ${tokenQuantity * 50}</p>
+                <p>Price Per Token: 10</p>
             </div>
             <div>
-                <button className="btn theme-btn-1 btn-effect-1 text-uppercase" onClick={handlePurchase}>Purchase</button>
+                <button className="btn theme-btn-1 btn-effect-1 text-uppercase" onClick={handleChangePage}>Purchase</button>
                 <Link className="btn theme-btn-2 request-now-btn" to="/agent/dashboard">Cancel</Link>
             </div>
         </div>
