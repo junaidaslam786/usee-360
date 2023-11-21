@@ -46,13 +46,14 @@ const PurchaseToken = () => {
             console.log('Fetched config value:', configValue);
             setConfig(configValue);
 
-            const productId = configValue.configValue.stripeProductId;
-            const productDetails = await StripeService.fetchStripeProductActivePrices(productId);
-            console.log('Fetched product details:', productDetails.prices.data[0].id);
-            if (productDetails && !productDetails.error) {
-              setPriceId(productDetails.prices.data[0].id); // Set the default price
+            // const priceId = configValue.stripePriceId;
+            // console.log(priceId)
+            // const productDetails = await StripeService.fetchStripeProductActivePrices(productId);
+            // console.log('Fetched product details:', productDetails.prices.data[0].id);
+            if (configValue && !configValue.error) {
+              setPriceId(configValue.stripePriceId); // Set the default price
             } else {
-                console.error('Failed to fetch Stripe product details:', productDetails.error);
+                console.error('Failed to fetch Stripe product details:', configValue.error);
             }
 
           } catch (error) {
