@@ -29,6 +29,7 @@ import AnalyticsPage from "../components/agent/analytics/analytics-main";
 import VideoCall from "../components/agent/analytics/VideoCall";
 import APISubscription from "../components/agent/analytics/APISubscription";
 import PropertyListing from "../components/agent/analytics/PropertyListing";
+import SuccessComponent from "../components/agent/payments/Success";
 
 export default function AgentPages({ page }) {
   const { id } = useParams();
@@ -81,6 +82,12 @@ export default function AgentPages({ page }) {
       pageTitle = "Analytics Page";
       ComponentToRender = AnalyticsPage;
       break;
+
+    case "success":
+      pageTitle = "Success";
+      ComponentToRender = SuccessComponent;
+      break;
+
     case "video-call":
       pageTitle = "Video Call";
       ComponentToRender = VideoCall;

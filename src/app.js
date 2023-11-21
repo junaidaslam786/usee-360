@@ -343,6 +343,10 @@ const App = () => {
                 path="/agent/api-subscription"
                 component={() => <AgentPages page="api-subscription" />}
               />
+              <AgentRoute
+                path="/agent/success"
+                component={() => <AgentPages page="success" />}
+              />
               {/* <AgentRoute path="/agent/purchase-token" component={PurchaseToken} /> */}
 
               {/* Client Routes */}

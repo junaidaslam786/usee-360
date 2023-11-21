@@ -1,6 +1,6 @@
 // PurchaseToken.js
 import React, { useState, useEffect } from 'react';
-import { useHistory, Link } from 'react-router-dom'; // Import useHistory for redirection
+import { useHistory, Link,  } from 'react-router-dom'; // Import useHistory for redirection
 import { getUserDetailsFromJwt } from '../../../utils'; 
 import StripeService from '../../../services/agent/stripe-service'; 
 import UserService from '../../../services/agent/user';
@@ -9,6 +9,7 @@ const PurchaseToken = () => {
     const [tokenQuantity, setTokenQuantity] = useState(1); // Default to 1 for initial quantity
     const [customerId, setCustomerId] = useState(null);
     const [config, setConfig] = useState(null);
+    const [priceId, setPriceId] = useState(null);
     const history = useHistory(); // Hook for navigation
 
 
@@ -20,6 +21,7 @@ const PurchaseToken = () => {
             const userId = getUserDetailsFromJwt();
             const response = await UserService.detail(userId.id);
             // const customerId = response.user.stripeCustomerId;
+            console.log(response)
             console.log(response.user.stripeCustomerId);
             if (!response.error) {
                 setCustomerId(response.user.stripeCustomerId);
@@ -42,7 +44,17 @@ const PurchaseToken = () => {
             const configKey = 'tokenPrice'; // Replace with the actual key you need
             const configValue = await StripeService.getConfigByKey(configKey);
             console.log('Fetched config value:', configValue);
-            setConfig(configValue.configValue);
+            setConfig(configValue);
+
+            const productId = configValue.configValue.stripeProductId;
+            const productDetails = await StripeService.fetchStripeProductActivePrices(productId);
+            console.log('Fetched product details:', productDetails.prices.data[0].id);
+            if (productDetails && !productDetails.error) {
+              setPriceId(productDetails.prices.data[0].id); // Set the default price
+            } else {
+                console.error('Failed to fetch Stripe product details:', productDetails.error);
+            }
+
           } catch (error) {
             console.error('Error fetching configuration:', error);
           }
@@ -69,19 +81,20 @@ const PurchaseToken = () => {
         }
 
         // const pricePerToken = config ? config : 10;
-        const pricePerToken = 10;
-        const totalAmount = tokenQuantity * pricePerToken;
+        const pricePerToken = config.configValue ;
+        // const totalAmount = tokenQuantity * pricePerToken;
         try {
-            const purchaseResponse = await StripeService.createInvoice(
+            const purchaseResponse = await StripeService.createCheckoutSession(
                 customerId,
                 // 'prod_OxkEHqzEUtR6P5', // The actual product ID
-                'price_id', // The actual price ID
+                priceId, // The actual price ID
                 tokenQuantity,
-                totalAmount
+                
             );
             if (purchaseResponse && !purchaseResponse.error) {
                 // Navigate to the InvoicePage with the response data
-                history.push('/agent/invoice', { invoiceDetails: purchaseResponse });
+                // history.push('/agent/invoice', { invoiceDetails: purchaseResponse });
+                window.location.href = purchaseResponse.data.session.url;
             } else {
                 // Handle errors
                 console.error('Purchase failed:', purchaseResponse.error);
@@ -89,6 +102,7 @@ const PurchaseToken = () => {
         } catch (error) {
             console.error('Error during purchase:', error);
         }
+        // history.push('/agent/invoice');
     };
 
     return (
@@ -107,7 +121,7 @@ const PurchaseToken = () => {
                 <p>Price Per Token: 10</p>
             </div>
             <div>
-                <button className="btn theme-btn-1 btn-effect-1 text-uppercase" onClick={handleChangePage}>Purchase</button>
+                <button className="btn theme-btn-1 btn-effect-1 text-uppercase" onClick={handlePurchase}>Purchase</button>
                 <Link className="btn theme-btn-2 request-now-btn" to="/agent/dashboard">Cancel</Link>
             </div>
         </div>
