@@ -320,12 +320,16 @@ const App = () => {
                 component={() => <AgentPages page="wallet" />}
               />
               <AgentRoute
-                path="/agent/invoice"
+                path="/agent/invoice/:invoiceId"
                 component={() => <AgentPages page="invoice" />}
               />
               <AgentRoute
                 path="/agent/paid-services"
                 component={() => <AgentPages page="paid-services" />}
+              />
+              <AgentRoute
+                path="/agent/subscription"
+                component={() => <AgentPages page="subscription" />}
               />
               <AgentRoute
                 path="/agent/analytics-page"

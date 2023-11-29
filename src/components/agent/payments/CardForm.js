@@ -147,7 +147,7 @@ const CardForm = () => {
             cursor: "pointer",
           }}
         >
-          Pay
+          Connect
         </button>
       </form>
     </div>

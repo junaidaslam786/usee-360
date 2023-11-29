@@ -186,6 +186,60 @@ const StripeService = {
     }
   },
 
+  getInvoiceDetails: async (invoiceId) => {
+    try {
+      const response = await httpGet(`fetch-customer-invoice/${invoiceId}`);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error fetching invoice details:",
+        error.response?.data || error.message
+      );
+      return {
+        error: true,
+        message:
+          error.response?.data?.error || "Failed to fetch invoice details",
+      };
+    }
+  },
+
+  fetchCheckoutSessions: async (customerId) => {
+    try {
+      const response = await httpGet(`fetch-checkout-sessions`, { customerId });
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error fetching checkout sessions:",
+        error.response?.data || error.message
+      );
+      return {
+        error: true,
+        message:
+          error.response?.data?.error || "Failed to fetch checkout sessions",
+      };
+    }
+  },
+
+  fetchCheckoutSessionLineItems: async (sessionId) => {
+    try {
+      const response = await httpGet(`fetch-checkout-session-line-items`, {
+        sessionId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error fetching checkout session line items:",
+        error.response?.data || error.message
+      );
+      return {
+        error: true,
+        message:
+          error.response?.data?.error ||
+          "Failed to fetch checkout session line items",
+      };
+    }
+  },
+
   payInvoice: async (data) => {
     try {
       const response = await httpPost("/pay-invoice", data);
@@ -220,7 +274,9 @@ const StripeService = {
 
   fetchStripeProductDetails: async (productId) => {
     try {
-      const response = await httpPost('fetch-stripe-product-details', { productId });
+      const response = await httpPost("fetch-stripe-product-details", {
+        productId,
+      });
       return response.data;
     } catch (error) {
       console.error(
@@ -234,7 +290,22 @@ const StripeService = {
       };
     }
   },
-  
+
+  getUserTokens: async (userId) => {
+    try {
+      const response = await httpGet(`agent/user/${userId}/tokens`);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error fetching user tokens:",
+        error.response?.data || error.message
+      );
+      return {
+        error: true,
+        message: error.response?.data?.error || "Failed to fetch user tokens",
+      };
+    }
+  },
 
   fetchStripeProductActivePrices: async (productId) => {
     try {

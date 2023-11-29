@@ -30,9 +30,10 @@ import VideoCall from "../components/agent/analytics/VideoCall";
 import APISubscription from "../components/agent/analytics/APISubscription";
 import PropertyListing from "../components/agent/analytics/PropertyListing";
 import SuccessComponent from "../components/agent/payments/Success";
+import Subscription from "../components/agent/subscription/Subscription";
 
 export default function AgentPages({ page }) {
-  const { id } = useParams();
+  const { id, invoiceId } = useParams();
 
   const [responseMessage, setResponseMessage] = useState();
 
@@ -71,11 +72,17 @@ export default function AgentPages({ page }) {
     case "invoice":
       pageTitle = "Invoice";
       ComponentToRender = InvoicePage;
+      componentProps.invoiceId = invoiceId; 
       break;
 
     case "paid-services":
       pageTitle = "Paid Services";
       ComponentToRender = PaidServices;
+      break;
+
+    case "subscription":
+      pageTitle = "Subscription";
+      ComponentToRender = Subscription;
       break;
 
     case "analytics-page":

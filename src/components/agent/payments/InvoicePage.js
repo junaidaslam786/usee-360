@@ -1,34 +1,34 @@
-// // InvoicePage.js
-// import React from 'react';
-// import { useLocation, Link } from 'react-router-dom';
-// import { getUserDetailsFromJwt } from '../../../utils'; // Update the import path as needed
+import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
+import StripeService from "../../../services/agent/stripe-service";
 
-// const InvoicePage = () => {
-//   const location = useLocation();
-//   const userDetails = getUserDetailsFromJwt();
-
-//   // You would also pass the invoice details to this page after the purchase
-//   const { invoiceDetails } = location.state || {};
-
-//   return (
-//     <div>
-//       <h1>Invoice</h1>
-//       <p>Trader Name: {userDetails?.name}</p>
-//       <p>Trader ID: {userDetails?.id}</p>
-//       <p>Email: {userDetails?.email}</p>
-//       {/* ...Other details... */}
-//       <p>Total Amount Paid: ${invoiceDetails?.totalAmount}</p>
-//       {/* Include a Link to go back to the dashboard or another relevant page */}
-//       <Link to="/agent/dashboard">Back to Dashboard</Link>
-//     </div>
-//   );
-// };
-
-// export default InvoicePage;
-
-import React from "react";
 
 const InvoicePage = () => {
+  const [invoice, setInvoice] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { invoiceId } = useParams();
+
+  useEffect(() => {
+    console.log('Invoice ID:', invoiceId); // Check if invoiceId is correct
+    const fetchInvoiceDetails = async () => {
+      try {
+        const invoiceDetails = await StripeService.getInvoiceDetails(invoiceId);
+        console.log('Invoice Details:', invoiceDetails); // Check the response
+        setInvoice(invoiceDetails.invoice);
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch invoice details');
+        setLoading(false);
+      }
+    };
+
+    if (invoiceId) {
+      fetchInvoiceDetails();
+    }
+  }, [invoiceId]);
+
+
   const styles = {
     invoiceContainer: {
       maxWidth: "600px",
@@ -76,17 +76,26 @@ const InvoicePage = () => {
     },
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  // Formatting the Unix timestamp to a readable date
+  const formattedDate = invoice ? new Date(invoice.created * 1000).toLocaleDateString() : '';
+
+  // Extracting line item details
+  const lineItem = invoice?.lines?.data[0];
+  const quantity = lineItem?.quantity;
+  const pricePerUnit = lineItem?.price.unit_amount / 100; // Assuming the amount is in cents
+  const totalAmount = invoice?.amount_paid / 100; // Assuming the amount is in cents
+
   return (
     <div>
       <h1>Invoice</h1>
       <div style={styles.invoiceContainer}>
         <header style={styles.invoiceHeader}>
           <div style={styles.invoiceDetails}>
-            <p><b>Trader Name:</b> Maamy Khan</p>
-            <p><b>Trader ID:</b> 4511541215</p>
-          </div>
-          <div>
-            <p style={styles.date}><b>Invoice Date:</b> 23:23:23</p>
+            <p><b>Date:</b> {formattedDate}</p>
+            <p><b>Total Amount Paid:</b> ${totalAmount}</p>
           </div>
         </header>
         <section style={styles.invoiceBody}>
@@ -95,41 +104,20 @@ const InvoicePage = () => {
               <tr>
                 <th style={styles.tableHeader}>Description</th>
                 <th style={styles.tableHeader}>Quantity</th>
-                <th style={styles.tableHeader}>Price</th>
+                <th style={styles.tableHeader}>Price per Unit</th>
                 <th style={styles.tableHeader}>Total</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={styles.tableData}>A very good item</td>
-                <td style={styles.tableData}>7</td>
-                <td style={styles.tableData}>78</td>
-                <td style={styles.tableData}>545</td>
-              </tr>
-              <tr>
-                <td style={styles.tableData}>A very good item</td>
-                <td style={styles.tableData}>7</td>
-                <td style={styles.tableData}>78</td>
-                <td style={styles.tableData}>545</td>
-              </tr>
-              <tr>
-                <td style={styles.tableData}>A very good item</td>
-                <td style={styles.tableData}>7</td>
-                <td style={styles.tableData}>78</td>
-                <td style={styles.tableData}>545</td>
-              </tr>
-              <tr>
-                <td style={styles.tableData}>A very good item</td>
-                <td style={styles.tableData}>7</td>
-                <td style={styles.tableData}>78</td>
-                <td style={styles.tableData}>545</td>
+                <td style={styles.tableData}>{lineItem?.description}</td>
+                <td style={styles.tableData}>{quantity}</td>
+                <td style={styles.tableData}>${pricePerUnit}</td>
+                <td style={styles.tableData}>${totalAmount}</td>
               </tr>
             </tbody>
           </table>
         </section>
-        <footer style={styles.invoiceFooter}>
-          <p>Total due: $1 tarzan</p>
-        </footer>
       </div>
     </div>
   );

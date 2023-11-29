@@ -1,38 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './PaidServices.css'; // Importing the CSS file
 
-const PaidServices = () => {
-  const tableData = [
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-    { id: 'video call', token: 1 },
-  ];
+const PaidServices = ({ servicesType }) => {
+  const [services, setServices] = useState([
+    {
+      id: servicesType === 'paid' ? 'video call' : 'free call', 
+      name: servicesType === 'paid' ? 'Video Call Service' : 'Free Call Service', 
+      tokenPrice: servicesType === 'paid' ? 1 : 0, 
+      quantity: 1, 
+      autoRenew: false
+    },
+    // Add other services as needed
+  ]);
+
+  const handleQuantityChange = (index, quantity) => {
+    const updatedServices = services.map((service, idx) => {
+      if (idx === index) {
+        return { ...service, quantity: quantity };
+      }
+      return service;
+    });
+    setServices(updatedServices);
+  };
+
+  const handleAutoRenewToggle = (index) => {
+    const updatedServices = services.map((service, idx) => {
+      if (idx === index) {
+        return { ...service, autoRenew: !service.autoRenew };
+      }
+      return service;
+    });
+    setServices(updatedServices);
+  };
+
+  const handlePurchase = (service) => {
+    console.log('Purchasing', service);
+    // Implement the purchase logic here
+  };
 
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <p style={{ fontSize: '3.5vmin', color: 'black' }}>Paid Services</p>
-      <table style={{ width: '100%', borderCollapse: 'collapse', margin: '20px 0' }}>
+    <div className={`${servicesType}-services`}>
+      <h2>{servicesType.charAt(0).toUpperCase() + servicesType.slice(1)} Services</h2>
+      <table>
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>ID</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Name</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '10vmin' }}>Action</th>
+            {/* <th>ID</th> */}
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price In Token</th>
+            <th>Total Tokens</th>
+            <th>Auto Renew</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {tableData.map((row) => (
-            <tr key={row.id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{row.id}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{row.token}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                <button style={{ backgroundColor: '#00C800', color: '#fff', padding: '5px 8px', border: 'none', borderRadius: '3px' }}>
-                  Button
+          {services.map((service, index) => (
+            <tr key={service.id}>
+              {/* <td>{service.id}</td> */}
+              <td>{service.name}</td>
+              <td>
+                <input
+                  type="number"
+                  value={service.quantity}
+                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                  min="1"
+                />
+              </td>
+              <td>{service.tokenPrice}</td>
+              <td>{service.tokenPrice * service.quantity}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={service.autoRenew}
+                  onChange={() => handleAutoRenewToggle(index)}
+                />
+              </td>
+              <td>
+                <button onClick={() => handlePurchase(service)}>
+                  Buy
                 </button>
               </td>
             </tr>

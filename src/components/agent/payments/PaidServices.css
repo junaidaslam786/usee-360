@@ -1,0 +1,57 @@
+.paid-services {
+    overflow-x: auto;
+    max-width: 100%;
+    margin: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .paid-services h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .paid-services table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+  }
+  
+  .paid-services th, .paid-services td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .paid-services th {
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  .paid-services tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .paid-services tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .paid-services input[type='number'], .paid-services input[type='checkbox'] {
+    margin: auto;
+    display: block;
+  }
+  
+  .paid-services button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .paid-services button:hover {
+    background-color: #45a049;
+  }
+  

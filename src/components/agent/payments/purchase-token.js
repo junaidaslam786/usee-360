@@ -87,8 +87,7 @@ const PurchaseToken = () => {
         try {
             const purchaseResponse = await StripeService.createCheckoutSession(
                 customerId,
-                // 'prod_OxkEHqzEUtR6P5', // The actual product ID
-                priceId, // The actual price ID
+                priceId,
                 tokenQuantity,
                 
             );
