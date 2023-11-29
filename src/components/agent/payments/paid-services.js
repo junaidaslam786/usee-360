@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import './PaidServices.css'; // Importing the CSS file
+import React, { useState } from "react";
+import "./PaidServices.css"; // Importing the CSS file
 
-const PaidServices = ({ servicesType }) => {
+const PaidServices = () => {
   const [services, setServices] = useState([
     {
-      id: servicesType === 'paid' ? 'video call' : 'free call', 
-      name: servicesType === 'paid' ? 'Video Call Service' : 'Free Call Service', 
-      tokenPrice: servicesType === 'paid' ? 1 : 0, 
-      quantity: 1, 
-      autoRenew: false
+      id: "video call",
+      name: "Video Call",
+      tokenPrice: 1,
+      quantity: 1,
+      autoRenew: false,
+      remainingFreeUnits: 5, 
+      remainingPaidUnits: 10,
     },
-    // Add other services as needed
+    
   ]);
 
   const handleQuantityChange = (index, quantity) => {
@@ -34,13 +36,13 @@ const PaidServices = ({ servicesType }) => {
   };
 
   const handlePurchase = (service) => {
-    console.log('Purchasing', service);
+    console.log("Purchasing", service);
     // Implement the purchase logic here
   };
 
   return (
-    <div className={`${servicesType}-services`}>
-      <h2>{servicesType.charAt(0).toUpperCase() + servicesType.slice(1)} Services</h2>
+    <div className="paid-services">
+      <h2>Paid Services</h2>
       <table>
         <thead>
           <tr>
@@ -49,6 +51,8 @@ const PaidServices = ({ servicesType }) => {
             <th>Quantity</th>
             <th>Price In Token</th>
             <th>Total Tokens</th>
+            <th>Remaining Free Units</th> 
+            <th>Remaining Paid Units</th>
             <th>Auto Renew</th>
             <th>Action</th>
           </tr>
@@ -62,12 +66,16 @@ const PaidServices = ({ servicesType }) => {
                 <input
                   type="number"
                   value={service.quantity}
-                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                  onChange={(e) =>
+                    handleQuantityChange(index, parseInt(e.target.value, 10))
+                  }
                   min="1"
                 />
               </td>
               <td>{service.tokenPrice}</td>
               <td>{service.tokenPrice * service.quantity}</td>
+              <td>{service.remainingFreeUnits}</td> 
+              <td>{service.remainingPaidUnits}</td> 
               <td>
                 <input
                   type="checkbox"
@@ -76,9 +84,7 @@ const PaidServices = ({ servicesType }) => {
                 />
               </td>
               <td>
-                <button onClick={() => handlePurchase(service)}>
-                  Buy
-                </button>
+                <button onClick={() => handlePurchase(service)}>Buy</button>
               </td>
             </tr>
           ))}

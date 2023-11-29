@@ -16,6 +16,15 @@ export default function Login({ type, responseHandler }) {
   const [user, setUser] = useState(null);
   const closeModal = useRef(null);
 
+  const onVerified = (user, token) => {
+    // Redirect to the dashboard or appropriate page after successful verification
+    setLoginToken(token);
+    const returnUrl =
+      new URLSearchParams(window.location.search).get("returnUrl") ||
+      `/${type}/dashboard`;
+    window.location = returnUrl;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,7 +56,8 @@ export default function Login({ type, responseHandler }) {
 
       setLoginToken(formResponse.token);
       const returnUrl =
-        new URLSearchParams(window.location.search).get("returnUrl") || `/${type}/dashboard`;
+        new URLSearchParams(window.location.search).get("returnUrl") ||
+        `/${type}/dashboard`;
       window.location = returnUrl;
     }
   };
@@ -93,9 +103,17 @@ export default function Login({ type, responseHandler }) {
             <div className="col-lg-6">
               <div className="account-login-inner">
                 {loadOTpForm ? (
-                  <OtpVerification user={user} token={token} responseHandler={responseHandler} />
+                  <OtpVerification
+                    user={user}
+                    token={token}
+                    responseHandler={responseHandler}
+                    onVerified={onVerified}
+                  />
                 ) : (
-                  <form onSubmit={handleSubmit} className="ltn__form-box contact-form-box">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="ltn__form-box contact-form-box"
+                  >
                     <input
                       type="text"
                       name="email"
@@ -110,9 +128,12 @@ export default function Login({ type, responseHandler }) {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                  
+
                     <div className="btn-wrapper mt-0">
-                      <button className="theme-btn-1 btn btn-block" type="submit">
+                      <button
+                        className="theme-btn-1 btn btn-block"
+                        type="submit"
+                      >
                         {loading ? (
                           <div className="lds-ring">
                             <div></div>
@@ -143,7 +164,10 @@ export default function Login({ type, responseHandler }) {
               <div className="account-create text-center pt-50">
                 <h4>DON'T HAVE AN ACCOUNT?</h4>
                 <div className="btn-wrapper go-top">
-                  <Link to={`/${type}/register`} className="theme-btn-1 btn black-btn">
+                  <Link
+                    to={`/${type}/register`}
+                    className="theme-btn-1 btn black-btn"
+                  >
                     CREATE ACCOUNT
                   </Link>
                 </div>
@@ -153,7 +177,11 @@ export default function Login({ type, responseHandler }) {
         </div>
       </div>
       <div className="ltn__modal-area ltn__add-to-cart-modal-area----">
-        <div className="modal fade" id="ltn_forget_password_modal" tabIndex={-1}>
+        <div
+          className="modal fade"
+          id="ltn_forget_password_modal"
+          tabIndex={-1}
+        >
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -174,8 +202,14 @@ export default function Login({ type, responseHandler }) {
                       <div className="col-12">
                         <div className="modal-product-info text-center p-0">
                           <h4>FORGET PASSWORD?</h4>
-                          <p className="added-cart"> Enter you registered email.</p>
-                          <form onSubmit={forgotPasswordSubmit} className="ltn__form-box">
+                          <p className="added-cart">
+                            {" "}
+                            Enter you registered email.
+                          </p>
+                          <form
+                            onSubmit={forgotPasswordSubmit}
+                            className="ltn__form-box"
+                          >
                             <input
                               type="email"
                               name="email"
@@ -184,7 +218,10 @@ export default function Login({ type, responseHandler }) {
                               value={forgotEmail}
                             />
                             <div className="btn-wrapper mt-0">
-                              <button className="theme-btn-1 btn btn-full-width-2" type="submit">
+                              <button
+                                className="theme-btn-1 btn btn-full-width-2"
+                                type="submit"
+                              >
                                 Submit
                               </button>
                             </div>

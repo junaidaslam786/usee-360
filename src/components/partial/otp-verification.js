@@ -9,7 +9,7 @@ import {
 import AuthService from "../../services/auth";
 import { setLoginToken } from "../../utils";
 
-export default function OtpVerification({ user, token, responseHandler }) {
+export default function OtpVerification({ user, token, responseHandler, onVerified }) {
   const [otpType, setOtpType] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingResend, setLoadingResend] = useState(false);
@@ -20,18 +20,14 @@ export default function OtpVerification({ user, token, responseHandler }) {
   const [otp, setOtp] = useState("");
 
   const renderInput = (props, index) => (
-    <input
-      className="otp-input"
-      {...props}
-      autoFocus={index === 0}
-    />
+    <input className="otp-input" {...props} autoFocus={index === 0} />
   );
-  
+
   const handleChange = (otp) => setOtp(otp);
 
   const processOtpEmail = async (e) => {
     e.preventDefault();
-    
+
     setLoading(true);
     await sendOtpEmail();
     setLoading(false);
@@ -39,7 +35,7 @@ export default function OtpVerification({ user, token, responseHandler }) {
 
   const processOtpPhoneNumber = async (e) => {
     e.preventDefault();
-    
+
     setLoading(true);
     await sendOtpPhoneNumber();
     setLoading(false);
@@ -61,7 +57,7 @@ export default function OtpVerification({ user, token, responseHandler }) {
     }
 
     return;
-  }
+  };
 
   const sendOtpPhoneNumber = async (resend = false) => {
     const auth = getAuth();
@@ -76,12 +72,18 @@ export default function OtpVerification({ user, token, responseHandler }) {
         setMinutes(1);
 
         if (!resend) {
-          window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
+          window.recaptchaVerifier = new RecaptchaVerifier(
+            "recaptcha-container",
+            {},
+            auth
+          );
           window.recaptchaVerifier.render();
         }
       })
       .catch(() => {
-        responseHandler(["Unable to send code to phone number, please try again"]);
+        responseHandler([
+          "Unable to send code to phone number, please try again",
+        ]);
       });
   };
 
@@ -100,7 +102,7 @@ export default function OtpVerification({ user, token, responseHandler }) {
       await sendOtpEmail();
     }
     setLoadingResend(false);
-  }
+  };
 
   const validateOtp = async (e) => {
     e.preventDefault();
@@ -108,8 +110,8 @@ export default function OtpVerification({ user, token, responseHandler }) {
     setLoading(true);
     let proceed = true;
     if (otpType === "phoneNumber") {
-        proceed = false;
-        await window.confirmationResult
+      proceed = false;
+      await window.confirmationResult
         .confirm(otp)
         .then(() => {
           proceed = true;
@@ -121,10 +123,13 @@ export default function OtpVerification({ user, token, responseHandler }) {
     }
 
     if (proceed) {
-      const formResponse = await AuthService.validateOtp({
-        otp,
-        type: otpType
-      }, token);
+      const formResponse = await AuthService.validateOtp(
+        {
+          otp,
+          type: otpType,
+        },
+        token
+      );
       setLoading(false);
 
       if (formResponse?.error && formResponse?.message) {
@@ -132,21 +137,36 @@ export default function OtpVerification({ user, token, responseHandler }) {
         return;
       }
 
+      // If OTP validation is successful, we now check if the user is active.
+      if (!formResponse.user.active) {
+        // If the user is not active, we stop the process and show a message.
+        setLoading(false);
+        responseHandler(
+          "Your account is not active and requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
+        );
+        // Optionally, you can redirect the user to a different page or perform some action.
+        // navigate('/some-approval-pending-page');
+        return; // Stop further execution.
+      }
+
       responseHandler("Account verified successfully.", true);
-      redirectUser(token);
+      onVerified && onVerified(formResponse.user, token);
+      // redirectUser(token);
     }
-  }
+  };
 
   const redirectUser = (token) => {
     let returnUrl;
 
     setLoginToken(token);
-    returnUrl = new URLSearchParams(window.location.search).get("returnUrl") || `/${user.userType}/dashboard`;
+    returnUrl =
+      new URLSearchParams(window.location.search).get("returnUrl") ||
+      `/${user.userType}/dashboard`;
 
-    setTimeout(() => {   
+    setTimeout(() => {
       window.location = returnUrl;
     }, 1000);
-  }
+  };
 
   useEffect(() => {
     let myInterval = setInterval(() => {
@@ -182,129 +202,130 @@ export default function OtpVerification({ user, token, responseHandler }) {
     initializeApp(firebaseConfig);
 
     const auth = getAuth();
-    window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {}, auth);
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha-container",
+      {},
+      auth
+    );
     window.recaptchaVerifier.render();
   }, []);
 
   return (
     <React.Fragment>
-      {
-        preVerificationForm ? (
-          <form
-            onSubmit={ otpType === "phoneNumber" ? processOtpPhoneNumber : processOtpEmail }
-            className="ltn__form-box contact-form-box"
-          >
-            <div className="row">
-                <label>Verify By: </label>
-                <div onChange={(e) => setOtpType(e.target.value)}>
-                    <label className="checkbox-item mr_20" >
-                      Phone Number
-                      <input type="radio" name="otpType" value="phoneNumber"/>
-                      <span className="checkmark" />
-                    </label>
-                    <label className="checkbox-item">
-                      Email Address
-                      <input type="radio" name="otpType" value="emailAddress" />
-                      <span className="checkmark" />
-                    </label>
+      {preVerificationForm ? (
+        <form
+          onSubmit={
+            otpType === "phoneNumber" ? processOtpPhoneNumber : processOtpEmail
+          }
+          className="ltn__form-box contact-form-box"
+        >
+          <div className="row">
+            <label>Verify By: </label>
+            <div onChange={(e) => setOtpType(e.target.value)}>
+              <label className="checkbox-item mr_20">
+                Phone Number
+                <input type="radio" name="otpType" value="phoneNumber" />
+                <span className="checkmark" />
+              </label>
+              <label className="checkbox-item">
+                Email Address
+                <input type="radio" name="otpType" value="emailAddress" />
+                <span className="checkmark" />
+              </label>
+            </div>
+          </div>
+          <div id="recaptcha-container" className="mt-4 mb-4"></div>
+          <div className="btn-wrapper text-center">
+            <button
+              className="theme-btn-1 btn reverse-color btn-block"
+              type="submit"
+            >
+              {loading ? (
+                <div className="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
                 </div>
-            </div>
-            <div id="recaptcha-container" className="mt-4 mb-4"></div>
-            <div className="btn-wrapper text-center">
-                <button
-                  className="theme-btn-1 btn reverse-color btn-block"
-                  type="submit"
-                >
-                  {
-                    loading ? (
-                      <div className="lds-ring">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
-                    ) : (
-                      "Send"
-                    )
-                  }
-                </button>
-            </div>
-          </form>
-        ) : null
-      }
+              ) : (
+                "Send"
+              )}
+            </button>
+          </div>
+        </form>
+      ) : null}
 
-      {
-        validationForm ? (
-          <form
-            className="ltn__form-box contact-form-box digit-group"
-            onSubmit={validateOtp}
-          >
-            <p className="text-center">Validate OTP (One Time Passcode)</p>
-            <div className="d-flex justify-content-center otp">
-              <OtpInput
-                value={otp}
-                onChange={handleChange}
-                numInputs={6}
-                isInputNum={true}
-                inputMode="numeric"
-                separator={<span>-</span>}
-                renderInput={renderInput}
-              />
+      {validationForm ? (
+        <form
+          className="ltn__form-box contact-form-box digit-group"
+          onSubmit={validateOtp}
+        >
+          <p className="text-center">Validate OTP (One Time Passcode)</p>
+          <div className="d-flex justify-content-center otp">
+            <OtpInput
+              value={otp}
+              onChange={handleChange}
+              numInputs={6}
+              isInputNum={true}
+              inputMode="numeric"
+              separator={<span>-</span>}
+              renderInput={renderInput}
+            />
+          </div>
+          {otpType === "phoneNumber" ? (
+            <div className="mt-4 mb-4" style={{ textAlign: "center" }}>
+              <div
+                id="recaptcha-container"
+                style={{ display: "inline-block" }}
+              ></div>
             </div>
-            {otpType === "phoneNumber" ? (
-              <div className="mt-4 mb-4" style={{ textAlign: "center" }}>
-                <div id="recaptcha-container" style={{ display: "inline-block" }}></div>
-              </div>
-            ) : null}
-            <div className="btn-wrapper text-center">
-              <button
-                className="theme-btn-1 btn reverse-color btn-block"
-                type="submit"
-              >
-                {
-                  loading ? (
-                    <div className="lds-ring">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-                  ) : (
-                    "Verify"
-                  )
-                }
-              </button>
+          ) : null}
+          <div className="btn-wrapper text-center">
+            <button
+              className="theme-btn-1 btn reverse-color btn-block"
+              type="submit"
+            >
+              {loading ? (
+                <div className="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                "Verify"
+              )}
+            </button>
 
-              <button
-                disabled={!(minutes === 0 && seconds === 0)}
-                className="btn btn-effect-3 btn-white"
-                type="button"
-                onClick={resendOtp}
-              >
-                {
-                  loadingResend ? (
-                    <div className="lds-ring">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-                  ) : (
-                    "Resend OTP"
-                  )
-                }
-              </button>
+            <button
+              disabled={!(minutes === 0 && seconds === 0)}
+              className="btn btn-effect-3 btn-white"
+              type="button"
+              onClick={resendOtp}
+            >
+              {loadingResend ? (
+                <div className="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                "Resend OTP"
+              )}
+            </button>
 
-              {
-               !(minutes === 0 && seconds === 0) && (
-                <h5 className="text-center mt-20">
-                  <span>Time Remaining: {minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
-                </h5>
-              )} 
-            </div>
-          </form>
-        ) : null
-      }
+            {!(minutes === 0 && seconds === 0) && (
+              <h5 className="text-center mt-20">
+                <span>
+                  Time Remaining: {minutes}:
+                  {seconds < 10 ? "0" + seconds : seconds}
+                </span>
+              </h5>
+            )}
+          </div>
+        </form>
+      ) : null}
     </React.Fragment>
   );
 }
