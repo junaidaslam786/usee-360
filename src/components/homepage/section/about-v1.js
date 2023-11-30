@@ -13,7 +13,7 @@ class AboutV1 extends Component {
               <div className="about-us-img-wrap about-img-left">
                 <img
                   src={`${publicUrl}assets/img/others/7.png`}
-                  alt="About Us Image"
+                  alt=""
                 />
               </div>
             </div>

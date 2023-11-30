@@ -115,7 +115,7 @@ export default function Completed(props) {
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
-      await loadAllList(1);
+      await loadAllList();
     };
 
     fetchAllAppointments();

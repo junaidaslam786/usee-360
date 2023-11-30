@@ -13,6 +13,7 @@ const Slideshow = (props) => {
             <img
             className="w_100"
               src={`${process.env.REACT_APP_API_URL}/${fadeImage.image}`}
+              alt=""
             />
           </div>
         ))}

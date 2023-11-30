@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./index.css";
 import { formatSlotFromTime } from "../../../utils";
 import AvailabilityService from "../../../services/agent/availability";
@@ -21,7 +21,7 @@ export default function Index(props) {
     }
   };
 
-  const loadAllList = async () => {
+  const loadAllList = useCallback(async () => {
     let response = await AvailabilityService.list();
     if (response?.error && response?.message) {
       props.responseHandler(response.message);
@@ -119,7 +119,7 @@ export default function Index(props) {
 
     setTimeSlots(currentTimeSlots);
     setTimeOptions(assocArray);
-  };
+  },[]);
 
   useEffect(() => {
     const fetchAvailabilitySlots = async () => {

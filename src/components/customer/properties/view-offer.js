@@ -142,7 +142,7 @@ export default function ViewOffer(props) {
             });
             setSnagListFormData(initialSnagListFormData);
         }
-    }, [snagOfferId]);
+    }, [snagOfferId, list]);
 
     return (
         <div>

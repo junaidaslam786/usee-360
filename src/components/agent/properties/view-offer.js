@@ -140,7 +140,7 @@ export default function ViewOffer(props) {
 
             setSnagListFormData(initialSnagListFormData);
         }
-    }, [snagOfferId]);
+    }, [snagOfferId, list]);
 
     return (
         <div className="ltn__myaccount-tab-content-inner">

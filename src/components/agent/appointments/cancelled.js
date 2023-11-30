@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import {
@@ -24,7 +24,7 @@ export default function Cancelled(props) {
   const [notes, setNotes] = useState("");
   const openViewModal = useRef(null);
 
-  const loadAllList = async (page = 1) => {
+  const loadAllList = useCallback(async (page = 1) => {
     const response = await AppointmentService.list({
       type: APPOINTMENT_STATUS.CANCELLED,
       page,
@@ -34,7 +34,7 @@ export default function Cancelled(props) {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
+  },[props]);
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {

@@ -13,7 +13,7 @@ class ContactInfo extends Component {
                 <div className="ltn__contact-address-icon">
                   <img
                     src={`${publicUrl}assets/img/icons/10.png`}
-                    alt="Icon Image"
+                    alt=""
                   />
                 </div>
                 <h3>Email Address</h3>

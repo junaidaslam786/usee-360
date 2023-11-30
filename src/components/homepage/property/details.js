@@ -139,7 +139,7 @@ export default function PropertyDetails(props) {
       markPropertyViewed();
       fetchAllWishlistProperties();
     }
-  }, []);
+  }, [loadProperty, params.id, token]);
 
   return (
     <div className="ltn__shop-details-area pb-10 mt-100">
@@ -154,7 +154,7 @@ export default function PropertyDetails(props) {
                   <img
                     className="mb-50 detail-feature-image"
                     src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-                    alt="#"
+                    alt={property.title || "Property image"}
                   />
                 )}
                 <ul>
@@ -243,29 +243,29 @@ export default function PropertyDetails(props) {
                 <div className="ltn__author-widget-inner text-center">
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${agentImage}`}
-                    alt="Image"
+                    alt=""
                   />
                   <h5>{agentName}</h5>
                 </div>
               </div>
               <div>
-                <a onClick={makeAppointmentHandler} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</a>
-                <a onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</a>
-                <a
+                <button onClick={makeAppointmentHandler} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</button>
+                <button onClick={makeOfferHandler} className="btn theme-btn-3 mb-3 w-100">Make Offer</button>
+                <button
                   className="btn theme-btn-3 mb-3 w-100"
                   onClick={() => { isAddedToWishlist(property.id) ? removeWishList(property.id) : addToWishList(property.id); }}
                 >
                   { isAddedToWishlist(property.id) ? "Remove from wishlist" : "Add to wishlist" }
-                </a>
+                </button>
                 {
                   (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
-                    <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3 w-100">View Tour</a>
+                    <a href={property.virtualTourUrl} target="_blank" rel="noopener noreferrer" className="btn theme-btn-3 mb-3 w-100">View Tour</a>
                   )
                 }
                 {
                   propertyDocuments && (
                     propertyDocuments.map((element, index) => (
-                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-3 mb-3 w-100" key={index}>View {element.title}</a>
+                      <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" rel="noopener noreferrer" className="btn theme-btn-3 mb-3 w-100" key={index}>View {element.title}</a>
                     )
                   ))
                 }

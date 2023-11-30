@@ -1,57 +1,106 @@
 .paid-services {
-    overflow-x: auto;
-    max-width: 100%;
-    margin: 20px;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .paid-services h2 {
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .paid-services table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: auto;
-  }
-  
-  .paid-services th, .paid-services td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .paid-services th {
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  
-  .paid-services tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .paid-services tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .paid-services input[type='number'], .paid-services input[type='checkbox'] {
-    margin: auto;
-    display: block;
-  }
-  
-  .paid-services button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .paid-services button:hover {
-    background-color: #45a049;
-  }
-  
+  overflow-x: auto; /* Allows for horizontal scrolling if needed */
+  max-width: 100%;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.paid-services h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  color: green;
+  margin: 10px 0;
+}
+
+.paid-services-table-wrapper {
+  max-width: 100%; /* Adjust as needed */
+  overflow-x: auto; /* Horizontal scroll for the table */
+}
+
+.paid-services table {
+  width: 100%; /* Adjusted from 100vw to 100% */
+  border-collapse: collapse;
+}
+
+.paid-services th, .paid-services td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.paid-services th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.paid-services tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.paid-services tr:hover {
+  background-color: #f1f1f1;
+}
+
+.paid-services input[type='number'] {
+  margin: auto;
+  display: block;
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: none; /* Safari and Chrome */
+  padding: 0; /* Adjust padding to make text visible */
+  width: 50px; 
+  text-align: center; /* Center the text inside input field */
+}
+
+.paid-services input[type='number']::-webkit-inner-spin-button,
+.paid-services input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.paid-services button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.paid-services button:hover {
+  background-color: #45a049;
+}
+
+.service-footnotes {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-footnotes h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.service-footnotes ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  color: #555;
+}
+
+.service-footnotes ul li {
+  margin-bottom: 10px;
+}
+
+.service-footnotes p {
+  margin-top: 15px;
+  color: #666;
+  font-style: italic;
+}

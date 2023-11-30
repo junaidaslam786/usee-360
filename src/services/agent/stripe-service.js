@@ -150,25 +150,7 @@ const StripeService = {
     }
   },
 
-  // createCustomer: async (data) => {
-  //   try {
-  //     const response = await httpPost('/create-customer', data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error creating customer:', error.response?.data || error.message);
-  //     return { error: true, message: error.response?.data?.error || 'Failed to create customer' };
-  //   }
-  // },
-
-  // createInvoice: async (data) => {
-  //   try {
-  //     const response = await httpPost('/create-invoice', data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error creating invoice:', error.response?.data || error.message);
-  //     return { error: true, message: error.response?.data?.error || 'Failed to create invoice' };
-  //   }
-  // },
+  
 
   finalizeInvoice: async (data) => {
     try {
@@ -291,6 +273,43 @@ const StripeService = {
     }
   },
 
+  getAllFeatures: async () => {
+    try {
+      const response = await httpGet(`feature/list`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching features:", error.message);
+      return {
+        error: true,
+        message: error.message || "Failed to fetch features",
+      };
+    }
+  },
+
+  createTransaction: async (userId, featureId, quantity, amount, description) => {
+    try {
+      const response = await httpPost(`agent/user/${userId}/token-transaction`, {
+        featureId,
+        quantity,
+        amount,
+        description,
+      });
+
+      if (response?.error) {
+        // Handle error appropriately
+        response.error.message =
+          response.error.message || "Failed to create token transaction";
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Error creating token transaction:", error.message);
+      // Return an error object or throw it depending on how you want to handle errors
+      return { success: false, message: error.message };
+    }
+  },
+
+
   getUserTokens: async (userId) => {
     try {
       const response = await httpGet(`agent/user/${userId}/tokens`);
@@ -343,6 +362,28 @@ const StripeService = {
       };
     }
   },
+
+  subscribeUserToFeatures: async (userId, subscriptionId, featureIds) => {
+    try {
+      const response = await httpPost(`agent/user/${userId}/subscribe`, {
+        subscriptionId,
+        featureIds,
+      });
+
+      if (response?.error) {
+        // Handle error appropriately
+        console.error('Error in subscribing user to features:', response.message);
+        return { success: false, message: response.message };
+      }
+
+      console.log('User subscribed successfully:', response);
+      return { success: true, message: 'User subscribed successfully' };
+    } catch (error) {
+      console.error('Error in subscribing user to features:', error);
+      return { success: false, message: 'An error occurred during subscription.' };
+    }
+  }
+
 };
 
 export default StripeService;

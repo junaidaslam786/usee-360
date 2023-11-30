@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   getUserDetailsFromJwt,
@@ -25,7 +25,7 @@ export default function Upcoming(props) {
   const userDetail = getUserDetailsFromJwt();
   const history = useHistory();
 
-  const loadAllList = async (page = 1) => {
+  const loadAllList = useCallback(async (page = 1) => {
     let appendQuery = props?.selectedFilter
       ? `&filter=${props?.selectedFilter}`
       : "";
@@ -48,7 +48,7 @@ export default function Upcoming(props) {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
+  }, [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]);
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -142,7 +142,7 @@ export default function Upcoming(props) {
     };
 
     fetchAllAppointments();
-  }, [props]);
+  }, [props, loadAllList]);
 
   return (
     <React.Fragment>

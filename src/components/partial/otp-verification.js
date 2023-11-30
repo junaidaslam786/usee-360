@@ -155,18 +155,18 @@ export default function OtpVerification({ user, token, responseHandler, onVerifi
     }
   };
 
-  const redirectUser = (token) => {
-    let returnUrl;
+  // const redirectUser = (token) => {
+  //   let returnUrl;
 
-    setLoginToken(token);
-    returnUrl =
-      new URLSearchParams(window.location.search).get("returnUrl") ||
-      `/${user.userType}/dashboard`;
+  //   setLoginToken(token);
+  //   returnUrl =
+  //     new URLSearchParams(window.location.search).get("returnUrl") ||
+  //     `/${user.userType}/dashboard`;
 
-    setTimeout(() => {
-      window.location = returnUrl;
-    }, 1000);
-  };
+  //   setTimeout(() => {
+  //     window.location = returnUrl;
+  //   }, 1000);
+  // };
 
   useEffect(() => {
     let myInterval = setInterval(() => {

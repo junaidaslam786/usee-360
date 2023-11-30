@@ -12,7 +12,7 @@ class AboutV5 extends Component {
               <div className="about-us-img-wrap ltn__img-shape-left  about-img-left">
                 <img
                   src={`${publicUrl}assets/img/service/11.jpg`}
-                  alt="Image"
+                  alt=""
                 />
               </div>
             </div>
