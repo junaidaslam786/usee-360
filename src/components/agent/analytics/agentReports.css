@@ -1,0 +1,52 @@
+/* AgentReport.css */
+
+.agent-report-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .agent-report-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 40px;
+  }
+  
+  .agent-report-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+  
+  .agent-report-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .agent-report-table th, .agent-report-table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .agent-report-table th {
+    background-color: #f8f8f8;
+  }
+  
+  .agent-report-chart {
+    margin-bottom: 20px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .agent-report-container {
+      padding: 10px;
+    }
+  
+    .agent-report-title {
+      font-size: 1.5rem;
+    }
+  }
+  

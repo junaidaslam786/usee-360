@@ -31,6 +31,24 @@ const AnalyticsPage = () => {
               API Subscription
             </Link>
           </li>
+          <li style={{ listStyleType: "none" }}>
+            <Link to="/agent/reports">
+              <i
+                style={{ marginRight: "1vmin" }}
+                class="fa-solid fa-bag-shopping"
+              ></i>
+              Reports
+            </Link>
+          </li>
+          <li style={{ listStyleType: "none" }}>
+            <Link to="/agent/property-visits-analytics">
+              <i
+                style={{ marginRight: "1vmin" }}
+                class="fa-solid fa-bag-shopping"
+              ></i>
+              Property Visits
+            </Link>
+          </li>
         </ul>
       </nav>
     </div>

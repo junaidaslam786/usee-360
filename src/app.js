@@ -336,6 +336,14 @@ const App = () => {
                 component={() => <AgentPages page="analytics-page" />}
               />
               <AgentRoute
+                path="/agent/reports"
+                component={() => <AgentPages page="reports" />}
+              />
+              <AgentRoute
+                path="/agent/property-visits-analytics"
+                component={() => <AgentPages page="property-visits-analytics" />}
+              />
+              <AgentRoute
                 path="/agent/property-listing"
                 component={() => <AgentPages page="property-listing" />}
               />

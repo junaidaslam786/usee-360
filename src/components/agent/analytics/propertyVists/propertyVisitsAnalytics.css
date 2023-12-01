@@ -1,0 +1,52 @@
+/* PropertyVisitAnalytics.css */
+
+.property-visit-analytics {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .analytics-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  
+  .analytics-card h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .analytics-table th, .analytics-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .analytics-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+  }
+  
+  .analytics-table tr:hover {
+    background-color: #f0f0f0;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .property-visit-analytics {
+      padding: 10px;
+    }
+  
+    .analytics-card h2 {
+      font-size: 1.2rem;
+    }
+  }
+  

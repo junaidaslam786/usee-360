@@ -31,6 +31,8 @@ import APISubscription from "../components/agent/analytics/APISubscription";
 import PropertyListing from "../components/agent/analytics/PropertyListing";
 import SuccessComponent from "../components/agent/payments/Success";
 import Subscription from "../components/agent/subscription/Subscription";
+import AgentReport from "../components/agent/analytics/agentReport";
+import PropertyVisitAnalytics from "../components/agent/analytics/propertyVists/propertyVisitsAnalytics";
 
 export default function AgentPages({ page }) {
   const { id, invoiceId } = useParams();
@@ -88,6 +90,16 @@ export default function AgentPages({ page }) {
     case "analytics-page":
       pageTitle = "Analytics Page";
       ComponentToRender = AnalyticsPage;
+      break;
+
+    case "reports":
+      pageTitle = "Reports";
+      ComponentToRender = AgentReport;
+      break;
+
+    case "property-visits-analytics":
+      pageTitle = "Property Visits Analytics";
+      ComponentToRender = PropertyVisitAnalytics;
       break;
 
     case "success":
