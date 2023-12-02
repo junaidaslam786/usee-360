@@ -2,40 +2,94 @@ import React, { useEffect, useState } from "react";
 import "./PaidServices.css"; // Importing the CSS file
 import StripeService from "../../../services/agent/stripe-service";
 import { getUserDetailsFromJwt } from "../../../utils";
+import { toast } from "react-toastify";
 
 const PaidServices = () => {
   const [services, setServices] = useState([]);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [subscriptionStatus, setSubscriptionStatus] = useState({});
+  const [userSubscriptions, setUserSubscriptions] = useState({});
 
   const userDetails = getUserDetailsFromJwt();
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await StripeService.getAllFeatures();
-        console.log("Response", response);
-        if (response.data) {
-          const formattedServices = response.data.map((service) => ({
-            id: service.id,
-            name: service.name,
-            tokenPrice: service.tokensPerUnit,
-            quantity: 1, // Default quantity
-            autoRenew: false,
-            remainingFreeUnits: service.freeUnits,
-            remainingPaidUnits: service.totalUnits - service.freeUnits,
-          }));
-          setServices(formattedServices);
-        }
-      } catch (error) {
-        console.error("Errir fetching services", error.message);
+  const fetchSubscriptionDetails = async () => {
+    try {
+      const response = await StripeService.getUserSubscriptionDetails(
+        userDetails.id
+      );
+      if (response.data && response.data.userSubscriptions) {
+        const subscriptionMap = {};
+        const updatedSubscriptionStatus = {};
+
+        response.data.userSubscriptions.forEach((subscription) => {
+          const featureId = subscription.feature.id;
+          subscriptionMap[featureId] = subscription;
+
+          // Update subscription status based on active status
+          updatedSubscriptionStatus[featureId] =
+            subscription.status === "active";
+        });
+
+        // Merge subscription details into services and update subscription status
+        setServices((prevServices) =>
+          prevServices.map((service) => {
+            const subscription = subscriptionMap[service.id];
+            if (subscription) {
+              return {
+                ...service,
+                remainingFreeUnits: subscription.freeRemainingUnits,
+                remainingPaidUnits: subscription.paidRemainingUnits,
+              };
+            }
+            return service;
+          })
+        );
+
+        setUserSubscriptions(subscriptionMap);
+        setSubscriptionStatus(updatedSubscriptionStatus);
       }
+    } catch (error) {
+      console.error("Error fetching subscription details", error.message);
+    }
+  };
+
+  const fetchServices = async () => {
+    try {
+      const response = await StripeService.getAllFeatures();
+      console.log("Response", response);
+      if (response.data) {
+        const formattedServices = response.data.map((service) => ({
+          id: service.id,
+          name: service.name,
+          tokenPrice: service.tokensPerUnit,
+          quantity: 1, // Default quantity
+          autoRenew: false,
+          remainingFreeUnits: service.freeUnits,
+          remainingPaidUnits: service.totalUnits - service.freeUnits,
+        }));
+        setServices(formattedServices);
+      }
+    } catch (error) {
+      console.error("Error fetching services", error.message);
+    }
+  };
+
+  useEffect(() => {
+    const initializeData = async () => {
+      await fetchServices();
+      await fetchSubscriptionDetails(); // Fetch and set subscription status on mount
     };
-    fetchServices();
+
+    initializeData();
   }, []);
 
   const handleSubscribe = async (serviceId) => {
+    // Check if already subscribed
+    if (subscriptionStatus[serviceId]) {
+      console.log("Already subscribed to this feature");
+      return;
+    }
     try {
       const response = await StripeService.subscribeUserToFeatures(
         userDetails.id,
@@ -80,10 +134,7 @@ const PaidServices = () => {
   };
 
   const handlePurchase = async (service) => {
-    console.log("Purchasing", service);
-
     try {
-      // Assuming 'service.id' is the tokenId and 'service.quantity' is the quantity
       const totalAmount = service.tokenPrice * service.quantity;
       const response = await StripeService.createTransaction(
         userDetails.id,
@@ -93,17 +144,22 @@ const PaidServices = () => {
         `Used for ${service.name}` // Example description
       );
 
-      if (response?.success) {
+      // Check if response contains the expected data (e.g., 'id' field)
+      if (response) {
         console.log("Purchase successful", response);
         setPurchaseSuccess(true);
-        setSuccessMessage("You have purchased the service successfully.");
+        setSuccessMessage(`You have successfully purchased ${service.name}.`);
+        toast.success(`You have successfully purchased ${service.name}.`);
       } else {
-        console.error("Purchase failed", response.message);
-        // Handle the failed purchase here (e.g., show an error message)
+        console.error(
+          "Purchase failed",
+          "Response does not contain expected data"
+        );
+        toast.error(`Purchase failed: Response does not contain expected data`);
       }
     } catch (error) {
       console.error("Error during purchase", error.message);
-      // Handle any errors here
+      toast.error(`Error during purchase: ${error.message}`);
     }
   };
 
@@ -130,46 +186,53 @@ const PaidServices = () => {
             </tr>
           </thead>
           <tbody>
-            {services.map((service, index) => (
-              <tr key={service.id}>
-                {/* <td>{service.id}</td> */}
-                <td>
-                  <button
-                    onClick={() => handleSubscribe(service.id)}
-                    disabled={subscriptionStatus[service.id]}
-                  >
-                    {subscriptionStatus[service.id]
-                      ? "Subscribed"
-                      : "Subscribe"}
-                  </button>
-                </td>
-                <td>{service.name}</td>
-                <td>
-                  <input
-                    type="number"
-                    value={service.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(index, parseInt(e.target.value, 10))
-                    }
-                    min="1"
-                  />
-                </td>
-                <td>{service.tokenPrice}</td>
-                <td>{service.tokenPrice * service.quantity}</td>
-                <td>{service.remainingFreeUnits}</td>
-                <td>{service.remainingPaidUnits}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={service.autoRenew}
-                    onChange={() => handleAutoRenewToggle(index)}
-                  />
-                </td>
-                <td>
-                  <button onClick={() => handlePurchase(service)}>Buy</button>
-                </td>
-              </tr>
-            ))}
+            {services.map((service, index) => {
+              const isSubscribed =
+                subscriptionStatus[service.id] ||
+                (userSubscriptions[service.id] &&
+                  userSubscriptions[service.id].status === "active");
+
+              return (
+                <tr key={service.id}>
+                  <td>
+                    <button
+                      onClick={() => handleSubscribe(service.id)}
+                      disabled={isSubscribed}
+                    >
+                      {isSubscribed ? "Subscribed" : "Subscribe"}
+                    </button>
+                  </td>
+                  <td>{service.name}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={service.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          index,
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                      min="1"
+                    />
+                  </td>
+                  <td>{service.tokenPrice}</td>
+                  <td>{service.tokenPrice * service.quantity}</td>
+                  <td>{service.remainingFreeUnits}</td>
+                  <td>{service.remainingPaidUnits}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={service.autoRenew}
+                      onChange={() => handleAutoRenewToggle(index)}
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => handlePurchase(service)}>Buy</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

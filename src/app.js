@@ -14,6 +14,8 @@ import {
   removeLoginToken,
   setMomentDefaultTimezone,
 } from "./utils";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Home from "./pages/home";
 import Services from "./pages/services";
@@ -29,8 +31,8 @@ import IframePropertyGrid from "./components/homepage/iframe/grid";
 import HomePages from "./pages";
 import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 import { AuthProvider } from "./components/auth/AuthContext";
 
 const userDetail = getUserDetailsFromJwt();
@@ -163,6 +165,7 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
 const App = () => {
   return (
     <BrowserRouter basename="/">
+      <ToastContainer />
       <div>
         <AuthProvider>
           

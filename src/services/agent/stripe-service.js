@@ -150,8 +150,6 @@ const StripeService = {
     }
   },
 
-  
-
   finalizeInvoice: async (data) => {
     try {
       const response = await httpPost("/finalize-invoice", data);
@@ -286,14 +284,24 @@ const StripeService = {
     }
   },
 
-  createTransaction: async (userId, featureId, quantity, amount, description) => {
+  createTransaction: async (
+    userId,
+    featureId,
+    quantity,
+    amount,
+    description
+  ) => {
     try {
-      const response = await httpPost(`agent/user/${userId}/token-transaction`, {
-        featureId,
-        quantity,
-        amount,
-        description,
-      });
+      const response = await httpPost(
+        `agent/user/${userId}/token-transaction`,
+        {
+          userId,
+          featureId,
+          quantity,
+          amount,
+          description,
+        }
+      );
 
       if (response?.error) {
         // Handle error appropriately
@@ -309,6 +317,28 @@ const StripeService = {
     }
   },
 
+  getUserSubscriptionDetails: async (userId) => {
+    try {
+      
+      const response = await httpGet(`agent/user/${userId}/subscriptions`);
+      if (response?.error) {
+        // Handle error appropriately
+        return {
+          error: true,
+          message:
+            response.error.message ||
+            "Failed to fetch user subscription details",
+        };
+      }
+      return response;
+    } catch (error) {
+      console.error("Error fetching user subscription details:", error);
+      return {
+        error: true,
+        message: "Failed to fetch user subscription details",
+      };
+    }
+  },
 
   getUserTokens: async (userId) => {
     try {
@@ -372,18 +402,23 @@ const StripeService = {
 
       if (response?.error) {
         // Handle error appropriately
-        console.error('Error in subscribing user to features:', response.message);
+        console.error(
+          "Error in subscribing user to features:",
+          response.message
+        );
         return { success: false, message: response.message };
       }
 
-      console.log('User subscribed successfully:', response);
-      return { success: true, message: 'User subscribed successfully' };
+      console.log("User subscribed successfully:", response);
+      return { success: true, message: "User subscribed successfully" };
     } catch (error) {
-      console.error('Error in subscribing user to features:', error);
-      return { success: false, message: 'An error occurred during subscription.' };
+      console.error("Error in subscribing user to features:", error);
+      return {
+        success: false,
+        message: "An error occurred during subscription.",
+      };
     }
-  }
-
+  },
 };
 
 export default StripeService;
