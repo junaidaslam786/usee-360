@@ -3,6 +3,7 @@ import StripeService from "../../../services/agent/stripe-service";
 import { useHistory } from "react-router-dom";
 import profileImg from "../../../logo192.png";
 import { getUserDetailsFromJwt } from "../../../utils";
+import { Container, Table, Button, Alert } from "react-bootstrap";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faEye } from '@fortawesome/free-solid-svg-icons';
 
@@ -66,57 +67,46 @@ const Wallet = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <i
-          className="fa fa-wallet"
-          style={{ fontSize: "24px", marginRight: "10px" }}
-        ></i>
-        <h2>My Wallet</h2>
-      </div>
+    <Container className="text-center mt-4">
+      {/* <img src={profileImg} alt="Profile" style={{ borderRadius: "50%" }} /> */}
+      <h2 className="mt-2">My Wallet</h2>
       <h3>Total Tokens: {totalTokens}</h3>
-      {error && <p>Error: {error}</p>}
-      <table style={tableStyle}>
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <Table striped bordered hover className="mt-4">
         <thead>
           <tr>
-            <th style={thStyle}>Quantity</th>
-            <th style={thStyle}>Price</th>
-            <th style={thStyle}>Total Amount</th>
-            <th style={thStyle}>Remaining Amount</th>
-            <th style={thStyle}>Acquired Date</th>
-            <th style={thStyle}>Action</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total Amount</th>
+            <th>Remaining Amount</th>
+            <th>Acquired Date</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {tokens.map((token) => (
             <tr key={token.id}>
-              <td style={tdStyle}>{token.quantity}</td>
-              <td style={tdStyle}>{token.price}</td>
-              <td style={tdStyle}>{token.totalAmount}</td>
-              <td style={tdStyle}>{token.remainingAmount}</td>
-              <td style={tdStyle}>
-                {new Date(token.acquiredDate).toLocaleDateString()}
-              </td>
-              <td style={tdStyle}>
+              <td>{token.quantity}</td>
+              <td>{token.price}</td>
+              <td>{token.totalAmount}</td>
+              <td>{token.remainingAmount}</td>
+              <td>{new Date(token.acquiredDate).toLocaleDateString()}</td>
+              <td>
                 {token.stripeInvoiceId && (
-                  <button onClick={() => viewInvoice(token.stripeInvoiceId)}>
-                    {/* <i className="fa fa-eye"></i> */}
-                    view invoice
-                  </button>
+                  <Button
+                    variant="primary"
+                    onClick={() => viewInvoice(token.stripeInvoiceId)}
+                  >
+                    View Invoice
+                  </Button>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Container>
   );
 };
 

@@ -1,25 +1,70 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
-import './agentReports.css';
+import React, { useEffect, useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  PieChart,
+  Pie,
+} from "recharts";
+import "./agentReports.css";
+import AgentAnalyticsService from "../../../services/agent/analytics";
 
 const AgentReport = () => {
-  const visitData = [
-    { name: 'Property 1', visits: 12 },
-    { name: 'Property 2', visits: 19 },
-    { name: 'Property 3', visits: 7 },
-  ];
+  const [propertyVisits, setPropertyVisits] = useState([]);
+  const [offerData, setOfferData] = useState([]);
+  const [offerCounts, setOfferCounts] = useState({});
 
-  const offerData = [
-    { name: 'Property 1', offers: 3, accepted: 2, rejected: 1 },
-    { name: 'Property 2', offers: 5, accepted: 3, rejected: 2 },
-    { name: 'Property 3', offers: 2, accepted: 1, rejected: 1 },
-  ];
+  const fetchOfferData = async () => {
+    const response = await AgentAnalyticsService.getPropertyOffers(
+      "2023-01-01",
+      "2023-12-31"
+    );
+    if (response && response.data.rows) {
+      const transformedData = response.data.rows.map((row) => ({
+        name: row.product.title,
+        offers: 1, // Since each row is an offer
+        accepted: row.status === "accepted" ? 1 : 0,
+        rejected: row.status === "rejected" ? 1 : 0,
+        pending: row.status === "pending" ? 1 : 0,
+      }));
+      setOfferData(transformedData);
+      setOfferCounts({
+        accepted: response.data.acceptedOffers,
+        rejected: response.data.rejectedOffers,
+        pending: response.data.pendingOffers,
+      });
+    }
+  };
+
+  const fetchVisitData = async () => {
+    const response = await AgentAnalyticsService.getPropertyVisits(
+      "2023-01-01",
+      "2023-12-31"
+    );
+
+    if (response && response.rows) {
+      const formattedData = response.rows.map((row) => ({
+        name: row.title,
+        visits: row.productViews.length,
+      }));
+      setPropertyVisits(formattedData);
+    }
+  };
+
+  useEffect(() => {
+    fetchOfferData();
+    fetchVisitData();
+  }, []);
 
   return (
     <div className="agent-report-container">
       <h1 className="agent-report-title">Agent Report</h1>
       <div className="agent-report-card">
-        <BarChart width={600} height={300} data={visitData}>
+        <BarChart width={600} height={300} data={propertyVisits}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
@@ -32,7 +77,6 @@ const AgentReport = () => {
         <PieChart width={400} height={400}>
           <Pie
             dataKey="accepted"
-            isAnimationActive={false}
             data={offerData}
             cx={200}
             cy={200}

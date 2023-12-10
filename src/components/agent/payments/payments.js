@@ -4,6 +4,8 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import CardForm from "./CardForm";
 import UserService from "../../../services/agent/user";
 import { Link } from "react-router-dom";
+import PurchaseToken from "./purchase-token";
+import Wallet from "./Wallet";
 
 const PaymentPage = () => {
   const [showCardForm, setShowCardForm] = useState(false);
@@ -44,13 +46,13 @@ const PaymentPage = () => {
   const handleSuccessfulPayment = (response) => {
     console.log(response);
     // Handle the successful payment here (e.g., update UI, show confirmation)
+    setShowCardForm(false);
   };
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>Payment and Services</h1>
-      <nav>
-        {/* Other navigation links */}
+      {/* <nav>
         <ul>
           <li style={{ listStyleType: "none" }}>
             <Link to="/agent/purchase-token">
@@ -67,17 +69,11 @@ const PaymentPage = () => {
               Wallet
             </Link>
           </li>
-          {/* <li style={{ listStyleType: "none" }}>
-            <Link to="/agent/paid-services">
-              <i
-                style={{ marginRight: "1vmin" }}
-                class="fa-solid fa-dollar-sign"
-              ></i>
-              Paid Services
-            </Link>
-          </li> */}
         </ul>
-      </nav>
+      </nav> */}
+
+      <PurchaseToken />
+      <Wallet />
 
       {/* Button to show CardForm */}
       {!showCardForm &&
