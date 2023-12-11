@@ -133,11 +133,11 @@ const PurchaseToken = () => {
                 Purchase
               </Button>
             </Col>
-            <Col>
+            {/* <Col>
               <Link to="/agent/dashboard" className="btn btn-outline-secondary">
                 Cancel
               </Link>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       )}

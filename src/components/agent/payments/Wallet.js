@@ -69,7 +69,7 @@ const Wallet = () => {
   return (
     <Container className="text-center mt-4">
       {/* <img src={profileImg} alt="Profile" style={{ borderRadius: "50%" }} /> */}
-      <h2 className="mt-2">My Wallet</h2>
+      {/* <h2 className="mt-2">My Wallet</h2> */}
       <h3>Total Tokens: {totalTokens}</h3>
       {error && <Alert variant="danger">{error}</Alert>}
 
