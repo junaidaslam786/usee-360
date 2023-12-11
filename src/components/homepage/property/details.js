@@ -33,46 +33,50 @@ export default function PropertyDetails(props) {
   )}`;
 
   const loadProperty = useCallback(async () => {
-    const response = await HomepageService.propertyDetail(params.id);
-    if (response?.error && response?.message) {
-      props.responseHandler(response.message);
-      return;
+    try {
+      const response = await PropertyService.propertyDetail(params.id);
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
+      }
+
+      setProperty(response);
+
+      if (response?.productMetaTags) {
+        const {
+          typeMetaTag,
+          categoryTypeMetaTag,
+          unitMetaTag,
+          areaMetaTag,
+          bedroomsMetaTag,
+        } = setPropertyMetaData(response.productMetaTags);
+        setPropertyType(typeMetaTag);
+        setPropertyCategoryType(categoryTypeMetaTag);
+        setPropertyUnit(unitMetaTag);
+        setPropertyArea(areaMetaTag);
+        setPropertyBedrooms(bedroomsMetaTag);
+      }
+
+      setAgentImage(response?.user?.profileImage);
+      setAgentName(`${response?.user?.firstName} ${response?.user?.lastName}`);
+
+      if (response?.productImages?.length > 0) {
+        setPropertyImages([
+          {
+            id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            image: response.featuredImage,
+          },
+          ...response.productImages,
+        ]);
+      }
+
+      if (response?.productDocuments?.length > 0) {
+        setPropertyDocuments(response.productDocuments);
+      }
+    } catch (error) {
+      console.error("Error fetching property details:", error);
     }
-
-    setProperty(response);
-
-    if (response?.productMetaTags) {
-      const {
-        typeMetaTag,
-        categoryTypeMetaTag,
-        unitMetaTag,
-        areaMetaTag,
-        bedroomsMetaTag,
-      } = setPropertyMetaData(response.productMetaTags);
-      setPropertyType(typeMetaTag);
-      setPropertyCategoryType(categoryTypeMetaTag);
-      setPropertyUnit(unitMetaTag);
-      setPropertyArea(areaMetaTag);
-      setPropertyBedrooms(bedroomsMetaTag);
-    }
-
-    setAgentImage(response?.user?.profileImage);
-    setAgentName(`${response?.user?.firstName} ${response?.user?.lastName}`);
-
-    if (response?.productImages?.length > 0) {
-      setPropertyImages([
-        {
-          id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-          image: response.featuredImage,
-        },
-        ...response.productImages,
-      ]);
-    }
-
-    if (response?.productDocuments?.length > 0) {
-      setPropertyDocuments(response.productDocuments);
-    }
-  }, [params.id]);
+  }, [params.id, props]);
 
   const makeOfferHandler = () => {
     history.push(
@@ -121,21 +125,24 @@ export default function PropertyDetails(props) {
     [token, history, redirectPath, loadWishlistProperties]
   );
 
-  const removeWishList = useCallback(async (propertyId) => {
-    if (!token) {
-      history.push(redirectPath);
-      return;
-    }
+  const removeWishList = useCallback(
+    async (propertyId) => {
+      if (!token) {
+        history.push(redirectPath);
+        return;
+      }
 
-    const reponse = await WishlistService.removeFromWishlist(propertyId);
-    if (reponse?.error && reponse?.message) {
-      props.responseHandler(reponse.message);
-      return;
-    }
+      const reponse = await WishlistService.removeFromWishlist(propertyId);
+      if (reponse?.error && reponse?.message) {
+        props.responseHandler(reponse.message);
+        return;
+      }
 
-    props.responseHandler("Property removed from wishlist.", true);
-    await loadWishlistProperties();
-  }, [token, history, redirectPath, loadWishlistProperties]);
+      props.responseHandler("Property removed from wishlist.", true);
+      await loadWishlistProperties();
+    },
+    [token, history, redirectPath, loadWishlistProperties]
+  );
 
   const isAddedToWishlist = (propertyId) => {
     return wishlistProperties.length < 0
@@ -143,26 +150,33 @@ export default function PropertyDetails(props) {
       : wishlistProperties.find(({ productId }) => productId === propertyId);
   };
 
+  const markPropertyViewed = useCallback(async () => {
+    await PropertyService.log({
+      id: params.id,
+      logType: PRODUCT_LOG_TYPE.VIEWED,
+    });
+  }, [params.id]);
+
+  const fetchAllWishlistProperties = useCallback(async () => {
+    await loadWishlistProperties();
+  }, [loadWishlistProperties]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    loadProperty();
-
-    if (token) {
-      const markPropertyViewed = async () => {
-        await PropertyService.log({
-          id: params.id,
-          logType: PRODUCT_LOG_TYPE.VIEWED,
-        });
-      };
-
-      const fetchAllWishlistProperties = async () => {
-        await loadWishlistProperties();
-      };
-
-      markPropertyViewed();
-      fetchAllWishlistProperties();
+    if (navigator.onLine) {
+      // Check if the network is available
+      loadProperty();
+      if (token) {
+        markPropertyViewed();
+        // fetchAllWishlistProperties();
+        loadWishlistProperties();
+      }
+    } else {
+      props.responseHandler(
+        "Network unavailable. Please check your connection."
+      );
     }
-  }, [loadProperty, params.id, token]);
+  }, [loadProperty, markPropertyViewed, loadWishlistProperties, token, props]);
 
   return (
     <div className="ltn__shop-details-area pb-10 mt-100">
