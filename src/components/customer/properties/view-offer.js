@@ -39,9 +39,7 @@ export default function ViewOffer(props) {
       props.responseHandler(formResponse.message, true);
       setAmount("");
       setNotes("");
-    //   setTimeout(() => {
-    //     history.go(0);
-    //   }, 1000);
+      // Optionally redirect or reload the page
     }
   };
 
