@@ -45,6 +45,18 @@ const PropertyService = {
     return response.data;
   },
 
+  addPropertyLog: async (reqBody) => {
+    const response = await httpPost(`${apiUrlPrefix}/log`, reqBody, true);
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message =
+          ["Unable to create property log, please try again later"];
+      }
+      return response;
+    }
+    return response.data;
+  },
+
   update: async (reqBody) => {
     const response = await httpPut(`${apiUrlPrefix}/update`, reqBody, true);
 

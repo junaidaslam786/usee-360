@@ -31,6 +31,22 @@ export default function PropertyDetails(props) {
     window.location.pathname
   )}`;
 
+  const postPropertyViewLog = async (propertyId) => {
+    try {
+      const logData = {
+        id: propertyId,
+        logType: "viewed"
+      };
+
+      await PropertyService.addPropertyLog(logData);
+    } catch (error) {
+      console.error('Error posting property view log:', error);
+      // Handle the error appropriately
+    }
+  };
+
+  
+
   const loadProperty = useCallback(async () => {
     try {
       const response = await PropertyService.detail(params.id);
@@ -40,6 +56,8 @@ export default function PropertyDetails(props) {
       }
 
       setProperty(response);
+
+      postPropertyViewLog(params.id);
 
       if (response?.productMetaTags) {
         const {
@@ -162,7 +180,7 @@ export default function PropertyDetails(props) {
     // Load property details and wishlist properties if user is authenticated
     loadProperty();
     loadWishlistProperties();
-  }, [token, loadProperty, loadWishlistProperties]);
+  }, [token, loadProperty, loadWishlistProperties, history, params.id]);
 
   if (!token) {
     return null; // Or a loading indicator
