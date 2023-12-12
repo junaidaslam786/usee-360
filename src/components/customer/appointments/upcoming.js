@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { formatAppointmentDate, convertGmtToTime } from "../../../utils";
 import ViewAppointment from "./view-appointment";
@@ -12,7 +12,7 @@ export default function Upcoming(props) {
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
 
-  const loadAllList = async (page = 1) => {
+  const loadAllList = useCallback(async (page = 1) => {
     let appendQuery = props?.selectedFilter
       ? `&filter=${props?.selectedFilter}`
       : "";
@@ -32,7 +32,7 @@ export default function Upcoming(props) {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
+  }, [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]);
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -50,7 +50,7 @@ export default function Upcoming(props) {
     };
 
     fetchAllAppointments();
-  }, [props]);
+  }, [props, loadAllList ]);
 
   return (
     <div>

@@ -3,7 +3,7 @@ import UpcomingAppointments from "./upcoming";
 import CompletedAppointments from "./completed";
 import CancelledAppointments from "./cancelled";
 
-export default function List() {
+export default function List(props) {
   return (
     <div className="ltn__myaccount-tab-content-inner">
       <div className="ltn__my-properties-table table-responsive">
@@ -62,7 +62,7 @@ export default function List() {
             role="tabpanel"
             aria-labelledby="pills-upcoming-tab"
           >
-            <UpcomingAppointments />
+            <UpcomingAppointments responseHandler={props.responseHandler} />
           </div>
           <div
             className="tab-pane fade"
@@ -70,7 +70,7 @@ export default function List() {
             role="tabpanel"
             aria-labelledby="pills-completed-tab"
           >
-            <CompletedAppointments />
+            <CompletedAppointments responseHandler={props.responseHandler}/>
           </div>
           <div
             className="tab-pane fade"
@@ -78,7 +78,7 @@ export default function List() {
             role="tabpanel"
             aria-labelledby="pills-cancelled-tab"
           >
-            <CancelledAppointments />
+            <CancelledAppointments responseHandler={props.responseHandler}/>
           </div>
         </div>
       </div>

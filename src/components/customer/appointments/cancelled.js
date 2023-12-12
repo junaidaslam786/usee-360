@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { formatAppointmentDate, convertGmtToTime } from "../../../utils";
 import ViewAppointment from "./view-appointment";
@@ -6,14 +6,14 @@ import AppointmentService from "../../../services/customer/appointment";
 import { APPOINTMENT_STATUS } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
 
-export default function Cancelled() {
+export default function Cancelled(props) {
   const [currentPage, setCurrentPage] = useStateIfMounted();
   const [totalPages, setTotalPages] = useStateIfMounted();
   const [list, setList] = useStateIfMounted([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const openViewModal = useRef(null);
 
-  const loadAllList = async (page = 1) => {
+  const loadAllList = useCallback(async (page = 1) => {
     const response = await AppointmentService.list({
       type: APPOINTMENT_STATUS.CANCELLED,
       page,
@@ -23,7 +23,7 @@ export default function Cancelled() {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
+  }, [props]);
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -36,7 +36,7 @@ export default function Cancelled() {
   };
 
   useEffect(() => {
-    loadAllList();
+    // loadAllList();
 
     const fetchAllProperties = async () => {
       await loadAllList();

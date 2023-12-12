@@ -443,7 +443,7 @@ export default function Add(props) {
         </div>
       </div>
 
-      {/* <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
+      <div className="ltn__modal-area ltn__add-to-cart-modal-area timeModal">
         <div className="modal fade" id="ltn_api_code_modal" tabIndex={-1}>
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
@@ -509,7 +509,7 @@ export default function Add(props) {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
