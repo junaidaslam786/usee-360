@@ -8,15 +8,15 @@ import AgentReport from "./agentReport";
 import ReportDownload from "./Reports";
 
 const AnalyticsPage = () => {
-  useEffect(() => {
-    // const response = await AgentAnalyticsService.getTokensDetails();
+  // useEffect(() => {
+  //   // const response = await AgentAnalyticsService.getTokensDetails();
     
-    const fetchTokensDetails = async () => {
-      const response = await AgentAnalyticsService.getTokensDetails();
-      console.log(response);
-    }
-    fetchTokensDetails();
-  },[]);
+  //   const fetchTokensDetails = async () => {
+  //     const response = await AgentAnalyticsService.getTokensDetails();
+  //     console.log(response);
+  //   }
+  //   fetchTokensDetails();
+  // },[]);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -24,8 +24,8 @@ const AnalyticsPage = () => {
      
       <ReportDownload />
       <VideoCall />
-      <PropertyListing />
       <APISubscription />
+      <PropertyListing />
       <AgentReport />
 
     </div>

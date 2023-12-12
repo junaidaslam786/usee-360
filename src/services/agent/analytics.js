@@ -1,10 +1,15 @@
 import { httpGet, httpPost } from "../../rest-api";
 
 const AgentAnalyticsService = {
-  getTokensDetails: async () => {
+  getTokensDetails: async (startDate, endDate) => {
     try {
+      const queryParams = new URLSearchParams({
+        startDate,
+        endDate,
+      }).toString();
+
       const response = await httpGet(
-        "agent/analytics/tokens?start=2023-01-01&end=2023-12-31"
+        `agent/analytics/tokens?${queryParams}`
       );
       return response;
     } catch (error) {

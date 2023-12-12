@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import Slideshow from "../../homepage/section/Slideshow";
@@ -32,7 +30,6 @@ export default function PropertyDetails(props) {
   const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
     window.location.pathname
   )}`;
-
 
   const loadProperty = useCallback(async () => {
     try {
@@ -154,12 +151,23 @@ export default function PropertyDetails(props) {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    loadProperty();
-    if (token) {
-      loadWishlistProperties();
+    if (!token) {
+      history.push(
+        `/customer/login?returnUrl=${encodeURIComponent(
+          window.location.pathname
+        )}`
+      );
+      return;
     }
-  }, [loadProperty, loadWishlistProperties, token]);
+    // Load property details and wishlist properties if user is authenticated
+    loadProperty();
+    loadWishlistProperties();
+  }, [token, loadProperty, loadWishlistProperties]);
+
+  if (!token) {
+    return null; // Or a loading indicator
+  }
+
   return (
     <div className="ltn__shop-details-area pb-10 mt-100">
       <div className="container">

@@ -145,7 +145,7 @@ const AccessTable = (props) => {
   const getUser = async () => {
     const jsonData = await ProfileService.getProfile();
     if (jsonData.userCallBackgroundImages) {
-      debugger;
+      // debugger;
       let backgroundImages = backgrounds;
       backgroundImages.push(...jsonData.userCallBackgroundImages.map((image) => {
         return {

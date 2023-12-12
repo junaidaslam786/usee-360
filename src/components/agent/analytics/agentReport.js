@@ -18,15 +18,44 @@ const AgentReport = () => {
   const [offerData, setOfferData] = useState([]);
   const [offerCounts, setOfferCounts] = useState({});
 
+  const transformOfferData = (data) => {
+    const offerMap = {};
+
+    data.forEach((offer) => {
+      if (!offerMap[offer.product.id]) {
+        offerMap[offer.product.id] = {
+          name: offer.product.title,
+          offers: 0,
+          accepted: 0,
+          rejected: 0,
+          pending: 0,
+        };
+      }
+      offerMap[offer.product.id].offers += 1;
+      offerMap[offer.product.id][offer.status] += 1;
+    });
+
+    return Object.values(offerMap);
+  };
+
+  const transformVisitData = (data) => {
+    return data.map((item) => ({
+      name: item.title,
+      visits: item.productViews.length,
+    }));
+  };
+
   const fetchOfferData = async () => {
     const response = await AgentAnalyticsService.getPropertyOffers(
       "2023-01-01",
       "2023-12-31"
     );
     if (response && response.data.rows) {
+      let uniqueKey = 0;
       const transformedData = response.data.rows.map((row) => ({
+        uniqueKey: uniqueKey++, // Ensure a unique key for each item
         name: row.product.title,
-        offers: 1, // Since each row is an offer
+        offers: 1,
         accepted: row.status === "accepted" ? 1 : 0,
         rejected: row.status === "rejected" ? 1 : 0,
         pending: row.status === "pending" ? 1 : 0,
@@ -45,9 +74,10 @@ const AgentReport = () => {
       "2023-01-01",
       "2023-12-31"
     );
+    console.log("visits", response);
 
-    if (response && response.rows) {
-      const formattedData = response.rows.map((row) => ({
+    if (response.data && response.data.rows) {
+      const formattedData = response.data.rows.map((row) => ({
         name: row.title,
         visits: row.productViews.length,
       }));
@@ -62,7 +92,9 @@ const AgentReport = () => {
 
   return (
     <div className="agent-report-container">
-      <h1 className="agent-report-title">Agent Report</h1>
+      {/* <h1 className="agent-report-title">Agent Report</h1> */}
+
+      {/* Property Visits Bar Chart */}
       <div className="agent-report-card">
         <BarChart width={600} height={300} data={propertyVisits}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -73,30 +105,43 @@ const AgentReport = () => {
           <Bar dataKey="visits" fill="#8884d8" />
         </BarChart>
       </div>
+
+      {/* Property Offers Bar Chart */}
       <div className="agent-report-card">
-        <PieChart width={400} height={400}>
-          <Pie
-            dataKey="accepted"
-            data={offerData}
-            cx={200}
-            cy={200}
-            outerRadius={80}
-            fill="#82ca9d"
-            label
-          />
-          <Pie
-            dataKey="rejected"
-            data={offerData}
-            cx={200}
-            cy={200}
-            innerRadius={90}
-            outerRadius={110}
-            fill="#8884d8"
-            label
-          />
+        <BarChart width={600} height={300} data={offerData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
           <Tooltip />
-        </PieChart>
+          <Legend />
+          <Bar dataKey="accepted" fill="#82ca9d" />
+          <Bar dataKey="rejected" fill="#8884d8" />
+          <Bar dataKey="pending" fill="#ffc658" />
+        </BarChart>
       </div>
+
+      {/* Property Visits Table */}
+      <div className="agent-report-card">
+        <h2 className="agent-report-subtitle">Property Visits Overview</h2>
+        <table className="agent-report-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Visits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {propertyVisits.map((visit, index) => (
+              <tr key={index}>
+                <td>{visit.name}</td>
+                <td>{visit.visits}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Property Offers Table */}
       <div className="agent-report-card">
         <h2 className="agent-report-subtitle">Offers Overview</h2>
         <table className="agent-report-table">
