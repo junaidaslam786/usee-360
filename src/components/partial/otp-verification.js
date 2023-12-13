@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import AuthService from "../../services/auth";
 import { setLoginToken } from "../../utils";
+import { toast } from "react-toastify";
 
 export default function OtpVerification({ user, token, responseHandler, onVerified }) {
   const [otpType, setOtpType] = useState();
@@ -151,6 +152,9 @@ export default function OtpVerification({ user, token, responseHandler, onVerifi
 
       responseHandler("Account verified successfully.", true);
       onVerified && onVerified(formResponse.user, token);
+      toast.warn(
+        "Your request for trader has been recieved. Please wait for account approval"
+      );
       // redirectUser(token);
     }
   };
