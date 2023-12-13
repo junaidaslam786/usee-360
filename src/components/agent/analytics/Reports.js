@@ -39,34 +39,48 @@ const ReportDownload = () => {
 
   const transformPropertiesDataForCSV = (propertyData) => {
     if (!propertyData) return [];
-    const transformProperties = (properties) =>
-      properties.map((property) => {
-        const offers = (property.productOffers || [])
-          .map((offer) => offer.id)
-          .join("; ");
-        const views = (property.productViews || [])
-          .map((view) => view.id)
-          .join("; ");
-
-        return {
-          id: property.id,
-          title: property.title,
-          price: property.price,
-          description: property.description,
-          address: property.address,
-          status: property.status,
-          productOffers: offers,
-          productViews: views,
-          // Add other fields as needed
-        };
-      }) || [];
-
+  
+    const flattenProperty = (property) => {
+      // Flattening productOffers
+      const offers = (property.productOffers || [])
+        .map((offer) => {
+          return `Offer ID: ${offer.id}, Amount: ${offer.amount}, Status: ${offer.status}, 
+                  Reject Reason: ${offer.rejectReason || "N/A"}, 
+                  Customer ID: ${offer.customer.id}, 
+                  Customer Name: ${offer.customer.firstName} ${offer.customer.lastName}, 
+                  Customer Email: ${offer.customer.email}, 
+                  Customer Phone: ${offer.customer.phoneNumber}`;
+        })
+        .join(" | ");
+  
+      // Flattening productViews
+      const views = (property.productViews || [])
+        .map((view) => `View ID: ${view.id}, Log Type: ${view.log_type}, Created At: ${view.createdAt}`)
+        .join(" | ");
+  
+      // Return a flat object for CSV
+      return {
+        PropertyID: property.id,
+        Title: property.title,
+        Price: property.price,
+        Description: property.description,
+        Address: property.address,
+        Status: property.status,
+        ProductOffers: offers,
+        ProductViews: views
+        // Add any additional fields here
+      };
+    };
+  
+    // Transforming all properties
     return [
-      ...transformProperties(propertyData.listed),
-      ...transformProperties(propertyData.sold),
-      ...transformProperties(propertyData.unsold),
+      ...propertyData.listed.map(flattenProperty),
+      ...propertyData.sold.map(flattenProperty),
+      ...propertyData.unsold.map(flattenProperty)
     ];
   };
+  
+  
 
   const transformServicesDataForCSV = (serviceData) => {
     let transformedData = [];
@@ -90,8 +104,16 @@ const ReportDownload = () => {
   
     return transformedData;
   };
+
+   // New function to reset state when report type changes
+   const handleReportTypeChange = (e) => {
+    setReportType(e.target.value);
+    setIsCSVReady(false); // Reset CSV ready state
+    setReportData([]); // Reset report data
+  };
   
   const downloadReport = async () => {
+    setIsCSVReady(false)
     let data;
     switch (reportType) {
       case "users":
@@ -147,7 +169,7 @@ const ReportDownload = () => {
                 name="reportType"
                 label={`${type.charAt(0).toUpperCase() + type.slice(1)} Reports`}
                 value={type}
-                onChange={(e) => setReportType(e.target.value)}
+                onChange={handleReportTypeChange}
               />
             ))}
           </Form>
