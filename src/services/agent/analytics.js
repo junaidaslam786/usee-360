@@ -18,15 +18,32 @@ const AgentAnalyticsService = {
     }
   },
 
-  getPropertyOffers: async (startDate, endDate) => {
+  // getPropertyOffers: async (startDate, endDate) => {
+  //   try {
+  //     const queryParams = new URLSearchParams({
+  //       startDate,
+  //       endDate,
+  //     }).toString();
+
+  //     const response = await httpPost(
+  //       `agent/analytics/property-offers?${queryParams}`
+  //     );
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error while fetching property offers", error);
+  //     return null;
+  //   }
+  // },
+
+  getPropertyOffers: async () => {
     try {
-      const queryParams = new URLSearchParams({
-        startDate,
-        endDate,
-      }).toString();
+      // const queryParams = new URLSearchParams({
+      //   startDate,
+      //   endDate,
+      // }).toString();
 
       const response = await httpPost(
-        `agent/analytics/property-offers?${queryParams}`
+        `agent/analytics/property-offers`
       );
       return response;
     } catch (error) {
@@ -35,15 +52,15 @@ const AgentAnalyticsService = {
     }
   },
 
-  getPropertyVisits: async (startDate, endDate) => {
+  getPropertyVisits: async () => {
     try {
-      const queryParams = new URLSearchParams({
-        startDate,
-        endDate,
-      }).toString();
+      // const queryParams = new URLSearchParams({
+      //   startDate,
+      //   endDate,
+      // }).toString();
 
       const response = await httpPost(
-        `agent/analytics/property-visits?${queryParams}`
+        `agent/analytics/property-visits`
       );
       return response;
     } catch (error) {
@@ -54,13 +71,13 @@ const AgentAnalyticsService = {
 
   getPropertyListings: async (startDate, endDate) => {
     try {
-      const queryParams = new URLSearchParams({
-        startDate,
-        endDate,
-      }).toString();
+      // const queryParams = new URLSearchParams({
+      //   startDate,
+      //   endDate,
+      // }).toString();
 
       const response = await httpPost(
-        `agent/analytics/properties-listed?${queryParams}`
+        `agent/analytics/properties-listed`
       );
       return response;
     } catch (error) {
@@ -68,6 +85,43 @@ const AgentAnalyticsService = {
       return null;
     }
   },
+
+  fetchUsersData: async () => {
+    const userCategories = ['agent']; // Hardcoded categories
+    try {
+      const response = await httpPost('agent/reports/users', { userCategories });
+      return response;
+    } catch (error) {
+      console.error("Error while fetching users data", error);
+      return null;
+    }
+  },
+
+  fetchPropertiesData: async () => {
+    const propertyCategories = ['listed', 'sold', 'unsold']; // Hardcoded categories
+    try {
+      const response = await httpPost('agent/reports/properties', { propertyCategories });
+      return response;
+    } catch (error) {
+      console.error("Error while fetching properties data", error);
+      return null;
+    }
+  },
+
+  fetchServicesData: async () => {
+    const serviceCategories = ["videoCall", "propertyListing", "apiSubscription", "analytics"]; // Hardcoded categories
+    try {
+      const response = await httpPost('agent/reports/services', { serviceCategories });
+      return response;
+    } catch (error) {
+      console.error("Error while fetching services data", error);
+      return null;
+    }
+  }
+  
+  
+  
+ 
 };
 
 export default AgentAnalyticsService;
