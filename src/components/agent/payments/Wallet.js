@@ -97,6 +97,7 @@ const Wallet = () => {
                   <Button
                     variant="primary"
                     onClick={() => viewInvoice(token.stripeInvoiceId)}
+                    style={{backgroundColor: "#00C800", color: "white"}}
                   >
                     View Invoice
                   </Button>

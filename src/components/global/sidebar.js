@@ -80,16 +80,16 @@ export default function Sidebar({ type, responseHandler }) {
       {isAgent && (
         <>
           <NavLink to={`/${type}/payment`}>
-            Payments
+            Payments & Wallet
             <i className="fa-solid fa-credit-card"></i>
           </NavLink>
           <NavLink to={`/${type}/subscription`}>
             Subscription
-            <i className="fa-solid fa-subscript"></i>
+            <i className="fa-solid fa-file"></i>
           </NavLink>
           <NavLink to={`/${type}/analytics-page`}>
-            Analytics
-            <i className="fa-solid fa-analytics"></i>
+            Analytics & Reports
+            <i className="fa-solid fa-bar-chart"></i>
           </NavLink>
         </>
       )}

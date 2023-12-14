@@ -129,6 +129,7 @@ const PurchaseToken = () => {
                 variant="primary"
                 onClick={handlePurchase}
                 disabled={loading}
+                style={{backgroundColor: "#00C800", color: "white"}}
               >
                 Purchase
               </Button>

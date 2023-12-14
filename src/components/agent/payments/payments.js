@@ -46,7 +46,7 @@ const PaymentPage = () => {
 
   return (
     <Container fluid style={{ padding: "20px" }}>
-      <h1>Payment and Services</h1>
+      <h1>Payments & Wallet</h1>
 
       {/* Stripe Connection Card */}
       <Card className="mb-3">
@@ -54,11 +54,11 @@ const PaymentPage = () => {
           <Card.Title>Stripe Connection</Card.Title>
           {!showCardForm && (
             customerId ? (
-              <Button disabled variant="primary">
+              <Button disabled variant="success" style={{backgroundColor: "white", color: "green"}}>
                 Connected with Stripe
               </Button>
             ) : (
-              <Button variant="primary" onClick={handleConnectWithStripe}>
+              <Button variant="success" onClick={handleConnectWithStripe}>
                 Connect with Stripe
               </Button>
             )
