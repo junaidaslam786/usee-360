@@ -8,6 +8,7 @@ import {
   setPropertyMetaData,
 } from "../../../utils";
 import PropertyService from "../../../services/agent/property";
+import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
 
@@ -49,7 +50,7 @@ export default function PropertyDetails(props) {
 
   const loadProperty = useCallback(async () => {
     try {
-      const response = await PropertyService.detail(params.id);
+      const response = await HomepageService.detail(params.id);
       if (response?.error && response?.message) {
         props.responseHandler(response.message);
         return;
