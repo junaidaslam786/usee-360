@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { formatPrice, getLoginToken, loadPropertyMetaData } from "../../../utils";
+import {
+  formatPrice,
+  getLoginToken,
+  loadPropertyMetaData,
+} from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import {
@@ -33,7 +37,9 @@ export default function PropertyGrid(props) {
   const sort = useRef(null);
   const history = useHistory();
   const location = useLocation();
-  const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(window.location.pathname)}`;
+  const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
+    window.location.pathname
+  )}`;
 
   const loadProperties = async (search, page = 1) => {
     let payload = {
@@ -55,25 +61,25 @@ export default function PropertyGrid(props) {
 
       if (propertyCategory) {
         payload.propertyCategory = propertyCategory;
-        if(search != "filter") {
+        if (search != "filter") {
           setPropertyCategory(propertyCategory);
         }
       }
       if (propertyCategoryType) {
         payload.propertyCategoryType = propertyCategoryType;
-        if(search != "filter") {
+        if (search != "filter") {
           setPropertyCategoryType(propertyCategoryType);
         }
       }
       if (propertyType) {
         payload.propertyType = propertyType;
-        if(search != "filter") {
+        if (search != "filter") {
           setPropertyType(propertyType);
         }
       }
       if (rooms) {
         payload.rooms = rooms;
-        if(search != "filter") {
+        if (search != "filter") {
           setRooms(rooms);
         }
       }
@@ -85,13 +91,13 @@ export default function PropertyGrid(props) {
       }
       if (minPrice) {
         payload.minPrice = minPrice;
-        if(search != "filter") {
+        if (search != "filter") {
           setMinPrice(minPrice);
         }
       }
       if (maxPrice) {
         payload.maxPrice = maxPrice;
-        if(search != "filter") {
+        if (search != "filter") {
           setMaxPrice(maxPrice);
         }
       }
@@ -106,15 +112,15 @@ export default function PropertyGrid(props) {
         payload.propertyCategoryType = propertyCategoryTypeFilter;
       }
 
-      if(propertyTypeFilter) {
+      if (propertyTypeFilter) {
         payload.propertyType = propertyTypeFilter;
       }
 
-      if(minPriceFilter) {
+      if (minPriceFilter) {
         payload.minPrice = parseInt(minPriceFilter);
       }
 
-      if(maxPriceFilter) {
+      if (maxPriceFilter) {
         payload.maxPrice = parseInt(maxPriceFilter);
       }
 
@@ -144,15 +150,15 @@ export default function PropertyGrid(props) {
     setProperties(response.data);
     setCurrentPage(response.page);
     setTotalPages(response.totalPage);
-  }
+  };
 
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
-    
+
     if (response?.length > 0) {
       setWishlistProperties(response);
     }
-  }
+  };
 
   const addToWishList = async (propertyId) => {
     if (!token) {
@@ -171,9 +177,9 @@ export default function PropertyGrid(props) {
     setWishlistTitle(prop.title);
     setWishlistImage(prop.featuredImage);
     toggleButton.current.click();
-    
+
     await loadWishlistProperties();
-  }
+  };
 
   const removeWishList = async (propertyId) => {
     if (!token) {
@@ -186,9 +192,9 @@ export default function PropertyGrid(props) {
       props.responseHandler(reponse.message);
       return;
     }
-  
+
     props.responseHandler("Property removed from wishlist.", true);
-  }
+  };
 
   useEffect(() => {
     loadProperties();
@@ -328,6 +334,23 @@ export default function PropertyGrid(props) {
                                     </li>
                                   </ul>
                                 </div>
+                                <div className="product-views">
+                                  <span className="view-icon">
+                                    <i className="fas fa-eye" />{" "}
+                                    {/* Icon for views */}
+                                  </span>
+                                  <span className="view-count">
+                                    {element.productViews.length} Views{" "}
+                                    {/* Displaying the count of views */}
+                                  </span>
+                                  {element.carbonFootprint && (
+                                    <span className="carbon-footprint-icon">
+                                      <i className="fas fa-tree" />{" "}
+                                      {/* Example icon for carbon footprint */}
+                                      {element.carbonFootprint} Carbon Footprint
+                                    </span>
+                                  )}
+                                </div>
                                 <h2 className="product-title go-top">
                                   <Link to={`/property-details/${element.id}`}>
                                     {element.title}
@@ -396,9 +419,7 @@ export default function PropertyGrid(props) {
                               </div>
                               <div className="product-info-bottom">
                                 <div className="product-price">
-                                  <span>
-                                    { formatPrice(element.price) }
-                                  </span>
+                                  <span>{formatPrice(element.price)}</span>
                                 </div>
                               </div>
                             </div>
@@ -457,9 +478,7 @@ export default function PropertyGrid(props) {
                                     </ul>
                                   </div>
                                   <div className="product-price">
-                                    <span>
-                                      { formatPrice(element.price) }
-                                    </span>
+                                    <span>{formatPrice(element.price)}</span>
                                   </div>
                                 </div>
                                 <h2 className="product-title go-top">
@@ -598,7 +617,9 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategory"
                             value="rent"
-                            onChange={(e) => setPropertyCategory(e.target.value)}
+                            onChange={(e) =>
+                              setPropertyCategory(e.target.value)
+                            }
                             checked={propertyCategoryFilter === "rent"}
                           />
                           <span className="checkmark" />
@@ -611,7 +632,9 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategory"
                             value="sale"
-                            onChange={(e) => setPropertyCategory(e.target.value)}
+                            onChange={(e) =>
+                              setPropertyCategory(e.target.value)
+                            }
                             checked={propertyCategoryFilter === "sale"}
                           />
                           <span className="checkmark" />
@@ -630,8 +653,12 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategoryType"
                             value="commercial"
-                            onChange={(e) => setPropertyCategoryType(e.target.value)}
-                            checked={propertyCategoryTypeFilter === "commercial"}
+                            onChange={(e) =>
+                              setPropertyCategoryType(e.target.value)
+                            }
+                            checked={
+                              propertyCategoryTypeFilter === "commercial"
+                            }
                           />
                           <span className="checkmark" />
                         </label>
@@ -643,8 +670,12 @@ export default function PropertyGrid(props) {
                             type="radio"
                             name="propertyCategoryType"
                             value="residential"
-                            onChange={(e) => setPropertyCategoryType(e.target.value)}
-                            checked={propertyCategoryTypeFilter === "residential"}
+                            onChange={(e) =>
+                              setPropertyCategoryType(e.target.value)
+                            }
+                            checked={
+                              propertyCategoryTypeFilter === "residential"
+                            }
                           />
                           <span className="checkmark" />
                         </label>
@@ -657,7 +688,8 @@ export default function PropertyGrid(props) {
                       <h4 className="ltn__widget-title">Type</h4>
                     </div>
                   ) : null}
-                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "commercial" ? (
+                  {propertyCategoryTypeFilter &&
+                  propertyCategoryTypeFilter === "commercial" ? (
                     <ul>
                       <div>
                         {COMMERCIAL_PROPERTY.map((el, index) => (
@@ -669,7 +701,9 @@ export default function PropertyGrid(props) {
                                 name="propertyType"
                                 key={index}
                                 value={el.value}
-                                onChange={(e) => setPropertyType(e.target.value)}
+                                onChange={(e) =>
+                                  setPropertyType(e.target.value)
+                                }
                                 checked={propertyTypeFilter === el.value}
                               />
                               <span className="checkmark" />
@@ -679,7 +713,8 @@ export default function PropertyGrid(props) {
                       </div>
                     </ul>
                   ) : null}
-                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                  {propertyCategoryTypeFilter &&
+                  propertyCategoryTypeFilter === "residential" ? (
                     <ul>
                       <div>
                         {RESIDENTIAL_PROPERTY.map((el, index) => (
@@ -691,7 +726,9 @@ export default function PropertyGrid(props) {
                                 name="propertyType"
                                 key={index}
                                 value={el.value}
-                                onChange={(e) => setPropertyType(e.target.value)}
+                                onChange={(e) =>
+                                  setPropertyType(e.target.value)
+                                }
                                 checked={propertyTypeFilter === el.value}
                               />
                               <span className="checkmark" />
@@ -704,52 +741,54 @@ export default function PropertyGrid(props) {
                   <hr />
                   <h4 className="ltn__widget-title">Filter by price</h4>
                   <div className="row">
-                      <div className="col-md-6 p-2">
-                        <label>Min Price</label>
-                        <input
-                          type="number"
-                          placeholder="100"
-                          min="0"
-                          onChange={(e) => setMinPrice(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.charCode < 48) {
-                              e.preventDefault();
-                            }
-                          }}                    
-                          value={minPriceFilter}
-                        />
-                      </div>
-                      <div className="col-md-6 p-2">
-                        <label>Max Price</label>
-                        <input
-                          type="number"
-                          placeholder="10000"
-                          min="0"
-                          onChange={(e) => setMaxPrice(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.charCode < 48) {
-                              e.preventDefault();
-                            }
-                          }}
-                          value={maxPriceFilter}
-                        />
-                      </div>
+                    <div className="col-md-6 p-2">
+                      <label>Min Price</label>
+                      <input
+                        type="number"
+                        placeholder="100"
+                        min="0"
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.charCode < 48) {
+                            e.preventDefault();
+                          }
+                        }}
+                        value={minPriceFilter}
+                      />
+                    </div>
+                    <div className="col-md-6 p-2">
+                      <label>Max Price</label>
+                      <input
+                        type="number"
+                        placeholder="10000"
+                        min="0"
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.charCode < 48) {
+                            e.preventDefault();
+                          }
+                        }}
+                        value={maxPriceFilter}
+                      />
+                    </div>
                   </div>
-                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                  {propertyCategoryTypeFilter &&
+                  propertyCategoryTypeFilter === "residential" ? (
                     <div>
                       <hr />
                       <h4 className="ltn__widget-title">Rooms</h4>
                     </div>
                   ) : null}
-                  {propertyCategoryTypeFilter && propertyCategoryTypeFilter === "residential" ? (
+                  {propertyCategoryTypeFilter &&
+                  propertyCategoryTypeFilter === "residential" ? (
                     <ul>
                       <div>
                         {BEDROOMS.map((el, index) => (
                           <li key={index}>
                             <label className="checkbox-item">
                               {el.label}
-                              <input 
-                                type="radio" 
+                              <input
+                                type="radio"
                                 name="bedrooms"
                                 key={index}
                                 value={el.value}
@@ -773,9 +812,9 @@ export default function PropertyGrid(props) {
               </button>
               <button
                 className="mt-4 btn theme-btn-2"
-                onClick={() => { 
-                  window.history.replaceState({}, document.title)
-                  window.location.reload(true) 
+                onClick={() => {
+                  window.history.replaceState({}, document.title);
+                  window.location.reload(true);
                 }}
               >
                 Reset
