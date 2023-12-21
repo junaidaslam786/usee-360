@@ -420,7 +420,7 @@ const MeetingJoin = (props) => {
         }
 
         if (!publisher) {
-          const session = OT.initSession("46869314", appointment.sessionId);
+          const session = OT.initSession("47639681", appointment.sessionId);
           setSession(session);
           session.on({
             streamCreated: (event) => {

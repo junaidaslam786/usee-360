@@ -175,7 +175,7 @@ const AccessTable = (props) => {
 
           // We are giving a hard-coded value for session id because if we use actual session id it will load
           // the call instead of precall page
-          const session = OT.initSession("46869314", '1_MX40Njg2OTMxNH5-MTY4NTQyNjk0NjMzMX5oWHJES3RyNmR1MnZHQnFTa3hWNWwvS2J-fn4');
+          const session = OT.initSession("47639681", '2_MX40NzYzOTY4MX5-MTcwMzE0ODczMDE1MX5OczV5cjVPMmd5NS9XV21aQXZqQTdzNmt-QX5-');
 
           // initialize the publisher
           const publisherOptions = {
