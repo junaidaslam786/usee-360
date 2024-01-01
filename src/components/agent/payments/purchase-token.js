@@ -103,7 +103,7 @@ const PurchaseToken = () => {
 
   return (
     <Container className="mt-5">
-      <h2>Purchase Tokens</h2>
+      {/* <h2>Purchase USEE Coins</h2> */}
       {error && <Alert variant="danger">{error}</Alert>}
       {loading ? (
         <Spinner animation="border" />
@@ -122,7 +122,7 @@ const PurchaseToken = () => {
               />
             </Col>
           </Form.Group>
-          <p>Price Per Token: AED {config?.configValue || "Loading..."}</p>
+          <p>Price Per USEE Coin: AED {config?.configValue || "Loading..."}</p>
           <Row>
             <Col>
               <Button

@@ -75,7 +75,7 @@ const PaymentPage = () => {
       {/* Purchase Token Card */}
       <Card className="mb-3">
         <Card.Body>
-          <Card.Title>Purchase Tokens</Card.Title>
+          <Card.Title>Purchase USEE Coins</Card.Title>
           <PurchaseToken />
         </Card.Body>
       </Card>
