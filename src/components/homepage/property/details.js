@@ -35,7 +35,7 @@ export default function PropertyDetails(props) {
   const postPropertyViewLog = async (propertyId) => {
     try {
       const logData = {
-        id: propertyId,
+        productId: propertyId,
         logType: "viewed"
       };
 
