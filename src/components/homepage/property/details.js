@@ -39,7 +39,7 @@ export default function PropertyDetails(props) {
         logType: "viewed"
       };
 
-      await PropertyService.addPropertyLog(logData);
+      await PropertyService.addPropertyLog(logData.id, logData);
     } catch (error) {
       console.error('Error posting property view log:', error);
       // Handle the error appropriately
@@ -50,15 +50,16 @@ export default function PropertyDetails(props) {
 
   const loadProperty = useCallback(async () => {
     try {
-      const response = await HomepageService.detail(params.id);
+      const response = await HomepageService.propertyDetail(params.id);
       if (response?.error && response?.message) {
         props.responseHandler(response.message);
         return;
       }
 
       setProperty(response);
+      console.log(response.id)
 
-      postPropertyViewLog(params.id);
+      postPropertyViewLog(response.id);
 
       if (response?.productMetaTags) {
         const {

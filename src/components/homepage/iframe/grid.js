@@ -67,9 +67,21 @@ export default function IframePropertyGrid() {
       setTotalPages(response.totalPage);
     }
   }
+  const resetFilters = () => {
+    window.location.reload(true);
+  }
 
   useEffect(() => {
-    loadProperties();
+    // Reset filters here
+    // setPropertyCategory('');
+    // setPropertyCategoryType('');
+    // setLatFilter(null);
+    // setLngFilter(null);
+    // setRooms(null);
+    // setAddress('');
+    // loadProperties();
+
+    resetFilters();
 
     const autocomplete = new window.google.maps.places.Autocomplete(
       document.getElementById("autocomplete")
