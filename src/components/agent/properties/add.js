@@ -17,6 +17,7 @@ import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
 import PropertyService from "../../../services/agent/property";
 import { useStateIfMounted } from "use-state-if-mounted";
+import LocationForm from "./LocationForm";
 
 export default function Add(props) {
   const params = useParams();
@@ -229,81 +230,81 @@ export default function Add(props) {
     }
   };
 
-  const setAddressFields = (place) => {
-    place.address_components.forEach((addressPart) => {
-      if (addressPart.types.includes("postal_code"))
-        setPostalCode(addressPart.long_name);
+  // const setAddressFields = (place) => {
+  //   place.address_components.forEach((addressPart) => {
+  //     if (addressPart.types.includes("postal_code"))
+  //       setPostalCode(addressPart.long_name);
 
-      if (addressPart.types.includes("country"))
-        setRegion(addressPart.long_name);
+  //     if (addressPart.types.includes("country"))
+  //       setRegion(addressPart.long_name);
 
-      if (addressPart.types.includes("locality"))
-        setCity(addressPart.long_name);
-    });
+  //     if (addressPart.types.includes("locality"))
+  //       setCity(addressPart.long_name);
+  //   });
 
-    setLatitude(place.geometry.location.lat());
-    setLongitude(place.geometry.location.lng());
-  };
+  //   setLatitude(place.geometry.location.lat());
+  //   setLongitude(place.geometry.location.lng());
+  // };
 
-  useEffect(() => {
-    const fetchUsersToAllocate = async () => {
-      await loadUsersToAllocate();
-    };
+  // useEffect(() => {
+  //   const fetchUsersToAllocate = async () => {
+  //     await loadUsersToAllocate();
+  //   };
 
-    fetchUsersToAllocate();
+  //   fetchUsersToAllocate();
 
-    if ((id && latitude && longitude) || !id) {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: {
-          lat: latitude ? parseFloat(latitude) : 24.466667,
-          lng: longitude ? parseFloat(longitude) : 54.366669,
-        },
-        zoom: 17,
-      });
+  //   if ((id && latitude && longitude) || !id) {
+  //     const map = new window.google.maps.Map(document.getElementById("map"), {
+  //       center: {
+  //         lat: latitude ? parseFloat(latitude) : 24.466667,
+  //         lng: longitude ? parseFloat(longitude) : 54.366669,
+  //       },
+  //       zoom: 17,
+  //     });
 
-      setMap(map);
+  //     setMap(map);
 
-      const marker = new window.google.maps.Marker({
-        position: map.getCenter(),
-        map,
-        draggable: true,
-      });
+  //     const marker = new window.google.maps.Marker({
+  //       position: map.getCenter(),
+  //       map,
+  //       draggable: true,
+  //     });
 
-      setMarker(marker);
+  //     setMarker(marker);
 
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        document.getElementById("autocomplete")
-      );
+  //     const autocomplete = new window.google.maps.places.Autocomplete(
+  //       document.getElementById("autocomplete")
+  //     );
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry) {
-          window.alert("No details available for input: '" + place.name + "'");
-          return;
-        }
+  //     autocomplete.addListener("place_changed", () => {
+  //       const place = autocomplete.getPlace();
+  //       if (!place.geometry) {
+  //         window.alert("No details available for input: '" + place.name + "'");
+  //         return;
+  //       }
 
-        setAddress(place.formatted_address);
-        setAddressFields(place);
-        map.setCenter(place.geometry.location);
-        map.setZoom(17);
+  //       setAddress(place.formatted_address);
+  //       setAddressFields(place);
+  //       map.setCenter(place.geometry.location);
+  //       map.setZoom(17);
 
-        marker.setPosition(place.geometry.location);
-      });
+  //       marker.setPosition(place.geometry.location);
+  //     });
 
-      marker.addListener("dragend", () => {
-        const position = marker.getPosition();
-        const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ location: position }, (results, status) => {
-          if (status === "OK") {
-            setAddressFields(results[0]);
-            if (results[0]) {
-              setAddress(results[0].formatted_address);
-            }
-          }
-        });
-      });
-    }
-  }, [latitude, longitude]);
+  //     marker.addListener("dragend", () => {
+  //       const position = marker.getPosition();
+  //       const geocoder = new window.google.maps.Geocoder();
+  //       geocoder.geocode({ location: position }, (results, status) => {
+  //         if (status === "OK") {
+  //           setAddressFields(results[0]);
+  //           if (results[0]) {
+  //             setAddress(results[0].formatted_address);
+  //           }
+  //         }
+  //       });
+  //     });
+  //   }
+  // }, [latitude, longitude]);
 
   useEffect(() => {
     if (params?.id) {
@@ -624,8 +625,22 @@ export default function Add(props) {
             </label>
           </div>
         </div>
-        <h6>Listing Location</h6>
-        <div className="row">
+        {/* <h6>Listing Location</h6> */}
+        <LocationForm
+          address={address}
+          setAddress={setAddress}
+          city={city}
+          setCity={setCity}
+          postalCode={postalCode}
+          setPostalCode={setPostalCode}
+          region={region}
+          setRegion={setRegion}
+          latitude={latitude}
+          longitude={longitude}
+          setLatitude={setLatitude}
+          setLongitude={setLongitude}
+        />
+        {/* <div className="row">
           <div className="col-md-12">
             <div className="input-item input-item-textarea ltn__custom-icon">
               <input
@@ -686,7 +701,7 @@ export default function Add(props) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
         {userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
           <div className="row">
             <div className="col-md-12">
