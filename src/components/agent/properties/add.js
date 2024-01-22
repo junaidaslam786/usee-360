@@ -17,6 +17,8 @@ import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
 import PropertyService from "../../../services/agent/property";
 import { useStateIfMounted } from "use-state-if-mounted";
+import { toast } from "react-toastify";
+
 import LocationForm from "./LocationForm";
 
 export default function Add(props) {
@@ -57,6 +59,7 @@ export default function Add(props) {
     useStateIfMounted(null);
   const [deedTitle, setDeedTitle] = useStateIfMounted("");
   const [users, setUsers] = useStateIfMounted([]);
+
   const history = useHistory();
 
   const loadUsersToAllocate = async () => {
@@ -85,8 +88,11 @@ export default function Add(props) {
       return;
     }
 
-    let apiUrl = "create";
-    let successMsg = "Your changes are saved successfully.";
+    // Setting API endpoint dynamically
+    const apiUrl = id ? "/update" : "/create";
+    const successMsg = id
+      ? "Property updated successfully."
+      : "Your changes are saved successfully.";
 
     let formdata = new FormData();
     formdata.append("title", title);
@@ -172,31 +178,30 @@ export default function Add(props) {
     }
 
     setLoading(true);
-    const formResponse =
-      apiUrl === "update"
-        ? await PropertyService.update(formdata)
-        : await PropertyService.add(formdata);
-    setLoading(false);
+    try {
+      const formResponse = await PropertyService[
+        apiUrl === "/update" ? "update" : "add"
+      ](formdata);
 
-    if (formResponse?.error && formResponse?.message) {
-      props.responseHandler(formResponse.message);
-      return;
-    }
+      setLoading(false);
 
-    if (formResponse) {
-      setFeaturedImage(null);
-      setVirtualTourVideo(null);
-      props.responseHandler(successMsg, true);
-
-      if (apiUrl === "create") {
-        setFeaturedImagePreview(null);
+      if (formResponse?.error) {
+        toast.error(formResponse.message || "An error occurred.");
+        return;
       }
 
+      toast.success(successMsg);
+      // cleanupForm();
+
+      // Redirect after success
       setTimeout(() => {
         if (formResponse?.id) {
           history.push(`/agent/edit-property/${formResponse.id}`);
         }
       }, 2000);
+    } catch (error) {
+      toast.error("An error occurred while processing your request.");
+      setLoading(false);
     }
   };
 
@@ -209,9 +214,13 @@ export default function Add(props) {
     setVirtualTourUrl(e);
   };
 
-  const vrTourVideoHandler = (e) => {
+  const vrTourVideoHandler = (event) => {
     setVirtualTourType("video");
-    setVirtualTourVideo(e);
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setVirtualTourVideo(file); // Save the file object in state
+      // Optionally set preview for the video if needed
+    }
   };
 
   const setPropertyCategoryTypeHandler = (e) => {
@@ -229,82 +238,6 @@ export default function Add(props) {
       setFeaturedImagePreview(URL.createObjectURL(event.target.files[0]));
     }
   };
-
-  // const setAddressFields = (place) => {
-  //   place.address_components.forEach((addressPart) => {
-  //     if (addressPart.types.includes("postal_code"))
-  //       setPostalCode(addressPart.long_name);
-
-  //     if (addressPart.types.includes("country"))
-  //       setRegion(addressPart.long_name);
-
-  //     if (addressPart.types.includes("locality"))
-  //       setCity(addressPart.long_name);
-  //   });
-
-  //   setLatitude(place.geometry.location.lat());
-  //   setLongitude(place.geometry.location.lng());
-  // };
-
-  // useEffect(() => {
-  //   const fetchUsersToAllocate = async () => {
-  //     await loadUsersToAllocate();
-  //   };
-
-  //   fetchUsersToAllocate();
-
-  //   if ((id && latitude && longitude) || !id) {
-  //     const map = new window.google.maps.Map(document.getElementById("map"), {
-  //       center: {
-  //         lat: latitude ? parseFloat(latitude) : 24.466667,
-  //         lng: longitude ? parseFloat(longitude) : 54.366669,
-  //       },
-  //       zoom: 17,
-  //     });
-
-  //     setMap(map);
-
-  //     const marker = new window.google.maps.Marker({
-  //       position: map.getCenter(),
-  //       map,
-  //       draggable: true,
-  //     });
-
-  //     setMarker(marker);
-
-  //     const autocomplete = new window.google.maps.places.Autocomplete(
-  //       document.getElementById("autocomplete")
-  //     );
-
-  //     autocomplete.addListener("place_changed", () => {
-  //       const place = autocomplete.getPlace();
-  //       if (!place.geometry) {
-  //         window.alert("No details available for input: '" + place.name + "'");
-  //         return;
-  //       }
-
-  //       setAddress(place.formatted_address);
-  //       setAddressFields(place);
-  //       map.setCenter(place.geometry.location);
-  //       map.setZoom(17);
-
-  //       marker.setPosition(place.geometry.location);
-  //     });
-
-  //     marker.addListener("dragend", () => {
-  //       const position = marker.getPosition();
-  //       const geocoder = new window.google.maps.Geocoder();
-  //       geocoder.geocode({ location: position }, (results, status) => {
-  //         if (status === "OK") {
-  //           setAddressFields(results[0]);
-  //           if (results[0]) {
-  //             setAddress(results[0].formatted_address);
-  //           }
-  //         }
-  //       });
-  //     });
-  //   }
-  // }, [latitude, longitude]);
 
   useEffect(() => {
     if (params?.id) {
@@ -640,68 +573,7 @@ export default function Add(props) {
           setLatitude={setLatitude}
           setLongitude={setLongitude}
         />
-        {/* <div className="row">
-          <div className="col-md-12">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={address}
-                onChange={(event) => setAddress(event.target.value)}
-                id="autocomplete"
-                name="ltn__name"
-                placeholder="*Address"
-              />
-            </div>
-          </div>
-          <div className="col-lg-12 mb-map">
-            <div className="property-details-google-map mb-60">
-              {(id && latitude && longitude) || !id ? (
-                <div id="map" className="map" />
-              ) : (
-                "Loading..."
-              )}
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={city}
-                name="ltn__name"
-                onChange={(event) => {
-                  setCity(event.target.value);
-                }}
-                placeholder="City"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={postalCode}
-                name="ltn__name"
-                onChange={(event) => {
-                  setPostalCode(event.target.value);
-                }}
-                placeholder="Postal Code"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-item input-item-textarea ltn__custom-icon">
-              <input
-                type="text"
-                value={region}
-                name="ltn__name"
-                onChange={(event) => {
-                  setRegion(event.target.value);
-                }}
-                placeholder="Region"
-              />
-            </div>
-          </div>
-        </div> */}
+
         {userDetail.agent.agentType !== AGENT_TYPE.STAFF && (
           <div className="row">
             <div className="col-md-12">
