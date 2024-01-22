@@ -203,7 +203,12 @@ const PaidServices = () => {
                   <Row>
                     <Col md={6}>
                       <Card.Title>{service.name}</Card.Title>
-                      <Card.Text>Monthly Free Units: 10</Card.Text>
+                      {service.name === "Video Call" ? (
+                        <Card.Text>Free Units Per Property: 10</Card.Text>
+                      ) : (
+                        <Card.Text>Monthly Free Units: 10</Card.Text>
+                      )}
+                      {/* <Card.Text>Monthly Free Units: 10</Card.Text> */}
                       <Card.Text>
                         Remaining Free Units: {service.remainingFreeUnits}
                       </Card.Text>

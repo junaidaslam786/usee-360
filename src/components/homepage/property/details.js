@@ -39,7 +39,7 @@ export default function PropertyDetails(props) {
         logType: "viewed"
       };
 
-      await PropertyService.addPropertyLog(logData.id, logData);
+      await PropertyService.addPropertyLog(logData);
     } catch (error) {
       console.error('Error posting property view log:', error);
       // Handle the error appropriately
@@ -59,7 +59,7 @@ export default function PropertyDetails(props) {
       setProperty(response);
       console.log(response.id)
 
-      postPropertyViewLog(response.id);
+      postPropertyViewLog(params.id);
 
       if (response?.productMetaTags) {
         const {

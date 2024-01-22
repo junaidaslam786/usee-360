@@ -111,7 +111,7 @@ const PurchaseToken = () => {
         <Form>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="4">
-              Token Quantity:
+            USEE Coin Quantity:
             </Form.Label>
             <Col sm="8">
               <Form.Control
