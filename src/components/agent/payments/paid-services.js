@@ -166,7 +166,7 @@ const PaidServices = () => {
 
       // Check if response contains the expected data (e.g., 'id' field)
       if (response) {
-        console.log("Purchase successful", response);
+        console.log("Purchase successful", response.data);
         setPurchaseSuccess(true);
         setSuccessMessage(`You have successfully purchased ${service.name}.`);
         toast.success(`You have successfully purchased ${service.name}.`);
@@ -206,7 +206,7 @@ const PaidServices = () => {
                       {service.name === "Video Call" ? (
                         <Card.Text>Free Units Per Property: 10</Card.Text>
                       ) : (
-                        <Card.Text>Monthly Free Units: 10</Card.Text>
+                        <Card.Text>Monthly Free Units: </Card.Text>
                       )}
                       {/* <Card.Text>Monthly Free Units: 10</Card.Text> */}
                       <Card.Text>

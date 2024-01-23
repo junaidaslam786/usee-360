@@ -1,4 +1,5 @@
 import { httpGet, httpPost, httpPut, httpDelete } from "../../rest-api";
+import axios from "axios";
 
 const apiUrlPrefix = 'property';
 
