@@ -6,6 +6,7 @@ import {
   formatAppointmentDate,
   convertGmtToTime,
 } from "../../../utils";
+import { FaPaw } from "react-icons/fa";
 import ViewAppointment from "./view-appointment";
 import AppointmentService from "../../../services/agent/appointment";
 import { APPOINTMENT_STATUS, USER_TYPE } from "../../../constants";
@@ -23,55 +24,35 @@ export default function Completed(props) {
   const [showNotesList, setShowNotesList] = useState(false);
   const [notesList, setNotesList] = useState([]);
   const openViewModal = useRef(null);
+  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
 
-  // const loadAllList = async (page = 1) => {
-  //   let appendQuery = props?.selectedFilter
-  //     ? `&filter=${props?.selectedFilter}`
-  //     : "";
-  //   appendQuery = `${appendQuery}${
-  //     props?.startDate && props?.endDate
-  //       ? `&startDate=${props.startDate}&endDate=${props.endDate}`
-  //       : ""
-  //   }`;
-  //   appendQuery = `${appendQuery}${
-  //     props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
-  //   }`;
+  const loadAllList = useCallback(
+    async (page = 1) => {
+      let appendQuery = props?.selectedFilter
+        ? `&filter=${props?.selectedFilter}`
+        : "";
+      appendQuery +=
+        props?.startDate && props?.endDate
+          ? `&startDate=${props.startDate}&endDate=${props.endDate}`
+          : "";
+      appendQuery += props?.selectedUser
+        ? `&selectedUser=${props.selectedUser}`
+        : "";
 
-  //   const response = await AppointmentService.list({
-  //     type: APPOINTMENT_STATUS.COMPLETED,
-  //     page,
-  //     appendQuery,
-  //   });
-  //   if (response?.data) {
-  //     setList(response.data);
-  //     setCurrentPage(parseInt(response.page));
-  //     setTotalPages(parseInt(response.totalPage));
-  //   }
-  // };
-  const loadAllList = useCallback(async (page = 1) => {
-    let appendQuery = props?.selectedFilter
-      ? `&filter=${props?.selectedFilter}`
-      : "";
-    appendQuery += props?.startDate && props?.endDate
-      ? `&startDate=${props.startDate}&endDate=${props.endDate}`
-      : "";
-    appendQuery += props?.selectedUser
-      ? `&selectedUser=${props.selectedUser}`
-      : "";
-  
-    const response = await AppointmentService.list({
-      type: APPOINTMENT_STATUS.COMPLETED,
-      page,
-      appendQuery,
-    });
-  
-    if (response?.data) {
-      setList(response.data);
-      setCurrentPage(parseInt(response.page, 10));
-      setTotalPages(parseInt(response.totalPage, 10));
-    }
-  }, [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]); // Dependencies
-  
+      const response = await AppointmentService.list({
+        type: APPOINTMENT_STATUS.COMPLETED,
+        page,
+        appendQuery,
+      });
+
+      if (response?.data) {
+        setList(response.data);
+        setCurrentPage(parseInt(response.page, 10));
+        setTotalPages(parseInt(response.totalPage, 10));
+      }
+    },
+    [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]
+  ); // Dependencies
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -175,6 +156,19 @@ export default function Completed(props) {
                     >
                       Show Notes
                     </button>
+                  </div>
+                  {/* Carbon Footprint Section */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <FaPaw style={{ fontSize: "20px", marginLeft: "25px", marginRight: "5px", color: 'green' }} />
+                    <span style={{ fontSize: "12px" }}>
+                      Carbon Footprint: {carbonFootprint}
+                    </span>
                   </div>
                 </div>
               </div>

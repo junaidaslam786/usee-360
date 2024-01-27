@@ -5,6 +5,14 @@ import { USER_TYPE } from "../../constants";
 import { setLoginToken, setUserTimezone } from "../../utils";
 import OtpVerification from "../partial/otp-verification";
 import PasswordChecklist from "react-password-checklist";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faTwitter,
+  faMicrosoft,
+  faLinkedin,
+  faGoogle,
+} from "@fortawesome/free-brands-svg-icons";
 
 export default function Login({ type, responseHandler }) {
   const [email, setEmail] = useState();
@@ -15,6 +23,20 @@ export default function Login({ type, responseHandler }) {
   const [forgotEmail, setForgotEmail] = useState("");
   const [user, setUser] = useState(null);
   const closeModal = useRef(null);
+
+  const handleFacebookAuth = async () => {
+    try {
+      const url = await AuthService.getFacebookAuthUrl();
+      if (url) {
+        window.location.href = url; // Redirect to the Facebook auth URL
+      } else {
+        responseHandler("Unable to connect to Facebook", false);
+      }
+    } catch (error) {
+      responseHandler("Failed to authenticate with Facebook", false);
+    }
+  };
+
 
   const onVerified = (user, token) => {
     // Redirect to the dashboard or appropriate page after successful verification
@@ -163,13 +185,66 @@ export default function Login({ type, responseHandler }) {
             <div className="col-lg-6">
               <div className="account-create text-center pt-50">
                 <h4>DON'T HAVE AN ACCOUNT?</h4>
-                <div className="btn-wrapper go-top">
+                <div
+                  className="btn-wrapper go-top"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
                   <Link
                     to={`/${type}/register`}
                     className="theme-btn-1 btn black-btn"
                   >
                     CREATE ACCOUNT
                   </Link>
+                  {/* Divider with Text */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      margin: "20px 0",
+                    }}
+                  >
+                    <hr style={{ flex: 1 }} />
+                    <span style={{ padding: "0 10px" }}>or SignUp with</span>
+                    <hr style={{ flex: 1 }} />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      margin: "20px 0",
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faFacebook}
+                      size="2x"
+                      style={{ color: "#3b5998", cursor: "pointer"}}
+                      onClick={handleFacebookAuth}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTwitter}
+                      size="2x"
+                      style={{ color: "#1DA1F2" }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faMicrosoft}
+                      size="2x"
+                      style={{ color: "#F25022" }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faLinkedin}
+                      size="2x"
+                      style={{ color: "#0077B5" }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faGoogle}
+                      size="2x"
+                      style={{ color: "#DB4437" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import {
 import PropertyService from "../../../services/agent/property";
 import { AGENT_USER_ACCESS_TYPE_VALUE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
+import { FaPaw } from "react-icons/fa";
 
 export default function List(props) {
   const [currentPage, setCurrentPage] = useStateIfMounted();
@@ -18,6 +19,7 @@ export default function List(props) {
   const [notes, setNotes] = useState("");
   const [list, setList] = useStateIfMounted([]);
   const [removeReasons, setRemoveReasons] = useStateIfMounted([]);
+  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
   const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
@@ -127,6 +129,7 @@ export default function List(props) {
               <th scope="col">Date Added</th>
               <th scope="col"></th>
               <th scope="col">Actions</th>
+              <th scope="col">Carbon Footprint</th>
             </tr>
           </thead>
           <tbody>
@@ -188,6 +191,28 @@ export default function List(props) {
                         <i className="fa-solid fa-trash-can" />
                       </button>
                     )}
+                  </td>
+                  <td>
+                    {/* Carbon Footprint Section */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <FaPaw
+                        style={{
+                          fontSize: "20px",
+                          marginLeft: "25px",
+                          marginRight: "5px",
+                          color: "green",
+                        }}
+                      />
+                      <span style={{ fontSize: "12px" }}>
+                        {carbonFootprint}
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ))

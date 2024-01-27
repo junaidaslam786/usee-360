@@ -122,6 +122,16 @@ const AuthService = {
 
     return response.data;
   },
+
+  getFacebookAuthUrl: async () => {
+    try {
+      const response = await httpGet(`${apiUrlPrefix}/facebook`);
+      return response.data.url; // assuming the URL is returned in this structure
+    } catch (error) {
+      console.error('Error fetching Facebook auth URL:', error);
+      return null;
+    }
+  },
 };
 
 export default AuthService;

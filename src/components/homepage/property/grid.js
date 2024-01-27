@@ -12,6 +12,7 @@ import {
   COMMERCIAL_PROPERTY,
   BEDROOMS,
 } from "../../../constants";
+import { FaPaw } from "react-icons/fa";
 
 export default function PropertyGrid(props) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +31,7 @@ export default function PropertyGrid(props) {
   const [wishlistId, setWishlistId] = useState();
   const [wishlistTitle, setWishlistTitle] = useState();
   const [wishlistImage, setWishlistImage] = useState();
+  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = getLoginToken();
@@ -351,8 +353,8 @@ export default function PropertyGrid(props) {
                                     </li>
                                   </ul>
                                 </div>
-                                <div className="product-views">
-                                  <span className="view-icon">
+                                <div className="product-views" style={{display: "flex"}}>
+                                  <span className="view-icon" style={{marginRight: "5px"}}>
                                     <i className="fas fa-eye" />{" "}
                                     {/* Icon for views */}
                                   </span>
@@ -360,13 +362,26 @@ export default function PropertyGrid(props) {
                                     {element.productViews.length} Views{" "}
                                     {/* Displaying the count of views */}
                                   </span>
-                                  {element.carbonFootprint && (
-                                    <span className="carbon-footprint-icon">
-                                      <i className="fas fa-tree" />{" "}
-                                      {/* Example icon for carbon footprint */}
-                                      {element.carbonFootprint} Carbon Footprint
+                                  {/* Carbon Footprint Section */}
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      marginLeft: "100px",
+                                    }}
+                                  >
+                                    <FaPaw
+                                      style={{
+                                        fontSize: "20px",
+                                        marginLeft: "25px",
+                                        marginRight: "5px",
+                                        color: "green",
+                                      }}
+                                    />
+                                    <span style={{ fontSize: "12px" }}>
+                                      {carbonFootprint}
                                     </span>
-                                  )}
+                                  </div>
                                 </div>
                                 <h2 className="product-title go-top">
                                   <Link to={`/property-details/${element.id}`}>

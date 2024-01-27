@@ -11,6 +11,7 @@ import PropertyService from "../../../services/agent/property";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
+import { FaPaw } from "react-icons/fa";
 
 export default function PropertyDetails(props) {
   const [property, setProperty] = useState({});
@@ -24,6 +25,7 @@ export default function PropertyDetails(props) {
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
+  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
 
   const token = getLoginToken();
   const history = useHistory();
@@ -36,17 +38,15 @@ export default function PropertyDetails(props) {
     try {
       const logData = {
         productId: propertyId,
-        logType: "viewed"
+        logType: "viewed",
       };
 
       await PropertyService.addPropertyLog(logData);
     } catch (error) {
-      console.error('Error posting property view log:', error);
+      console.error("Error posting property view log:", error);
       // Handle the error appropriately
     }
   };
-
-  
 
   const loadProperty = useCallback(async () => {
     try {
@@ -57,7 +57,7 @@ export default function PropertyDetails(props) {
       }
 
       setProperty(response);
-      console.log(response.id)
+      console.log(response.id);
 
       postPropertyViewLog(params.id);
 
@@ -223,12 +223,34 @@ export default function PropertyDetails(props) {
                 </ul>
               </div>
               <h1>{property.title}</h1>
-              <label>
-                <span className="ltn__secondary-color">
-                  <i className="flaticon-pin" />
-                </span>{" "}
-                {property.address}
-              </label>
+              <div style={{display: "flex", justifyContent: "space-between",}}>
+                <label>
+                  <span className="ltn__secondary-color">
+                    <i className="flaticon-pin" />
+                  </span>{" "}
+                  {property.address}
+                </label>
+                {/* Carbon Footprint Section */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // marginLeft: "100px",
+                    justifyContent: "space-between",
+                    
+                  }}
+                >
+                  <FaPaw
+                    style={{
+                      fontSize: "20px",
+                      marginLeft: "25px",
+                      marginRight: "5px",
+                      color: "green",
+                    }}
+                  />
+                  <span style={{ fontSize: "12px" }}>{carbonFootprint}</span>
+                </div>
+              </div>
               <h2 className="mb-50">{formatPrice(property.price)}</h2>
               <h4 className="title-2">Description</h4>
               <p>{property.description}</p>

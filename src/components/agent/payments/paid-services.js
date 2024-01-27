@@ -43,6 +43,7 @@ const PaidServices = () => {
                 ...service,
                 remainingFreeUnits: subscription.freeRemainingUnits,
                 remainingPaidUnits: subscription.paidRemainingUnits,
+                monthlyFreeUnits: subscription.feature.freeUnits,
               };
             }
             return service;
@@ -204,11 +205,15 @@ const PaidServices = () => {
                     <Col md={6}>
                       <Card.Title>{service.name}</Card.Title>
                       {service.name === "Video Call" ? (
-                        <Card.Text>Free Units Per Property: 10</Card.Text>
+                        <Card.Text>
+                          Free Units Per Property: {service.remainingPaidUnits}
+                        </Card.Text>
                       ) : (
-                        <Card.Text>Monthly Free Units: </Card.Text>
+                        <Card.Text>
+                          Monthly Free Units: {service.monthlyFreeUnits}{" "}
+                        </Card.Text>
                       )}
-                      {/* <Card.Text>Monthly Free Units: 10</Card.Text> */}
+                      <Card.Text>Remaining Paid Units:{service.remainingPaidUnits} </Card.Text>
                       <Card.Text>
                         Remaining Free Units: {service.remainingFreeUnits}
                       </Card.Text>
