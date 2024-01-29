@@ -6,7 +6,7 @@ import ProfileService from "../../services/profile";
 import UpdatePassword from "../partial/update-password";
 import { useStateIfMounted } from "use-state-if-mounted";
 import ConfirmationModal from "../agent/profile/confirmationModal";
-import AgentService from "../../services/agent/user";
+import CoustomerService from "../../services/customer/user";
 import { useHistory } from "react-router-dom";
 
 export default function Profile(props) {
@@ -82,7 +82,7 @@ export default function Profile(props) {
 
   const handleDeleteConfirmation = async () => {
     // Implement your delete logic here
-    const result = await AgentService.deleteUser(userId);
+    const result = await CoustomerService.deleteUser(userId);
     if (result?.error) {
       props.responseHandler(result.message);
       return;
