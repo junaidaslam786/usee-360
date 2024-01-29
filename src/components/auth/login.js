@@ -37,7 +37,6 @@ export default function Login({ type, responseHandler }) {
     }
   };
 
-
   const onVerified = (user, token) => {
     // Redirect to the dashboard or appropriate page after successful verification
     setLoginToken(token);
@@ -190,11 +189,17 @@ export default function Login({ type, responseHandler }) {
                   style={{
                     display: "flex",
                     flexDirection: "column",
+                    alignItems: "center",
                   }}
                 >
                   <Link
                     to={`/${type}/register`}
                     className="theme-btn-1 btn black-btn"
+                    style={{
+                      width: "50%",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                   >
                     CREATE ACCOUNT
                   </Link>
@@ -204,24 +209,38 @@ export default function Login({ type, responseHandler }) {
                       display: "flex",
                       alignItems: "center",
                       margin: "20px 0",
+                      width: "100%",
                     }}
                   >
-                    <hr style={{ flex: 1 }} />
+                    <hr
+                      style={{
+                        flex: 1,
+                        borderWidth: "1px",
+                        borderColor: "#ccc",
+                      }}
+                    />
                     <span style={{ padding: "0 10px" }}>or SignUp with</span>
-                    <hr style={{ flex: 1 }} />
+                    <hr
+                      style={{
+                        flex: 1,
+                        borderWidth: "1px",
+                        borderColor: "#ccc",
+                      }}
+                    />
                   </div>
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-around",
+                      justifyContent: "space-between",
                       alignItems: "center",
-                      margin: "20px 0",
+                      width: "100%",
+                      padding: "0 10px",
                     }}
                   >
                     <FontAwesomeIcon
                       icon={faFacebook}
                       size="2x"
-                      style={{ color: "#3b5998", cursor: "pointer"}}
+                      style={{ color: "#3b5998", cursor: "pointer", margin: '0 10px' }}
                       onClick={handleFacebookAuth}
                     />
                     <FontAwesomeIcon

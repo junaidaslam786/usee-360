@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import TimezoneDetail from "../partial/timezone-detail";
 import { USER_TYPE } from "../../constants";
-import { setLoginToken } from "../../utils";
+import { getUserDetailsFromJwt, setLoginToken } from "../../utils";
 import ProfileService from "../../services/profile";
 import UpdatePassword from "../partial/update-password";
 import { useStateIfMounted } from "use-state-if-mounted";
+import ConfirmationModal from "../agent/profile/confirmationModal";
+import AgentService from "../../services/agent/user";
+import { useHistory } from "react-router-dom";
 
 export default function Profile(props) {
   const [firstName, setFirstName] = useStateIfMounted();
@@ -15,6 +18,12 @@ export default function Profile(props) {
   const [profileImagePreview, setProfileImagePreview] = useStateIfMounted();
   const [loading, setLoading] = useState();
   const [user, setUser] = useStateIfMounted();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const userDetail = getUserDetailsFromJwt();
+  const userId = userDetail?.id;
+
+  const history = useHistory();
 
   const getUser = async () => {
     const jsonData = await ProfileService.getProfile();
@@ -66,6 +75,23 @@ export default function Profile(props) {
       setProfileImage(event.target.files[0]);
       setProfileImagePreview(URL.createObjectURL(event.target.files[0]));
     }
+  };
+
+  const openDeleteModal = () => setDeleteModalOpen(true);
+  const closeDeleteModal = () => setDeleteModalOpen(false);
+
+  const handleDeleteConfirmation = async () => {
+    // Implement your delete logic here
+    const result = await AgentService.deleteUser(userId);
+    if (result?.error) {
+      props.responseHandler(result.message);
+      return;
+    } else {
+      props.responseHandler("User deleted successfully", true);
+    }
+    closeDeleteModal();
+    history.push("/agent/login");
+    // Maybe call a service function to delete the user account
   };
 
   useEffect(() => {
@@ -162,12 +188,40 @@ export default function Profile(props) {
               </button>
             </div>
           </form>
+
           <TimezoneDetail
             type={USER_TYPE.CUSTOMER}
             user={user}
             responseHandler={props.responseHandler}
           />
           <UpdatePassword responseHandler={props.responseHandler} />
+          <h4 className="title-2 mt-100">Delete Account</h4>
+          <div className="row mb-50">
+            <div className="col-lg-10">
+              <p>
+              Please click the 'Delete' button to proceed with account deletion. Confirming this action will permanently remove your account and associated data. Ensure you have backed up any necessary information before proceeding.
+              </p>
+            </div>
+            <div className="col-lg-2">
+              <button
+                className="btn theme-btn-1 btn-effect-1 text-uppercase"
+                style={{backgroundColor: 'red'}}
+                onClick={openDeleteModal}
+              >
+                Delete
+              </button>
+            </div>
+            <ConfirmationModal
+              isOpen={isDeleteModalOpen}
+              onClose={closeDeleteModal}
+              onConfirm={handleDeleteConfirmation}
+            >
+              <p>
+                Are you sure you want to delete your account? This action cannot
+                be undone.
+              </p>
+            </ConfirmationModal>
+          </div>
         </div>
       </div>
     </div>
