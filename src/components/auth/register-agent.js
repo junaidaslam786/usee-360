@@ -15,11 +15,16 @@ import "react-phone-number-input/style.css";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import PasswordChecklist from "react-password-checklist";
 import { toast } from "react-toastify";
+import { Country, City } from "country-state-city";
 
 export default function RegisterAgent(props) {
   const [companyName, setCompanyName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [cityOptions, setCityOptions] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [showTraderORNField, setShowTraderORNField] = useState(false);
   const [companyPosition, setCompanyPosition] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [licenseNo, setLicenseNo] = useState("");
@@ -75,9 +80,30 @@ export default function RegisterAgent(props) {
     if (formResponse?.token) {
       setUser(formResponse.user);
       setToken(formResponse.token);
-      
+
       setLoadOTpForm(true);
     }
+  };
+
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    label: country.name,
+  }));
+
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    const cities = City.getCitiesOfCountry(selectedOption.value);
+    const cityOptions = cities.map((city) => ({
+      value: city.name,
+      label: city.name,
+    }));
+    setCityOptions(cityOptions);
+  };
+
+  const handleCityChange = (selectedCity) => {
+    // Handle city selection
+    setSelectedCity(selectedCity);
+    setShowTraderORNField(selectedCity.label === "Dubai");
   };
 
   const jobTitleHandler = (e) => {
@@ -184,6 +210,47 @@ export default function RegisterAgent(props) {
                       />
                     </div>
                   </div>
+                  <div className="row mb-30">
+                    <div className="col-md-12">
+                      <Select
+                        className="mb-0"
+                        classNamePrefix="custom-select"
+                        options={countryOptions}
+                        onChange={handleCountryChange}
+                        value={selectedCountry}
+                        placeholder="Select Country"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row mb-30">
+                    <div className="col-md-12">
+                      <Select
+                        className="mb-0"
+                        classNamePrefix="custom-select"
+                        options={cityOptions}
+                        onChange={handleCityChange}
+                        value={selectedCity}
+                        placeholder="Select City"
+                        isDisabled={!selectedCountry}
+                        required
+                      />
+                    </div>
+                  </div>
+                  {showTraderORNField && (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <input
+                          type="text"
+                          name="traderorn"
+                          placeholder="Trader ORN"
+                          onChange={(e) => setShowTraderORNField(e.target.value)}
+                          // value={showTraderORNField}
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div className="row mb-30">
                     <div className="col-md-12">
                       <Select

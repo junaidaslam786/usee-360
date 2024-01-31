@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Copyright from "./copyright";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faXTwitter,
+  faMicrosoft,
+  faLinkedin,
+  faGoogle,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 
 class Footer_v1 extends Component {
   constructor(props) {
@@ -68,13 +77,11 @@ class Footer_v1 extends Component {
                       <li>
                         <Link to="/services">Services</Link>
                       </li>
-                      {
-                        this.props?.page !== 'register' && (
-                          <li>
-                            <Link to="/demo">Book a Demo</Link>
-                          </li>
-                        )
-                      }
+                      {this.props?.page !== "register" && (
+                        <li>
+                          <Link to="/demo">Book a Demo</Link>
+                        </li>
+                      )}
                       <li>
                         <Link to="/contact">Contact</Link>
                       </li>
@@ -121,6 +128,86 @@ class Footer_v1 extends Component {
                   </div>
                 </div>
               </div>
+              <div className="col-lg-3 col-md-3 col-sm-3 col-12">
+                <div className="footer-widget footer-menu-widget clearfix">
+                  <h4 className="footer-title">Connect with us</h4>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      flexWrap: "wrap", // Enable wrapping
+                      justifyContent: "flex-start", // Align items to the start of the container
+                      alignItems: "center",
+                      margin: "10px 0",
+                    }}
+                  >
+                    <a
+                      href="https://www.facebook.com/usee360/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faFacebook}
+                        size="2x"
+                        style={{
+                          color: "#fff",
+                          cursor: "pointer",
+                          margin: "10px",
+                        }}
+                      />
+                    </a>
+                    <a
+                      href="https://www.x.com/usee_360/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faXTwitter}
+                        size="2x"
+                        style={{
+                          color: "#fff",
+                          cursor: "pointer",
+                          margin: "10px",
+                        }}
+                      />
+                    </a>
+                    <a
+                      href="https://www.instagram.com/usee_360/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faInstagram}
+                        size="2x"
+                        style={{
+                          color: "#fff",
+                          cursor: "pointer",
+                          margin: "10px",
+                        }}
+                      />
+                    </a>
+                    {/* <FontAwesomeIcon
+                      icon={faLinkedin}
+                      size="2x"
+                      style={{
+                        color: "#0077B5",
+                        cursor: "pointer",
+                        margin: "5px",
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faGoogle}
+                      size="2x"
+                      style={{
+                        color: "#DB4437",
+                        cursor: "pointer",
+                        margin: "5px",
+                      }}
+                    /> */}
+                  </div>
+                </div>
+              </div>
+
               {/* <div className="col-lg-3 col-md-3 col-sm-3 col-12">
                 <div className="footer-widget footer-menu-widget clearfix">
                   <h4 className="footer-title">Socials</h4>
@@ -132,7 +219,9 @@ class Footer_v1 extends Component {
             </div>
           </div>
         </div>
-        <Copyright />
+        
+          <Copyright />
+       
       </footer>
     );
   }

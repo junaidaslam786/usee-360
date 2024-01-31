@@ -217,6 +217,10 @@ const App = () => {
                 path="/terms-and-conditions"
                 component={() => <HomePages page="terms-conditions" />}
               />
+              <Route
+                path="/privacy-policy"
+                component={() => <HomePages page="privacy-policy" />}
+              />
 
               {/* Services Routes */}
               <Route

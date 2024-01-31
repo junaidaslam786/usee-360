@@ -11,7 +11,7 @@ export default function Navbar(props) {
   return (
     <div>
       <header className="ltn__header-area ltn__header-5 ltn__header-transparent--- gradient-color-4---">
-        <div className="ltn__header-top-area section-bg-6 top-area-color-white---">
+        {/* <div className="ltn__header-top-area section-bg-6 top-area-color-white---">
           <div className="container">
             <div className="row">
               <div className="col-md-7">
@@ -39,14 +39,14 @@ export default function Navbar(props) {
                 <div className="top-bar-right text-end">
                   <div className="ltn__top-bar-menu">
                     <ul>
-                      <li>{/* <Social /> */}</li>
+                      <li><Social /></li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="ltn__header-middle-area ltn__header-sticky ltn__sticky-bg-white">
           <div className="container">
             <div className="row">

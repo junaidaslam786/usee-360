@@ -23,6 +23,7 @@ import CallToActonV1 from "../components/homepage/section/call-to-action-v1";
 import Footer from "../components/global/footer";
 import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
+import PrivacyPolicy from "../components/homepage/section/privacy-policy";
 
 export default function HomePages({ page, type, hideBookDemo }) {
     const [responseMessage, setResponseMessage] = useState();
@@ -122,6 +123,12 @@ export default function HomePages({ page, type, hideBookDemo }) {
             pageTitle = "TERMS AND CONDITIONS";
             pageSubTitle = "TERMS AND CONDITIONS";
             ComponentToRender = TermAndCondition;
+            break;
+
+        case 'privacy-policy':
+            pageTitle = "PRIVACY POLICY";
+            pageSubTitle = "PRIVACY POLICY";
+            ComponentToRender = PrivacyPolicy;
             break;
 
         default:

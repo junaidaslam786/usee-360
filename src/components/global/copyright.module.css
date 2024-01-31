@@ -1,0 +1,15 @@
+@media (max-width: 576px) {
+  .footer-links-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-link-responsive {
+    margin: 5px 0; /* Adjust margin for mobile */
+  }
+}
+
+.footer-link:hover {
+  color: "green"; /* Change color on hover */
+  text-decoration: underline; /* Example: underline on hover */
+  /* Add any other hover styles here */
+}
