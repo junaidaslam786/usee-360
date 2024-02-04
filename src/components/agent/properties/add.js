@@ -20,6 +20,8 @@ import { useStateIfMounted } from "use-state-if-mounted";
 import { toast } from "react-toastify";
 
 import LocationForm from "./LocationForm";
+import UploadFeaturedImage from "./upload-featured-image";
+import UploadVirtualTour from "./upload-virtual-tour";
 
 export default function Add(props) {
   const params = useParams();
@@ -36,9 +38,7 @@ export default function Add(props) {
   const [unit, setUnit] = useStateIfMounted("");
   const [area, setArea] = useStateIfMounted("");
   const [bedrooms, setBedrooms] = useStateIfMounted();
-  const [featuredImage, setFeaturedImage] = useStateIfMounted(null);
-  const [featuredImagePreview, setFeaturedImagePreview] =
-    useStateIfMounted(null);
+  
   const [address, setAddress] = useStateIfMounted("");
   const [city, setCity] = useStateIfMounted("");
   const [postalCode, setPostalCode] = useStateIfMounted("");
@@ -49,10 +49,7 @@ export default function Add(props) {
   const [propertyDocuments, setPropertyDocuments] = useStateIfMounted([]);
   const [allotedToUsers, setAllotedToUsers] = useStateIfMounted([]);
   const [loading, setLoading] = useStateIfMounted();
-  const [virtualTourType, setVirtualTourType] = useStateIfMounted("");
-  const [virtualTourVideo, setVirtualTourVideo] = useStateIfMounted("");
-  const [virtualTourUrl, setVirtualTourUrl] = useStateIfMounted("");
-  const [isChecked, setIsChecked] = useStateIfMounted(false);
+  
   const [map, setMap] = useStateIfMounted(null);
   const [marker, setMarker] = useStateIfMounted(null);
   const [propertySubTypeOptions, setPropertySubTypeOptions] =
@@ -98,7 +95,6 @@ export default function Add(props) {
     formdata.append("title", title);
     formdata.append("description", description);
     formdata.append("price", price);
-    formdata.append("featuredImage", featuredImage);
     formdata.append("address", address);
     formdata.append("city", city);
     formdata.append("postalCode", postalCode);
@@ -106,27 +102,6 @@ export default function Add(props) {
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
 
-    let virtualTourTypeVar = virtualTourType;
-    let virtualTourUrlVar = virtualTourUrl;
-    let virtualTourVideoVar = virtualTourVideo;
-
-    if (virtualTourTypeVar == "video") {
-      virtualTourUrlVar = "";
-      setIsChecked(false);
-    } else if (virtualTourTypeVar == "url") {
-      virtualTourVideoVar = "";
-      setIsChecked(false);
-    } else {
-      virtualTourTypeVar = "slideshow";
-      setVirtualTourType(virtualTourTypeVar);
-      virtualTourUrlVar = "";
-      virtualTourVideoVar = "";
-      setIsChecked(true);
-    }
-
-    formdata.append("virtualTourType", virtualTourTypeVar);
-    formdata.append("virtualTourVideo", virtualTourVideoVar);
-    formdata.append("virtualTourUrl", virtualTourUrlVar);
 
     if (propertyType?.value) {
       formdata.append("metaTags[1]", propertyType.value);
@@ -183,6 +158,7 @@ export default function Add(props) {
         apiUrl === "/update" ? "update" : "add"
       ](formdata);
 
+      if (!id) setId(formResponse.id);
       setLoading(false);
 
       if (formResponse?.error) {
@@ -205,23 +181,7 @@ export default function Add(props) {
     }
   };
 
-  const checkHandler = () => {
-    setIsChecked(!isChecked);
-  };
-
-  const vrTourUrlHandler = (e) => {
-    setVirtualTourType("url");
-    setVirtualTourUrl(e);
-  };
-
-  const vrTourVideoHandler = (event) => {
-    setVirtualTourType("video");
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setVirtualTourVideo(file); // Save the file object in state
-      // Optionally set preview for the video if needed
-    }
-  };
+ 
 
   const setPropertyCategoryTypeHandler = (e) => {
     setPropertyCategoryType(e);
@@ -230,13 +190,6 @@ export default function Add(props) {
   const setPropertyTypeHandler = (e) => {
     setPropertyType(e);
     setPropertySubType("");
-  };
-
-  const onFeaturedImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setFeaturedImage(event.target.files[0]);
-      setFeaturedImagePreview(URL.createObjectURL(event.target.files[0]));
-    }
   };
 
   useEffect(() => {
@@ -257,18 +210,7 @@ export default function Add(props) {
           setRegion(response.region);
           setLatitude(response.latitude);
           setLongitude(response.longitude);
-          setVirtualTourType(response.virtualTourType);
-          if (response?.featuredImage) {
-            setFeaturedImagePreview(
-              `${process.env.REACT_APP_API_URL}/${response.featuredImage}`
-            );
-          }
-
-          if (response.virtualTourType == "slideshow") {
-            setIsChecked(true);
-          } else if (response.virtualTourType == "url") {
-            setVirtualTourUrl(response.virtualTourUrl);
-          }
+          
 
           if (response.productMetaTags.length > 0) {
             response.productMetaTags.sort(
@@ -492,73 +434,8 @@ export default function Add(props) {
             </div>
           </div>
         </div>
-        <h4 className="title-2">Featured Image</h4>
-        <div className="row mb-custom">
-          <div className="col-md-12">
-            <div className="input-item">
-              <input
-                type="file"
-                className="btn theme-btn-3 mb-10 positionRevert"
-                onChange={onFeaturedImageChange}
-              />
-              <br />
-              <p>
-                <small>
-                  * At least 1 image is required for a valid submission. Minimum
-                  size is 500/500px.
-                </small>
-                <br />
-                <small>* Supports JPG, JPEG and PNG formats.</small>
-                <br />
-                <small>* Images might take longer to be processed.</small>
-              </p>
-            </div>
-            {featuredImagePreview && (
-              <img
-                className="featuredImageCss"
-                src={featuredImagePreview}
-                alt={title}
-                width="300px"
-              />
-            )}
-          </div>
-        </div>
-        <h4 className="title-2">Upload VR Tour</h4>
-        <div className="row mb-custom">
-          <div className="col-md-12">
-            <div className="input-item">
-              <input
-                type="file"
-                className="btn theme-btn-3 mb-10"
-                onChange={(e) => vrTourVideoHandler(e.target.files[0])}
-              />
-            </div>
-          </div>
-          <h5 className="mt-10">OR</h5>
-          <div className="col-md-12">
-            <div className="input-item">
-              <input
-                type="text"
-                placeholder="Property VR URL"
-                value={virtualTourUrl}
-                onChange={(e) => vrTourUrlHandler(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-12 mb-30">
-            <label className="checkbox-item">
-              Use the images to create a video slideshow instead of using
-              virtual tour
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={checkHandler}
-              />
-              <span className="checkmark" />
-            </label>
-          </div>
-        </div>
-        {/* <h6>Listing Location</h6> */}
+
+       
         <LocationForm
           address={address}
           setAddress={setAddress}
@@ -626,6 +503,18 @@ export default function Add(props) {
 
       {id && (
         <div className="row mb-50">
+          <h4 className="title-2">Featured Image</h4>
+          <UploadFeaturedImage
+            propertyId={id}
+            responseHandler={props.responseHandler}
+          />
+          <UploadVirtualTour
+            propertyId={id} // Ensure you have the property ID available
+            onUploadSuccess={() => {
+              // Handle any actions on successful upload
+              // For instance, you might want to fetch the property details again to update the UI
+            }}
+          />
           <UploadPropertyImage
             id={id}
             images={propertyImages}

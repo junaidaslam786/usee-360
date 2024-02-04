@@ -7,23 +7,6 @@ export default function UploadPropertyImage(props) {
   const [uploadProgress, setUploadProgress] = useState({});
   const [isComponentMounted, setIsComponentMounted] = useState(true);
 
-  // const onImagesDrop = useCallback(async (acceptedFiles) => {
-  //   const formData = new FormData();
-  //   acceptedFiles.forEach((file) => {
-  //     formData.append("files", file);
-  //   });
-  //   formData.append("productId", props.id);
-
-  //   const formResponse = await PropertyService.uploadImage(formData);
-
-  //   if (formResponse?.error && formResponse?.message) {
-  //     props.responseHandler(formResponse.message);
-  //     return;
-  //   }
-
-  //   props.responseHandler("Images uploaded successfully", true);
-  //   setPropertyImages(formResponse);
-  // }, []);
 
   const onImagesDrop = useCallback(
     async (acceptedFiles) => {

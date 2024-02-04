@@ -1,5 +1,5 @@
 // import 'bootstrap/dist/css/bootstrap.min.css';
-
+import 'filepond/dist/filepond.min.css';
 
 import React from "react";
 import ReactDOM from "react-dom";

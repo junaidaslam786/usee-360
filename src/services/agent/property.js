@@ -1,17 +1,21 @@
 import { httpGet, httpPost, httpPut, httpDelete } from "../../rest-api";
 import axios from "axios";
 
-const apiUrlPrefix = 'property';
+const apiUrlPrefix = "property";
 
 const PropertyService = {
   list: async ({ page = 1, size = 10, search = "", user = "" }) => {
-    const response = await httpGet(`${apiUrlPrefix}/list?search=${search}&page=${page}&size=${size}&user=${user}`);
+    const response = await httpGet(
+      `${apiUrlPrefix}/list?search=${search}&page=${page}&size=${size}&user=${user}`
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to list properties, please try again later"];
+        response.error.message = [
+          "Unable to list properties, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -23,9 +27,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to get property details, please try again later"];
+        response.error.message = [
+          "Unable to get property details, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -37,9 +43,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to create property, please try again later"];
+        response.error.message = [
+          "Unable to create property, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -50,8 +58,9 @@ const PropertyService = {
     const response = await httpPost(`${apiUrlPrefix}/log`, reqBody, true);
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message =
-          ["Unable to create property log, please try again later"];
+        response.error.message = [
+          "Unable to create property log, please try again later",
+        ];
       }
       return response;
     }
@@ -63,9 +72,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update property, please try again later"];
+        response.error.message = [
+          "Unable to update property, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -77,14 +88,19 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to upload document, please try again later"];
+        response.error.message = [
+          "Unable to upload document, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to upload documents, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to upload documents, please try again later"],
+      };
     }
 
     return response.data;
@@ -95,14 +111,19 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to delete document, please try again later"];
+        response.error.message = [
+          "Unable to delete document, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to delete document, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to delete document, please try again later"],
+      };
     }
 
     return response.data;
@@ -113,17 +134,142 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to upload image, please try again later"];
+        response.error.message = [
+          "Unable to upload image, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to upload images, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to upload images, please try again later"],
+      };
     }
 
     return response.data;
+  },
+  // uploadFeatureImage: async (productId, formData) => {
+  //   // Assuming `formData` is already prepared and passed as a parameter,
+  //   // including the 'productId' and the file under the correct key.
+
+  //   const response = await httpPost(
+  //     `${apiUrlPrefix}/featured-image`,
+  //     formData,
+  //     true
+  //   );
+
+  //   // Error handling
+  //   if (response?.error) {
+  //     // Process and return any errors as needed
+  //     return {
+  //       error: true,
+  //       message:
+  //         response.error.message ||
+  //         "Unable to upload featured image, please try again later",
+  //     };
+  //   }
+
+  //   // Optionally, check for HTTP status code explicitly if necessary
+  //   if (response?.status !== 200) {
+  //     return {
+  //       error: true,
+  //       message: "Unable to upload featured image, please try again later",
+  //     };
+  //   }
+
+  //   return response.data; // Return the response data on success
+  // },
+  uploadFeatureImage: async (formData, onUploadProgress) => {
+    try {
+      const response = await axios.post(
+        `${apiUrlPrefix}/featured-image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onUploadProgress(percentCompleted); // Callback function to update progress
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Handle error
+      console.error("Error uploading file:", error);
+      return {
+        error: true,
+        message: "Unable to upload featured image, please try again later",
+      };
+    }
+  },
+
+  // uploadVirtualTour: async (productId, virtualTourType, virtualTourUrl) => {
+  //   const response = await httpPost(`${apiUrlPrefix}/virtual-tour`, {
+  //     productId,
+  //     virtualTourType,
+  //     virtualTourUrl,
+  //   });
+  //   if (response?.error) {
+  //     if (response?.error?.message && response?.error?.message.length < 0) {
+  //       response.error.message = [
+  //         "Unable to upload virtual tour, please try again later",
+  //       ];
+  //     }
+  //     return response;
+  //   }
+  //   if (response?.status !== 200) {
+  //     return {
+  //       error: true,
+  //       message: ["Unable to upload virtual tour, please try again later"],
+  //     };
+  //   }
+  //   return response.data;
+  // },
+
+  uploadVirtualTour: async (formData, onUploadProgress) => {
+    try {
+      const response = await axios.post(
+        `${apiUrlPrefix}/virtual-tour`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            // Calculate the percentage of upload completed
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onUploadProgress(percentCompleted);
+          },
+        }
+      );
+      return response.data; 
+    } catch (error) {
+      console.error("Error uploading virtual tour:", error.response || error);
+      if (error.response && error.response.data) {
+        // Handle error response from server
+        return {
+          error: true,
+          message:
+            error.response.data.message ||
+            "Unable to upload virtual tour, please try again later",
+        };
+      } else {
+        // Handle network or other errors
+        return {
+          error: true,
+          message: "An error occurred while uploading the virtual tour.",
+        };
+      }
+    }
   },
 
   deleteImage: async (reqBody) => {
@@ -131,14 +277,19 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to delete image, please try again later"];
+        response.error.message = [
+          "Unable to delete image, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to delete image, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to delete image, please try again later"],
+      };
     }
 
     return response.data;
@@ -149,9 +300,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to get offer details, please try again later"];
+        response.error.message = [
+          "Unable to get offer details, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -159,18 +312,26 @@ const PropertyService = {
   },
 
   updateOffer: async (reqBody) => {
-    const response = await httpPost(`${apiUrlPrefix}/agent/update-offer`, reqBody);
+    const response = await httpPost(
+      `${apiUrlPrefix}/agent/update-offer`,
+      reqBody
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update offer, please try again later"];
+        response.error.message = [
+          "Unable to update offer, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to update offer status, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to update offer status, please try again later"],
+      };
     }
 
     return response.data;
@@ -181,14 +342,19 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to update snag list, please try again later"];
+        response.error.message = [
+          "Unable to update snag list, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to update snag list, please try again later"] };
+      return {
+        error: true,
+        message: ["Unable to update snag list, please try again later"],
+      };
     }
 
     return response.data;
@@ -199,9 +365,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to get properties to allocate, please try again later"];
+        response.error.message = [
+          "Unable to get properties to allocate, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -209,13 +377,17 @@ const PropertyService = {
   },
 
   toAllocateCustomer: async (searchQuery) => {
-    const response = await httpGet(`${apiUrlPrefix}/to-allocate-customer?q=${searchQuery}`);
+    const response = await httpGet(
+      `${apiUrlPrefix}/to-allocate-customer?q=${searchQuery}`
+    );
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to get customers to allocate, please try again later"];
+        response.error.message = [
+          "Unable to get customers to allocate, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -227,9 +399,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to list property remove reasons, please try again later"];
+        response.error.message = [
+          "Unable to list property remove reasons, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
@@ -241,14 +415,21 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to submit removal request property, please try again later"];
+        response.error.message = [
+          "Unable to submit removal request property, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to submit removal request property, please try again later"] };
+      return {
+        error: true,
+        message: [
+          "Unable to submit removal request property, please try again later",
+        ],
+      };
     }
 
     return response.data;
@@ -259,14 +440,21 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to delete allocated property, please try again later"];
+        response.error.message = [
+          "Unable to delete allocated property, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
     if (response?.status !== 200) {
-      return { error: true, message: ["Unable to delete allocated property, please try again later"] };
+      return {
+        error: true,
+        message: [
+          "Unable to delete allocated property, please try again later",
+        ],
+      };
     }
 
     return response.data;
@@ -277,9 +465,11 @@ const PropertyService = {
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = ["Unable to create property log, please try again later"];
+        response.error.message = [
+          "Unable to create property log, please try again later",
+        ];
       }
-      
+
       return response;
     }
 
