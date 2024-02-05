@@ -192,7 +192,7 @@ export default function Add(props) {
       setLoading(false);
 
       if (formResponse?.error) {
-        toast.error(formResponse.message || "An error occurred.");
+        props.responseHandler([formResponse.message || "An error occurred."]);
         return;
       }
 
@@ -212,7 +212,7 @@ export default function Add(props) {
         }, 2000);
       }
     } catch (error) {
-      toast.error("An error occurred while processing your request.");
+      props.responseHandler(["An error occurred while processing your request."]);
       setLoading(false);
     }
   };
