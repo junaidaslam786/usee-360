@@ -133,8 +133,8 @@ const UserService = {
 
     return response.data;
   },
-  deleteUser: async (id) => {
-    const response = await httpDelete(`${apiUrlPrefix}/${id}`);
+  deleteUser: async () => {
+    const response = await httpDelete('user/delete');
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {

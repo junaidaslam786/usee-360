@@ -10,7 +10,12 @@ import AuthService from "../../services/auth";
 import { setLoginToken } from "../../utils";
 import { toast } from "react-toastify";
 
-export default function OtpVerification({ user, token, responseHandler, onVerified }) {
+export default function OtpVerification({
+  user,
+  token,
+  responseHandler,
+  onVerified,
+}) {
   const [otpType, setOtpType] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingResend, setLoadingResend] = useState(false);
@@ -131,31 +136,29 @@ export default function OtpVerification({ user, token, responseHandler, onVerifi
         },
         token
       );
-      setLoading(false);
 
       if (formResponse?.error && formResponse?.message) {
         responseHandler(formResponse.message);
+        setLoading(false);
         return;
       }
 
-      // If OTP validation is successful, we now check if the user is active.
-      if (!formResponse.user.active) {
-        // If the user is not active, we stop the process and show a message.
+      // Use optional chaining to safely check if the user is active
+      if (!formResponse?.user?.active) {
         setLoading(false);
         responseHandler(
           "Your account is not active and requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
-        // Optionally, you can redirect the user to a different page or perform some action.
-        // navigate('/some-approval-pending-page');
+        // Optionally, redirect the user or take other actions here
         return; // Stop further execution.
       }
 
       responseHandler("Account verified successfully.", true);
       onVerified && onVerified(formResponse.user, token);
       toast.warn(
-        "Your request for trader has been recieved. Please wait for account approval"
+        "Your request for trader has been received. Please wait for account approval"
       );
-      // redirectUser(token);
+      // redirectUser(token); Uncomment or modify this according to your needs
     }
   };
 

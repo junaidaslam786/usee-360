@@ -41,52 +41,7 @@ export default function Profile(props) {
 
   const history = useHistory();
 
-  // const getUser = async () => {
-  //   const jsonData = await ProfileService.getProfile();
-  //   if (jsonData?.error && jsonData?.message) {
-  //     props.responseHandler(jsonData.message);
-  //     return;
-  //   }
 
-  //   setUser(jsonData);
-  //   setAgentId(jsonData.agent.userId);
-  //   setFirstName(jsonData.firstName);
-  //   setLastName(jsonData.lastName);
-  //   setCompanyPosition(
-  //     jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
-  //   );
-  //   setPhoneNumber(jsonData.phoneNumber);
-  //   setMobileNumber(
-  //     jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
-  //   );
-  //   setCompanyName(
-  //     jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
-  //   );
-  //   setCompanyAddress(
-  //     jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
-  //   );
-  //   setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
-  //   setCity(jsonData?.cityName ? jsonData.cityName : "");
-  //   setMortgageAdvisorEmail(
-  //     jsonData?.agent?.mortgageAdvisorEmail
-  //       ? jsonData.agent.mortgageAdvisorEmail
-  //       : ""
-  //   );
-  //   setCompanyLogoPreview(
-  //     jsonData?.agent?.companyLogo
-  //       ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
-  //       : ""
-  //   );
-  //   setProfileImagePreview(
-  //     jsonData?.profileImage
-  //       ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
-  //       : ""
-  //   );
-
-  //   if (jsonData.userCallBackgroundImages) {
-  //     setCallBackgroundImages(jsonData.userCallBackgroundImages);
-  //   }
-  // };
 
   const updateProfile = async (e) => {
     e.preventDefault();
@@ -144,36 +99,11 @@ export default function Profile(props) {
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => setDeleteModalOpen(false);
 
-  // This is a simplified example. Adjust based on how you're capturing the password.
-  // const handleDeleteConfirmation = async (password, setError, proceedToNextScreen) => {
-  //   try {
-  //     const verificationResult = await UserService.verifyPassword({
-  //       password: password,
-  //     });
-  //     if (verificationResult.success) {
-  //       // Assuming your API response structure
-  //       const deletionResult = await UserService.deleteUser(userId);
-  //       if (!deletionResult.error) {
-  //         props.responseHandler("User deleted successfully", true);
-  //         history.push("/agent/login");
-  //         closeDeleteModal();
-  //       } else {
-  //         props.responseHandler(deletionResult.message);
-  //       }
-  //     } else {
-  //       // Password verification failed
-  //       props.responseHandler(
-  //         "Password verification failed. Please try again."
-  //       );
-  //     }
-  //   } catch (error) {
-  //     props.responseHandler(error.message || "An unexpected error occurred.");
-  //   }
-  // };
+
 
   const handleFinalConfirmation = async () => {
     try {
-      const deletionResult = await UserService.deleteUser(userId); // Assuming UserService has a deleteUser method
+      const deletionResult = await UserService.deleteUser(); // Assuming UserService has a deleteUser method
       if (!deletionResult.error) {
         props.responseHandler("User deleted successfully", true);
         history.push("/agent/login"); // Navigate away, assuming the user's session is invalidated

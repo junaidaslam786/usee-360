@@ -58,9 +58,10 @@ export default function RegisterAgent(props) {
     formData.append("document", document);
     formData.append("licenseNo", licenseNo);
     formData.append("signupStep", 1);
-    formData.append("country", selectedCountry.valueOf); // Append selected country isoCode
+    formData.append("country", selectedCountry.value); // Append selected country isoCode
     formData.append("countryName", selectedCountry.label); // If you also need the country name
-    formData.append("cityName", selectedCity.valueOf); // Append selected city name
+    formData.append("cityName", selectedCity.value); // Append selected city name
+    formData.append('ornNumber', showTraderORNField)
     formData.append(
       "timezone",
       Intl.DateTimeFormat().resolvedOptions().timeZone
