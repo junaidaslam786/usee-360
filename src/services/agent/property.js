@@ -151,40 +151,10 @@ const PropertyService = {
 
     return response.data;
   },
-  // uploadFeatureImage: async (productId, formData) => {
-  //   // Assuming `formData` is already prepared and passed as a parameter,
-  //   // including the 'productId' and the file under the correct key.
-
-  //   const response = await httpPost(
-  //     `${apiUrlPrefix}/featured-image`,
-  //     formData,
-  //     true
-  //   );
-
-  //   // Error handling
-  //   if (response?.error) {
-  //     // Process and return any errors as needed
-  //     return {
-  //       error: true,
-  //       message:
-  //         response.error.message ||
-  //         "Unable to upload featured image, please try again later",
-  //     };
-  //   }
-
-  //   // Optionally, check for HTTP status code explicitly if necessary
-  //   if (response?.status !== 200) {
-  //     return {
-  //       error: true,
-  //       message: "Unable to upload featured image, please try again later",
-  //     };
-  //   }
-
-  //   return response.data; // Return the response data on success
-  // },
+  
   uploadFeatureImage: async (formData, onUploadProgress) => {
     try {
-      const response = await axios.post(
+      const response = await httpPost(
         `${apiUrlPrefix}/featured-image`,
         formData,
         {
@@ -210,32 +180,11 @@ const PropertyService = {
     }
   },
 
-  // uploadVirtualTour: async (productId, virtualTourType, virtualTourUrl) => {
-  //   const response = await httpPost(`${apiUrlPrefix}/virtual-tour`, {
-  //     productId,
-  //     virtualTourType,
-  //     virtualTourUrl,
-  //   });
-  //   if (response?.error) {
-  //     if (response?.error?.message && response?.error?.message.length < 0) {
-  //       response.error.message = [
-  //         "Unable to upload virtual tour, please try again later",
-  //       ];
-  //     }
-  //     return response;
-  //   }
-  //   if (response?.status !== 200) {
-  //     return {
-  //       error: true,
-  //       message: ["Unable to upload virtual tour, please try again later"],
-  //     };
-  //   }
-  //   return response.data;
-  // },
+  
 
   uploadVirtualTour: async (formData, onUploadProgress) => {
     try {
-      const response = await axios.post(
+      const response = await httpPost(
         `${apiUrlPrefix}/virtual-tour`,
         formData,
         {

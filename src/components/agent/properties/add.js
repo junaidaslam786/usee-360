@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
 import UploadPropertyImage from "./upload-property-image";
+import UploadFeaturedImage from "./upload-featured-image";
+import UploadVirtualTour from "./upload-virtual-tour";
 import UploadPropertyDocument from "./upload-property-document";
 import {
   PROPERTY_TYPES,
@@ -20,25 +22,28 @@ import { useStateIfMounted } from "use-state-if-mounted";
 import { toast } from "react-toastify";
 
 import LocationForm from "./LocationForm";
-import UploadFeaturedImage from "./upload-featured-image";
-import UploadVirtualTour from "./upload-virtual-tour";
+import { set } from "lodash";
 
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
+  console.log("userDetail", userDetail);
 
   const [id, setId] = useStateIfMounted();
   const [title, setTitle] = useStateIfMounted("");
   const [description, setDescription] = useStateIfMounted("");
   const [price, setPrice] = useStateIfMounted();
   const [propertyType, setPropertyType] = useStateIfMounted("");
+  // const [selectedImage, setSelectedImage] = useStateIfMounted(null);
   const [propertySubType, setPropertySubType] = useStateIfMounted("");
   const [propertyCategoryType, setPropertyCategoryType] = useStateIfMounted();
   const [priceType, setPriceType] = useStateIfMounted();
   const [unit, setUnit] = useStateIfMounted("");
   const [area, setArea] = useStateIfMounted("");
   const [bedrooms, setBedrooms] = useStateIfMounted();
-  
+  const [featuredImage, setFeaturedImage] = useStateIfMounted(null);
+  const [featuredImagePreview, setFeaturedImagePreview] =
+    useStateIfMounted(null);
   const [address, setAddress] = useStateIfMounted("");
   const [city, setCity] = useStateIfMounted("");
   const [postalCode, setPostalCode] = useStateIfMounted("");
@@ -49,15 +54,37 @@ export default function Add(props) {
   const [propertyDocuments, setPropertyDocuments] = useStateIfMounted([]);
   const [allotedToUsers, setAllotedToUsers] = useStateIfMounted([]);
   const [loading, setLoading] = useStateIfMounted();
-  
+  const [virtualTourType, setVirtualTourType] = useStateIfMounted("");
+  const [virtualTourVideo, setVirtualTourVideo] = useStateIfMounted("");
+  const [virtualTourUrl, setVirtualTourUrl] = useStateIfMounted("");
+  const [isChecked, setIsChecked] = useStateIfMounted(false);
   const [map, setMap] = useStateIfMounted(null);
   const [marker, setMarker] = useStateIfMounted(null);
+  const [permitNumber, setPermitNumber] = useStateIfMounted("");
+  const [qrCode, setQrCode] = useStateIfMounted(null);
+
   const [propertySubTypeOptions, setPropertySubTypeOptions] =
     useStateIfMounted(null);
   const [deedTitle, setDeedTitle] = useStateIfMounted("");
   const [users, setUsers] = useStateIfMounted([]);
+  const [userFullUser, setUserFullUser] = useStateIfMounted({});
 
   const history = useHistory();
+
+  // (async () => {
+  //   const userFullUser = await UserService.detail(userDetail.id);
+  //   console.log("userFullUser", userFullUser.user.cityName);
+  //   setUserFullUser(userFullUser.user);
+  // })();
+  const fetchUserDetails = useCallback(async () => {
+    try {
+      const response = await UserService.detail(userDetail.id);
+      setUserFullUser(response.user);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      // Optionally handle error state here
+    }
+  }, [userDetail.id]);
 
   const loadUsersToAllocate = async () => {
     const response = await UserService.toAllocate();
@@ -95,6 +122,7 @@ export default function Add(props) {
     formdata.append("title", title);
     formdata.append("description", description);
     formdata.append("price", price);
+    formdata.append("featuredImage", featuredImage);
     formdata.append("address", address);
     formdata.append("city", city);
     formdata.append("postalCode", postalCode);
@@ -102,6 +130,12 @@ export default function Add(props) {
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
 
+    if (qrCode) {
+      formdata.append("qrCode", qrCode);
+    }
+    if (permitNumber) {
+      formdata.append("permitNumber", permitNumber);
+    }
 
     if (propertyType?.value) {
       formdata.append("metaTags[1]", propertyType.value);
@@ -158,7 +192,6 @@ export default function Add(props) {
         apiUrl === "/update" ? "update" : "add"
       ](formdata);
 
-      if (!id) setId(formResponse.id);
       setLoading(false);
 
       if (formResponse?.error) {
@@ -166,22 +199,42 @@ export default function Add(props) {
         return;
       }
 
-      toast.success(successMsg);
-      // cleanupForm();
+      if (!id && formResponse?.id) {
+        // Check if creating a new property and response includes an ID
+        setId(formResponse.id); // Update the `id` state
+        toast.success(successMsg);
+        // No need to redirect here; just update the state
+      }
 
       // Redirect after success
-      setTimeout(() => {
-        if (formResponse?.id) {
-          history.push(`/agent/edit-property/${formResponse.id}`);
-        }
-      }, 2000);
+      if (id) {
+        setTimeout(() => {
+          if (formResponse?.id) {
+            history.push(`/agent/edit-property/${formResponse.id}`);
+          }
+        }, 2000);
+      }
     } catch (error) {
       toast.error("An error occurred while processing your request.");
       setLoading(false);
     }
   };
 
- 
+  const handleImageSelect = (file) => {
+    setFeaturedImage(file);
+  };
+
+  const setPropertyDetails = (updatedDetails) => {
+    // Assuming you have a state or method to update the property details,
+    // add or update the featuredImage key with the selected image.
+  };
+
+  const handleQrCodeChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setQrCode(file);
+    }
+  };
 
   const setPropertyCategoryTypeHandler = (e) => {
     setPropertyCategoryType(e);
@@ -191,6 +244,10 @@ export default function Add(props) {
     setPropertyType(e);
     setPropertySubType("");
   };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
 
   useEffect(() => {
     if (params?.id) {
@@ -210,7 +267,18 @@ export default function Add(props) {
           setRegion(response.region);
           setLatitude(response.latitude);
           setLongitude(response.longitude);
-          
+          setVirtualTourType(response.virtualTourType);
+          if (response?.featuredImage) {
+            setFeaturedImagePreview(
+              `${process.env.REACT_APP_API_URL}/${response.featuredImage}`
+            );
+          }
+
+          if (response.virtualTourType == "slideshow") {
+            setIsChecked(true);
+          } else if (response.virtualTourType == "url") {
+            setVirtualTourUrl(response.virtualTourUrl);
+          }
 
           if (response.productMetaTags.length > 0) {
             response.productMetaTags.sort(
@@ -235,6 +303,8 @@ export default function Add(props) {
             setPropertySubType(subTypeMetaTag);
             setPriceType(priceTypeMetaTag);
             setDeedTitle(deedTitleMetaTag);
+            setPermitNumber(response.permitNumber);
+            setQrCode(response.qrCode);
           }
 
           if (response.productImages) {
@@ -435,7 +505,42 @@ export default function Add(props) {
           </div>
         </div>
 
-       
+        {/* Permit Number and QR Code for Dubai properties */}
+        {userFullUser.cityName === "Dubai" &&
+          userFullUser.countryName === "United Arab Emirates" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Permit Number *</label>
+                  <input
+                    type="text"
+                    className="form-control" // Ensure consistent class usage for styling
+                    value={permitNumber}
+                    placeholder="Enter Permit Number"
+                    onChange={(e) => setPermitNumber(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  {/* <label>QR Code *</label> */}
+                  <h6 >QR Code *</h6>
+                  <input
+                    type="file"
+                    className="btn theme-btn-3 mb-10" // Use existing button styles
+                    onChange={handleQrCodeChange}
+                    
+                  />
+                  <small className="form-text text-muted">
+                    {" "}
+                     (Supported formats: jpg, png).
+                  </small>
+                </div>
+              </div>
+            </div >
+          )}
+        
         <LocationForm
           address={address}
           setAddress={setAddress}
@@ -503,17 +608,15 @@ export default function Add(props) {
 
       {id && (
         <div className="row mb-50">
-          <h4 className="title-2">Featured Image</h4>
           <UploadFeaturedImage
-            propertyId={id}
-            responseHandler={props.responseHandler}
+            propertyId={id} // This might be undefined if adding a new property
+            selectedFeatureImage={featuredImage}
+            onImageSelect={handleImageSelect}
+            setProperty={setPropertyDetails}
           />
           <UploadVirtualTour
-            propertyId={id} // Ensure you have the property ID available
-            onUploadSuccess={() => {
-              // Handle any actions on successful upload
-              // For instance, you might want to fetch the property details again to update the UI
-            }}
+            propertyId={id}
+            onUploadSuccess={props.responseHandler}
           />
           <UploadPropertyImage
             id={id}

@@ -12,9 +12,12 @@ export default function ResponseHandler(props) {
     if (props?.response?.success) {
       toast.success(props.response.success);
     } else if (props?.response?.errors) {
+      // Ensure errors is always treated as an array
+      const errors = Array.isArray(props.response.errors) ? props.response.errors : [props.response.errors];
       let msg = "";
       let isSessionExpired = false;
-      props.response.errors.forEach(error => {
+      
+      errors.forEach(error => {
         msg = error.msg || error;
         toast.error(msg);
 
@@ -35,7 +38,7 @@ export default function ResponseHandler(props) {
         }, 2000);
       }
     }
-  }, [props?.response?.errors, props?.response?.success]);
+  }, [props?.response?.errors, props?.response?.success, props.type, history]);
 
   return (
     <div>

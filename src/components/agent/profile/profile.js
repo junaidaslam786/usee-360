@@ -7,6 +7,7 @@ import UpdatePassword from "../../partial/update-password";
 import UploadCallBackgroundImage from "./upload-call-background-image";
 import { useStateIfMounted } from "use-state-if-mounted";
 import AgentService from "../../../services/agent/user";
+import UserService from "../../../services/agent/user";
 import { getUserDetailsFromJwt } from "../../../utils";
 import { el } from "@fullcalendar/core/internal-common";
 import ConfirmationModal from "./confirmationModal";
@@ -142,18 +143,66 @@ export default function Profile(props) {
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => setDeleteModalOpen(false);
 
-  const handleDeleteConfirmation = async () => {
-    // Implement your delete logic here
-    const result = await AgentService.deleteUser(userId);
-    if (result?.error) {
-      props.responseHandler(result.message);
-      return;
-    } else {
-      props.responseHandler("User deleted successfully", true);
+  // This is a simplified example. Adjust based on how you're capturing the password.
+  // const handleDeleteConfirmation = async (password, setError, proceedToNextScreen) => {
+  //   try {
+  //     const verificationResult = await UserService.verifyPassword({
+  //       password: password,
+  //     });
+  //     if (verificationResult.success) {
+  //       // Assuming your API response structure
+  //       const deletionResult = await UserService.deleteUser(userId);
+  //       if (!deletionResult.error) {
+  //         props.responseHandler("User deleted successfully", true);
+  //         history.push("/agent/login");
+  //         closeDeleteModal();
+  //       } else {
+  //         props.responseHandler(deletionResult.message);
+  //       }
+  //     } else {
+  //       // Password verification failed
+  //       props.responseHandler(
+  //         "Password verification failed. Please try again."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     props.responseHandler(error.message || "An unexpected error occurred.");
+  //   }
+  // };
+
+  const handleFinalConfirmation = async () => {
+    try {
+      const deletionResult = await UserService.deleteUser(userId); // Assuming UserService has a deleteUser method
+      if (!deletionResult.error) {
+        props.responseHandler("User deleted successfully", true);
+        history.push("/agent/login"); // Navigate away, assuming the user's session is invalidated
+        closeDeleteModal(); // Ensure the modal is closed
+      } else {
+        // Handle potential errors from the deletion attempt
+        props.responseHandler(deletionResult.message);
+      }
+    } catch (error) {
+      // Handle any unexpected errors during the deletion process
+      props.responseHandler(error.message || "An unexpected error occurred.");
     }
-    closeDeleteModal();
-    history.push("/agent/login");
-    // Maybe call a service function to delete the user account
+  };
+
+  const verifyPasswordLogic = async (
+    password,
+    setError,
+    proceedToNextScreen
+  ) => {
+    try {
+      const result = await UserService.verifyPassword({ password }); // Assuming UserService has a verifyPassword method
+      if (result.isValid) {
+        // Assuming your result object has an isValid boolean
+        proceedToNextScreen(); // Proceed to confirmation screen if password is correct
+      } else {
+        setError("Password is incorrect. Please try again."); // Show error if password is incorrect
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again."); // Handle any other errors
+    }
   };
 
   useEffect(() => {
@@ -414,13 +463,16 @@ export default function Profile(props) {
             <div className="row mb-50">
               <div className="col-lg-10">
                 <p>
-                Please click the 'Delete' button to proceed with account deletion. Confirming this action will permanently remove your account and associated data. Ensure you have backed up any necessary information before proceeding.
+                  Please click the 'Delete' button to proceed with account
+                  deletion. Confirming this action will permanently remove your
+                  account and associated data. Ensure you have backed up any
+                  necessary information before proceeding.
                 </p>
               </div>
               <div className="col-lg-2">
                 <button
                   className="btn theme-btn-1 btn-effect-1 text-uppercase"
-                  style={{backgroundColor: 'red'}}
+                  style={{ backgroundColor: "red" }}
                   onClick={openDeleteModal}
                 >
                   Delete
@@ -429,7 +481,10 @@ export default function Profile(props) {
               <ConfirmationModal
                 isOpen={isDeleteModalOpen}
                 onClose={closeDeleteModal}
-                onConfirm={handleDeleteConfirmation}
+                onConfirm={handleFinalConfirmation} // This should be the logic to finally delete the account
+                onPasswordSubmit={(password, setError, proceedToNextScreen) => {
+                  verifyPasswordLogic(password, setError, proceedToNextScreen); // Your custom logic to verify the password
+                }}
               >
                 <p>
                   Are you sure you want to delete your account? This action
