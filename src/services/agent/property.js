@@ -221,6 +221,35 @@ const PropertyService = {
     }
   },
 
+  uploadQRCode: async (formData, onUploadProgress) => {
+    try {
+      const response = await httpPost(
+        `${apiUrlPrefix}/qrcode`, // Adjusted endpoint for QR code upload
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onUploadProgress(percentCompleted); // Callback function to update progress
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Handle error
+      console.error("Error uploading QR code:", error);
+      return {
+        error: true,
+        message: "Unable to upload QR code, please try again later",
+      };
+    }
+  },
+
+
   deleteImage: async (reqBody) => {
     const response = await httpDelete(`${apiUrlPrefix}/image`, reqBody);
 

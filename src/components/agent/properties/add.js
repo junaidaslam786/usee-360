@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 
 import LocationForm from "./LocationForm";
 import { set } from "lodash";
+import UploadQrCode from "./upload-qrCode";
 
 export default function Add(props) {
   const params = useParams();
@@ -62,6 +63,7 @@ export default function Add(props) {
   const [marker, setMarker] = useStateIfMounted(null);
   const [permitNumber, setPermitNumber] = useStateIfMounted("");
   const [qrCode, setQrCode] = useStateIfMounted(null);
+  const [qrCodePath, setQrCodePath] = useStateIfMounted("");
 
   const [propertySubTypeOptions, setPropertySubTypeOptions] =
     useStateIfMounted(null);
@@ -71,11 +73,6 @@ export default function Add(props) {
 
   const history = useHistory();
 
-  // (async () => {
-  //   const userFullUser = await UserService.detail(userDetail.id);
-  //   console.log("userFullUser", userFullUser.user.cityName);
-  //   setUserFullUser(userFullUser.user);
-  // })();
   const fetchUserDetails = useCallback(async () => {
     try {
       const response = await UserService.detail(userDetail.id);
@@ -227,6 +224,12 @@ export default function Add(props) {
   const setPropertyDetails = (updatedDetails) => {
     // Assuming you have a state or method to update the property details,
     // add or update the featuredImage key with the selected image.
+  };
+
+  const handleQrCodeUploadSuccess = (qrCodePath) => {
+    setQrCodePath(qrCodePath); // Update the state with the new QR code path
+    toast.success("QR Code uploaded successfully!");
+    // You might want to do more here, like updating the form data that will be submitted
   };
 
   const handleQrCodeChange = (event) => {
@@ -414,12 +417,13 @@ export default function Add(props) {
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Description</label>
+              <label>Description*</label>
               <textarea
                 className="mb-custom"
                 value={description}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -522,25 +526,9 @@ export default function Add(props) {
                   />
                 </div>
               </div>
-              <div className="col-md-12">
-                <div className="input-item">
-                  {/* <label>QR Code *</label> */}
-                  <h6 >QR Code *</h6>
-                  <input
-                    type="file"
-                    className="btn theme-btn-3 mb-10" // Use existing button styles
-                    onChange={handleQrCodeChange}
-                    
-                  />
-                  <small className="form-text text-muted">
-                    {" "}
-                     (Supported formats: jpg, png).
-                  </small>
-                </div>
-              </div>
-            </div >
+            </div>
           )}
-        
+
         <LocationForm
           address={address}
           setAddress={setAddress}
@@ -608,6 +596,13 @@ export default function Add(props) {
 
       {id && (
         <div className="row mb-50">
+          {userFullUser.cityName === "Dubai" &&
+            userFullUser.countryName === "United Arab Emirates" && (
+              <UploadQrCode
+                propertyId={id}
+                onQrCodeUploadSuccess={handleQrCodeUploadSuccess}
+              />
+            )}
           <UploadFeaturedImage
             propertyId={id} // This might be undefined if adding a new property
             selectedFeatureImage={featuredImage}

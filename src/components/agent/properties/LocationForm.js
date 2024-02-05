@@ -147,6 +147,7 @@ const LocationForm = ({
               name="ltn__name"
               onChange={(event) => setPostalCode(event.target.value)}
               placeholder="Postal Code"
+              required
             />
           </div>
         </div>

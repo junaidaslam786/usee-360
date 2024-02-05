@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
   const [virtualTourFile, setVirtualTourFile] = useState(null);
   const [virtualTourUrl, setVirtualTourUrl] = useState("");
-  const [virtualTourType, setVirtualTourType] = useState(""); 
+  const [virtualTourType, setVirtualTourType] = useState("");
   const [useSlideshow, setUseSlideshow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -100,8 +100,9 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
             />
           </div>
           <div className="mb-30">
-          <label className="checkbox-item">
-              Use images to create a slideshow instead of uploading a virtual tour:
+            <label className="checkbox-item">
+              Use images to create a slideshow instead of uploading a virtual
+              tour:
               <input
                 type="checkbox"
                 checked={useSlideshow}
@@ -114,14 +115,35 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
           {loading && (
             <div>
               <label>Upload Progress:</label>
-              <progress
-                value={uploadProgress}
-                max="100"
-                className="w-100"
-              ></progress>
-              <span className="ms-2">{uploadProgress}%</span>
+              <div
+                style={{
+                  height: "20px",
+                  backgroundColor: "#f5f5f5",
+                  borderRadius: "5px",
+                  boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
+                  marginTop: "10px", // Adds some space between the label and the progress bar
+                  width: "100%", // Ensures the container takes full width
+                }}
+              >
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${uploadProgress}%`,
+                    backgroundColor:
+                      uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
+                    borderRadius: "5px",
+                    textAlign: "center",
+                    color: "white",
+                    lineHeight: "20px", // Adjust to match the height of the progress bar
+                    transition: "width 0.6s ease",
+                  }}
+                >
+                  {uploadProgress}%
+                </div>
+              </div>
             </div>
           )}
+
           <button
             type="button"
             onClick={handleSubmit}

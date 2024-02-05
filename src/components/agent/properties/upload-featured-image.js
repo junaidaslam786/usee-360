@@ -1,5 +1,3 @@
-
-
 import React, { useCallback, useEffect, useState } from "react";
 import PropertyService from "../../../services/agent/property";
 import { toast } from "react-toastify";
@@ -17,7 +15,9 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
         try {
           const response = await PropertyService.detail(propertyId);
           if (response && response.featuredImage) {
-            setImagePreviewUrl(`${process.env.REACT_APP_API_URL}/${response.featuredImage}`);
+            setImagePreviewUrl(
+              `${process.env.REACT_APP_API_URL}/${response.featuredImage}`
+            );
           }
         } catch (error) {
           console.error("Error fetching property details:", error);
@@ -110,10 +110,34 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
           />
           <br />
           {uploadProgress > 0 && (
-            <progress value={uploadProgress} max="100">
-              {uploadProgress}%
-            </progress>
+            <div
+              style={{
+                height: "20px",
+                backgroundColor: "#f5f5f5",
+                borderRadius: "5px",
+                boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
+                marginTop: "10px", // Adds some space between the label and the progress bar
+                width: "100%", // Ensures the container takes full width
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${uploadProgress}%`,
+                  backgroundColor:
+                    uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
+                  borderRadius: "5px",
+                  textAlign: "center",
+                  color: "white",
+                  lineHeight: "20px", // Adjust to match the height of the progress bar
+                  transition: "width 0.6s ease",
+                }}
+              >
+                {uploadProgress}%
+              </div>
+            </div>
           )}
+
           <p>
             <small>
               * At least 1 image is required for a valid submission. Minimum

@@ -22,10 +22,10 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
   const uploadQrCode = async (file) => {
     const formData = new FormData();
     formData.append("qrCode", file);
-    formData.append("propertyId", propertyId);
+    formData.append("productId", propertyId);
 
     try {
-      const response = await PropertyService.uploadQrCode(
+      const response = await PropertyService.uploadQRCode(
         formData,
         (progressEvent) => {
           const progress = Math.round(
@@ -47,6 +47,29 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchQrCode = async () => {
+      if (propertyId) {
+        try {
+          // Assuming the detail method returns property details including the QR code
+          const response = await PropertyService.detail(propertyId);
+          console.log("response", response);
+          if (response && response.qrCode) {
+            // Assuming response.qrCode is the path to the QR code image
+            setQrCodePreviewUrl(
+              `${process.env.REACT_APP_API_URL}/${response.qrCode}`
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching QR code:", error);
+          // Optionally handle error, e.g., set a fallback image or display an error message
+        }
+      }
+    };
+
+    fetchQrCode();
+  }, [propertyId]);
+
   // Cleanup preview URL to avoid memory leaks
   useEffect(() => {
     return () => {
@@ -55,18 +78,54 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
   }, [qrCodePreviewUrl]);
 
   return (
-    <div>
-      <input
-        type="file"
-        onChange={handleQrCodeChange}
-        accept="image/png, image/jpeg"
-      />
-      {qrCodePreviewUrl && (
-        <img src={qrCodePreviewUrl} alt="QR Code Preview" style={{ maxWidth: "100%", height: "auto" }} />
-      )}
-      {uploadProgress > 0 && (
-        <progress value={uploadProgress} max="100">{uploadProgress}%</progress>
-      )}
+    <div className="row">
+      <div className="col-md-12">
+        <h4 className="title-2">Permit Number QR Code</h4>
+        <input
+          type="file"
+          className="btn theme-btn-3 mb-10"
+          onChange={handleQrCodeChange}
+          accept="image/png, image/jpeg"
+        />
+        <small className="form-text text-muted">
+          {" "}
+          (Supported formats: jpg, png).
+        </small>
+        {qrCodePreviewUrl && (
+          <img
+            src={qrCodePreviewUrl}
+            alt="QR Code Preview"
+            style={{ maxWidth: "50%", height: "auto" }}
+          />
+        )}
+        {uploadProgress > 0 && (
+          <div
+            style={{
+              height: "20px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "5px",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
+              marginTop: "10px", // Adds some space between the label and the progress bar
+              width: "100%", // Ensures the container takes full width
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: `${uploadProgress}%`,
+                backgroundColor: uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
+                borderRadius: "5px",
+                textAlign: "center",
+                color: "white",
+                lineHeight: "20px", // Adjust to match the height of the progress bar
+                transition: "width 0.6s ease",
+              }}
+            >
+              {uploadProgress}%
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

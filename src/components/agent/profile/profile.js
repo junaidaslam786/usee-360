@@ -12,6 +12,7 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import { el } from "@fullcalendar/core/internal-common";
 import ConfirmationModal from "./confirmationModal";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Profile(props) {
   const [agentId, setAgentId] = useState();
@@ -187,23 +188,20 @@ export default function Profile(props) {
     }
   };
 
-  const verifyPasswordLogic = async (
-    password,
-    setError,
-    proceedToNextScreen
-  ) => {
-    try {
-      const result = await UserService.verifyPassword({ password }); // Assuming UserService has a verifyPassword method
-      if (result.isValid) {
-        // Assuming your result object has an isValid boolean
-        proceedToNextScreen(); // Proceed to confirmation screen if password is correct
+  const verifyPasswordLogic = async (password, setError, proceedToNextScreen) => {
+    UserService.verifyPassword({ password }).then(response => {
+      if (response.success) { // Make sure this matches your actual API response structure
+        setError(""); // Clear any existing error messages
+        toast.success(response.message)
+        proceedToNextScreen(); // Proceed to the confirmation screen
       } else {
-        setError("Password is incorrect. Please try again."); // Show error if password is incorrect
+        setError("Password verification failed. Please try again."); // Show error message
       }
-    } catch (error) {
-      setError("An error occurred. Please try again."); // Handle any other errors
-    }
+    }).catch(error => {
+      setError("An error occurred during verification. Please try again."); // Handle exceptions
+    });
   };
+  
 
   useEffect(() => {
     let isMounted = true;
@@ -482,9 +480,7 @@ export default function Profile(props) {
                 isOpen={isDeleteModalOpen}
                 onClose={closeDeleteModal}
                 onConfirm={handleFinalConfirmation} // This should be the logic to finally delete the account
-                onPasswordSubmit={(password, setError, proceedToNextScreen) => {
-                  verifyPasswordLogic(password, setError, proceedToNextScreen); // Your custom logic to verify the password
-                }}
+                onPasswordSubmit={verifyPasswordLogic}
               >
                 <p>
                   Are you sure you want to delete your account? This action
