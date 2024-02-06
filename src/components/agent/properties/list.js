@@ -45,7 +45,7 @@ export default function List(props) {
     }
 
     const formResponse = await PropertyService.removalRequest({
-      propertyId: propertyIdToDelete,
+      productId: propertyIdToDelete,
       reasonId: removeReason.value,
       reason: notes,
     });

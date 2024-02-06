@@ -57,7 +57,7 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
           if (response && response.qrCode) {
             // Assuming response.qrCode is the path to the QR code image
             setQrCodePreviewUrl(
-              `${process.env.REACT_APP_API_URL}/${response.qrCode}`
+              `${process.env.REACT_APP_API_URL}${response.qrCode}`
             );
           }
         } catch (error) {

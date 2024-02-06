@@ -9,6 +9,7 @@ import {
 import AuthService from "../../services/auth";
 import { setLoginToken } from "../../utils";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function OtpVerification({
   user,
@@ -24,6 +25,8 @@ export default function OtpVerification({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [otp, setOtp] = useState("");
+
+  const history = useHistory();
 
   const renderInput = (props, index) => (
     <input className="otp-input" {...props} autoFocus={index === 0} />
@@ -159,6 +162,7 @@ export default function OtpVerification({
         "Your request for trader has been received. Please wait for account approval"
       );
       // redirectUser(token); Uncomment or modify this according to your needs
+      history.push('/register')
     }
   };
 

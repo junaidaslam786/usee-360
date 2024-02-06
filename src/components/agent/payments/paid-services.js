@@ -5,7 +5,7 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import { toast } from "react-toastify";
 import { Card, Button, Form, Row, Col, ToggleButton } from "react-bootstrap";
 
-const PaidServices = () => {
+const PaidServices = (props) => {
   const [services, setServices] = useState([]);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,7 +54,7 @@ const PaidServices = () => {
         setSubscriptionStatus(updatedSubscriptionStatus);
       }
     } catch (error) {
-      console.error("Error fetching subscription details", error.message);
+      props.responseHandler([`Error fetching subscription details: ${error.message}`]);
     }
   };
 
@@ -75,7 +75,7 @@ const PaidServices = () => {
         setServices(formattedServices);
       }
     } catch (error) {
-      console.error("Error fetching services", error.message);
+      props.responseHandler([`Error fetching services: ${error.message}`]);
     }
   };
 
@@ -124,25 +124,32 @@ const PaidServices = () => {
           ...prevStatus,
           [serviceId]: true, // Update status to true for the subscribed service
         }));
+        props.responseHandler(["Subscription successful"]);
       } else {
         console.error("Subscription failed", response.message);
+        props.responseHandler([`Subscription failed: ${response.message}`]);
         // Handle the failed subscription here
       }
     } catch (error) {
       console.error("Error during subscription", error.message);
+      props.responseHandler([`Error during subscription: ${error.message}`]);
       // Handle any errors here
     }
   };
 
   const handleQuantityChange = (index, quantity) => {
-    const updatedServices = services.map((service, idx) => {
-      if (idx === index) {
-        return { ...service, quantity: quantity };
-      }
-      return service;
-    });
-    setServices(updatedServices);
+    const numQuantity = Number(quantity); // Convert to number
+    if (!isNaN(numQuantity) && numQuantity > 0) { // Check if it's a valid number
+      const updatedServices = services.map((service, idx) => {
+        if (idx === index) {
+          return { ...service, quantity: numQuantity };
+        }
+        return service;
+      });
+      setServices(updatedServices);
+    }
   };
+  
 
   const handleAutoRenewToggle = (index) => {
     const updatedServices = services.map((service, idx) => {
@@ -156,33 +163,33 @@ const PaidServices = () => {
 
   const handlePurchase = async (service) => {
     try {
-      const totalAmount = service.tokenPrice * service.quantity;
-      const response = await StripeService.createTransaction(
-        userDetails.id,
-        service.id,
-        service.quantity,
-        totalAmount,
-        `Used for ${service.name}` // Example description
-      );
-
-      // Check if response contains the expected data (e.g., 'id' field)
-      if (response) {
-        console.log("Purchase successful", response.data);
-        setPurchaseSuccess(true);
-        setSuccessMessage(`You have successfully purchased ${service.name}.`);
-        toast.success(`You have successfully purchased ${service.name}.`);
-      } else {
-        console.error(
-          "Purchase failed",
-          "Response does not contain expected data"
+        const totalAmount = service.tokenPrice * service.quantity;
+        const response = await StripeService.createTransaction(
+            userDetails.id,
+            service.id,
+            service.quantity,
+            totalAmount,
+            `Used for ${service.name}` // Example description
         );
-        toast.error(`Purchase failed: Response does not contain expected data`);
-      }
+
+        // Assuming the API response includes a success property to indicate the operation result
+        if (response?.success) {
+            console.log("Purchase successful", response.data);
+            setPurchaseSuccess(true);
+            setSuccessMessage(`You have successfully purchased ${service.name}.`);
+            props.responseHandler([`You have successfully purchased ${service.name}.`], true); // Assuming second parameter `true` indicates success
+        } else {
+            // Handle cases where the API operation was executed but resulted in an error
+            console.error("Purchase failed", response?.message || "Unknown error");
+            props.responseHandler([`Purchase failed: ${response?.message || "An error occurred during the purchase."}`]);
+        }
     } catch (error) {
-      console.error("Error during purchase", error.message);
-      toast.error(`Error during purchase: ${error.message}`);
+        // Handle network errors or issues with executing the API call
+        console.error("Error during purchase", error.message);
+        props.responseHandler([`Error during purchase: ${error.message}`]);
     }
-  };
+};
+
 
   return (
     <div className="paid-services">
