@@ -237,13 +237,7 @@ export default function Add(props) {
     // You might want to do more here, like updating the form data that will be submitted
   };
 
-  const handleQrCodeChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setQrCode(file);
-    }
-  };
-
+  
   const setPropertyCategoryTypeHandler = (e) => {
     setPropertyCategoryType(e);
   };

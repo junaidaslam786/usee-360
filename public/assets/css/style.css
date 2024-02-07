@@ -9222,6 +9222,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     padding: 0;
     border: 0;
 }
+.modal-header2 {
+    padding-left: 45%;
+    border: 0;
+}
 .modal-header .close {
     position: absolute;
     height: 40px;
@@ -18160,6 +18164,9 @@ h1.page-title {
 
 .modal-dialog-large {
     min-width: 1080px !important;
+}
+.modal-dialog-large2 {
+    min-width: 100px !important;
 }
 
 .draw-on-map {

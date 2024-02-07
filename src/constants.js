@@ -14,6 +14,12 @@ export const PROPERTY_CATEGORY_TYPES = [
     { value: "sale", label: "Sale" },
 ];
 
+export const PARKING = [
+    { value: "no", label: "No" },
+    { value: "garage", label: "Garage" },
+    { value: "parking_spaces", label: "Parking Spaces" },
+];
+
 export const RESIDENTIAL_PROPERTY = [
     { value: "apartment", label: "Apartments" },
     { value: "house", label: "House" },
