@@ -64,6 +64,7 @@ export default function Add(props) {
   const [permitNumber, setPermitNumber] = useStateIfMounted("");
   const [qrCode, setQrCode] = useStateIfMounted(null);
   const [qrCodePath, setQrCodePath] = useStateIfMounted("");
+  const [jobTitle, setJobTitle] = useStateIfMounted("");
 
   const [propertySubTypeOptions, setPropertySubTypeOptions] =
     useStateIfMounted(null);
@@ -76,8 +77,10 @@ export default function Add(props) {
   const fetchUserDetails = useCallback(async () => {
     try {
       const response = await UserService.detail(userDetail.id);
-      console.log("User Details", response);
+      // console.log("User Details", response);
+      // console.log('job Title', response.jobTitle);
       setUserFullUser(response.user);
+      setJobTitle(response.jobTitle);
     } catch (error) {
       console.error("Error fetching user details:", error);
       // Optionally handle error state here
@@ -515,7 +518,7 @@ export default function Add(props) {
 
         {/* Permit Number and QR Code for Dubai properties */}
         {userFullUser.cityName === "Dubai" &&
-          userFullUser.countryName === "United Arab Emirates" && (
+          userFullUser.countryName === "United Arab Emirates" &&  jobTitle === "developer" && (
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">

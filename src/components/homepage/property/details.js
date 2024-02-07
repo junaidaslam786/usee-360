@@ -5,9 +5,11 @@ import {
   formatCreatedAtTimestamp,
   formatPrice,
   getLoginToken,
+  getUserDetailsFromJwt,
   setPropertyMetaData,
 } from "../../../utils";
 import PropertyService from "../../../services/agent/property";
+import UserService from "../../../services/agent/user";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
@@ -31,6 +33,7 @@ export default function PropertyDetails(props) {
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
+  const [userDetails, setUserDetails] = useState({});
 
   const token = getLoginToken();
   const history = useHistory();
@@ -38,6 +41,23 @@ export default function PropertyDetails(props) {
   const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
     window.location.pathname
   )}`;
+
+  const userDetail = getUserDetailsFromJwt();
+  const userId = userDetail?.id;
+
+  const fetchUserDetails = useCallback(async () => {
+    try {
+      const response = await UserService.detail(userId);
+      console.log("user-details", response);
+      setUserDetails(response);
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  }, [userId, props]);
 
   const postPropertyViewLog = async (propertyId) => {
     try {
@@ -178,6 +198,10 @@ export default function PropertyDetails(props) {
       // Handle error (e.g., show error message to the user)
     }
   };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
 
   useEffect(() => {
     if (!token) {
@@ -332,11 +356,13 @@ export default function PropertyDetails(props) {
               </div>
               {city === "Dubai" && region === "United Arab Emirates" && (
                 <>
-                  <div className="widget2 " style={{ height: "4px" }}>
-                    <div className=" text-center">
-                      <p>ORN Number</p>
+                  {userDetails.jobTitle === "developer" && (
+                    <div className="widget2 " style={{ height: "4px" }}>
+                      <div className=" text-center">
+                        <p>ORN Number</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="widget2 " style={{ height: "4px" }}>
                     <div className=" text-center">
                       <p>Permit Number: {permitNumber}</p>
