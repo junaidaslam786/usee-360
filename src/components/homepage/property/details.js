@@ -34,6 +34,7 @@ export default function PropertyDetails(props) {
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
   const [userDetails, setUserDetails] = useState({});
+  const [ornNumber, setOrnNumber] = useState();
 
   const token = getLoginToken();
   const history = useHistory();
@@ -50,6 +51,7 @@ export default function PropertyDetails(props) {
       const response = await UserService.detail(userId);
       console.log("user-details", response);
       setUserDetails(response);
+      setOrnNumber(response.ornNumber);
       if (response?.error && response?.message) {
         props.responseHandler(response.message);
         return;
@@ -359,7 +361,7 @@ export default function PropertyDetails(props) {
                   {userDetails.jobTitle === "developer" && (
                     <div className="widget2 " style={{ height: "4px" }}>
                       <div className=" text-center">
-                        <p>ORN Number</p>
+                        <p>ORN Number: {ornNumber}</p>
                       </div>
                     </div>
                   )}
