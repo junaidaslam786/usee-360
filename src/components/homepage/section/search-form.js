@@ -6,6 +6,8 @@ import {
   BEDROOMS,
 } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function SearchForm() {
   const [address, setAddress] = useStateIfMounted();
@@ -21,6 +23,17 @@ export default function SearchForm() {
   const [lat, setLat] = useStateIfMounted();
   const [lng, setLng] = useStateIfMounted();
   const [showLink, setShowLink] = useState(false);
+
+  // Generate price options
+  const generatePriceOptions = () => {
+    const options = [];
+    for (let price = 50000; price <= 150000000; price += 5000000) {
+      options.push({ value: price, label: `AED ${price.toLocaleString()}` });
+    }
+    return options;
+  };
+
+  const priceOptions = generatePriceOptions();
 
   const handleFocus = () => {
     setShowLink(true);
@@ -166,36 +179,44 @@ export default function SearchForm() {
 
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Minimum Price</label>
-                        <input
-                          type="number"
-                          placeholder="100"
-                          min="0"
+                        <select
+                          className="nice-select"
+                          value={minPrice}
                           onChange={(e) => setMinPrice(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.charCode < 48) {
-                              e.preventDefault();
-                            }
-                          }}
-                          className="m-0"
-                        />
+                        >
+                          {priceOptions.map((option, index) => (
+                            <option value={option.value} key={index}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Maximum Price</label>
-                        <input
-                          type="number"
-                          placeholder="10000"
-                          min="0"
+                        <select
+                          className="nice-select"
+                          value={maxPrice}
                           onChange={(e) => setMaxPrice(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.charCode < 48) {
-                              e.preventDefault();
-                            }
-                          }}
-                          className="m-0"
-                        />
+                        >
+                          {priceOptions.map((option, index) => (
+                            <option value={option.value} key={index}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
-                        <div className="btn-wrapper mt-0 go-top pt-1">
+
+                      <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-6 col-md-6">
+                        <div className="btn-wrapper mt-0 go-top pt-1" style={{display: 'flex'}}>
+                          <button
+                            type="button"
+                            className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
+                            onClick={() => {
+                              /* Toggle filters logic here */
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faFilter} /> Filters
+                          </button>
                           <Link
                             to={{
                               pathname: "/property-grid",

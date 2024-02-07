@@ -9,6 +9,7 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
   const [useSlideshow, setUseSlideshow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   const checkHandler = () => {
     setUseSlideshow(!useSlideshow);
@@ -37,12 +38,12 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
 
     let formData = new FormData();
     formData.append("productId", propertyId);
-    formData.append("virtualTourType", virtualTourType); // Append virtualTourType
+    formData.append("virtualTourType", virtualTourType);
 
     if (virtualTourType === "video" && virtualTourFile) {
-      formData.append("virtualTourVideo", virtualTourFile); // Append file for "video" type
+      formData.append("virtualTourVideo", virtualTourFile);
     } else if (virtualTourType === "url") {
-      formData.append("virtualTourUrl", virtualTourUrl); // Append URL for "url" type
+      formData.append("virtualTourUrl", virtualTourUrl);
     }
 
     try {
@@ -70,6 +71,33 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
     } finally {
       setLoading(false);
       setUploadProgress(0); // Reset progress after upload
+    }
+  };
+
+  useEffect(() => {
+    // Ensure the progress starts with a minimal value when the upload starts
+    if (loading && animatedProgress === 0) {
+      setAnimatedProgress(1);
+    }
+
+    const timer = setInterval(() => {
+      if (animatedProgress < uploadProgress) {
+        setAnimatedProgress((prev) => Math.min(prev + 1, uploadProgress));
+      } else if (animatedProgress === 100) {
+        clearInterval(timer);
+      }
+    }, 30); // Adjust time for smoother or faster animation
+
+    return () => clearInterval(timer);
+  }, [uploadProgress, animatedProgress, loading]);
+
+  const getProgressColor = () => {
+    if (animatedProgress < 33) {
+      return "#007bff"; // Blue for starting phase
+    } else if (animatedProgress < 66) {
+      return "#ffc107"; // Orange for midway
+    } else {
+      return "#28a745"; // Green for completion
     }
   };
 
@@ -121,24 +149,23 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
                   backgroundColor: "#f5f5f5",
                   borderRadius: "5px",
                   boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
-                  marginTop: "10px", // Adds some space between the label and the progress bar
-                  width: "100%", // Ensures the container takes full width
+                  marginTop: "10px",
+                  width: "100%",
                 }}
               >
                 <div
                   style={{
                     height: "100%",
-                    width: `${uploadProgress}%`,
-                    backgroundColor:
-                      uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
+                    width: `${animatedProgress}%`, // Use animatedProgress for the width
+                    backgroundColor: getProgressColor(), // Dynamic color based on progress
                     borderRadius: "5px",
                     textAlign: "center",
                     color: "white",
-                    lineHeight: "20px", // Adjust to match the height of the progress bar
-                    transition: "width 0.6s ease",
+                    lineHeight: "20px",
+                    transition: "width 0.6s ease, background-color 0.6s ease", // Smooth transition for width and color
                   }}
                 >
-                  {uploadProgress}%
+                  {animatedProgress}%
                 </div>
               </div>
             </div>

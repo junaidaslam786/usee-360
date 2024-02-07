@@ -12,6 +12,7 @@ import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
 import { FaPaw } from "react-icons/fa";
+import { set } from "lodash";
 
 export default function PropertyDetails(props) {
   const [property, setProperty] = useState({});
@@ -22,6 +23,10 @@ export default function PropertyDetails(props) {
   const [propertyUnit, setPropertyUnit] = useState();
   const [agentImage, setAgentImage] = useState();
   const [agentName, setAgentName] = useState();
+  const [permitNumber, setPermitNumber] = useState();
+  const [qrCode, setQrCode] = useState();
+  const [city, setCity] = useState();
+  const [region, setRegion] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
@@ -51,6 +56,7 @@ export default function PropertyDetails(props) {
   const loadProperty = useCallback(async () => {
     try {
       const response = await HomepageService.propertyDetail(params.id);
+      console.log("property-details", response);
       if (response?.error && response?.message) {
         props.responseHandler(response.message);
         return;
@@ -75,7 +81,10 @@ export default function PropertyDetails(props) {
         setPropertyArea(areaMetaTag);
         setPropertyBedrooms(bedroomsMetaTag);
       }
-
+      setCity(response?.city);
+      setRegion(response?.region);
+      setPermitNumber(response?.permitNumber);
+      setQrCode(response?.qrCode);
       setAgentImage(response?.user?.profileImage);
       setAgentName(`${response?.user?.firstName} ${response?.user?.lastName}`);
 
@@ -223,7 +232,7 @@ export default function PropertyDetails(props) {
                 </ul>
               </div>
               <h1>{property.title}</h1>
-              <div style={{display: "flex", justifyContent: "space-between",}}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <label>
                   <span className="ltn__secondary-color">
                     <i className="flaticon-pin" />
@@ -237,7 +246,6 @@ export default function PropertyDetails(props) {
                     alignItems: "center",
                     // marginLeft: "100px",
                     justifyContent: "space-between",
-                    
                   }}
                 >
                   <FaPaw
@@ -322,6 +330,29 @@ export default function PropertyDetails(props) {
                   <h5>{agentName}</h5>
                 </div>
               </div>
+              {city === "Dubai" && region === "United Arab Emirates" && (
+                <>
+                  <div className="widget2 " style={{ height: "4px" }}>
+                    <div className=" text-center">
+                      <p>ORN Number</p>
+                    </div>
+                  </div>
+                  <div className="widget2 " style={{ height: "4px" }}>
+                    <div className=" text-center">
+                      <p>Permit Number: {permitNumber}</p>
+                    </div>
+                  </div>
+                  <div className="widget ltn__author-widget">
+                    <div className="ltn__author-widget-inner text-center">
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}/${qrCode}`}
+                        alt={qrCode}
+                      />
+                      <h5>QR Code</h5>
+                    </div>
+                  </div>
+                </>
+              )}
               {/* Booking, Offer and Wishlist Buttons */}
               <div>
                 <button

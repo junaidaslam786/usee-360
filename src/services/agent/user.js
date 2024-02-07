@@ -27,13 +27,13 @@ const UserService = {
     );
 
     if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
+      if (!response.error.message || response.error.message.length === 0) {
         response.error.message = [
           "Unable to list users to allocate, please try again later",
         ];
       }
 
-      return response;
+      return response; 
     }
 
     return response.data;
@@ -115,11 +115,7 @@ const UserService = {
     return response.data;
   },
   verifyPassword: async (reqBody) => {
-    const response = await httpPost(
-      `user/verify-password`,
-      reqBody,
-      true
-    );
+    const response = await httpPost(`user/verify-password`, reqBody, true);
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
@@ -134,7 +130,7 @@ const UserService = {
     return response.data;
   },
   deleteUser: async () => {
-    const response = await httpDelete('user/delete');
+    const response = await httpDelete("user/delete");
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {

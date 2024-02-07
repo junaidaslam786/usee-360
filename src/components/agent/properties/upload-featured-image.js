@@ -157,7 +157,7 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
             style={{ maxWidth: "100%", maxHeight: "300px" }} // Adjust the styling as needed
           />
         )}
-        {loading && <p>Uploading...</p>}
+        {/* {loading && <p>Uploading...</p>} */}
         {error && <div>{error}</div>}
       </div>
     </div>

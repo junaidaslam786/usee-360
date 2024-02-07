@@ -33,6 +33,7 @@ export default function Details(props) {
 
   const loadProperty = async () => {
     const response = await PropertyService.detail(params.id);
+    console.log("property-details", response);
 
     if (response?.error && response?.message) {
       props.responseHandler(response.message);

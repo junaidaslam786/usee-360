@@ -28,7 +28,7 @@ import UploadQrCode from "./upload-qrCode";
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
-  console.log("userDetail", userDetail);
+  // console.log("userDetail", userDetail);
 
   const [id, setId] = useStateIfMounted();
   const [title, setTitle] = useStateIfMounted("");
@@ -76,6 +76,7 @@ export default function Add(props) {
   const fetchUserDetails = useCallback(async () => {
     try {
       const response = await UserService.detail(userDetail.id);
+      console.log("User Details", response);
       setUserFullUser(response.user);
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -85,8 +86,10 @@ export default function Add(props) {
 
   const loadUsersToAllocate = async () => {
     const response = await UserService.toAllocate();
-    if (response?.error && response?.message) {
-      props.responseHandler(response.message);
+    if (response?.error) {
+      props.responseHandler(
+        response.error.message || "An unexpected error occurred"
+      );
       return;
     }
 
@@ -212,7 +215,9 @@ export default function Add(props) {
         }, 2000);
       }
     } catch (error) {
-      props.responseHandler(["An error occurred while processing your request."]);
+      props.responseHandler([
+        "An error occurred while processing your request.",
+      ]);
       setLoading(false);
     }
   };
@@ -258,6 +263,7 @@ export default function Add(props) {
 
       const fetchPropertyDetails = async () => {
         const usersArray = await loadUsersToAllocate();
+        console.log("usersArray", usersArray);
 
         const response = await PropertyService.detail(params.id);
         if (response?.id) {
@@ -347,6 +353,10 @@ export default function Add(props) {
         : COMMERCIAL_PROPERTY
     );
   }, [propertyType]);
+
+  useEffect(() => {
+    loadUsersToAllocate();
+  }, []);
 
   return (
     <React.Fragment>

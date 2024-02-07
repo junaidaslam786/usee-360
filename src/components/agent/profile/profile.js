@@ -25,6 +25,8 @@ export default function Profile(props) {
   const [companyAddress, setCompanyAddress] = useState();
   const [zipCode, setZipCode] = useState();
   const [city, setCity] = useState();
+  const [countryName, setCountryName] = useState();
+  const [ORNNumber, setORNNumber] = useState();
   const [mortgageAdvisorEmail, setMortgageAdvisorEmail] = useState();
   const [companyLogo, setCompanyLogo] = useState();
   const [profileImage, setProfileImage] = useState();
@@ -41,8 +43,6 @@ export default function Profile(props) {
 
   const history = useHistory();
 
-
-
   const updateProfile = async (e) => {
     e.preventDefault();
 
@@ -56,6 +56,7 @@ export default function Profile(props) {
     formdata.append("companyAddress", companyAddress);
     formdata.append("zipCode", zipCode);
     formdata.append("city", city);
+    formdata.append("ornNumber", ORNNumber);
     formdata.append("mortgageAdvisorEmail", mortgageAdvisorEmail);
     formdata.append("companyLogo", companyLogo);
     formdata.append("profileImage", profileImage);
@@ -99,8 +100,6 @@ export default function Profile(props) {
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => setDeleteModalOpen(false);
 
-
-
   const handleFinalConfirmation = async () => {
     try {
       const deletionResult = await UserService.deleteUser(); // Assuming UserService has a deleteUser method
@@ -118,20 +117,26 @@ export default function Profile(props) {
     }
   };
 
-  const verifyPasswordLogic = async (password, setError, proceedToNextScreen) => {
-    UserService.verifyPassword({ password }).then(response => {
-      if (response.success) { // Make sure this matches your actual API response structure
-        setError(""); // Clear any existing error messages
-        toast.success(response.message)
-        proceedToNextScreen(); // Proceed to the confirmation screen
-      } else {
-        setError("Password verification failed. Please try again."); // Show error message
-      }
-    }).catch(error => {
-      setError("An error occurred during verification. Please try again."); // Handle exceptions
-    });
+  const verifyPasswordLogic = async (
+    password,
+    setError,
+    proceedToNextScreen
+  ) => {
+    UserService.verifyPassword({ password })
+      .then((response) => {
+        if (response.success) {
+          // Make sure this matches your actual API response structure
+          setError(""); // Clear any existing error messages
+          toast.success(response.message);
+          proceedToNextScreen(); // Proceed to the confirmation screen
+        } else {
+          setError("Password verification failed. Please try again."); // Show error message
+        }
+      })
+      .catch((error) => {
+        setError("An error occurred during verification. Please try again."); // Handle exceptions
+      });
   };
-  
 
   useEffect(() => {
     let isMounted = true;
@@ -141,6 +146,8 @@ export default function Profile(props) {
         props.responseHandler(jsonData.message);
         return;
       }
+
+      console.log("User Profile", jsonData);
 
       if (isMounted) {
         setUser(jsonData);
@@ -162,6 +169,9 @@ export default function Profile(props) {
         );
         setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
         setCity(jsonData?.cityName ? jsonData.cityName : "");
+        setORNNumber(
+          jsonData?.agent?.ornNumber ? jsonData.agent.ornNumber : ""
+        );
         setMortgageAdvisorEmail(
           jsonData?.agent?.mortgageAdvisorEmail
             ? jsonData.agent.mortgageAdvisorEmail
@@ -269,6 +279,18 @@ export default function Profile(props) {
                     defaultValue={companyAddress}
                   />
                 </div>
+                {city === "Dubai"  && (
+                  <div className="col-md-6">
+                    <label>ORN Number</label>
+                    <input
+                      type="text"
+                      name="ltn__orn_number"
+                      placeholder="ORN Number"
+                      onChange={(e) => setORNNumber(e.target.value)}
+                      defaultValue={ORNNumber}
+                    />
+                  </div>
+                )}
                 <div className="col-md-6">
                   <label>Zip Code</label>
                   <input

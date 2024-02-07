@@ -4159,6 +4159,11 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     padding: 35px 30px 40px 35px;
     border: 2px solid var(--border-color-11);
 }
+.widget2 {
+    margin-bottom: 40px;
+    padding: 15px 15px 40px 35px;
+    border: 2px solid var(--border-color-11);
+}
 .widget:last-child {
     margin-bottom: 0;
 }
