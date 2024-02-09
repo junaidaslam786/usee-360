@@ -1,12 +1,16 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Dropzone from "react-dropzone";
 import PropertyService from "../../../services/agent/property";
+import { on } from "@opentok/client";
+import { set } from "lodash";
+import LinearProgressBar from "./linearProgressBar";
 
 export default function UploadPropertyImage(props) {
   const [propertyImages, setPropertyImages] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isComponentMounted, setIsComponentMounted] = useState(true);
-
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   const onImagesDrop = useCallback(
     async (acceptedFiles) => {
@@ -14,21 +18,30 @@ export default function UploadPropertyImage(props) {
       acceptedFiles.forEach((file) => {
         formData.append("files", file);
       });
+      setLoading(true);
+      setUploadProgress(0);
       formData.append("productId", props.id);
 
       try {
-        const formResponse = await PropertyService.uploadImage(formData);
+        const formResponse = await PropertyService.uploadImage(
+          formData,
+          (progress) => setUploadProgress(progress)
+        );
 
         if (formResponse?.error && formResponse?.message) {
           props.responseHandler(formResponse.message);
+          setUploadProgress(0);
         } else {
           props.responseHandler("Images uploaded successfully", true);
           if (isComponentMounted) {
             setPropertyImages(formResponse);
           }
+          props.onUploadSuccess(formResponse);
         }
       } catch (error) {
         console.error("Upload Image Error:", error);
+        setUploadProgress(0);
+        setLoading(false);
       }
     },
     [props.id, props.responseHandler, isComponentMounted]
@@ -65,6 +78,21 @@ export default function UploadPropertyImage(props) {
       setIsComponentMounted(false);
     };
   }, [props.images]);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setAnimatedProgress((prev) => {
+          if (prev < uploadProgress) {
+            return Math.min(prev + 1, uploadProgress);
+          }
+          clearInterval(interval);
+          return prev;
+        });
+      }, 30); // Adjust time for smoother or faster animation
+      return () => clearInterval(interval);
+    }
+  }, [loading, uploadProgress, animatedProgress]);
 
   return (
     <React.Fragment>
@@ -108,6 +136,11 @@ export default function UploadPropertyImage(props) {
           </div>
         ))}
       </div>
+      {loading && (
+        <div className="mb-20">
+          <LinearProgressBar progress={animatedProgress} />
+        </div>
+      )}
     </React.Fragment>
   );
 }

@@ -129,28 +129,64 @@ const PropertyService = {
     return response.data;
   },
 
-  uploadImage: async (reqBody) => {
-    const response = await httpPost(`${apiUrlPrefix}/image`, reqBody, true);
+  // uploadImage: async (reqBody) => {
+  //   const response = await httpPost(`${apiUrlPrefix}/image`, reqBody, true);
 
-    if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = [
-          "Unable to upload image, please try again later",
-        ];
+  //   if (response?.error) {
+  //     if (response?.error?.message && response?.error?.message.length < 0) {
+  //       response.error.message = [
+  //         "Unable to upload image, please try again later",
+  //       ];
+  //     }
+
+  //     return response;
+  //   }
+
+  //   if (response?.status !== 200) {
+  //     return {
+  //       error: true,
+  //       message: ["Unable to upload images, please try again later"],
+  //     };
+  //   }
+
+  //   return response.data;
+  // },
+  uploadImage : async (formData, onUploadProgress) => {
+    try {
+      const response = await httpPost(
+        `${apiUrlPrefix}/image`,
+        formData,
+        true, // Assuming isMultipart is always true for this service
+        "", // Assuming a token is not required or is handled inside httpPost
+        onUploadProgress // Correctly passing the callback
+      );
+  
+      // Assuming response.data structure correctly indicates success/error
+      if (response.error) {
+        // Provide a default error message if none is specified
+        const errorMessage = response.message || "Unable to upload image, please try again later";
+        return { error: true, message: errorMessage };
       }
-
-      return response;
-    }
-
-    if (response?.status !== 200) {
+  
+      // Optionally check for HTTP status code if your httpPost implementation wraps the Axios response
+      // and includes status codes or other metadata
+      if (response.status !== 200) {
+        return {
+          error: true,
+          message: "Unable to upload images, please try again later",
+        };
+      }
+  
+      return response.data; // Assuming this contains the uploaded image data on success
+    } catch (error) {
+      console.error("Error uploading image:", error.response || error);
       return {
         error: true,
-        message: ["Unable to upload images, please try again later"],
+        message: error.response?.data?.message || "An error occurred while uploading the image.",
       };
     }
-
-    return response.data;
   },
+  
 
   uploadFeatureImage: async (formData, onUploadProgress) => {
     try {

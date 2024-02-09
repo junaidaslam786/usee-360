@@ -86,6 +86,16 @@ function FilterModal({ isOpen, onRequestClose }) {
         onRequestClose={onRequestClose}
         className="MyModal Modal-size-unset"
         overlayClassName="MyModalOverlay"
+        style={{
+          content: {
+            maxWidth: "700px",
+            width: "90%",
+            margin: "auto",
+            overflowY: "auto",
+            height: "auto",
+            maxHeight: "90vh",
+          },
+        }}
       >
         <div className="modal-content">
           <div className="modal-header text-center">

@@ -647,6 +647,19 @@
 .MyModal.Modal-size-unset {
     width: 700px;
 }
+.MyModal.Modal-size-unset2 {
+    max-width: 700px; /* Maximum width */
+    width: 90%; /* Responsive width */
+    margin: auto; /* Center the modal */
+    overflow-y: auto; /* Enable vertical scrolling if necessary */
+    height: auto; /* Adjust height based on content */
+    max-height: 90vh; /* Maximum height */
+}
+@media (max-width: 768px) {
+    .MyModal.Modal-size-unset2 {
+        width: 95%; /* Increase width for smaller devices */
+    }
+}
 .MyModal.Cancelled {
     width: unset;
 }

@@ -624,6 +624,7 @@ export default function Add(props) {
             id={id}
             images={propertyImages}
             responseHandler={props.responseHandler}
+            onUploadSuccess={props.responseHandler}
           />
           <UploadPropertyDocument
             id={id}
