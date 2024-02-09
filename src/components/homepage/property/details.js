@@ -366,13 +366,17 @@ export default function PropertyDetails(props) {
                       <p>Permit Number: {permitNumber}</p>
                     </div>
                   </div>
-                  <div className="widget ltn__author-widget">
-                    <div className="ltn__author-widget-inner text-center">
+                  <div className="widget ltn__author-widget" style={{display: 'flex', alignItems: "center"}}>
+                    <div className=" text-center">
                       <img
                         src={`${process.env.REACT_APP_API_URL}/${qrCode}`}
                         alt={qrCode}
+                        style={{
+                          width: "100%", // Set the width of the square
+                          height: "100%", // Set the height to match the width, making it square
+                          objectFit: "contain", // This will cover the square area, potentially cropping the image
+                        }}
                       />
-                      <h5>QR Code</h5>
                     </div>
                   </div>
                 </>

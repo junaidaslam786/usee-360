@@ -44,7 +44,7 @@ const UploadQrCode = ({
       if (response.error) {
         toast.error("Failed to upload QR code.");
       } else {
-        toast.success("QR code uploaded successfully.");
+        // toast.success("QR code uploaded successfully.");
         onQrCodeUploadSuccess(response.qrCodePath);
         onUploadSuccess(response);
       }

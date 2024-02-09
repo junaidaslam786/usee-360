@@ -28,14 +28,13 @@ import UploadQrCode from "./upload-qrCode";
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
-  // console.log("userDetail", userDetail);
+  
 
   const [id, setId] = useStateIfMounted();
   const [title, setTitle] = useStateIfMounted("");
   const [description, setDescription] = useStateIfMounted("");
   const [price, setPrice] = useStateIfMounted();
   const [propertyType, setPropertyType] = useStateIfMounted("");
-  // const [selectedImage, setSelectedImage] = useStateIfMounted(null);
   const [propertySubType, setPropertySubType] = useStateIfMounted("");
   const [propertyCategoryType, setPropertyCategoryType] = useStateIfMounted();
   const [priceType, setPriceType] = useStateIfMounted();
@@ -131,9 +130,7 @@ export default function Add(props) {
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
 
-    // if (qrCode) {
-    //   formdata.append("qrCode", qrCode);
-    // }
+   
     if (permitNumber) {
       formdata.append("permitNumber", permitNumber);
     }

@@ -82,11 +82,13 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty, onUploadS
     } catch (error) {
       console.error("Error uploading file:", error);
       setError("Error uploading file.");
-      setUploadProgress(0);
-    } finally {
       setLoading(false);
       setUploadProgress(0);
     }
+    // } finally {
+    //   setLoading(false);
+    //   setUploadProgress(0);
+    // }
   }, [selectedFeatureImage, propertyId, setProperty]);
 
   // Cleanup the image preview URL to avoid memory leaks
