@@ -367,7 +367,7 @@ export default function PropertyDetails(props) {
                     </div>
                   </div>
                   <div className="widget ltn__author-widget" style={{display: 'flex', alignItems: "center"}}>
-                    <div className=" text-center">
+                    
                       <img
                         src={`${process.env.REACT_APP_API_URL}/${qrCode}`}
                         alt={qrCode}
@@ -377,7 +377,7 @@ export default function PropertyDetails(props) {
                           objectFit: "contain", // This will cover the square area, potentially cropping the image
                         }}
                       />
-                    </div>
+                    
                   </div>
                 </>
               )}
