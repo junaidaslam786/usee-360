@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropertyService from "../../../services/agent/property";
 import { toast } from "react-toastify";
+import LinearProgressBar from "./linearProgressBar";
 
-const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
+const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty, onUploadSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFeatureImage, setSelectedFeatureImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   useEffect(() => {
     const fetchFeaturedImage = async () => {
@@ -60,12 +62,7 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
     try {
       const response = await PropertyService.uploadFeatureImage(
         formData,
-        (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(progress); // Update progress state
-        }
+        progress => setUploadProgress(progress)
       );
 
       if (response?.error) {
@@ -79,7 +76,7 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
           ...prevState,
           featuredImage: response.featuredImage,
         }));
-        setUploadProgress(100);
+        onUploadSuccess(response);
         toast.success(response.message);
       }
     } catch (error) {
@@ -88,6 +85,7 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
       setUploadProgress(0);
     } finally {
       setLoading(false);
+      setUploadProgress(0);
     }
   }, [selectedFeatureImage, propertyId, setProperty]);
 
@@ -97,6 +95,21 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
       imagePreviewUrl && URL.revokeObjectURL(imagePreviewUrl);
     };
   }, [imagePreviewUrl]);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setAnimatedProgress((prev) => {
+          if (prev < uploadProgress) {
+            return Math.min(prev + 1, uploadProgress);
+          }
+          clearInterval(interval);
+          return prev;
+        });
+      }, 30); // Adjust time for smoother or faster animation
+      return () => clearInterval(interval);
+    }
+  }, [loading, uploadProgress, animatedProgress]);
 
   return (
     <div className="row mb-custom">
@@ -109,34 +122,7 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
             onChange={handleImageChange}
           />
           <br />
-          {uploadProgress > 0 && (
-            <div
-              style={{
-                height: "20px",
-                backgroundColor: "#f5f5f5",
-                borderRadius: "5px",
-                boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
-                marginTop: "10px", // Adds some space between the label and the progress bar
-                width: "100%", // Ensures the container takes full width
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: `${uploadProgress}%`,
-                  backgroundColor:
-                    uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
-                  borderRadius: "5px",
-                  textAlign: "center",
-                  color: "white",
-                  lineHeight: "20px", // Adjust to match the height of the progress bar
-                  transition: "width 0.6s ease",
-                }}
-              >
-                {uploadProgress}%
-              </div>
-            </div>
-          )}
+          
 
           <p>
             <small>
@@ -157,6 +143,11 @@ const UploadFeaturedImage = ({ propertyId, onImageSelect, setProperty }) => {
             style={{ maxWidth: "100%", maxHeight: "300px" }} // Adjust the styling as needed
           />
         )}
+        {loading && (
+            <div className="mb-20">
+              <LinearProgressBar progress={animatedProgress} />
+            </div>
+          )}
         {/* {loading && <p>Uploading...</p>} */}
         {error && <div>{error}</div>}
       </div>

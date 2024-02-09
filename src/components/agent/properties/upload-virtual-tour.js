@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropertyService from "../../../services/agent/property";
 import { toast } from "react-toastify";
+import LinearProgressBar from "./linearProgressBar";
 
 const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
   const [virtualTourFile, setVirtualTourFile] = useState(null);
@@ -13,15 +14,18 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
 
   const checkHandler = () => {
     setUseSlideshow(!useSlideshow);
+    // Reset states when toggling slideshow option
+    setVirtualTourFile(null);
+    setVirtualTourUrl("");
   };
 
-  // Adjust handlers for file and URL inputs to set the virtualTourType accordingly
+  
   const vrTourVideoHandler = (e) => {
     const file = e.target.files[0];
     if (file) {
       setVirtualTourFile(file);
-      setVirtualTourUrl(""); // Clear URL if file is chosen
-      setVirtualTourType("video"); // Set virtualTourType to "video"
+      setVirtualTourUrl(""); 
+      setVirtualTourType("video"); 
     }
   };
 
@@ -35,32 +39,27 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
   const handleSubmit = async () => {
     setLoading(true);
     setUploadProgress(0);
-
+  
     let formData = new FormData();
     formData.append("productId", propertyId);
     formData.append("virtualTourType", virtualTourType);
-
+  
     if (virtualTourType === "video" && virtualTourFile) {
+      // Add here any file validation if necessary
       formData.append("virtualTourVideo", virtualTourFile);
     } else if (virtualTourType === "url") {
+      // Add here any URL validation if necessary
       formData.append("virtualTourUrl", virtualTourUrl);
     }
-
+  
     try {
       const response = await PropertyService.uploadVirtualTour(
         formData,
-        (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(progress);
-        }
+        progress => setUploadProgress(progress)
+        
       );
       if (response.error) {
-        toast.error(
-          response.message ||
-            "Unable to upload virtual tour, please try again later."
-        );
+        toast.error(response.message || "Unable to upload virtual tour, please try again later.");
       } else {
         toast.success("Virtual tour uploaded successfully.");
         onUploadSuccess(response); // Call the callback with the response
@@ -70,36 +69,29 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
       toast.error("An error occurred while uploading the virtual tour.");
     } finally {
       setLoading(false);
-      setUploadProgress(0); // Reset progress after upload
+      setUploadProgress(0); 
     }
   };
+  
+  
 
   useEffect(() => {
-    // Ensure the progress starts with a minimal value when the upload starts
-    if (loading && animatedProgress === 0) {
-      setAnimatedProgress(1);
+    if (loading) {
+      const interval = setInterval(() => {
+        setAnimatedProgress((prev) => {
+          if (prev < uploadProgress) {
+            return Math.min(prev + 1, uploadProgress);
+          }
+          clearInterval(interval);
+          return prev;
+        });
+      }, 30); // Adjust time for smoother or faster animation
+      return () => clearInterval(interval);
     }
+  }, [loading, uploadProgress, animatedProgress]);
+  
 
-    const timer = setInterval(() => {
-      if (animatedProgress < uploadProgress) {
-        setAnimatedProgress((prev) => Math.min(prev + 1, uploadProgress));
-      } else if (animatedProgress === 100) {
-        clearInterval(timer);
-      }
-    }, 30); // Adjust time for smoother or faster animation
-
-    return () => clearInterval(timer);
-  }, [uploadProgress, animatedProgress, loading]);
-
-  const getProgressColor = () => {
-    if (animatedProgress < 33) {
-      return "#007bff"; // Blue for starting phase
-    } else if (animatedProgress < 66) {
-      return "#ffc107"; // Orange for midway
-    } else {
-      return "#28a745"; // Green for completion
-    }
-  };
+ 
 
   return (
     <>
@@ -141,33 +133,8 @@ const UploadVirtualTour = ({ propertyId, onUploadSuccess }) => {
             </label>
           </div>
           {loading && (
-            <div>
-              <label>Upload Progress:</label>
-              <div
-                style={{
-                  height: "20px",
-                  backgroundColor: "#f5f5f5",
-                  borderRadius: "5px",
-                  boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
-                  marginTop: "10px",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{
-                    height: "100%",
-                    width: `${animatedProgress}%`, // Use animatedProgress for the width
-                    backgroundColor: getProgressColor(), // Dynamic color based on progress
-                    borderRadius: "5px",
-                    textAlign: "center",
-                    color: "white",
-                    lineHeight: "20px",
-                    transition: "width 0.6s ease, background-color 0.6s ease", // Smooth transition for width and color
-                  }}
-                >
-                  {animatedProgress}%
-                </div>
-              </div>
+            <div className="mb-20">
+              <LinearProgressBar progress={animatedProgress} />
             </div>
           )}
 

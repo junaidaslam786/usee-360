@@ -21,16 +21,46 @@ export const httpGet = async (url) => {
   }
 }
 
-export const httpPost = async (url, reqBody, isMultipart = false, token = "") => {
+// export const httpPost = async (url, reqBody, isMultipart = false, token = "") => {
+//   try {
+//     return await axios.post(
+//       `${appBaseUrl}/${url}`, 
+//       reqBody, 
+//       {
+//         headers: generateHeaders(token, isMultipart),
+//       }
+//     );
+//   } catch(error) {
+//     let messageArray = [];
+      
+//     if (error?.response?.data?.errors) {
+//       messageArray = error.response.data.errors;
+//     } else if (error?.response?.data?.message) {
+//       messageArray.push(error.response.data.message);
+//     }
+
+//     return { error: true, message: messageArray };
+//   }
+// }
+
+// Updated to include onUploadProgress as an optional parameter
+export const httpPost = async (url, reqBody, isMultipart = false, token = "", onUploadProgress = null) => {
   try {
-    return await axios.post(
-      `${appBaseUrl}/${url}`, 
-      reqBody, 
-      {
-        headers: generateHeaders(token, isMultipart),
-      }
-    );
-  } catch(error) {
+    const config = {
+      headers: generateHeaders(token, isMultipart),
+    };
+
+    // Safely include the onUploadProgress callback if it's a function
+    if (typeof onUploadProgress === 'function') {
+      config.onUploadProgress = progressEvent => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        console.log('Percent complete', percentCompleted);
+        onUploadProgress(percentCompleted);
+      };
+    }
+
+    return await axios.post(`${appBaseUrl}/${url}`, reqBody, config);
+  } catch (error) {
     let messageArray = [];
       
     if (error?.response?.data?.errors) {
@@ -41,7 +71,7 @@ export const httpPost = async (url, reqBody, isMultipart = false, token = "") =>
 
     return { error: true, message: messageArray };
   }
-}
+};
 
 // export const httpPost = async (url, reqBody, isMultipart = false, token = "") => {
 //   // Setting up the Axios config

@@ -151,60 +151,48 @@ const PropertyService = {
 
     return response.data;
   },
-  
+
   uploadFeatureImage: async (formData, onUploadProgress) => {
     try {
       const response = await httpPost(
         `${apiUrlPrefix}/featured-image`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            onUploadProgress(percentCompleted); // Callback function to update progress
-          },
-        }
+        true, // Assuming isMultipart is always true for this service
+        "", // Assuming a token is not required or is handled inside httpPost
+        onUploadProgress // Correctly passing the callback
       );
       return response.data;
     } catch (error) {
-      // Handle error
-      console.error("Error uploading file:", error);
-      return {
-        error: true,
-        message: "Unable to upload featured image, please try again later",
-      };
+      console.error("Error uploading featured image:", error.response || error);
+      if (error.response && error.response.data) {
+        return {
+          error: true,
+          message:
+            error.response.data.message ||
+            "Unable to upload featured image, please try again later",
+        };
+      } else {
+        return {
+          error: true,
+          message: "An error occurred while uploading the featured image.",
+        };
+      }
     }
   },
-
-  
 
   uploadVirtualTour: async (formData, onUploadProgress) => {
     try {
       const response = await httpPost(
         `${apiUrlPrefix}/virtual-tour`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            // Calculate the percentage of upload completed
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            onUploadProgress(percentCompleted);
-          },
-        }
+        true, // Assuming isMultipart is always true for this service
+        "", // Assuming a token is not required or is handled inside httpPost
+        onUploadProgress // Correctly passing the callback
       );
-      return response.data; 
+      return response.data;
     } catch (error) {
       console.error("Error uploading virtual tour:", error.response || error);
       if (error.response && error.response.data) {
-        // Handle error response from server
         return {
           error: true,
           message:
@@ -212,7 +200,6 @@ const PropertyService = {
             "Unable to upload virtual tour, please try again later",
         };
       } else {
-        // Handle network or other errors
         return {
           error: true,
           message: "An error occurred while uploading the virtual tour.",
@@ -226,29 +213,28 @@ const PropertyService = {
       const response = await httpPost(
         `${apiUrlPrefix}/qrcode`, // Adjusted endpoint for QR code upload
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            onUploadProgress(percentCompleted); // Callback function to update progress
-          },
-        }
+        true, // Assuming isMultipart is always true for this service
+        "", // Assuming a token is not required or is handled inside httpPost
+        onUploadProgress 
       );
       return response.data;
     } catch (error) {
-      // Handle error
-      console.error("Error uploading QR code:", error);
-      return {
-        error: true,
-        message: "Unable to upload QR code, please try again later",
-      };
+      console.error("Error uploading qrCode:", error.response || error);
+      if (error.response && error.response.data) {
+        return {
+          error: true,
+          message:
+            error.response.data.message ||
+            "Unable to upload qrCode, please try again later",
+        };
+      } else {
+        return {
+          error: true,
+          message: "An error occurred while uploading the qrCode.",
+        };
+      }
     }
   },
-
 
   deleteImage: async (reqBody) => {
     const response = await httpDelete(`${apiUrlPrefix}/image`, reqBody);

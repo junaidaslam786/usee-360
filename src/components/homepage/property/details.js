@@ -46,20 +46,20 @@ export default function PropertyDetails(props) {
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
 
-  const fetchUserDetails = useCallback(async () => {
-    try {
-      const response = await UserService.detail(userId);
-      console.log("user-details", response);
-      setUserDetails(response);
-      setOrnNumber(response.ornNumber);
-      if (response?.error && response?.message) {
-        props.responseHandler(response.message);
-        return;
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, [userId, props]);
+  // const fetchUserDetails = useCallback(async () => {
+  //   try {
+  //     const response = await UserService.detail(userId);
+  //     console.log("user-details", response);
+  //     setUserDetails(response);
+  //     setOrnNumber(response.ornNumber);
+  //     if (response?.error && response?.message) {
+  //       props.responseHandler(response.message);
+  //       return;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user details:", error);
+  //   }
+  // }, [userId, props]);
 
   const postPropertyViewLog = async (propertyId) => {
     try {
@@ -109,6 +109,7 @@ export default function PropertyDetails(props) {
       setQrCode(response?.qrCode);
       setAgentImage(response?.user?.profileImage);
       setAgentName(`${response?.user?.firstName} ${response?.user?.lastName}`);
+      setOrnNumber(response?.user?.agent?.ornNumber);
 
       if (response?.productImages?.length > 0) {
         setPropertyImages([
@@ -200,10 +201,6 @@ export default function PropertyDetails(props) {
       // Handle error (e.g., show error message to the user)
     }
   };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, [fetchUserDetails]);
 
   useEffect(() => {
     if (!token) {
@@ -358,13 +355,12 @@ export default function PropertyDetails(props) {
               </div>
               {city === "Dubai" && region === "United Arab Emirates" && (
                 <>
-                  {userDetails.jobTitle === "developer" && (
-                    <div className="widget2 " style={{ height: "4px" }}>
-                      <div className=" text-center">
-                        <p>ORN Number: {ornNumber}</p>
-                      </div>
+                  <div className="widget2 " style={{ height: "4px" }}>
+                    <div className=" text-center">
+                      <p>ORN Number: {ornNumber}</p>
                     </div>
-                  )}
+                  </div>
+
                   <div className="widget2 " style={{ height: "4px" }}>
                     <div className=" text-center">
                       <p>Permit Number: {permitNumber}</p>

@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PropertyService from "../../../services/agent/property";
 import { toast } from "react-toastify";
+import { set } from "lodash";
+import LinearProgressBar from "./linearProgressBar";
 
-const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
+const UploadQrCode = ({
+  propertyId,
+  onQrCodeUploadSuccess,
+  onUploadSuccess,
+}) => {
   const [qrCodeFile, setQrCodeFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [qrCodePreviewUrl, setQrCodePreviewUrl] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   // Handle QR code file selection
   const handleQrCodeChange = (e) => {
@@ -20,6 +28,9 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
 
   // Upload QR code
   const uploadQrCode = async (file) => {
+    setLoading(true);
+    setUploadProgress(0);
+
     const formData = new FormData();
     formData.append("qrCode", file);
     formData.append("productId", propertyId);
@@ -27,12 +38,7 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
     try {
       const response = await PropertyService.uploadQRCode(
         formData,
-        (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(progress);
-        }
+        (progress) => setUploadProgress(progress)
       );
 
       if (response.error) {
@@ -40,8 +46,11 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
       } else {
         toast.success("QR code uploaded successfully.");
         onQrCodeUploadSuccess(response.qrCodePath);
+        onUploadSuccess(response);
       }
     } catch (error) {
+      setLoading(false);
+      setUploadProgress(0);
       toast.error("An error occurred during QR code upload.");
       console.error("Upload QR Code Error:", error);
     }
@@ -69,6 +78,21 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
 
     fetchQrCode();
   }, [propertyId]);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setAnimatedProgress((prev) => {
+          if (prev < uploadProgress) {
+            return Math.min(prev + 1, uploadProgress);
+          }
+          clearInterval(interval);
+          return prev;
+        });
+      }, 30); // Adjust time for smoother or faster animation
+      return () => clearInterval(interval);
+    }
+  }, [loading, uploadProgress, animatedProgress]);
 
   // Cleanup preview URL to avoid memory leaks
   useEffect(() => {
@@ -98,31 +122,9 @@ const UploadQrCode = ({ propertyId, onQrCodeUploadSuccess }) => {
             style={{ maxWidth: "50%", height: "auto" }}
           />
         )}
-        {uploadProgress > 0 && (
-          <div
-            style={{
-              height: "20px",
-              backgroundColor: "#f5f5f5",
-              borderRadius: "5px",
-              boxShadow: "inset 0 1px 2px rgba(0,0,0,.1)",
-              marginTop: "10px", // Adds some space between the label and the progress bar
-              width: "100%", // Ensures the container takes full width
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: `${uploadProgress}%`,
-                backgroundColor: uploadProgress === 100 ? "#28a745" : "#007bff", // Changes color to green when complete
-                borderRadius: "5px",
-                textAlign: "center",
-                color: "white",
-                lineHeight: "20px", // Adjust to match the height of the progress bar
-                transition: "width 0.6s ease",
-              }}
-            >
-              {uploadProgress}%
-            </div>
+        {loading && (
+          <div className="mb-20">
+            <LinearProgressBar progress={animatedProgress} />
           </div>
         )}
       </div>

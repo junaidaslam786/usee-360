@@ -77,8 +77,6 @@ export default function Add(props) {
   const fetchUserDetails = useCallback(async () => {
     try {
       const response = await UserService.detail(userDetail.id);
-      // console.log("User Details", response);
-      // console.log('job Title', response.jobTitle);
       setUserFullUser(response.user);
       setJobTitle(response.jobTitle);
     } catch (error) {
@@ -133,9 +131,9 @@ export default function Add(props) {
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
 
-    if (qrCode) {
-      formdata.append("qrCode", qrCode);
-    }
+    // if (qrCode) {
+    //   formdata.append("qrCode", qrCode);
+    // }
     if (permitNumber) {
       formdata.append("permitNumber", permitNumber);
     }
@@ -608,6 +606,7 @@ export default function Add(props) {
               <UploadQrCode
                 propertyId={id}
                 onQrCodeUploadSuccess={handleQrCodeUploadSuccess}
+                onUploadSuccess={props.responseHandler}
               />
             )}
           <UploadFeaturedImage
@@ -615,6 +614,7 @@ export default function Add(props) {
             selectedFeatureImage={featuredImage}
             onImageSelect={handleImageSelect}
             setProperty={setPropertyDetails}
+            onUploadSuccess={props.responseHandler}
           />
           <UploadVirtualTour
             propertyId={id}
