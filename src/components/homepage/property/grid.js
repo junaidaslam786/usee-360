@@ -49,99 +49,99 @@ export default function PropertyGrid(props) {
       size: 10,
     };
 
-    // if (location.state) {
-    //   const {
-    //     propertyCategory,
-    //     propertyCategoryType,
-    //     propertyType,
-    //     rooms,
-    //     lat,
-    //     lng,
-    //     minPrice,
-    //     maxPrice,
-    //   } = location.state;
+    if (location.state) {
+      const {
+        propertyCategory,
+        propertyCategoryType,
+        propertyType,
+        rooms,
+        lat,
+        lng,
+        minPrice,
+        maxPrice,
+      } = location.state;
 
-    //   if (propertyCategory) {
-    //     payload.propertyCategory = propertyCategory;
-    //     if (search != "filter") {
-    //       setPropertyCategory(propertyCategory);
-    //     }
-    //   }
-    //   if (propertyCategoryType) {
-    //     payload.propertyCategoryType = propertyCategoryType;
-    //     if (search != "filter") {
-    //       setPropertyCategoryType(propertyCategoryType);
-    //     }
-    //   }
-    //   if (propertyType) {
-    //     payload.propertyType = propertyType;
-    //     if (search != "filter") {
-    //       setPropertyType(propertyType);
-    //     }
-    //   }
-    //   if (rooms) {
-    //     payload.rooms = rooms;
-    //     if (search != "filter") {
-    //       setRooms(rooms);
-    //     }
-    //   }
-    //   if (lat) {
-    //     payload.lat = lat;
-    //   }
-    //   if (lng) {
-    //     payload.lng = lng;
-    //   }
-    //   if (minPrice) {
-    //     payload.minPrice = minPrice;
-    //     if (search != "filter") {
-    //       setMinPrice(minPrice);
-    //     }
-    //   }
-    //   if (maxPrice) {
-    //     payload.maxPrice = maxPrice;
-    //     if (search != "filter") {
-    //       setMaxPrice(maxPrice);
-    //     }
-    //   }
-    // }
+      if (propertyCategory) {
+        payload.propertyCategory = propertyCategory;
+        if (search != "filter") {
+          setPropertyCategory(propertyCategory);
+        }
+      }
+      if (propertyCategoryType) {
+        payload.propertyCategoryType = propertyCategoryType;
+        if (search != "filter") {
+          setPropertyCategoryType(propertyCategoryType);
+        }
+      }
+      if (propertyType) {
+        payload.propertyType = propertyType;
+        if (search != "filter") {
+          setPropertyType(propertyType);
+        }
+      }
+      if (rooms) {
+        payload.rooms = rooms;
+        if (search != "filter") {
+          setRooms(rooms);
+        }
+      }
+      if (lat) {
+        payload.lat = lat;
+      }
+      if (lng) {
+        payload.lng = lng;
+      }
+      if (minPrice) {
+        payload.minPrice = minPrice;
+        if (search != "filter") {
+          setMinPrice(minPrice);
+        }
+      }
+      if (maxPrice) {
+        payload.maxPrice = maxPrice;
+        if (search != "filter") {
+          setMaxPrice(maxPrice);
+        }
+      }
+    }
 
-    // if (search == "filter") {
-    //   if (propertyCategoryFilter) {
-    //     payload.propertyCategory = propertyCategoryFilter;
-    //   }
+    if (search == "filter") {
+      if (propertyCategoryFilter) {
+        payload.propertyCategory = propertyCategoryFilter;
+      }
 
-    //   if (propertyCategoryTypeFilter) {
-    //     payload.propertyCategoryType = propertyCategoryTypeFilter;
-    //   }
+      if (propertyCategoryTypeFilter) {
+        payload.propertyCategoryType = propertyCategoryTypeFilter;
+      }
 
-    //   if (propertyTypeFilter) {
-    //     payload.propertyType = propertyTypeFilter;
-    //   }
+      if (propertyTypeFilter) {
+        payload.propertyType = propertyTypeFilter;
+      }
 
-    //   if (minPriceFilter) {
-    //     payload.minPrice = parseInt(minPriceFilter);
-    //   }
+      if (minPriceFilter) {
+        payload.minPrice = parseInt(minPriceFilter);
+      }
 
-    //   if (maxPriceFilter) {
-    //     payload.maxPrice = parseInt(maxPriceFilter);
-    //   }
+      if (maxPriceFilter) {
+        payload.maxPrice = parseInt(maxPriceFilter);
+      }
 
-    //   if (roomsFilter) {
-    //     payload.rooms = roomsFilter;
-    //   }
+      if (roomsFilter) {
+        payload.rooms = roomsFilter;
+      }
 
-    //   if (latFilter) {
-    //     payload.lat = latFilter;
-    //   }
+      if (latFilter) {
+        payload.lat = latFilter;
+      }
 
-    //   if (lngFilter) {
-    //     payload.lng = lngFilter;
-    //   }
+      if (lngFilter) {
+        payload.lng = lngFilter;
+      }
 
-    //   if (sort.current.value !== "null") {
-    //     payload.sort = ["price", sort.current.value];
-    //   }
-    // }
+      if (sort.current.value !== "null") {
+        payload.sort = ["price", sort.current.value];
+      }
+    }
 
     const response = await HomepageService.listProperties("", payload);
     if (response?.error && response?.message) {
@@ -198,23 +198,38 @@ export default function PropertyGrid(props) {
     props.responseHandler("Property removed from wishlist.", true);
   };
 
-  // const resetFilters = () => {
-  //   window.location.reload(true);
-  // }
+  // Handler for the "Find Now" button click
+const handleFindNowClick = () => {
+  // Check if any filters have been applied
+  const hasFilters = propertyCategoryFilter || propertyCategoryTypeFilter || propertyTypeFilter || minPriceFilter || maxPriceFilter || roomsFilter || latFilter || lngFilter;
+
+  if (hasFilters) {
+    // If any filters have been set, load properties with filters
+    loadProperties("filter");
+  } else {
+    // If no filters have been set, load properties without filters
+    loadProperties();
+  }
+};
+
+
+  const resetFilters = () => {
+    window.location.reload(true);
+  }
 
   useEffect(() => {
     // Reset filters here
-    // setPropertyCategory("");
-    // setPropertyCategoryType("");
-    // setPropertyType("");
-    // setMinPrice("");
-    // setMaxPrice("");
-    // setLatFilter(null);
-    // setLngFilter(null);
-    // setRooms(null);
-    // setAddress("");
+    setPropertyCategory("");
+    setPropertyCategoryType("");
+    setPropertyType("");
+    setMinPrice("");
+    setMaxPrice("");
+    setLatFilter(null);
+    setLngFilter(null);
+    setRooms(null);
+    setAddress("");
 
-    // resetFilters();
+    resetFilters();
 
     loadProperties();
     if (token) {
@@ -838,7 +853,7 @@ export default function PropertyGrid(props) {
               </aside>
               <button
                 className="mt-4 btn theme-btn-1"
-                onClick={() => loadProperties("filter")}
+                onClick={handleFindNowClick}
               >
                 Submit
               </button>
