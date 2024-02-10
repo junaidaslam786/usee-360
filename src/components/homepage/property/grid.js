@@ -213,23 +213,22 @@ const handleFindNowClick = () => {
 };
 
 
-  const resetFilters = () => {
-    window.location.reload(true);
-  }
+const resetFilters = () => {
+  setPropertyCategory("");
+  setPropertyCategoryType("");
+  setPropertyType("");
+  setMinPrice("");
+  setMaxPrice("");
+  setLatFilter(null);
+  setLngFilter(null);
+  setRooms(null);
+  setAddress("");
+  // Directly call loadProperties without filters here if needed
+  loadProperties();
+};
 
   useEffect(() => {
-    // Reset filters here
-    setPropertyCategory("");
-    setPropertyCategoryType("");
-    setPropertyType("");
-    setMinPrice("");
-    setMaxPrice("");
-    setLatFilter(null);
-    setLngFilter(null);
-    setRooms(null);
-    setAddress("");
-
-    resetFilters();
+   
 
     loadProperties();
     if (token) {
