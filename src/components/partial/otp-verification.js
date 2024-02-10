@@ -115,7 +115,7 @@ export default function OtpVerification({
 
   const validateOtp = async (e) => {
     e.preventDefault();
-
+  
     setLoading(true);
     let proceed = true;
     if (otpType === "phoneNumber") {
@@ -130,7 +130,7 @@ export default function OtpVerification({
           setLoading(false);
         });
     }
-
+  
     if (proceed) {
       const formResponse = await AuthService.validateOtp(
         {
@@ -139,45 +139,48 @@ export default function OtpVerification({
         },
         token
       );
-
+  
       if (formResponse?.error && formResponse?.message) {
         responseHandler(formResponse.message);
         setLoading(false);
         return;
       }
-
-      // Use optional chaining to safely check if the user is active
-      if (!formResponse?.user?.active) {
+  
+      // Check if the user is an agent and if the account is not active
+      if (formResponse?.user?.userType === "agent" && !formResponse?.user?.active) {
         setLoading(false);
         responseHandler(
           "Your account is not active and requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
-        // Optionally, redirect the user or take other actions here
-        return; // Stop further execution.
+        history.push('/login');
+        return; // Stop further execution for agents whose account is not active.
       }
-
+  
       responseHandler("Account verified successfully.", true);
       onVerified && onVerified(formResponse.user, token);
-      toast.warn(
-        "Your request for trader has been received. Please wait for account approval"
-      );
-      // redirectUser(token); Uncomment or modify this according to your needs
-      history.push('/register')
+      if (formResponse?.user?.userType === "agent") {
+        toast.warn(
+          "Your request for trader has been received. Please wait for account approval"
+        );
+      }
+      redirectUser(formResponse?.token);
+      history.push('/register'); // Adjust the redirection path as needed.
     }
   };
+  
 
-  // const redirectUser = (token) => {
-  //   let returnUrl;
+  const redirectUser = (token) => {
+    let returnUrl;
 
-  //   setLoginToken(token);
-  //   returnUrl =
-  //     new URLSearchParams(window.location.search).get("returnUrl") ||
-  //     `/${user.userType}/dashboard`;
+    setLoginToken(token);
+    returnUrl =
+      new URLSearchParams(window.location.search).get("returnUrl") ||
+      `/${user.userType}/dashboard`;
 
-  //   setTimeout(() => {
-  //     window.location = returnUrl;
-  //   }, 1000);
-  // };
+    setTimeout(() => {
+      window.location = returnUrl;
+    }, 1000);
+  };
 
   useEffect(() => {
     let myInterval = setInterval(() => {
