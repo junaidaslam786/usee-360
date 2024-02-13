@@ -82,7 +82,7 @@ const PaidServices = (props) => {
   useEffect(() => {
     const initializeData = async () => {
       await fetchServices();
-      await fetchSubscriptionDetails(); // Fetch and set subscription status on mount
+      await fetchSubscriptionDetails(); 
     };
 
     initializeData();
@@ -120,11 +120,12 @@ const PaidServices = (props) => {
 
       if (response?.success) {
         console.log("Subscription successful", response);
+        toast.success("Subscription successful");
         setSubscriptionStatus((prevStatus) => ({
           ...prevStatus,
           [serviceId]: true, // Update status to true for the subscribed service
         }));
-        props.responseHandler(["Subscription successful"]);
+        props.responseHandler(["Subscription successful"], true);
       } else {
         console.error("Subscription failed", response.message);
         props.responseHandler([`Subscription failed: ${response.message}`]);

@@ -3,17 +3,17 @@ import { Link } from "react-router-dom";
 import AuthService from "../../services/auth";
 import { USER_TYPE } from "../../constants";
 import OtpVerification from "../partial/otp-verification";
-import 'react-phone-number-input/style.css'
-import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
-import PasswordChecklist from "react-password-checklist"
+import "react-phone-number-input/style.css";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import PasswordChecklist from "react-password-checklist";
 
 export default function RegisterCustomer(props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadOTpForm, setLoadOTpForm] = useState(false);
   const [user, setUser] = useState(null);
@@ -21,7 +21,7 @@ export default function RegisterCustomer(props) {
 
   const registerCustomer = async (e) => {
     e.preventDefault();
-    
+
     let formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -30,15 +30,21 @@ export default function RegisterCustomer(props) {
     formData.append("password", password);
     formData.append("confirmPassword", confirmPassword);
     formData.append("signupStep", 1);
-    formData.append("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+    formData.append(
+      "timezone",
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
 
-    if(!isValidPhoneNumber(phoneNumber)) {
+    if (!isValidPhoneNumber(phoneNumber)) {
       props.responseHandler(["Invalid Phone Number"]);
       return;
     }
 
     setLoading(true);
-    const formResponse = await AuthService.register(formData, USER_TYPE.CUSTOMER);
+    const formResponse = await AuthService.register(
+      formData,
+      USER_TYPE.CUSTOMER
+    );
     setLoading(false);
 
     if (formResponse?.error && formResponse?.message) {
@@ -51,32 +57,36 @@ export default function RegisterCustomer(props) {
       setToken(formResponse.token);
       setLoadOTpForm(true);
     }
-  }
+  };
 
   const handlePassword = (e) => {
     setPassword(e.target.value);
-  }
+  };
 
   const handleConfirmPassword = (e) => {
     setConfirmPassword(e.target.value);
-  }
+  };
   const setPhoneNumberHandler = async (phoneNumber) => {
     setPhoneNumber(phoneNumber);
 
-    const formResponse = await AuthService.checkFieldExist(`?phone=${encodeURIComponent(phoneNumber)}`);
+    const formResponse = await AuthService.checkFieldExist(
+      `?phone=${encodeURIComponent(phoneNumber)}`
+    );
     if (formResponse?.error && formResponse?.message) {
       props.responseHandler(formResponse.message);
     }
-  }
+  };
 
   const setEmailHandler = async (email) => {
     setEmail(email);
 
-    const formResponse = await AuthService.checkFieldExist(`?email=${encodeURIComponent(email)}`);
+    const formResponse = await AuthService.checkFieldExist(
+      `?email=${encodeURIComponent(email)}`
+    );
     if (formResponse?.error && formResponse?.message) {
       props.responseHandler(formResponse.message);
     }
-  }
+  };
 
   return (
     <div className="ltn__login-area pb-80">
@@ -87,7 +97,7 @@ export default function RegisterCustomer(props) {
               <h1 className="section-title">
                 Register
                 <br />
-                Your { process.env.REACT_APP_CUSTOMER_ENTITY_LABEL } Account
+                Your {process.env.REACT_APP_CUSTOMER_ENTITY_LABEL} Account
               </h1>
             </div>
           </div>
@@ -95,80 +105,86 @@ export default function RegisterCustomer(props) {
         <div className="row">
           <div className="col-lg-6 offset-lg-3">
             <div className="account-login-inner">
-              {
-                loadOTpForm ? (
-                  <OtpVerification user={user} token={token} responseHandler={props.responseHandler} />
-                ) : (
-                  <form
-                    onSubmit={registerCustomer}
-                    className="ltn__form-box contact-form-box"
-                  >
-                    <div className="row">
-                      <div className="col-md-6">
-                        <input
-                          type="text"
-                          name="firstname"
-                          placeholder="First Name*"
-                          onChange={(e) => setFirstName(e.target.value)}
-                          value={firstName}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <input
-                          type="text"
-                          name="lastname"
-                          placeholder="Last Name*"
-                          onChange={(e) => setLastName(e.target.value)}
-                          value={lastName}
-                          required
-                        />
-                      </div>
+              {loadOTpForm ? (
+                <OtpVerification
+                  user={user}
+                  token={token}
+                  responseHandler={props.responseHandler}
+                />
+              ) : (
+                <form
+                  onSubmit={registerCustomer}
+                  className="ltn__form-box contact-form-box"
+                >
+                  <div className="row">
+                    <div className="col-md-6">
+                      <input
+                        type="text"
+                        name="firstname"
+                        placeholder="First Name*"
+                        onChange={(e) => setFirstName(e.target.value)}
+                        value={firstName}
+                        required
+                      />
                     </div>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email*"
-                      onChange={(e) => setEmailHandler(e.target.value)}
-                      value={email}
-                      required
-                    />
-                    <small>Phone Number: {phoneNumber}</small>
-                    <PhoneInput
+                    <div className="col-md-6">
+                      <input
+                        type="text"
+                        name="lastname"
+                        placeholder="Last Name*"
+                        onChange={(e) => setLastName(e.target.value)}
+                        value={lastName}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email*"
+                    onChange={(e) => setEmailHandler(e.target.value)}
+                    value={email}
+                    required
+                  />
+                  <small>Phone Number: {phoneNumber}</small>
+                  <PhoneInput
                     className="custom"
-                      type="text"
-                      defaultCountry="AE"
-                      placeholder="Phone Number*"
-                      onChange={(e) => setPhoneNumberHandler(e)}
-                      limitMaxLength={true}
-                      value={phoneNumber}
-                      required
-                    />
-                    <small>Password must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character.</small>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <input
-                          type="password"
-                          name="password"
-                          placeholder="Password*"
-                          onChange={handlePassword}
-                          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
-                          title="Must Contain 10 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <input
-                          type="password"
-                          name="confirmpassword"
-                          placeholder="Confirm Password*"
-                          onChange={handleConfirmPassword}
-                          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
-                          title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
-                          required
-                        />
-                      </div>
-                      <PasswordChecklist
+                    type="text"
+                    defaultCountry="AE"
+                    placeholder="Phone Number*"
+                    onChange={(e) => setPhoneNumberHandler(e)}
+                    limitMaxLength={true}
+                    value={phoneNumber}
+                    required
+                  />
+                  <small>
+                    Password must Contain 8 Characters, One Uppercase, One
+                    Lowercase, One Number and One Special Case Character.
+                  </small>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password*"
+                        onChange={handlePassword}
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                        title="Must Contain 10 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="password"
+                        name="confirmpassword"
+                        placeholder="Confirm Password*"
+                        onChange={handleConfirmPassword}
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                        title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
+                        required
+                      />
+                    </div>
+                    <PasswordChecklist
                       rules={["minLength", "specialChar", "number", "capital"]}
                       minLength={8}
                       value={password}
@@ -180,27 +196,26 @@ export default function RegisterCustomer(props) {
                         capital: "Must contains a capital letter.",
                       }}
                     />
-                    </div>
-                    <div className="btn-wrapper text-center">
-                      <button
-                        className="theme-btn-1 btn reverse-color btn-block"
-                        type="submit"
-                      >
-                        {loading ? (
-                          <div className="lds-ring">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                          </div>
-                        ) : (
-                          "CREATE ACCOUNT"
-                        )}
-                      </button>
-                    </div>
-                  </form>
-                )
-              }
+                  </div>
+                  <div className="btn-wrapper text-center">
+                    <button
+                      className="theme-btn-1 btn reverse-color btn-block"
+                      type="submit"
+                    >
+                      {loading ? (
+                        <div className="lds-ring">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      ) : (
+                        "CREATE ACCOUNT"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
 
               <div className="by-agree text-center">
                 <p>By creating an account, you agree to our:</p>

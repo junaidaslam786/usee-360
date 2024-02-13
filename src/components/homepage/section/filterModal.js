@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import { PARKING, UNITS } from "../../../constants";
+import { PARKING, PRICE_TYPE, UNITS } from "../../../constants";
 import Select from "react-select";
 
 const propertyOptions = {
@@ -29,6 +29,7 @@ const propertyOptions = {
 function FilterModal({ isOpen, onRequestClose }) {
   //   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [propertyCategory, setPropertyCategory] = useState("commercial");
+  const [propertyCategoryType, setPropertyCategoryType] = useState("sale");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [area, setArea] = useState();
@@ -38,6 +39,7 @@ function FilterModal({ isOpen, onRequestClose }) {
   const [bathrooms, setBathrooms] = useState();
   const [parking, setParking] = useState();
   const [carSpace, setCarSpace] = useState();
+  const [priceType, setPriceType] = useState();
 
   const handleChangeCategory = (event) => {
     setPropertyCategory(event.target.value);
@@ -106,6 +108,34 @@ function FilterModal({ isOpen, onRequestClose }) {
           </div>
           <div className="modal-body">
             <div className="row mb-custom">
+              <div className="col-md-6">
+                <div className="input-item">
+                  <label>I'm looking to</label>
+                  <select
+                    className="nice-select"
+                    onChange={(e) => setPropertyCategoryType(e.target.value)}
+                    defaultValue={"sale"}
+                  >
+                    <option value={"sale"}>Buy</option>
+                    <option value={"rent"}>Rent</option>
+                  </select>
+                </div>
+              </div>
+              {propertyCategoryType === "rent" && (
+                <div className="col-md-6">
+                  <div className="input-item">
+                    <label>Price Type</label>
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={PRICE_TYPE} 
+                      onChange={(e) => setPriceType(e)}
+                      value={priceType}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="col-md-6">
                 <div className="input-item">
                   <label htmlFor="property-category">Property Category:</label>

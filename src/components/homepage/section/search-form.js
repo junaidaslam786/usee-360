@@ -20,8 +20,8 @@ export default function SearchForm() {
   const [propertyCategoryType, setPropertyCategoryType] = useState();
   const [propertyType, setPropertyType] = useState();
   const [rooms, setRooms] = useState();
-  const [minPrice, setMinPrice] = useState();
-  const [maxPrice, setMaxPrice] = useState();
+  const [minPrice, setMinPrice] = useState('0');
+  const [maxPrice, setMaxPrice] = useState('0');
   const [lat, setLat] = useStateIfMounted();
   const [lng, setLng] = useStateIfMounted();
   const [showLink, setShowLink] = useState(false);
@@ -29,7 +29,7 @@ export default function SearchForm() {
 
   // Generate price options
   const generatePriceOptions = () => {
-    const options = [];
+    const options = [{ value: '0', label: 'Select Price' }];
     for (let price = 50000; price <= 150000000; price += 5000000) {
       options.push({ value: price, label: `AED ${price.toLocaleString()}` });
     }
@@ -120,6 +120,7 @@ export default function SearchForm() {
                           <option value={"category"} disabled>
                             Category
                           </option>
+                          {/* <option value={"commercial"}>Select a Category</option> */}
                           <option value={"commercial"}>Commercial</option>
                           <option value={"residential"}>Residential</option>
                         </select>
@@ -194,6 +195,7 @@ export default function SearchForm() {
                           className="nice-select"
                           value={minPrice}
                           onChange={(e) => setMinPrice(e.target.value)}
+                          defaultValue={0}
                         >
                           {priceOptions.map((option, index) => (
                             <option value={option.value} key={index}>
@@ -205,7 +207,6 @@ export default function SearchForm() {
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Maximum Price</label>
                         <select
-                          isMulti
                           className="nice-select"
                           value={maxPrice}
                           onChange={(e) => setMaxPrice(e.target.value)}

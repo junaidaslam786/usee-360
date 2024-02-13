@@ -58,10 +58,37 @@ body {
   box-shadow: 0 5px 14px 0 rgba(38, 38, 55, 0.15);
 }
 
+/* Exit button style */
+.exit-button {
+  position: absolute;
+  top: 10px;
+  right: 370px;
+  cursor: pointer;
+  line-height: 27px;
+  padding-left: 12px;
+  padding-right: 12px;
+  /* color: #00c800; */
+  border: 0.5px solid #ffffff;
+  background: #00c800;
+  box-shadow: 0px 0px 40px black;
+  transition: all 0.3s ease-in-out;
+  z-index: 999;
+  /* Adjust the style as needed */
+}
+
+/* Container for Close and Reset buttons */
+.buttons-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px; /* Adjust gap between buttons */
+}
+
 button.open-button {
   position: absolute;
   top: 10px;
-  left: 370px;
+  right: 500px;
   line-height: 27px;
   padding-left: 12px;
   padding-right: 12px;
@@ -73,16 +100,29 @@ button.open-button {
   color: white;
   transition: all 0.3s ease-in-out;
 }
+/* Adjusting the Close button */
+/* button.open-button {
+  line-height: 27px;
+  padding-left: 12px;
+  padding-right: 12px;
+  z-index: 999;
+  border: 0.5px solid #ffffff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 40px black;
+  background: #00c800;
+  color: white;
+  transition: all 0.3s ease-in-out;
+} */
 
-button.closed-button {
+/* button.closed-button {
   left: 16px;
   transition: all 0.3s ease-in-out;
-}
+} */
 
 button.open-button-reset {
   position: absolute;
   top: 10px;
-  left: 495px;
+  right: 430px;
   line-height: 27px;
   padding-left: 12px;
   padding-right: 12px;
@@ -94,10 +134,23 @@ button.open-button-reset {
   transition: all 0.3s ease-in-out;
 }
 
-button.closed-button-reset {
+/* Adjusting the Reset button */
+/* button.open-button-reset {
+  line-height: 27px;
+  padding-left: 12px;
+  padding-right: 12px;
+  z-index: 1000;
+  border-radius: 5px;
+  box-shadow: 0px 0px 40px black;
+  background: red;
+  color: white;
+  transition: all 0.3s ease-in-out;
+} */
+
+/* button.closed-button-reset {
   left: 142px;
   transition: all 0.3s ease-in-out;
-}
+} */
 
 .sidebar-search {
   width: 100%;

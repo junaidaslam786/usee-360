@@ -24,6 +24,7 @@ import Footer from "../components/global/footer";
 import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
 import PrivacyPolicy from "../components/homepage/section/privacy-policy";
+import SocialRegisterForm from "../components/auth/socialRegisterForm";
 
 export default function HomePages({ page, type, hideBookDemo }) {
     const [responseMessage, setResponseMessage] = useState();
@@ -53,6 +54,13 @@ export default function HomePages({ page, type, hideBookDemo }) {
             pageType = "register";
             pageSubTitle = "Register";
             ComponentToRender = type === 'agent' ? RegisterAgent : RegisterCustomer;
+            break;
+
+        case 'register-socail':
+            pageTitle = "Account";
+            pageType = "register";
+            pageSubTitle = "Register";
+            ComponentToRender = SocialRegisterForm;
             break;
 
         case 'reset-password':

@@ -28,6 +28,26 @@ export default function LocationSearch() {
   let polygon;
   const history = useHistory();
 
+  // Define radius options
+  const radiusOptions = [
+    { value: 1000, label: "1km" },
+    { value: 2000, label: "2km" },
+    { value: 3000, label: "3km" },
+    { value: 5000, label: "5km" },
+  ];
+
+  const handleExit = () => {
+    history.push("/services");
+  };
+
+  const handleRadiusChange = (e) => {
+    const newRadius = parseInt(e.target.value, 10);
+    setRadius(newRadius);
+    if (mapstate && center) {
+      drawCircle(center, newRadius);
+    }
+  };
+
   const handleReset = () => {
     if (polygonState) {
       polygonState.setMap(null);
@@ -95,22 +115,53 @@ export default function LocationSearch() {
   };
 
   const searchByCircle = async () => {
-    const data = await HomepageService.searchByCircle({ radius, center });
-    if (data.length > 0) {
-      data.map((property) => {
-        const position = {
-          lat: parseFloat(property.latitude),
-          lng: parseFloat(property.longitude),
-        };
+    const reqBody = {
+      center: { lat: center.lat, lng: center.lng },
+      radius: radius,
+    };
 
-        const marker = addMarkerOnMap(
-          mapstate,
-          position,
-          "assets/img/icons/property-marker.png",
-          { width: 40, height: 40 }
-        );
-        marker.addListener("click", function () {});
-      });
+    try {
+      const data = await HomepageService.searchByCircle(reqBody);
+
+      if (data && data.length > 0) {
+        // Clear existing markers
+        markers.forEach((marker) => marker.setMap(null));
+        setMarkers([]);
+
+        // Update properties and markers based on the search result
+        setProperties(data);
+        const newMarkers = data.map((property) => {
+          const position = {
+            lat: parseFloat(property.latitude),
+            lng: parseFloat(property.longitude),
+          };
+
+          const marker = addMarkerOnMap(
+            mapstate,
+            position,
+            "assets/img/icons/property-marker.png",
+            { width: 40, height: 40 }
+          );
+
+          marker.addListener("click", () => {
+            window.open(
+              `${process.env.REACT_APP_PUBLIC_URL}/property-details/${property.id}`,
+              "_blank"
+            );
+          });
+
+          return marker;
+        });
+
+        setMarkers(newMarkers);
+      } else {
+        // Handle case when no data is returned
+        setProperties([]);
+        console.log("No properties found within the specified radius.");
+      }
+    } catch (error) {
+      console.error("Error searching properties by circle:", error);
+      // Optionally, update the UI to notify the user of the error.
     }
   };
 
@@ -146,10 +197,9 @@ export default function LocationSearch() {
     return marker;
   };
 
-  const drawCircle = () => {
-    if (circle) {
-      circle.setMap(null);
-    }
+  const drawCircle = (center, radius) => {
+    if (circle) circle.setMap(null);
+    if (!mapstate) return;
 
     const newCircle = new window.google.maps.Circle({
       map: mapstate,
@@ -171,10 +221,234 @@ export default function LocationSearch() {
     history.push("/services/properties");
   };
 
+  // useEffect(() => {
+  //   const google = window.google;
+  //   const geocoder = new google.maps.Geocoder();
+
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (position) => {
+  //         const currentLocation = {
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         };
+  //         //const currentLocation = { lat: 24.466667, lng: 54.366669 };
+  //         setCenter(currentLocation);
+  //         map.setCenter(currentLocation);
+  //         setCenterAddress(await reverseGeocode(geocoder, currentLocation));
+  //         centerMarker = addMarkerOnMap(
+  //           map,
+  //           currentLocation,
+  //           "assets/img/icons/map-marker.png",
+  //           { width: 30, height: 40.5 }
+  //         );
+  //         drawCircle(currentLocation, radius);
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //       }
+  //     );
+  //   }
+
+  //   map = new window.google.maps.Map(document.getElementById("map"), {
+  //     center,
+  //     zoom: 17,
+  //   });
+  //   setMap(map);
+
+  //   const autocomplete = new window.google.maps.places.Autocomplete(
+  //     document.getElementById("autocomplete")
+  //   );
+
+  //   autocomplete.addListener("place_changed", () => {
+  //     const place = autocomplete.getPlace();
+  //     if (!place.geometry) {
+  //       window.alert("No details available for input: '" + place.name + "'");
+  //       return;
+  //     }
+
+  //     map.setCenter(place.geometry.location);
+  //     drawCircle(place.geometry.location, radius);
+  //     map.setZoom(17);
+
+  //     if (centerMarker) {
+  //       centerMarker.setPosition(place.geometry.location);
+  //     }
+  //   });
+
+  //   map.addListener("click", function (event) {
+  //     const lat = event.latLng.lat();
+  //     const lng = event.latLng.lng();
+  //     // const infowindow = new google.maps.InfoWindow({
+  //     //   content: "Clicked location: " + lat + ", " + lng,
+  //     // });
+  //     // infowindow.setPosition(event.latLng);
+  //     // infowindow.open(map);
+  //   });
+
+  //   drawingManager = new google.maps.drawing.DrawingManager({
+  //     drawingMode: google.maps.drawing.OverlayType.POLYGON,
+  //     drawingControl: true,
+  //     drawingControlOptions: {
+  //       position: google.maps.ControlPosition.TOP_CENTER,
+  //       drawingModes: [
+  //         // google.maps.drawing.OverlayType.MARKER,
+  //         // google.maps.drawing.OverlayType.CIRCLE,
+  //         google.maps.drawing.OverlayType.POLYGON,
+  //         // google.maps.drawing.OverlayType.POLYLINE,
+  //         // google.maps.drawing.OverlayType.RECTANGLE,
+  //       ],
+  //     },
+  //     polygonOptions: {
+  //       fillColor: "#FF0000",
+  //       fillOpacity: 0.35,
+  //       strokeWeight: 2,
+  //       clickable: true,
+  //       editable: true,
+  //       draggable: true,
+  //       zIndex: 1,
+  //     },
+  //   });
+
+  //   google.maps.event.addListener(
+  //     drawingManager,
+  //     "polygoncomplete",
+  //     function (drawnPolygon) {
+  //       if (polygon) {
+  //         polygon.setMap(null);
+  //         setProperties([]);
+  //         if (newMarkers.length > 0) {
+  //           newMarkers.map((marker) => {
+  //             marker.setMap(null);
+  //           });
+  //         }
+  //       }
+
+  //       google.maps.event.addListener(
+  //         drawnPolygon,
+  //         "dragend",
+  //         function (event) {
+  //           searchByPolygon(drawnPolygon);
+  //         }
+  //       );
+  //       polygon = drawnPolygon;
+  //       setPolygonState(drawnPolygon);
+  //       searchByPolygon(drawnPolygon);
+  //       drawingManager.setDrawingMode(null);
+  //     }
+  //   );
+
+  //   setDrawingManagerState(drawingManager);
+  //   drawingManager.setMap(map);
+  // }, []);
+
   useEffect(() => {
     const google = window.google;
+    let map;
+    let centerMarker;
     const geocoder = new google.maps.Geocoder();
 
+    // Function to add a marker to the map
+    const addMarkerOnMap = (map, position, icon, iconDimensions) => {
+      return new google.maps.Marker({
+        position,
+        map,
+        icon: {
+          url: icon,
+          scaledSize: new google.maps.Size(
+            iconDimensions.width,
+            iconDimensions.height
+          ),
+        },
+      });
+    };
+
+    // Reverse geocoding to get address from lat and lng
+    const reverseGeocode = async (location) => {
+      return new Promise((resolve, reject) => {
+        geocoder.geocode({ location }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK) {
+            resolve(results[0].formatted_address);
+          } else {
+            reject(status);
+          }
+        });
+      });
+    };
+
+    // Initialize the map
+    const initializeMap = () => {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center,
+        zoom: 17,
+      });
+      setMap(map);
+
+      // Setup autocomplete
+      const autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
+      autocomplete.bindTo("bounds", map);
+      autocomplete.addListener("place_changed", async () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+        const newCenter = place.geometry.location;
+        setCenter(newCenter.toJSON()); // Update center state
+        map.setCenter(newCenter);
+
+        // Ensure centerMarker is moved to new center
+        if (centerMarker) {
+          centerMarker.setMap(null); // Remove the old marker
+        }
+        centerMarker = addMarkerOnMap(
+          map,
+          newCenter.toJSON(),
+          "assets/img/icons/map-marker.png",
+          { width: 30, height: 40.5 }
+        );
+
+        // Redraw circle at new center with current radius
+        drawCircle(newCenter.toJSON(), radius);
+      });
+
+      // Configure drawing manager for polygons
+      const drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON],
+        },
+        polygonOptions: {
+          fillColor: "#FF0000",
+          fillOpacity: 0.35,
+          strokeWeight: 2,
+          clickable: true,
+          editable: true,
+          draggable: true,
+          zIndex: 1,
+        },
+      });
+
+      drawingManager.setMap(map);
+      setDrawingManagerState(drawingManager);
+
+      // Listener for polygon completion
+      google.maps.event.addListener(
+        drawingManager,
+        "polygoncomplete",
+        (polygon) => {
+          setPolygonState(polygon); // Update polygon state
+          searchByPolygon(polygon); // Trigger search with the drawn polygon
+          drawingManager.setDrawingMode(null); // Disable drawing mode after polygon is complete
+        }
+      );
+    };
+
+    // Attempt to fetch user's current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -182,130 +456,50 @@ export default function LocationSearch() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          //const currentLocation = { lat: 24.466667, lng: 54.366669 };
           setCenter(currentLocation);
-          map.setCenter(currentLocation);
-          setCenterAddress(await reverseGeocode(geocoder, currentLocation));
-          centerMarker = addMarkerOnMap(
-            map,
-            currentLocation,
-            "assets/img/icons/map-marker.png",
-            { width: 30, height: 40.5 }
-          );
+          setCenterAddress(await reverseGeocode(currentLocation));
+          initializeMap();
+          drawCircle(currentLocation, radius);
         },
         (error) => {
-          console.log(error);
+          console.error("Geolocation error: ", error);
+          initializeMap(); // Initialize map with default center if geolocation fails
         }
       );
+    } else {
+      initializeMap(); // Initialize map with default center if geolocation is not supported
     }
+  }, []); // Re-run useEffect when radius changes to redraw circle
 
-    map = new window.google.maps.Map(document.getElementById("map"), {
-      center,
-      zoom: 17,
-    });
-    setMap(map);
-
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("autocomplete")
-    );
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
-
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-
-      if (centerMarker) {
-        centerMarker.setPosition(place.geometry.location);
-      }
-    });
-
-    map.addListener("click", function (event) {
-      const lat = event.latLng.lat();
-      const lng = event.latLng.lng();
-      // const infowindow = new google.maps.InfoWindow({
-      //   content: "Clicked location: " + lat + ", " + lng,
-      // });
-      // infowindow.setPosition(event.latLng);
-      // infowindow.open(map);
-    });
-
-    drawingManager = new google.maps.drawing.DrawingManager({
-      drawingMode: google.maps.drawing.OverlayType.POLYGON,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [
-          // google.maps.drawing.OverlayType.MARKER,
-          // google.maps.drawing.OverlayType.CIRCLE,
-          google.maps.drawing.OverlayType.POLYGON,
-          // google.maps.drawing.OverlayType.POLYLINE,
-          // google.maps.drawing.OverlayType.RECTANGLE,
-        ],
-      },
-      polygonOptions: {
-        fillColor: "#FF0000",
-        fillOpacity: 0.35,
-        strokeWeight: 2,
-        clickable: true,
-        editable: true,
-        draggable: true,
-        zIndex: 1,
-      },
-    });
-
-    google.maps.event.addListener(
-      drawingManager,
-      "polygoncomplete",
-      function (drawnPolygon) {
-        if (polygon) {
-          polygon.setMap(null);
-          setProperties([]);
-          if (newMarkers.length > 0) {
-            newMarkers.map((marker) => {
-              marker.setMap(null);
-            });
-          }
-        }
-
-        google.maps.event.addListener(
-          drawnPolygon,
-          "dragend",
-          function (event) {
-            searchByPolygon(drawnPolygon);
-          }
-        );
-        polygon = drawnPolygon;
-        setPolygonState(drawnPolygon);
-        searchByPolygon(drawnPolygon);
-        drawingManager.setDrawingMode(null);
-      }
-    );
-
-    setDrawingManagerState(drawingManager);
-    drawingManager.setMap(map);
-  }, []);
+  useEffect(() => {
+    if (!mapstate || !center || typeof radius !== "number") return;
+    drawCircle(center, radius);
+  }, [mapstate, center, radius]);
 
   return (
     <div className="map-container">
-      <div className="custom_position">
-        <button
-          className={`open-button ${active ? "" : "closed-button"}`}
-          onClick={handleActive}
-        >
-          {active ? "Close Search" : "Open Search"}
-        </button>
-        <button
-          className={`open-button-reset ${active ? "" : "closed-button-reset"}`}
-          onClick={handleReset}
-        >
-          Reset
-        </button>
+      <div className="custom_position2">
+        {/* <div className="buttons-container"> */}
+          <button
+            className={`open-button ${active ? "" : "closed-button"}`}
+            onClick={handleActive}
+          >
+            {active ? "Close Search" : "Open Search"}
+          </button>
+          <button
+            className={`open-button-reset ${
+              active ? "" : "closed-button-reset"
+            }`}
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+          <button className="exit-button" onClick={handleExit}>
+            exit
+          </button>
+        {/* </div> */}
       </div>
+
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <img
           src={`${process.env.REACT_APP_PUBLIC_URL}/assets/img/logo.png`}
@@ -331,11 +525,25 @@ export default function LocationSearch() {
           }}
           placeholder="Center your location"
         />
+        <div className="radius-selector">
+          <label htmlFor="radiusSelect">Radius:</label>
+          <select
+            id="radiusSelect"
+            value={radius}
+            onChange={handleRadiusChange}
+          >
+            {radiusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="scrollable">
           {properties &&
             properties.length > 0 &&
             properties.map((element, i) => (
-              <div key={element} className="content-box">
+              <div key={element.id} className="content-box">
                 <img
                   src={`${process.env.REACT_APP_API_URL}/${element?.featuredImage}`}
                   alt="#"
