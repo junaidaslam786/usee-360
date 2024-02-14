@@ -221,16 +221,17 @@ const App = () => {
             <Route path="/services/properties" component={PropertiesService} />
             <Route path="/services" component={Services} />
 
-            {/* Register Social */}
             <Route
-              path="/register-social"
-              component={() => <HomePages page="register-social" />}
+              path="/agent/register-social"
+              render={(props) => (
+                <HomePages {...props} page="register-social" />
+              )}
             />
 
-            <Route
+            {/* <Route
               path="/auth/facebook/callback"
               component={() => <HomePages page="register-social" />}
-            />
+            /> */}
 
             {/* Agent Routes */}
             <Route

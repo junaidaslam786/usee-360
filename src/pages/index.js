@@ -10,12 +10,12 @@ import BlogsDetails from "../components/cms/blog/details";
 import News from "../components/cms/news/index";
 import NewsDetails from "../components/cms/news/details";
 import Community from "../components/cms/community/index";
-import CommunityPosts from '../components/cms/community/posts';
-import CommunityPostComments from '../components/cms/community/post-comments'
+import CommunityPosts from "../components/cms/community/posts";
+import CommunityPostComments from "../components/cms/community/post-comments";
 import ContactInfo from "../components/homepage/section/contact-info";
 import ContactForm from "../components/homepage/section/contact-form";
-import PropertyDetails from '../components/homepage/property/details';
-import PropertyGrid from '../components/homepage/property/grid';
+import PropertyDetails from "../components/homepage/property/details";
+import PropertyGrid from "../components/homepage/property/grid";
 import TermAndCondition from "../components/homepage/section/term-and-condition";
 import Navbar from "../components/global/navbar";
 import PageHeader from "../components/global/header";
@@ -28,146 +28,140 @@ import SocialRegisterForm from "../components/auth/socialRegisterForm";
 import OAuthCallbackHandler from "../components/auth/authCallbackHandler";
 
 export default function HomePages({ page, type, hideBookDemo }) {
-    const [responseMessage, setResponseMessage] = useState();
+  const [responseMessage, setResponseMessage] = useState();
 
-    const setResponseMessageHandler = (response, isSuccess = false) => {
-        setResponseMessage(setResponseHandler(response, isSuccess));
-    }
+  const setResponseMessageHandler = (response, isSuccess = false) => {
+    setResponseMessage(setResponseHandler(response, isSuccess));
+  };
 
-    let pageTitle;
-    let pageSubTitle = "";
-    let pageType = "";
-    let ComponentToRender;
-    let componentProps = {
-        responseHandler: setResponseMessageHandler
-    };
+  let pageTitle;
+  let pageSubTitle = "";
+  let pageType = "";
+  let ComponentToRender;
+  let componentProps = {
+    responseHandler: setResponseMessageHandler,
+  };
 
-    switch(page) {
-        case 'login':
-            pageTitle = "Account"
-            pageSubTitle = "Login";
-            componentProps.type = type;
-            ComponentToRender = Login;
-            break;
+  switch (page) {
+    case "login":
+      pageTitle = "Account";
+      pageSubTitle = "Login";
+      componentProps.type = type;
+      ComponentToRender = Login;
+      break;
 
-        case 'register':
-            pageTitle = "Account";
-            pageType = "register";
-            pageSubTitle = "Register";
-            ComponentToRender = type === 'agent' ? RegisterAgent : RegisterCustomer;
-            break;
+    case "register":
+      pageTitle = "Account";
+      pageType = "register";
+      pageSubTitle = "Register";
+      ComponentToRender = type === "agent" ? RegisterAgent : RegisterCustomer;
+      break;
 
-        case 'register-social':
-            pageTitle = "Account";
-            pageType = "register";
-            pageSubTitle = "Register";
-            ComponentToRender = SocialRegisterForm;
-            break;
+    case "register-social":
+      pageTitle = "Account";
+      pageType = "register";
+      pageSubTitle = "Register";
+      ComponentToRender = SocialRegisterForm; // No need for the ternary if always the same
+      break;
 
-        case 'auth-callback':
-            pageTitle = "Facebook Callback";
-            pageSubTitle = "Facebook Callback";
-            ComponentToRender = OAuthCallbackHandler;
-            break;
+    // case "auth-callback":
+    //   pageTitle = "Facebook Callback";
+    //   pageSubTitle = "Facebook Callback";
+    //   ComponentToRender = OAuthCallbackHandler;
+    //   break;
 
-        case 'reset-password':
-            pageTitle = "Account"
-            pageSubTitle = "Reset Password";
-            componentProps.type = type;
-            ComponentToRender = ResetPassword;
-            break;
+    case "reset-password":
+      pageTitle = "Account";
+      pageSubTitle = "Reset Password";
+      componentProps.type = type;
+      ComponentToRender = ResetPassword;
+      break;
 
-        case 'blogs':
-            pageTitle = "Blogs";
-            ComponentToRender = Blogs;
-            break;
+    case "blogs":
+      pageTitle = "Blogs";
+      ComponentToRender = Blogs;
+      break;
 
-        case 'blog-details':
-            pageTitle = "Blogs Detail";
-            ComponentToRender = BlogsDetails;
-            break;
-        
-        case 'news':
-            pageTitle = "News";
-            ComponentToRender = News;
-            break;
-        
-        case 'news-details':
-            pageTitle = "News Detail";
-            ComponentToRender = NewsDetails;
-            break;
+    case "blog-details":
+      pageTitle = "Blogs Detail";
+      ComponentToRender = BlogsDetails;
+      break;
 
-        case 'community':
-            pageTitle = "Community";
-            ComponentToRender = Community;
-            break;
-        
-        case 'community-posts':
-            pageTitle = "Community Posts";
-            ComponentToRender = CommunityPosts;
-            break;
+    case "news":
+      pageTitle = "News";
+      ComponentToRender = News;
+      break;
 
-        case 'community-post-comments':
-            pageTitle = "Community Post Comments";
-            ComponentToRender = CommunityPostComments;
-            break;
-        
-        case 'contact-us':
-            pageTitle = "Contact Us";
-            pageSubTitle = "Contact";
-            ComponentToRender = ContactInfo;
-            break;
-        
-        case 'book-demo':
-            pageTitle = "Book a Demo";
-            pageSubTitle = "Demo";
-            ComponentToRender = ContactForm;
-            break;
+    case "news-details":
+      pageTitle = "News Detail";
+      ComponentToRender = NewsDetails;
+      break;
 
-        case 'property-grid':
-            pageTitle = "Property Grid";
-            ComponentToRender = PropertyGrid;
-            break;
+    case "community":
+      pageTitle = "Community";
+      ComponentToRender = Community;
+      break;
 
-        case 'property-details':
-            pageTitle = "Property Details";
-            ComponentToRender = PropertyDetails;
-            break;
+    case "community-posts":
+      pageTitle = "Community Posts";
+      ComponentToRender = CommunityPosts;
+      break;
 
-        case 'terms-conditions':
-            pageTitle = "TERMS AND CONDITIONS";
-            pageSubTitle = "TERMS AND CONDITIONS";
-            ComponentToRender = TermAndCondition;
-            break;
+    case "community-post-comments":
+      pageTitle = "Community Post Comments";
+      ComponentToRender = CommunityPostComments;
+      break;
 
-        case 'privacy-policy':
-            pageTitle = "PRIVACY POLICY";
-            pageSubTitle = "PRIVACY POLICY";
-            ComponentToRender = PrivacyPolicy;
-            break;
+    case "contact-us":
+      pageTitle = "Contact Us";
+      pageSubTitle = "Contact";
+      ComponentToRender = ContactInfo;
+      break;
 
-        default:
-            pageTitle = "404 Page"
-            pageSubTitle = "";
-            pageType = "";
-            ComponentToRender = Error;
-            break;
-    }
+    case "book-demo":
+      pageTitle = "Book a Demo";
+      pageSubTitle = "Demo";
+      ComponentToRender = ContactForm;
+      break;
 
-    return (
-        <div>
-            <Navbar page={pageType} hideBookDemo={hideBookDemo} />
-            <PageHeader headertitle={pageTitle} subheader={pageSubTitle} />
-            {ComponentToRender && (
-                <ComponentToRender {...componentProps} />
-            )}
-            {
-                !hideBookDemo && (
-                    <CallToActonV1 />
-                )
-            }
-            <ResponseHandler response={responseMessage} type={type} />
-            <Footer page={pageType}/>
-        </div>
-    );
+    case "property-grid":
+      pageTitle = "Property Grid";
+      ComponentToRender = PropertyGrid;
+      break;
+
+    case "property-details":
+      pageTitle = "Property Details";
+      ComponentToRender = PropertyDetails;
+      break;
+
+    case "terms-conditions":
+      pageTitle = "TERMS AND CONDITIONS";
+      pageSubTitle = "TERMS AND CONDITIONS";
+      ComponentToRender = TermAndCondition;
+      break;
+
+    case "privacy-policy":
+      pageTitle = "PRIVACY POLICY";
+      pageSubTitle = "PRIVACY POLICY";
+      ComponentToRender = PrivacyPolicy;
+      break;
+
+    default:
+      pageTitle = "404 Page";
+      pageSubTitle = "";
+      pageType = "";
+      ComponentToRender = Error;
+      break;
+  }
+
+  return (
+    <div>
+      <Navbar page={pageType} hideBookDemo={hideBookDemo} />
+      <PageHeader headertitle={pageTitle} subheader={pageSubTitle} />
+      {ComponentToRender && <ComponentToRender {...componentProps} />}
+      {!hideBookDemo && <CallToActonV1 />}
+      <ResponseHandler response={responseMessage} type={type} />
+      <Footer page={pageType} />
+    </div>
+  );
 }
