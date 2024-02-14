@@ -34,6 +34,7 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
 import { AuthProvider } from "./components/auth/AuthContext";
+import OAuthCallbackHandler from "./components/auth/authCallbackHandler";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -223,6 +224,11 @@ const App = () => {
             {/* Register Social */}
             <Route
               path="/register-social"
+              component={() => <HomePages page="register-social" />}
+            />
+
+            <Route
+              path="/auth/facebook/callback"
               component={() => <HomePages page="register-social" />}
             />
 

@@ -1,7 +1,7 @@
 // AuthContext.js
-import React, { createContext, useState, useEffect } from 'react';
-import { getUserDetailsFromJwt } from '../../utils';
-import AuthService from '../../services/auth';
+import React, { createContext, useState, useEffect } from "react";
+import { getUserDetailsFromJwt } from "../../utils";
+import AuthService from "../../services/auth";
 
 export const AuthContext = createContext(null);
 
@@ -11,10 +11,14 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: false,
   });
 
+  const updateAuthState = (newState) => {
+    setAuthState(newState);
+  };
+
   useEffect(() => {
     const refreshAuthState = async () => {
-      const token = localStorage.getItem('token');
-      const refreshToken = localStorage.getItem('refreshToken');
+      const token = localStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
 
       if (token && refreshToken) {
         try {
@@ -24,13 +28,13 @@ export const AuthProvider = ({ children }) => {
           } else {
             const refreshed = await AuthService.refreshToken({ refreshToken });
             if (refreshed.accessToken) {
-              localStorage.setItem('token', refreshed.accessToken);
+              localStorage.setItem("token", refreshed.accessToken);
               const newDetails = getUserDetailsFromJwt(refreshed.accessToken);
               setAuthState({ userDetails: newDetails, isAuthenticated: true });
             }
           }
         } catch (error) {
-          console.error('Failed to refresh auth state', error);
+          console.error("Failed to refresh auth state", error);
           setAuthState({ userDetails: null, isAuthenticated: false });
           // Redirect to login or handle accordingly
         }
@@ -41,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={authState}>
+    <AuthContext.Provider value={{ ...authState, updateAuthState }}>
       {children}
     </AuthContext.Provider>
   );

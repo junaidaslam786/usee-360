@@ -25,6 +25,7 @@ import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
 import PrivacyPolicy from "../components/homepage/section/privacy-policy";
 import SocialRegisterForm from "../components/auth/socialRegisterForm";
+import OAuthCallbackHandler from "../components/auth/authCallbackHandler";
 
 export default function HomePages({ page, type, hideBookDemo }) {
     const [responseMessage, setResponseMessage] = useState();
@@ -56,11 +57,17 @@ export default function HomePages({ page, type, hideBookDemo }) {
             ComponentToRender = type === 'agent' ? RegisterAgent : RegisterCustomer;
             break;
 
-        case 'register-socail':
+        case 'register-social':
             pageTitle = "Account";
             pageType = "register";
             pageSubTitle = "Register";
             ComponentToRender = SocialRegisterForm;
+            break;
+
+        case 'auth-callback':
+            pageTitle = "Facebook Callback";
+            pageSubTitle = "Facebook Callback";
+            ComponentToRender = OAuthCallbackHandler;
             break;
 
         case 'reset-password':

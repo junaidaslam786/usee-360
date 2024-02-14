@@ -26,7 +26,8 @@ export default function Login({ type, responseHandler }) {
 
   const handleFacebookAuth = async () => {
     try {
-      const url = await AuthService.getFacebookAuthUrl();
+      
+      const url = await AuthService.getFacebookAuthUrl(type);
       if (url) {
         window.location.href = url; // Redirect to the Facebook auth URL
       } else {
@@ -240,7 +241,11 @@ export default function Login({ type, responseHandler }) {
                     <FontAwesomeIcon
                       icon={faFacebook}
                       size="2x"
-                      style={{ color: "#3b5998", cursor: "pointer", margin: '0 10px' }}
+                      style={{
+                        color: "#3b5998",
+                        cursor: "pointer",
+                        margin: "0 10px",
+                      }}
                       onClick={handleFacebookAuth}
                     />
                     <FontAwesomeIcon
