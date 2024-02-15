@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useLocation, withRouter } from "react-router-dom";
+import { Link, useLocation, withRouter, useHistory } from "react-router-dom";
 import {
   JOB_TITLE,
   DEFAULT_LICENSE_NO_TEXT,
@@ -46,33 +46,37 @@ const SocialRegisterForm = (props) => {
   const [token, setToken] = useState("");
 
   const location = useLocation();
+  const history = useHistory();
 
-  const { setAuthState } = useContext(AuthContext);
+  // const { setAuthState } = useContext(AuthContext);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(props.location.search);
     const token = queryParams.get("token");
-    
+
     const fetchDetails = async () => {
       const decoded = await getUserDetailsFromJwt(token);
-      const [firstName, lastName] = decoded.name.split(' ');
-      console.log(decoded.id);
-      setFirstName(firstName);
-      setLastName(lastName || '');
-      setUserId(decoded.id);
-      setEmail(decoded.email);
-      setPhoneNumber(decoded.phoneNumber);
-      
-    }
+      console.log(token);
+      if (token) {
+        setToken(token);
+        localStorage.setItem("userToken", '"' + token + '"');
+        // fetchUserDetails();
+      }
+
+      const response = await UserService.detail(decoded.id);
+      console.log(response);
+      if (response) {
+        const user = response.user;
+        setUser(user);
+        setEmail(user.email);
+        setPhoneNumber(user.phoneNumber);
+      } else {
+        props.responseHandler(response?.error?.message);
+      }
+    };
     fetchDetails();
     // setAuthState({ token, isAuthenticated: true });
     // const wrapToken = `"${token}"`;
-    console.log(token);
-    if (token) {
-      setToken(token);
-      localStorage.setItem("userToken", "\""+token+"\"")
-      fetchUserDetails();
-    }
   }, [props.location.search]);
 
   const handleCountryChange = (selectedOption) => {
@@ -125,32 +129,42 @@ const SocialRegisterForm = (props) => {
     }
   };
 
-  const fetchUserDetails = async () => {
-    try {
-      console.log(userId);
-      const response = await UserService.detail(userId);
-      console.log(response);
-      if (response) {
-        // const user = response.user;
-        // setUser(user);
-        // setCompanyName(user.company_name);
-        // setFirstName(user.first_name);
-        // setLastName(user.last_name);
-        // setSelectedCountry(user.country);
-        // setCityOptions(City.getCityNames(user.country));
-        // setSelectedCity(user.city);
-        // setCompanyPosition(user.company_position);
-        // setJobTitle(user.job_title);
-        // setLicenseNo(user.license_no);
-        // setEmail(user.email);
-        // setPhoneNumber(user.phone_number);
-      } else {
-        toast.error("Invalid token");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  // const fetchUserDetails = async () => {
+  //   const response = await UserService.detail(userId);
+  //   console.log(response);
+  //   if (!response.error) {
+  //     const user = response.user;
+  //     setUser(user);
+  //   } else {
+  //     props.responseHandler(response.error.message);
+  //   }
+  // };
+  // const fetchUserDetails = async () => {
+  //   try {
+
+  //     const response = await UserService.detail(userId);
+  //     console.log(response);
+  //     if (response) {
+  //       // const user = response.user;
+  //       // setUser(user);
+  //       // setCompanyName(user.company_name);
+  //       // setFirstName(user.first_name);
+  //       // setLastName(user.last_name);
+  //       // setSelectedCountry(user.country);
+  //       // setCityOptions(City.getCityNames(user.country));
+  //       // setSelectedCity(user.city);
+  //       // setCompanyPosition(user.company_position);
+  //       // setJobTitle(user.job_title);
+  //       // setLicenseNo(user.license_no);
+  //       // setEmail(user.email);
+  //       // setPhoneNumber(user.phone_number);
+  //     } else {
+  //       toast.error("Invalid token");
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const countryOptions = Country.getAllCountries().map((country) => ({
     value: country.isoCode,
@@ -161,8 +175,7 @@ const SocialRegisterForm = (props) => {
     e.preventDefault();
     setLoading(true);
     const data = {
-      userId: userId,
-      role: 'agent',
+      userId: user.id,
       company_name: companyName,
       first_name: firstName,
       last_name: lastName,
@@ -177,13 +190,20 @@ const SocialRegisterForm = (props) => {
       document: document,
     };
     const response = await UserService.update(data);
-    if (response.status === 200) {
-      toast.success(response.data.message);
+
+    if (response?.error && response?.message) {
+      props.responseHandler(response.message);
       setLoading(false);
-      setLoadOTpForm(true);
-    } else {
-      toast.error(response.data.message);
+      return;
+    }
+
+    if (response?.user?.userType === "agent" && !response?.user?.active) {
       setLoading(false);
+      props.responseHandler(
+        "Your account is not active and requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
+      );
+      history.push("/login");
+      return;
     }
   };
 
