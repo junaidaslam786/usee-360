@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation, withRouter } from "react-router-dom";
 import {
   JOB_TITLE,
@@ -15,7 +15,9 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import PasswordChecklist from "react-password-checklist";
 import { toast } from "react-toastify";
 import { Country, City } from "country-state-city";
-import { getUserDetailsFromJwt } from "../../utils";
+import { getUserDetailsFromJwt, getUserDetailsFromJwt2 } from "../../utils";
+import UserService from "../../services/agent/user";
+import { AuthContext } from "./AuthContext";
 
 const SocialRegisterForm = (props) => {
   const [companyName, setCompanyName] = useState("");
@@ -40,37 +42,108 @@ const SocialRegisterForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [loadOTpForm, setLoadOTpForm] = useState(false);
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
 
   const location = useLocation();
 
+  const { setAuthState } = useContext(AuthContext);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(props.location.search);
-    const token = queryParams.get('token');
+    const token = queryParams.get("token");
+    
+    const fetchDetails = async () => {
+      const decoded = await getUserDetailsFromJwt(token);
+      const [firstName, lastName] = decoded.name.split(' ');
+      console.log(decoded.id);
+      setFirstName(firstName);
+      setLastName(lastName || '');
+      setUserId(decoded.id);
+      setEmail(decoded.email);
+      setPhoneNumber(decoded.phoneNumber);
+      
+    }
+    fetchDetails();
+    // setAuthState({ token, isAuthenticated: true });
+    // const wrapToken = `"${token}"`;
     console.log(token);
     if (token) {
       setToken(token);
+      localStorage.setItem("userToken", "\""+token+"\"")
       fetchUserDetails();
     }
-  }, [token, props.location.search]);
+  }, [props.location.search]);
+
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    const cities = City.getCitiesOfCountry(selectedOption.value);
+    const cityOptions = cities.map((city) => ({
+      value: city.name,
+      label: city.name,
+    }));
+    setCityOptions(cityOptions);
+  };
+
+  const handleCityChange = (selectedCity) => {
+    // Handle city selection
+    setSelectedCity(selectedCity);
+    setShowTraderORNField(selectedCity.label === "Dubai");
+  };
+
+  const jobTitleHandler = (e) => {
+    setJobTitle(e);
+    setJobTitlePlaceHolder(
+      e.value === "landlord" ? DEFAULT_DEED_TITLE_TEXT : DEFAULT_LICENSE_NO_TEXT
+    );
+    setDocumentLabel(
+      e.value === "landlord"
+        ? UPLOAD_DOCUMENT_LANDLORD
+        : UPLOAD_DOCUMENT_DEFAULT
+    );
+  };
+
+  const setPhoneNumberHandler = async (phoneNumber) => {
+    setPhoneNumber(phoneNumber);
+
+    const formResponse = await AuthService.checkFieldExist(
+      `?phone=${encodeURIComponent(phoneNumber)}`
+    );
+    if (formResponse?.error && formResponse?.message) {
+      props.responseHandler(formResponse.message);
+    }
+  };
+
+  const setEmailHandler = async (email) => {
+    setEmail(email);
+
+    const formResponse = await AuthService.checkFieldExist(
+      `?email=${encodeURIComponent(email)}`
+    );
+    if (formResponse?.error && formResponse?.message) {
+      props.responseHandler(formResponse.message);
+    }
+  };
 
   const fetchUserDetails = async () => {
     try {
-      const decoded = getUserDetailsFromJwt(token);
-      if (decoded) {
-        const user = decoded.user;
-        setUser(user);
-        setCompanyName(user.company_name);
-        setFirstName(user.first_name);
-        setLastName(user.last_name);
-        setSelectedCountry(user.country);
-        setCityOptions(City.getCityNames(user.country));
-        setSelectedCity(user.city);
-        setCompanyPosition(user.company_position);
-        setJobTitle(user.job_title);
-        setLicenseNo(user.license_no);
-        setEmail(user.email);
-        setPhoneNumber(user.phone_number);
+      console.log(userId);
+      const response = await UserService.detail(userId);
+      console.log(response);
+      if (response) {
+        // const user = response.user;
+        // setUser(user);
+        // setCompanyName(user.company_name);
+        // setFirstName(user.first_name);
+        // setLastName(user.last_name);
+        // setSelectedCountry(user.country);
+        // setCityOptions(City.getCityNames(user.country));
+        // setSelectedCity(user.city);
+        // setCompanyPosition(user.company_position);
+        // setJobTitle(user.job_title);
+        // setLicenseNo(user.license_no);
+        // setEmail(user.email);
+        // setPhoneNumber(user.phone_number);
       } else {
         toast.error("Invalid token");
       }
@@ -79,10 +152,17 @@ const SocialRegisterForm = (props) => {
     }
   };
 
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    label: country.name,
+  }));
+
   const updateUserProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
     const data = {
+      userId: userId,
+      role: 'agent',
       company_name: companyName,
       first_name: firstName,
       last_name: lastName,
@@ -96,7 +176,7 @@ const SocialRegisterForm = (props) => {
       password: password,
       document: document,
     };
-    const response = await AuthService.updateUserProfile(token, data);
+    const response = await UserService.update(data);
     if (response.status === 200) {
       toast.success(response.data.message);
       setLoading(false);
@@ -121,133 +201,219 @@ const SocialRegisterForm = (props) => {
             </div>
           </div>
         </div>
-        {user && (
-          <form onSubmit={updateUserProfile}>
-            <div className="row ltn__form-box ltn__form-box-2 mb-50">
-              <div className="col-md-6">
+        {/* {user && ( */}
+        <div className="row">
+          <div className="col-lg-6 offset-lg-3">
+            <div className="account-login-inner">
+              <form
+                onSubmit={updateUserProfile}
+                className="ltn__form-box contact-form-box"
+              >
                 <input
                   type="text"
-                  name="companyName"
-                  placeholder="Company Name"
-                  value={companyName}
+                  name="companyname"
+                  placeholder="Company Name*"
                   onChange={(e) => setCompanyName(e.target.value)}
+                  value={companyName}
+                  required
                 />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <Select
-                  options={Country.getNames()}
-                  value={selectedCountry}
-                  onChange={(e) => {
-                    setSelectedCountry(e.value);
-                    setCityOptions(City.getCityNames(e.value));
-                    setSelectedCity("");
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <Select
-                  options={cityOptions}
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="companyPosition"
-                  placeholder="Company Position"
-                  value={companyPosition}
-                  onChange={(e) => setCompanyPosition(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="jobTitle"
-                  placeholder={jobTitlePlaceHolder}
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="licenseNo"
-                  placeholder="License No"
-                  value={licenseNo}
-                  onChange={(e) => setLicenseNo(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
+                <div className="row">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="firstname"
+                      placeholder="First Name*"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      value={firstName}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="lastname"
+                      placeholder="Last Name*"
+                      onChange={(e) => setLastName(e.target.value)}
+                      value={lastName}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <input
+                      type="text"
+                      name="companyposition"
+                      placeholder="Company Position*"
+                      onChange={(e) => setCompanyPosition(e.target.value)}
+                      value={companyPosition}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row mb-30">
+                  <div className="col-md-12">
+                    <Select
+                      className="mb-0"
+                      classNamePrefix="custom-select"
+                      options={countryOptions}
+                      onChange={handleCountryChange}
+                      value={selectedCountry}
+                      placeholder="Select Country"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row mb-30">
+                  <div className="col-md-12">
+                    <Select
+                      className="mb-0"
+                      classNamePrefix="custom-select"
+                      options={cityOptions}
+                      onChange={handleCityChange}
+                      value={selectedCity}
+                      placeholder="Select City"
+                      isDisabled={!selectedCountry}
+                      required
+                    />
+                  </div>
+                </div>
+                {showTraderORNField && (
+                  <div className="row">
+                    <div className="col-md-12">
+                      <input
+                        type="text"
+                        name="traderorn"
+                        placeholder="Trader ORN"
+                        onChange={(e) => setShowTraderORNField(e.target.value)}
+                        // value={showTraderORNField}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="row mb-30">
+                  <div className="col-md-12">
+                    <Select
+                      className="mb-0"
+                      classNamePrefix="custom-select"
+                      options={JOB_TITLE}
+                      onChange={(e) => jobTitleHandler(e)}
+                      value={jobTitle}
+                      required
+                    />
+                  </div>
+                </div>
+                {jobTitle ? (
+                  <div className="input-item mb-30">
+                    <span className="m-0 p-0">{documentLabel}</span>
+                    <input
+                      type="file"
+                      className="btn theme-btn-3 w_100"
+                      onChange={(e) => setDocument(e.target.files[0])}
+                      required
+                    />
+                  </div>
+                ) : null}
+                <div className="row">
+                  <div className="col-md-12">
+                    <input
+                      type="text"
+                      name="licenseNo"
+                      placeholder={jobTitlePlaceHolder}
+                      onChange={(e) => setLicenseNo(e.target.value)}
+                      value={licenseNo}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email*"
+                      onChange={(e) => setEmailHandler(e.target.value)}
+                      value={email}
+                      required
+                    />
+                  </div>
+                </div>
+                <small>Phone Number: {phoneNumber}</small>
                 <PhoneInput
-                  international
-                  defaultCountry="US"
+                  className="phoneInput"
+                  type="text"
+                  defaultCountry="AE"
+                  placeholder="Phone Number*"
+                  onChange={(e) => setPhoneNumberHandler(e)}
+                  limitMaxLength={true}
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e)}
+                  required
                 />
-              </div>
-              <div className="col-md-6">
-                <PasswordChecklist
-                  rules={["minLength", "specialChar", "number", "capital"]}
-                  minLength={8}
-                  value={password}
-                  onChange={setPassword}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="file"
-                  name="document"
-                  onChange={(e) => setDocument(e.target.files[0])}
-                />
-              </div>
-              <div className="col-md-12">
-                <button
-                  type="submit"
-                  className="btn theme-btn-1 btn-effect-1 text-uppercase"
-                >
-                  Update Profile
-                </button>
-              </div>
+                <small>
+                  Password must Contain 8 Characters, One Uppercase, One
+                  Lowercase, One Number and One Special Case Character.
+                </small>
+                <div className="row">
+                  <div className="col-md-6">
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password*"
+                      onChange={(e) => setPassword(e.target.value)}
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                      title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="password"
+                      name="confirmpassword"
+                      placeholder="Confirm Password*"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}"
+                      title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character."
+                      required
+                    />
+                  </div>
+                  <PasswordChecklist
+                    rules={["minLength", "specialChar", "number", "capital"]}
+                    minLength={8}
+                    value={password}
+                    valueAgain={confirmPassword}
+                    messages={{
+                      minLength: "Must be 8 characters.",
+                      specialChar: "Must contains special character.",
+                      number: "Must contains a number.",
+                      capital: "Must contains a capital letter.",
+                    }}
+                  />
+                </div>
+                {/* <div id="recaptcha-container" className="mb-30"></div> */}
+
+                <div className="btn-wrapper text-center">
+                  <button
+                    className="theme-btn-1 btn reverse-color btn-block"
+                    type="submit"
+                  >
+                    {loading ? (
+                      <div className="lds-ring">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                    ) : (
+                      "CREATE ACCOUNT"
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-        )}
+          </div>
+        </div>
+        {/* )} */}
       </div>
     </div>
   );

@@ -64,32 +64,32 @@ export const getUserDetailsFromJwt = (token) => {
   }
 }
 
-// export const getUserDetailsFromJwt = async (token) => {
-//   try {
-//     let tokenToDecode = token;
-//     if (!tokenToDecode) {
-//       // If there's no token, attempt to refresh it
-//       const refreshToken = localStorage.getItem('refreshToken'); // Get the stored refresh token
-//       if (!refreshToken) {
-//         throw new Error('No refresh token available');
-//       }
-//       const refreshResponse = await AuthService.refreshToken(refreshToken);
-//       if (refreshResponse.error) {
-//         throw new Error(refreshResponse.message);
-//       }
-//       // Store the new access token and use it to decode the user details
-//       localStorage.setItem('token', refreshResponse.accessToken);
-//       tokenToDecode = refreshResponse.accessToken;
-//     }
+export const getUserDetailsFromJwt2 = async (token) => {
+  try {
+    let tokenToDecode = token;
+    if (!tokenToDecode) {
+      // If there's no token, attempt to refresh it
+      const refreshToken = localStorage.getItem('refreshToken'); // Get the stored refresh token
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+      const refreshResponse = await AuthService.refreshToken(refreshToken);
+      if (refreshResponse.error) {
+        throw new Error(refreshResponse.message);
+      }
+      // Store the new access token and use it to decode the user details
+      localStorage.setItem('token', refreshResponse.accessToken);
+      tokenToDecode = refreshResponse.accessToken;
+    }
     
-//     const decoded = jwt.verify(tokenToDecode, process.env.REACT_APP_JWT_SECRET_KEY);
-//     return decoded;
-//   } catch (err) {
-//     // Handle errors, including token expiration
-//     console.error('Error getting user details:', err.message);
-//     return null;
-//   }
-// };
+    const decoded = jwt.verify(tokenToDecode, process.env.REACT_APP_JWT_SECRET_KEY);
+    return decoded;
+  } catch (err) {
+    // Handle errors, including token expiration
+    console.error('Error getting user details:', err.message);
+    return null;
+  }
+};
 
 export const convertTimestampToDateTime = (timestamp, format) => {
   return timestamp ? moment.unix(timestamp / 1000).format(format ? format : "HH:mm") : "-";
