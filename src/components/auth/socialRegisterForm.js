@@ -40,7 +40,6 @@ const SocialRegisterForm = (props) => {
   );
   const [documentLabel, setDocumentLabel] = useState();
   const [loading, setLoading] = useState(false);
-  const [loadOTpForm, setLoadOTpForm] = useState(false);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
@@ -48,7 +47,7 @@ const SocialRegisterForm = (props) => {
   const location = useLocation();
   const history = useHistory();
 
-  // const { setAuthState } = useContext(AuthContext);
+ 
 
   useEffect(() => {
     const queryParams = new URLSearchParams(props.location.search);
@@ -60,7 +59,7 @@ const SocialRegisterForm = (props) => {
       if (token) {
         setToken(token);
         localStorage.setItem("userToken", '"' + token + '"');
-        // fetchUserDetails();
+        
       }
 
       const response = await UserService.detail(decoded.id);
@@ -75,8 +74,7 @@ const SocialRegisterForm = (props) => {
       }
     };
     fetchDetails();
-    // setAuthState({ token, isAuthenticated: true });
-    // const wrapToken = `"${token}"`;
+    
   }, [props.location.search]);
 
   const handleCountryChange = (selectedOption) => {
@@ -129,42 +127,6 @@ const SocialRegisterForm = (props) => {
     }
   };
 
-  // const fetchUserDetails = async () => {
-  //   const response = await UserService.detail(userId);
-  //   console.log(response);
-  //   if (!response.error) {
-  //     const user = response.user;
-  //     setUser(user);
-  //   } else {
-  //     props.responseHandler(response.error.message);
-  //   }
-  // };
-  // const fetchUserDetails = async () => {
-  //   try {
-
-  //     const response = await UserService.detail(userId);
-  //     console.log(response);
-  //     if (response) {
-  //       // const user = response.user;
-  //       // setUser(user);
-  //       // setCompanyName(user.company_name);
-  //       // setFirstName(user.first_name);
-  //       // setLastName(user.last_name);
-  //       // setSelectedCountry(user.country);
-  //       // setCityOptions(City.getCityNames(user.country));
-  //       // setSelectedCity(user.city);
-  //       // setCompanyPosition(user.company_position);
-  //       // setJobTitle(user.job_title);
-  //       // setLicenseNo(user.license_no);
-  //       // setEmail(user.email);
-  //       // setPhoneNumber(user.phone_number);
-  //     } else {
-  //       toast.error("Invalid token");
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
 
   const countryOptions = Country.getAllCountries().map((country) => ({
     value: country.isoCode,
@@ -174,8 +136,11 @@ const SocialRegisterForm = (props) => {
   const updateUserProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Update the data object, setting signupStep to 2
     const data = {
       userId: user.id,
+      role: USER_TYPE.AGENT,
       company_name: companyName,
       first_name: firstName,
       last_name: lastName,
@@ -185,27 +150,42 @@ const SocialRegisterForm = (props) => {
       job_title: jobTitle,
       license_no: licenseNo,
       email: email,
+      otpVerified: true,
+      signupStep: 2, // Update this line to change the signupStep to 2
       phone_number: phoneNumber,
       password: password,
       document: document,
     };
-    const response = await UserService.update(data);
 
-    if (response?.error && response?.message) {
-      props.responseHandler(response.message);
-      setLoading(false);
-      return;
-    }
+    try {
+      const response = await UserService.update(data);
 
-    if (response?.user?.userType === "agent" && !response?.user?.active) {
+      // Check for a successful response (you may need to adjust depending on your API's response structure)
+      if (response?.error) {
+        toast.error(response.message || "An error occurred during the update.");
+        return;
+      }
+
+      console.log('User profile updated:', response);
+
+      // Provide feedback to the user
+      toast.success("Profile updated successfully.");
+
+      // Navigate based on the user's updated status
+      if (!response?.user?.active) {
+        toast.info("Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account.");
+        history.push("/login"); // Adjust as necessary
+      } else {
+        history.push("/agent/dashboard"); // Adjust the path as necessary
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error("Failed to update profile. Please try again.");
+    } finally {
       setLoading(false);
-      props.responseHandler(
-        "Your account is not active and requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
-      );
-      history.push("/login");
-      return;
     }
-  };
+};
+
 
   return (
     <div className="ltn__login-area pb-80">
