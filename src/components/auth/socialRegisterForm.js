@@ -40,6 +40,7 @@ const SocialRegisterForm = (props) => {
   );
   const [documentLabel, setDocumentLabel] = useState();
   const [loading, setLoading] = useState(false);
+  const [ornNumber, setOrnNumber] = useState("");
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
@@ -47,34 +48,32 @@ const SocialRegisterForm = (props) => {
   const location = useLocation();
   const history = useHistory();
 
- 
-
   useEffect(() => {
     const queryParams = new URLSearchParams(props.location.search);
     const token = queryParams.get("token");
 
     const fetchDetails = async () => {
       const decoded = await getUserDetailsFromJwt(token);
+      console.log(decoded);
+      setEmail(decoded.email);
       console.log(token);
       if (token) {
         setToken(token);
         localStorage.setItem("userToken", '"' + token + '"');
-        
       }
 
-      const response = await UserService.detail(decoded.id);
-      console.log(response);
-      if (response) {
-        const user = response.user;
-        setUser(user);
-        setEmail(user.email);
-        setPhoneNumber(user.phoneNumber);
-      } else {
-        props.responseHandler(response?.error?.message);
-      }
+      // const response = await UserService.detail(decoded.id);
+      // console.log(response);
+      // if (response) {
+      //   const user = response.user;
+      //   setUser(user);
+      //   setEmail(user.email);
+      //   setPhoneNumber(user.phoneNumber);
+      // } else {
+      //   props.responseHandler(response?.error?.message);
+      // }
     };
     fetchDetails();
-    
   }, [props.location.search]);
 
   const handleCountryChange = (selectedOption) => {
@@ -127,7 +126,6 @@ const SocialRegisterForm = (props) => {
     }
   };
 
-
   const countryOptions = Country.getAllCountries().map((country) => ({
     value: country.isoCode,
     label: country.name,
@@ -138,54 +136,59 @@ const SocialRegisterForm = (props) => {
     setLoading(true);
 
     // Update the data object, setting signupStep to 2
-    const data = {
-      userId: user.id,
-      role: USER_TYPE.AGENT,
-      company_name: companyName,
-      first_name: firstName,
-      last_name: lastName,
-      country: selectedCountry,
-      city: selectedCity,
-      company_position: companyPosition,
-      job_title: jobTitle,
-      license_no: licenseNo,
-      email: email,
-      otpVerified: true,
-      signupStep: 2, // Update this line to change the signupStep to 2
-      phone_number: phoneNumber,
-      password: password,
-      document: document,
-    };
+    const formData = new FormData();
+    formData.append("companyName", companyName);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("country", selectedCountry.value); // Append selected country isoCode
+    formData.append("countryName", selectedCountry.label); // If you also need the country name
+    formData.append("cityName", selectedCity.value);
+    formData.append("companyPosition", companyPosition);
+    formData.append("jobTitle", jobTitle);
+    formData.append("licenseNo", licenseNo);
+    formData.append("email", email);
+    formData.append("otpVerified", true);
+    formData.append("ornNumber", ornNumber);
+    formData.append("signupStep", 2); // Since we're onboarding, setting directly to 2
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("password", password);
+    formData.append("confirmPassword", confirmPassword);
+    if (document) {
+      formData.append("document", document);
+    }
 
     try {
-      const response = await UserService.update(data);
+      const response = await AuthService.agentOnboarding(formData);
 
       // Check for a successful response (you may need to adjust depending on your API's response structure)
       if (response?.error) {
-        toast.error(response.message || "An error occurred during the update.");
+        toast.error(
+          response.message || "An error occurred during agent onboarding."
+        );
         return;
       }
 
-      console.log('User profile updated:', response);
+      console.log("Agent onboarded successfully:", response);
 
       // Provide feedback to the user
-      toast.success("Profile updated successfully.");
+      toast.success("Agent onboarded successfully.");
 
       // Navigate based on the user's updated status
       if (!response?.user?.active) {
-        toast.info("Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account.");
+        toast.info(
+          "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
+        );
         history.push("/login"); // Adjust as necessary
       } else {
         history.push("/agent/dashboard"); // Adjust the path as necessary
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error("Failed to update profile. Please try again.");
+      console.error("Error during agent onboarding:", error);
+      toast.error("Failed to onboard agent. Please try again.");
     } finally {
       setLoading(false);
     }
-};
-
+  };
 
   return (
     <div className="ltn__login-area pb-80">
