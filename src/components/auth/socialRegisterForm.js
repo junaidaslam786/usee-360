@@ -15,7 +15,11 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import PasswordChecklist from "react-password-checklist";
 import { toast } from "react-toastify";
 import { Country, City } from "country-state-city";
-import { getUserDetailsFromJwt, getUserDetailsFromJwt2 } from "../../utils";
+import {
+  checkAgentDetails,
+  getUserDetailsFromJwt,
+  getUserDetailsFromJwt2,
+} from "../../utils";
 import UserService from "../../services/agent/user";
 import { AuthContext } from "./AuthContext";
 
@@ -60,18 +64,24 @@ const SocialRegisterForm = (props) => {
       if (token) {
         setToken(token);
         localStorage.setItem("userToken", '"' + token + '"');
-      }
+        // history.push("/agent/dashboard");
 
-      // const response = await UserService.detail(decoded.id);
-      // console.log(response);
-      // if (response) {
-      //   const user = response.user;
-      //   setUser(user);
-      //   setEmail(user.email);
-      //   setPhoneNumber(user.phoneNumber);
-      // } else {
-      //   props.responseHandler(response?.error?.message);
-      // }
+        try {
+          const response = await UserService.detail(decoded.id); 
+          console.log('agent detail', response)
+          if (response && response.agentType === "agent") {
+            // Check if the user is an agent, then redirect to dashboard
+            history.push(`${USER_TYPE.AGENT}/dashboard`);
+            // history.push("agent/dashboard");
+          } else {
+            // If not an agent, keep them on the registration page or redirect as needed
+            // This block can be empty if no redirection is needed
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+          // Handle error or redirect user to an error page or login page
+        }
+      }
     };
     fetchDetails();
   }, [props.location.search]);
@@ -180,7 +190,7 @@ const SocialRegisterForm = (props) => {
         );
         history.push("/login"); // Adjust as necessary
       } else {
-        history.push("/agent/dashboard"); // Adjust the path as necessary
+        history.push("/dashboard"); // Adjust the path as necessary
       }
     } catch (error) {
       console.error("Error during agent onboarding:", error);

@@ -12,6 +12,7 @@ import {
   PRICE_TYPE,
   DEFAULT_CURRENCY,
 } from './constants';
+import UserService from './services/agent/user';
 
 export const checkTimeOver = (date, time) => {
     const difdate = date;
@@ -44,6 +45,36 @@ export const findCurrentTimeSlot = (timeslots) => {
 
   return null;
 }
+
+// In AuthService or a similar service file
+export const checkAgentDetails = async () => {
+  try {
+    const token = getLoginToken(); // Assumes you have a function to get the stored token
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    // Setting up headers for authorization
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${token}`);
+
+    const id = token.id;
+
+    const response = await UserService.detail(id);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch agent details');
+    }
+
+    const data = await response.json();
+    // Assuming the backend response includes a flag or specific data indicating the user is an agent
+    return data; // This should include information to identify if the user is an agent
+  } catch (error) {
+    console.error('Error fetching agent details:', error);
+    return null;
+  }
+};
+
 
 export const getUserDetailsFromJwt = (token) => {
   try {
