@@ -11,9 +11,12 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: false,
   });
 
-  const updateAuthState = (newState) => {
-    setAuthState(newState);
+  const updateAuthState = ({ userDetails, token, refreshToken }) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("refreshToken", refreshToken);
+    setAuthState({ userDetails, isAuthenticated: true });
   };
+  
 
   useEffect(() => {
     const refreshAuthState = async () => {

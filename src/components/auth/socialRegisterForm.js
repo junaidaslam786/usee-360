@@ -54,43 +54,40 @@ const SocialRegisterForm = (props) => {
   const location = useLocation();
   const history = useHistory();
 
+  const { updateAuthState } = useContext(AuthContext);
+
   useEffect(() => {
-    const queryParams = new URLSearchParams(props.location.search);
+    const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
     const userType = queryParams.get("userType");
+    if (token && userType) {
+      const fetchAndSetUserDetails = async () => {
+        try {
+          // Assuming you have a function to decode or fetch details using the token
+          const userDetails = await getUserDetailsFromJwt(token);
+          if (userDetails) {
+            // Include userType in the userDetails object or pass it separately as needed
+            userDetails.userType = userType; // Add userType to userDetails
+            // Update global auth state
+            updateAuthState({
+              userDetails,
+              token,
+              refreshToken: "",
+              isAuthenticated: true,
+            });
+            // Redirect or further actions
+            history.push("/agent/dashboard"); // Adjust the redirection path as needed
+          }
+        } catch (error) {
+          console.error("Error updating auth state:", error);
+          // Handle error, maybe redirect to login
+          history.push("/login");
+        }
+      };
 
-    const fetchDetails = async () => {
-      const decoded = await getUserDetailsFromJwt(token);
-      console.log(decoded);
-      setEmail(decoded.email);
-      console.log(token);
-      if (token) {
-        setToken(token);
-        setLoginToken(token);
-        setUserType(userType);
-        window.location = "/agent/dashboard";
-        // localStorage.setItem("userToken", '"' + token + '"');
-        // history.push("/agent/dashboard");
-
-        // try {
-        //   const response = await UserService.detail(decoded.id); 
-        //   console.log('agent detail', response)
-        //   if (response && response.agentType === "agent") {
-        //     // Check if the user is an agent, then redirect to dashboard
-        //     history.push(`/dashboard`);
-        //     // history.push("agent/dashboard");
-        //   } else {
-        //     // If not an agent, keep them on the registration page or redirect as needed
-        //     // This block can be empty if no redirection is needed
-        //   }
-        // } catch (error) {
-        //   console.error("Error fetching user details:", error);
-        //   // Handle error or redirect user to an error page or login page
-        // }
-      }
-    };
-    fetchDetails();
-  }, [props.location.search]);
+      fetchAndSetUserDetails();
+    }
+  }, [history, location.search]);
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -195,7 +192,7 @@ const SocialRegisterForm = (props) => {
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
         history.push("agent/login"); // Adjust as necessary
-      } 
+      }
       history.push("agent/dashboard"); // Adjust the path as necessary
     } catch (error) {
       console.error("Error during agent onboarding:", error);
