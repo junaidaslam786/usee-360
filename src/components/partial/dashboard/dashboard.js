@@ -15,11 +15,6 @@ export default function Dashboard({ type }) {
     }
   }, [userDetail]);
 
-  const agentTypeLabel =
-    userDetail && userDetail.agent
-      ? AGENT_TYPE_LABEL[userDetail.agent.agentType]
-      : "";
-
   return (
     <React.Fragment>
       <div className="ltn__comment-area mb-50">
@@ -34,7 +29,7 @@ export default function Dashboard({ type }) {
             <h6>
               {type === USER_TYPE.CUSTOMER
                 ? process.env.REACT_APP_CUSTOMER_ENTITY_LABEL
-                : agentTypeLabel &&
+                : userDetail &&
                   userDetail?.agent?.agentType !== AGENT_TYPE.AGENT
                 ? AGENT_TYPE_LABEL[userDetail.agent.agentType]
                 : process.env.REACT_APP_AGENT_ENTITY_LABEL}

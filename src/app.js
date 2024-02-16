@@ -36,6 +36,7 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 // import { loadStripe } from "@stripe/stripe-js";
 import { AuthProvider } from "./components/auth/AuthContext";
 import OAuthCallbackHandler from "./components/auth/authCallbackHandler";
+import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -89,7 +90,7 @@ function checkIfHasRouteAccess(path) {
 function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
   const token = getLoginToken();
-  const userType = getUserType();
+  // const userType = getUserType();
   let isAuthenticated = false;
 
   if (token) {
@@ -100,8 +101,8 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     } else {
       isAuthenticated = true;
 
-      // if (!userDetail?.agent) {
-      if (userType !== "agent") {
+      if (!userDetail?.agent) {
+      // if (userType !== "agent") {
         history.push("/customer/dashboard");
         return null;
       }
@@ -231,10 +232,10 @@ const App = () => {
               )}
             />
 
-            {/* <Route
+            <Route
               path="/auth/facebook/callback"
-              component={() => <HomePages page="register-social" />}
-            /> */}
+              component={FacebookAuthCallback}
+            />
 
             {/* Agent Routes */}
             <Route
