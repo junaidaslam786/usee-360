@@ -19,6 +19,7 @@ import {
   checkAgentDetails,
   getUserDetailsFromJwt,
   getUserDetailsFromJwt2,
+  setLoginToken,
 } from "../../utils";
 import UserService from "../../services/agent/user";
 import { AuthContext } from "./AuthContext";
@@ -63,24 +64,26 @@ const SocialRegisterForm = (props) => {
       console.log(token);
       if (token) {
         setToken(token);
-        localStorage.setItem("userToken", '"' + token + '"');
+        setLoginToken(token);
+        window.location = "/agent/dashboard";
+        // localStorage.setItem("userToken", '"' + token + '"');
         // history.push("/agent/dashboard");
 
-        try {
-          const response = await UserService.detail(decoded.id); 
-          console.log('agent detail', response)
-          if (response && response.agentType === "agent") {
-            // Check if the user is an agent, then redirect to dashboard
-            history.push(`${USER_TYPE.AGENT}/dashboard`);
-            // history.push("agent/dashboard");
-          } else {
-            // If not an agent, keep them on the registration page or redirect as needed
-            // This block can be empty if no redirection is needed
-          }
-        } catch (error) {
-          console.error("Error fetching user details:", error);
-          // Handle error or redirect user to an error page or login page
-        }
+        // try {
+        //   const response = await UserService.detail(decoded.id); 
+        //   console.log('agent detail', response)
+        //   if (response && response.agentType === "agent") {
+        //     // Check if the user is an agent, then redirect to dashboard
+        //     history.push(`/dashboard`);
+        //     // history.push("agent/dashboard");
+        //   } else {
+        //     // If not an agent, keep them on the registration page or redirect as needed
+        //     // This block can be empty if no redirection is needed
+        //   }
+        // } catch (error) {
+        //   console.error("Error fetching user details:", error);
+        //   // Handle error or redirect user to an error page or login page
+        // }
       }
     };
     fetchDetails();
@@ -188,10 +191,9 @@ const SocialRegisterForm = (props) => {
         toast.info(
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
-        history.push("/login"); // Adjust as necessary
-      } else {
-        history.push("/dashboard"); // Adjust the path as necessary
-      }
+        history.push("agent/login"); // Adjust as necessary
+      } 
+      history.push("agent/dashboard"); // Adjust the path as necessary
     } catch (error) {
       console.error("Error during agent onboarding:", error);
       toast.error("Failed to onboard agent. Please try again.");
