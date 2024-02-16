@@ -11,6 +11,7 @@ import "./index.css";
 import {
   getLoginToken,
   getUserDetailsFromJwt,
+  getUserType,
   removeLoginToken,
   setMomentDefaultTimezone,
 } from "./utils";
@@ -88,6 +89,7 @@ function checkIfHasRouteAccess(path) {
 function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
   const token = getLoginToken();
+  const userType = getUserType();
   let isAuthenticated = false;
 
   if (token) {
@@ -98,7 +100,8 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     } else {
       isAuthenticated = true;
 
-      if (!userDetail?.agent) {
+      // if (!userDetail?.agent) {
+      if (userType !== "agent") {
         history.push("/customer/dashboard");
         return null;
       }

@@ -20,6 +20,7 @@ import {
   getUserDetailsFromJwt,
   getUserDetailsFromJwt2,
   setLoginToken,
+  setUserType,
 } from "../../utils";
 import UserService from "../../services/agent/user";
 import { AuthContext } from "./AuthContext";
@@ -56,6 +57,7 @@ const SocialRegisterForm = (props) => {
   useEffect(() => {
     const queryParams = new URLSearchParams(props.location.search);
     const token = queryParams.get("token");
+    const userType = queryParams.get("userType");
 
     const fetchDetails = async () => {
       const decoded = await getUserDetailsFromJwt(token);
@@ -65,6 +67,7 @@ const SocialRegisterForm = (props) => {
       if (token) {
         setToken(token);
         setLoginToken(token);
+        setUserType(userType);
         window.location = "/agent/dashboard";
         // localStorage.setItem("userToken", '"' + token + '"');
         // history.push("/agent/dashboard");

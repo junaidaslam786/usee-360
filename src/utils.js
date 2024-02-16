@@ -166,6 +166,14 @@ export const convertGmtToTime = (time, format) => {
   return time ? moment.tz(time, "HH:mm:ss", "GMT").tz(getUserTimezone()).format(format ? format : "HH:mm") : "-";
 }
 
+export const getUserType = () => {
+  return JSON.parse(localStorage.getItem("userType"));
+}
+
+export const setUserType = (type) => {
+  localStorage.setItem("userType", JSON.stringify(type));
+}
+
 export const getLoginToken = () => {
   return JSON.parse(localStorage.getItem("userToken"));
 }
