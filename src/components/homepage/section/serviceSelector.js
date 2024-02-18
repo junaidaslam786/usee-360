@@ -1,7 +1,6 @@
 
 
 import React, { useState } from "react";
-import SearchForm2 from "./search-form2";
 import SearchForm from "./search-form";
 
 export default function ServiceSelector() {
@@ -32,12 +31,12 @@ export default function ServiceSelector() {
                 {/* Label with some margin */}
                 <select
                   className="nice-select"
-                  value={selectedService}
+                  // value={selectedService}
                   onChange={(e) => setSelectedService(e.target.value)}
                   style={{ width: "50%" }} // Adjust width as needed
                 >
-                  <option value="">Select Service</option>
-                  <option value="properties">Properties</option>
+                  <option value="">USEE</option>
+                  <option value="properties">USEE Properties</option>
                   {/* Additional services can be added here */}
                 </select>
               </div>

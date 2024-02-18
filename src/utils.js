@@ -174,9 +174,14 @@ export const setUserType = (type) => {
   localStorage.setItem("userType", JSON.stringify(type));
 }
 
+// export const getLoginToken = () => {
+//   return JSON.parse(localStorage.getItem("userToken"));
+// }
 export const getLoginToken = () => {
-  return JSON.parse(localStorage.getItem("userToken"));
-}
+  // Directly return the token string from localStorage without JSON parsing
+  return localStorage.getItem("userToken");
+};
+
 
 export const removeLoginToken = () => {
   localStorage.removeItem("userToken");

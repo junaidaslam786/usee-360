@@ -43,12 +43,161 @@ export default function PropertyGrid(props) {
     window.location.pathname
   )}`;
 
+  // const loadProperties = async (search, page = 1) => {
+  //   let payload = {
+  //     page: page,
+  //     size: 10,
+  //   };
+
+  //   if (location.state) {
+  //     const {
+  //       propertyCategory,
+  //       propertyCategoryType,
+  //       propertyType,
+  //       rooms,
+  //       lat,
+  //       lng,
+  //       minPrice,
+  //       maxPrice,
+  //       ...additionalFilters
+  //     } = location.state;
+
+  //     // Merge additional filters directly into the payload
+  //     Object.assign(payload, additionalFilters);
+
+  //     // Set specific filter values into the payload, checking if the search type is not "filter"
+  //   // This ensures that direct state changes from the URL/location are respected
+  //   if (propertyCategory && search !== "filter") {
+  //     payload.propertyCategory = propertyCategory;
+  //     setPropertyCategory(propertyCategory); // Assuming you manage a state for this
+  //   }
+  //   if (propertyCategoryType && search !== "filter") {
+  //     payload.propertyCategoryType = propertyCategoryType;
+  //     setPropertyCategoryType(propertyCategoryType); // And so on for each filter
+  //   }
+  //   if (propertyType && search !== "filter") {
+  //     payload.propertyType = propertyType;
+  //     setPropertyType(propertyType);
+  //   }
+  //   if (rooms && search !== "filter") {
+  //     payload.rooms = rooms;
+  //     setRooms(rooms);
+  //   }
+  //   if (lat) {
+  //     payload.lat = lat;
+  //   }
+  //   if (lng) {
+  //     payload.lng = lng;
+  //   }
+  //   if (minPrice && search !== "filter") {
+  //     payload.minPrice = parseInt(minPrice);
+  //     setMinPrice(minPrice);
+  //   }
+  //   if (maxPrice && search !== "filter") {
+  //     payload.maxPrice = parseInt(maxPrice);
+  //     setMaxPrice(maxPrice);
+  //   }
+
+  //     // if (propertyCategory) {
+  //     //   payload.propertyCategory = propertyCategory;
+  //     //   if (search != "filter") {
+  //     //     setPropertyCategory(propertyCategory);
+  //     //   }
+  //     // }
+  //     // if (propertyCategoryType) {
+  //     //   payload.propertyCategoryType = propertyCategoryType;
+  //     //   if (search != "filter") {
+  //     //     setPropertyCategoryType(propertyCategoryType);
+  //     //   }
+  //     // }
+  //     // if (propertyType) {
+  //     //   payload.propertyType = propertyType;
+  //     //   if (search != "filter") {
+  //     //     setPropertyType(propertyType);
+  //     //   }
+  //     // }
+  //     // if (rooms) {
+  //     //   payload.rooms = rooms;
+  //     //   if (search != "filter") {
+  //     //     setRooms(rooms);
+  //     //   }
+  //     // }
+  //     // if (lat) {
+  //     //   payload.lat = lat;
+  //     // }
+  //     // if (lng) {
+  //     //   payload.lng = lng;
+  //     // }
+  //     // if (minPrice) {
+  //     //   payload.minPrice = minPrice;
+  //     //   if (search != "filter") {
+  //     //     setMinPrice(minPrice);
+  //     //   }
+  //     // }
+  //     // if (maxPrice) {
+  //     //   payload.maxPrice = maxPrice;
+  //     //   if (search != "filter") {
+  //     //     setMaxPrice(maxPrice);
+  //     //   }
+  //     // }
+  //   }
+
+  //   if (search == "filter") {
+  //     if (propertyCategoryFilter) {
+  //       payload.propertyCategory = propertyCategoryFilter;
+  //     }
+
+  //     if (propertyCategoryTypeFilter) {
+  //       payload.propertyCategoryType = propertyCategoryTypeFilter;
+  //     }
+
+  //     if (propertyTypeFilter) {
+  //       payload.propertyType = propertyTypeFilter;
+  //     }
+
+  //     if (minPriceFilter) {
+  //       payload.minPrice = parseInt(minPriceFilter);
+  //     }
+
+  //     if (maxPriceFilter) {
+  //       payload.maxPrice = parseInt(maxPriceFilter);
+  //     }
+
+  //     if (roomsFilter) {
+  //       payload.rooms = roomsFilter;
+  //     }
+
+  //     if (latFilter) {
+  //       payload.lat = latFilter;
+  //     }
+
+  //     if (lngFilter) {
+  //       payload.lng = lngFilter;
+  //     }
+
+  //     if (sort.current.value !== "null") {
+  //       payload.sort = ["price", sort.current.value];
+  //     }
+  //   }
+
+  //   const response = await HomepageService.listProperties("", payload);
+  //   if (response?.error && response?.message) {
+  //     props.responseHandler(response.message);
+  //     return;
+  //   }
+
+  //   setProperties(response.data);
+  //   setCurrentPage(response.page);
+  //   setTotalPages(response.totalPage);
+  // };
+
   const loadProperties = async (search, page = 1) => {
     let payload = {
       page: page,
       size: 10,
     };
 
+    // Merging additional filters and setting predefined filters from location.state
     if (location.state) {
       const {
         propertyCategory,
@@ -59,96 +208,61 @@ export default function PropertyGrid(props) {
         lng,
         minPrice,
         maxPrice,
+        ...additionalFilters
       } = location.state;
 
-      if (propertyCategory) {
-        payload.propertyCategory = propertyCategory;
-        if (search != "filter") {
-          setPropertyCategory(propertyCategory);
-        }
-      }
-      if (propertyCategoryType) {
-        payload.propertyCategoryType = propertyCategoryType;
-        if (search != "filter") {
-          setPropertyCategoryType(propertyCategoryType);
-        }
-      }
-      if (propertyType) {
-        payload.propertyType = propertyType;
-        if (search != "filter") {
-          setPropertyType(propertyType);
-        }
-      }
-      if (rooms) {
-        payload.rooms = rooms;
-        if (search != "filter") {
-          setRooms(rooms);
-        }
-      }
-      if (lat) {
-        payload.lat = lat;
-      }
-      if (lng) {
-        payload.lng = lng;
-      }
-      if (minPrice) {
-        payload.minPrice = minPrice;
-        if (search != "filter") {
-          setMinPrice(minPrice);
-        }
-      }
-      if (maxPrice) {
-        payload.maxPrice = maxPrice;
-        if (search != "filter") {
-          setMaxPrice(maxPrice);
-        }
+      Object.assign(payload, additionalFilters);
+
+      if (search !== "filter") {
+        payload = {
+          ...payload,
+          propertyCategory,
+          propertyCategoryType,
+          propertyType,
+          rooms,
+          lat,
+          lng,
+          minPrice: parseInt(minPrice),
+          maxPrice: parseInt(maxPrice),
+        };
+
+        // Update local state if not in "filter" mode
+        setPropertyCategory(propertyCategory);
+        setPropertyCategoryType(propertyCategoryType);
+        setPropertyType(propertyType);
+        setRooms(rooms);
+        setMinPrice(minPrice);
+        setMaxPrice(maxPrice);
       }
     }
 
-    if (search == "filter") {
-      if (propertyCategoryFilter) {
-        payload.propertyCategory = propertyCategoryFilter;
-      }
-
-      if (propertyCategoryTypeFilter) {
-        payload.propertyCategoryType = propertyCategoryTypeFilter;
-      }
-
-      if (propertyTypeFilter) {
-        payload.propertyType = propertyTypeFilter;
-      }
-
-      if (minPriceFilter) {
-        payload.minPrice = parseInt(minPriceFilter);
-      }
-
-      if (maxPriceFilter) {
-        payload.maxPrice = parseInt(maxPriceFilter);
-      }
-
-      if (roomsFilter) {
-        payload.rooms = roomsFilter;
-      }
-
-      if (latFilter) {
-        payload.lat = latFilter;
-      }
-
-      if (lngFilter) {
-        payload.lng = lngFilter;
-      }
-
-      if (sort.current.value !== "null") {
-        payload.sort = ["price", sort.current.value];
-      }
+    // Applying user-modified filters from the component's state when in "filter" mode
+    if (search === "filter") {
+      payload = {
+        ...payload,
+        propertyCategory: propertyCategoryFilter,
+        propertyCategoryType: propertyCategoryTypeFilter,
+        propertyType: propertyTypeFilter,
+        minPrice: parseInt(minPriceFilter),
+        maxPrice: parseInt(maxPriceFilter),
+        rooms: roomsFilter,
+        lat: latFilter,
+        lng: lngFilter,
+        // Conditionally add sort if it's not "null"
+        ...(sort.current.value !== "null" && {
+          sort: ["price", sort.current.value],
+        }),
+      };
     }
 
+    // Fetch properties with the constructed payload
     const response = await HomepageService.listProperties("", payload);
     if (response?.error && response?.message) {
       props.responseHandler(response.message);
       return;
     }
 
+    // Update component state with fetched properties and pagination info
     setProperties(response.data);
     setCurrentPage(response.page);
     setTotalPages(response.totalPage);
@@ -199,37 +313,42 @@ export default function PropertyGrid(props) {
   };
 
   // Handler for the "Find Now" button click
-const handleFindNowClick = () => {
-  // Check if any filters have been applied
-  const hasFilters = propertyCategoryFilter || propertyCategoryTypeFilter || propertyTypeFilter || minPriceFilter || maxPriceFilter || roomsFilter || latFilter || lngFilter;
+  const handleFindNowClick = () => {
+    // Check if any filters have been applied
+    const hasFilters =
+      propertyCategoryFilter ||
+      propertyCategoryTypeFilter ||
+      propertyTypeFilter ||
+      minPriceFilter ||
+      maxPriceFilter ||
+      roomsFilter ||
+      latFilter ||
+      lngFilter;
 
-  if (hasFilters) {
-    // If any filters have been set, load properties with filters
-    loadProperties("filter");
-  } else {
-    // If no filters have been set, load properties without filters
+    if (hasFilters) {
+      // If any filters have been set, load properties with filters
+      loadProperties("filter");
+    } else {
+      // If no filters have been set, load properties without filters
+      loadProperties();
+    }
+  };
+
+  const resetFilters = () => {
+    setPropertyCategory("");
+    setPropertyCategoryType("");
+    setPropertyType("");
+    setMinPrice("");
+    setMaxPrice("");
+    setLatFilter(null);
+    setLngFilter(null);
+    setRooms(null);
+    setAddress("");
+    // Directly call loadProperties without filters here if needed
     loadProperties();
-  }
-};
-
-
-const resetFilters = () => {
-  setPropertyCategory("");
-  setPropertyCategoryType("");
-  setPropertyType("");
-  setMinPrice("");
-  setMaxPrice("");
-  setLatFilter(null);
-  setLngFilter(null);
-  setRooms(null);
-  setAddress("");
-  // Directly call loadProperties without filters here if needed
-  loadProperties();
-};
+  };
 
   useEffect(() => {
-   
-
     loadProperties();
     if (token) {
       const fetchAllWishlistProperties = async () => {
@@ -367,8 +486,14 @@ const resetFilters = () => {
                                     </li>
                                   </ul>
                                 </div>
-                                <div className="product-views" style={{display: "flex"}}>
-                                  <span className="view-icon" style={{marginRight: "5px"}}>
+                                <div
+                                  className="product-views"
+                                  style={{ display: "flex" }}
+                                >
+                                  <span
+                                    className="view-icon"
+                                    style={{ marginRight: "5px" }}
+                                  >
                                     <i className="fas fa-eye" />{" "}
                                     {/* Icon for views */}
                                   </span>

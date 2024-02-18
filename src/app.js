@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter,
   Route,
@@ -35,8 +35,8 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
 import { AuthProvider } from "./components/auth/AuthContext";
-import OAuthCallbackHandler from "./components/auth/authCallbackHandler";
 import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -87,37 +87,42 @@ function checkIfHasRouteAccess(path) {
   return redirectRoute;
 }
 
-function AgentRoute({ component: Component, ...restOfProps }) {
+function AgentRoute({ component: Component, ...rest }) {
   const history = useHistory();
-  const token = getLoginToken();
-  // const userType = getUserType();
-  let isAuthenticated = false;
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false); // Declare isAuthenticated with useState
 
-  if (token) {
-    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-    if (decodedJwt.exp * 1000 < Date.now()) {
-      removeLoginToken();
-      isAuthenticated = false;
-    } else {
-      isAuthenticated = true;
+  useEffect(() => {
+    const checkAuthentication = () => {
+      const token = getLoginToken();
+      if (token) {
+        const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+        if (decodedJwt.exp * 1000 < Date.now()) {
+          removeLoginToken();
+          setIsAuthenticated(false); // Update isAuthenticated based on token validation
+        } else {
+          setIsAuthenticated(true);
+          const userDetail = getUserDetailsFromJwt();
 
-      if (!userDetail?.agent) {
-      // if (userType !== "agent") {
-        history.push("/customer/dashboard");
-        return null;
+          // Add your redirect logic based on user details and access levels
+          if (!userDetail?.agent) {
+            history.push("/customer/dashboard");
+          } else if (checkIfHasRouteAccess(location.pathname)) {
+            history.push("/agent/dashboard");
+          }
+        }
+      } else {
+        setIsAuthenticated(false); // Ensure isAuthenticated is updated if no token is found
       }
+    };
 
-      if (checkIfHasRouteAccess(restOfProps?.path)) {
-        history.push("/agent/dashboard");
-      }
-    }
-  }
+    checkAuthentication();
+  }, [history, location.pathname]); // Include all variables used inside useEffect as dependencies
 
   setMomentDefaultTimezone();
-
   return (
     <Route
-      {...restOfProps}
+      {...rest}
       render={(props) =>
         isAuthenticated ? (
           <Component {...props} />
@@ -232,10 +237,7 @@ const App = () => {
               )}
             />
 
-            <Route
-              path="/auth/facebook/callback"
-              component={FacebookAuthCallback}
-            />
+            <Route path="/facebook/users" component={FacebookAuthCallback} />
 
             {/* Agent Routes */}
             <Route

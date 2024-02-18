@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   RESIDENTIAL_PROPERTY,
   COMMERCIAL_PROPERTY,
   BEDROOMS,
+  PRICE_TYPE,
 } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
@@ -14,29 +15,43 @@ import FilterModal from "./filterModal";
 export default function SearchForm() {
   const [address, setAddress] = useStateIfMounted();
   const [types, setTypes] = useState([]);
-  const [flag, setFlag] = useState(false);
-  const [bedrooms, setBedrooms] = useState([]);
   const [propertyCategory, setPropertyCategory] = useState("sale");
-  const [propertyCategoryType, setPropertyCategoryType] = useState();
-  const [propertyType, setPropertyType] = useState();
-  const [rooms, setRooms] = useState();
-  const [minPrice, setMinPrice] = useState('0');
-  const [maxPrice, setMaxPrice] = useState('0');
   const [lat, setLat] = useStateIfMounted();
   const [lng, setLng] = useStateIfMounted();
   const [showLink, setShowLink] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [priceType, setPriceType] = useState();
 
-  // Generate price options
-  const generatePriceOptions = () => {
-    const options = [{ value: '0', label: 'Select Price' }];
-    for (let price = 50000; price <= 150000000; price += 5000000) {
-      options.push({ value: price, label: `AED ${price.toLocaleString()}` });
-    }
-    return options;
+  const [filters, setFilters] = useState({});
+
+  const handleFiltersChange = (newFilters) => {
+    console.log(newFilters);
+    setFilters(newFilters);
   };
 
-  const priceOptions = generatePriceOptions();
+  const countSelectedFilters = () => {
+    let count = 0;
+    // Adjust the logic if your filters structure is different
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== null && value !== undefined) {
+        if (typeof value === "object") {
+          if (Array.isArray(value) && value.length > 0) {
+            count++;
+          } else if (!Array.isArray(value) && Object.keys(value).length > 0) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
+    });
+    return count;
+  };
+
+  const selectedFiltersCount = useMemo(() => countSelectedFilters(), [filters]);
+
+ 
 
   const handleFocus = () => {
     setShowLink(true);
@@ -48,17 +63,7 @@ export default function SearchForm() {
     }, 300);
   };
 
-  function handleChange(value) {
-    setPropertyCategoryType(value);
-    if (value == "commercial") {
-      setTypes(COMMERCIAL_PROPERTY);
-      setFlag(false);
-    } else if (value == "residential") {
-      setTypes(RESIDENTIAL_PROPERTY);
-      setBedrooms(BEDROOMS);
-      setFlag(true);
-    }
-  }
+
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -110,57 +115,20 @@ export default function SearchForm() {
                           <option value={"rent"}>Rent</option>
                         </select>
                       </div>
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                        <label>Property Category</label>
-                        <select
-                          className="nice-select"
-                          onChange={(e) => handleChange(e.target.value)}
-                          defaultValue={"category"}
-                        >
-                          <option value={"category"} disabled>
-                            Category
-                          </option>
-                          {/* <option value={"commercial"}>Select a Category</option> */}
-                          <option value={"commercial"}>Commercial</option>
-                          <option value={"residential"}>Residential</option>
-                        </select>
-                      </div>
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                        <label>Property Type</label>
-                        <select
-                          className="nice-select"
-                          onChange={(e) => setPropertyType(e.target.value)}
-                          defaultValue="type"
-                        >
-                          <option value={"type"} disabled>
-                            Type
-                          </option>
-                          {types.map((element, index) => (
-                            <option value={element.value} key={index}>
-                              {element.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      {flag ? (
+
+                      {propertyCategory === "rent" && (
                         <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                          <label>No. of Bedrooms</label>
-                          <select
-                            className="nice-select"
-                            onChange={(e) => setRooms(e.target.value)}
-                            defaultValue="bedrooms"
-                          >
-                            <option value={"bedrooms"} disabled>
-                              No. of Bedrooms
-                            </option>
-                            {bedrooms.map((element, index) => (
-                              <option value={element.value} key={index}>
-                                {element.label}
-                              </option>
-                            ))}
-                          </select>
+                          <label>Price Type</label>
+                          <Select
+                            classNamePrefix="custom-select"
+                            options={PRICE_TYPE}
+                            onChange={(e) => setPriceType(e)}
+                            value={priceType}
+                            required
+                          />
                         </div>
-                      ) : null}
+                      )}
+
                       <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Location</label>
                         <input
@@ -189,36 +157,6 @@ export default function SearchForm() {
                         )}
                       </div>
 
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
-                        <label>Minimum Price</label>
-                        <select
-                          className="nice-select"
-                          value={minPrice}
-                          onChange={(e) => setMinPrice(e.target.value)}
-                          defaultValue={0}
-                        >
-                          {priceOptions.map((option, index) => (
-                            <option value={option.value} key={index}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
-                        <label>Maximum Price</label>
-                        <select
-                          className="nice-select"
-                          value={maxPrice}
-                          onChange={(e) => setMaxPrice(e.target.value)}
-                        >
-                          {priceOptions.map((option, index) => (
-                            <option value={option.value} key={index}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
                       <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-6 col-md-6">
                         <div
                           className="btn-wrapper mt-0 go-top pt-1"
@@ -229,25 +167,23 @@ export default function SearchForm() {
                             className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
                             onClick={openModal}
                           >
-                            <FontAwesomeIcon icon={faFilter} /> Filters
+                            <FontAwesomeIcon icon={faFilter} /> Filters (
+                            {selectedFiltersCount})
                           </button>
                           <FilterModal
                             // className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
                             isOpen={isModalOpen}
                             onRequestClose={closeModal}
+                            onFiltersChange={handleFiltersChange}
                           />
                           <Link
                             to={{
                               pathname: "/property-grid",
                               state: {
+                                ...filters,
                                 propertyCategory,
-                                propertyCategoryType,
-                                propertyType,
-                                rooms: rooms,
                                 lat,
                                 lng,
-                                minPrice: parseInt(minPrice),
-                                maxPrice: parseInt(maxPrice),
                               },
                             }}
                             className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"

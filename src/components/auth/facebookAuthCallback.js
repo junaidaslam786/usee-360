@@ -4,6 +4,7 @@ import axios from "axios";
 import { AuthContext } from "./AuthContext";
 import { toast } from "react-toastify"; // Ensure react-toastify is installed
 import { httpGet } from "../../rest-api";
+import { getUserDetailsFromJwt, setLoginToken, setUserType } from "../../utils";
 
 const FacebookAuthCallback = () => {
   const { updateAuthState } = useContext(AuthContext);
@@ -12,36 +13,42 @@ const FacebookAuthCallback = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    const userType = queryParams.get("userType");
+
+    if (!token || !userType) {
+      toast.error("Authentication error. Missing code or state.");
+      history.push("/login");
+      return;
+    }
     const fetchAuthDetails = async () => {
-      const params = new URLSearchParams(location.search);
-      const code = params.get("code");
-      const state = params.get("state");
-
-      if (!code || !state) {
-        toast.error("Authentication error. Missing code or state.");
-        history.push("/login");
-        return;
-      }
-
       try {
-        const backendURL = `${process.env.REACT_APP_API_URL}/auth/facebook/callback?code=${code}&state=${state}`;
-        const response = await httpGet(backendURL);
-        const { user, token, refreshToken } = response.data;
+        const user = await getUserDetailsFromJwt(token);
+        if (user) {
+          const { email } = user;
 
-        updateAuthState(user, token, refreshToken);
-        toast.success("Logged in successfully!");
-
-        const redirectPath =
-          user.userType === "agent"
-            ? "/agent/dashboard"
-            : "/customer/dashboard";
-        history.push(redirectPath);
+          //   setEmail(email);
+          // setUser(decoded);
+          setLoginToken(token);
+          setUserType(userType);
+          updateAuthState({
+            userDetails: user,
+            token: token,
+            isAuthenticated: true,
+            role: userType,
+            email: email,
+          });
+          const dashboardPath =
+            userType === "agent" ? "/agent/dashboard" : "/customer/dashboard";
+          history.push(dashboardPath);
+        } else {
+          history.push("/agent/register-social");
+        }
       } catch (error) {
         console.error("Authentication failed:", error);
         toast.error("Authentication failed. Please try again.");
         history.push("/login");
-      } finally {
-        setIsLoading(false);
       }
     };
 

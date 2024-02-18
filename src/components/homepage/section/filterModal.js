@@ -26,20 +26,46 @@ const propertyOptions = {
   ],
 };
 
-function FilterModal({ isOpen, onRequestClose }) {
+function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
   //   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [propertyCategory, setPropertyCategory] = useState("commercial");
   const [propertyCategoryType, setPropertyCategoryType] = useState("sale");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
-  const [area, setArea] = useState();
   const [unit, setUnit] = useState();
+  const [area, setArea] = useState();
   const [selectedAreas, setSelectedAreas] = useState([]);
   const [bedrooms, setBedrooms] = useState();
   const [bathrooms, setBathrooms] = useState();
   const [parking, setParking] = useState();
   const [carSpace, setCarSpace] = useState();
   const [priceType, setPriceType] = useState();
+
+  const handleConfirm = () => {
+    const newFilters = {
+      propertyCategory,
+      propertyCategoryType,
+      minPrice,
+      maxPrice,
+      area,
+      unit,
+      selectedAreas,
+      bedrooms,
+      bathrooms,
+      parking,
+      carSpace,
+      priceType,
+    };
+
+    onFiltersChange(newFilters);
+    onRequestClose();
+    
+  };
+
+
+  const handleAreaChange = (selectedOptions) => {
+    setArea(selectedOptions); 
+  };
 
   const handleChangeCategory = (event) => {
     setPropertyCategory(event.target.value);
@@ -108,7 +134,7 @@ function FilterModal({ isOpen, onRequestClose }) {
           </div>
           <div className="modal-body">
             <div className="row mb-custom">
-              <div className="col-md-6">
+              {/* <div className="col-md-6">
                 <div className="input-item">
                   <label>I'm looking to</label>
                   <select
@@ -120,21 +146,21 @@ function FilterModal({ isOpen, onRequestClose }) {
                     <option value={"rent"}>Rent</option>
                   </select>
                 </div>
-              </div>
-              {propertyCategoryType === "rent" && (
+              </div> */}
+              {/* {propertyCategoryType === "rent" && (
                 <div className="col-md-6">
                   <div className="input-item">
                     <label>Price Type</label>
                     <Select
                       classNamePrefix="custom-select"
-                      options={PRICE_TYPE} 
+                      options={PRICE_TYPE}
                       onChange={(e) => setPriceType(e)}
                       value={priceType}
                       required
                     />
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className="col-md-6">
                 <div className="input-item">
@@ -204,10 +230,9 @@ function FilterModal({ isOpen, onRequestClose }) {
                   <label>Area *</label>
                   <Select
                     classNamePrefix="custom-select"
-                    isMulti
                     options={areaOptions}
-                    onChange={setSelectedAreas}
-                    value={selectedAreas}
+                    onChange={handleAreaChange}
+                    value={area}
                     required
                   />
                 </div>
@@ -429,8 +454,11 @@ function FilterModal({ isOpen, onRequestClose }) {
               )}
             </div>
             <div className="modal-btn">
-              <button className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4">
-                Search
+              <button
+                className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
+                onClick={handleConfirm}
+              >
+                Confirm
               </button>
             </div>
           </div>

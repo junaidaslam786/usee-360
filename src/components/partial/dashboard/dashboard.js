@@ -1,19 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import DashboardFilter from "./dashboard-filter";
-import { getUserDetailsFromJwt, removeLoginToken } from "../../../utils";
+import {
+  getUserDetailsFromJwt,
+  getUserDetailsFromJwt2,
+  removeLoginToken,
+} from "../../../utils";
 import { AGENT_TYPE, AGENT_TYPE_LABEL, USER_TYPE } from "../../../constants";
 import { useHistory } from "react-router-dom";
+import { AuthContext } from "../../auth/AuthContext";
 
 export default function Dashboard({ type }) {
   const history = useHistory();
-  const userDetail = getUserDetailsFromJwt();
+  // const userDetail = getUserDetailsFromJwt();
+  // console.log("userDetail", userDetail);
+  const { isAuthenticated, userDetails, role, loading } =
+    useContext(AuthContext);
+  console.log("userDetails", userDetails);
+  console.log("role", role);
+  console.log("isAuthenticated", isAuthenticated);
+
+  // useEffect(() => {
+  //   if (!userDetail) {
+  //     removeLoginToken();
+  //     history.push(`/${type}/login`);
+  //   }
+  // }, [userDetail]);
 
   useEffect(() => {
-    if (!userDetail) {
-      removeLoginToken();
+    if (loading) return; // Exit early while loading is true
+
+    // Redirect logic
+    if (!isAuthenticated) {
       history.push(`/${type}/login`);
+    } else if (type === USER_TYPE.CUSTOMER && role !== USER_TYPE.CUSTOMER) {
+      history.push("/customer/login");
+    } else if (type === USER_TYPE.AGENT && role !== USER_TYPE.AGENT) {
+      history.push("/agent/login");
     }
-  }, [userDetail]);
+    // Since we're using `type` from props, ensure it aligns with `role` stored in context
+  }, [isAuthenticated, role, history, type, loading]); // Include `loading` in dependency array
+
+  if (loading) {
+    return <div>Loading...</div>; // Or any other loading indicator
+  }
+
+  if (!userDetails) {
+    return null; // Or some loading indicator or redirect
+  }
 
   return (
     <React.Fragment>
@@ -21,7 +54,7 @@ export default function Dashboard({ type }) {
         <div className="ltn-author-introducing clearfix">
           <div className="author-img">
             <img
-              src={`${process.env.REACT_APP_API_URL}/${userDetail.profileImage}`}
+              src={`${process.env.REACT_APP_API_URL}/${userDetails.profileImage}`}
               alt="Author"
             />
           </div>
@@ -29,12 +62,12 @@ export default function Dashboard({ type }) {
             <h6>
               {type === USER_TYPE.CUSTOMER
                 ? process.env.REACT_APP_CUSTOMER_ENTITY_LABEL
-                : userDetail &&
-                  userDetail?.agent?.agentType !== AGENT_TYPE.AGENT
-                ? AGENT_TYPE_LABEL[userDetail.agent.agentType]
+                : userDetails &&
+                  userDetails?.agent?.agentType !== AGENT_TYPE.AGENT
+                ? AGENT_TYPE_LABEL[userDetails.agent.agentType]
                 : process.env.REACT_APP_AGENT_ENTITY_LABEL}
             </h6>
-            <h2>{userDetail.name}</h2>
+            <h2>{userDetails.name}</h2>
             <div className="footer-address">
               <ul>
                 <li>
@@ -43,8 +76,8 @@ export default function Dashboard({ type }) {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href={`tel:${userDetail.phoneNumber}`}>
-                        {userDetail.phoneNumber}
+                      <a href={`tel:${userDetails.phoneNumber}`}>
+                        {userDetails.phoneNumber}
                       </a>
                     </p>
                   </div>
@@ -55,8 +88,8 @@ export default function Dashboard({ type }) {
                   </div>
                   <div className="footer-address-info">
                     <p>
-                      <a href={`mailto:${userDetail.email}`}>
-                        {userDetail.email}
+                      <a href={`mailto:${userDetails.email}`}>
+                        {userDetails.email}
                       </a>
                     </p>
                   </div>

@@ -54,53 +54,61 @@ const SocialRegisterForm = (props) => {
   const location = useLocation();
   const history = useHistory();
 
-  const {updateAuthState} = useContext(AuthContext);
+  // const { updateAuthState } = useContext(AuthContext);
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(props.location.search);
-    const token = queryParams.get("token");
-    const userType = queryParams.get("userType");
-    
-    const fetchDetails = async () => {
-      console.log('user type', userType)
-      const decoded = await getUserDetailsFromJwt(token);
-      // console.log(userDetails);
-      console.log(token);
-      if (decoded) {
-        
-        const {id, email} = decoded;
-        setEmail(email);
-        
-        // localStorage.setItem("userToken", '"' + token + '"');
-        setLoginToken(token);
-        setUserType(userType);
-        updateAuthState({email, token, isAuthenticated: true});
-        // history.push("/agent/dashboard");
-        // setEmail(decoded.email);
-        // setToken(token);
-        window.location = "/agent/dashboard";
-        // history.push("/agent/dashboard");
+  // useEffect(() => {
+  //   const queryParams = new URLSearchParams(props.location.search);
+  //   const token = queryParams.get("token");
+  //   const userType = queryParams.get("userType");
 
-        try {
-          const response = await UserService.detail(id); 
-          console.log('agent detail', response)
-          if (response && response.userType === USER_TYPE.AGENT) {
-            setUser(response);
-            // Check if the user is an agent, then redirect to dashboard
-            history.push(`/agent/dashboard`);
-            // history.push("agent/dashboard");
-          } else {
-            // If not an agent, keep them on the registration page or redirect as needed
-            // This block can be empty if no redirection is needed
-          }
-        } catch (error) {
-          console.error("Error fetching user details:", error);
-          // Handle error or redirect user to an error page or login page
-        }
-      }
-    };
-    fetchDetails();
-  }, [props.location.search]);
+  //   const fetchDetails = async () => {
+  //     console.log("user type", userType);
+  //     const decoded = await getUserDetailsFromJwt2(token);
+  //     console.log(token);
+  //     if (decoded) {
+  //       const { id, email } = decoded;
+  //       setEmail(email);
+  //       // setUser(decoded);
+  //       setLoginToken(token);
+  //       setUserType(userType);
+  //       // Now calling updateAuthState with all necessary details
+  //       updateAuthState({
+  //         userDetails: decoded, // or construct userDetails object as needed
+  //         token: token,
+  //         isAuthenticated: true,
+  //         role: userType, // assuming userType is 'AGENT' or 'CUSTOMER'
+  //         email: email,
+  //       });
+
+  //       if (userType === "agent") {
+  //         history.push("/agent/dashboard");
+  //       } else if (userType === "customer") {
+  //         history.push("/customer/dashboard");
+  //       } else {
+  //         // Redirect to a default page or show an error if the role is unrecognized
+  //         history.push("/"); // or '/error' page
+  //       }
+
+  //       // try {
+  //       //   const response = await UserService.detail(id);
+  //       //   console.log('agent detail', response)
+  //       //   if (response && response.userType === USER_TYPE.AGENT) {
+  //       //     setUser(response);
+  //       //     // Check if the user is an agent, then redirect to dashboard
+  //       //     history.push(`/agent/dashboard`);
+  //       //     // history.push("agent/dashboard");
+  //       //   } else {
+  //       //     // If not an agent, keep them on the registration page or redirect as needed
+  //       //     // This block can be empty if no redirection is needed
+  //       //   }
+  //       // } catch (error) {
+  //       //   console.error("Error fetching user details:", error);
+  //       //   // Handle error or redirect user to an error page or login page
+  //       // }
+  //     }
+  //   };
+  //   fetchDetails();
+  // }, [props.location.search]);
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -157,7 +165,7 @@ const SocialRegisterForm = (props) => {
     label: country.name,
   }));
 
-  const updateUserProfile = async (e) => {
+  const createAgentProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -205,7 +213,7 @@ const SocialRegisterForm = (props) => {
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
         history.push("agent/login"); // Adjust as necessary
-      } 
+      }
       history.push("agent/dashboard"); // Adjust the path as necessary
     } catch (error) {
       console.error("Error during agent onboarding:", error);
@@ -234,7 +242,7 @@ const SocialRegisterForm = (props) => {
           <div className="col-lg-6 offset-lg-3">
             <div className="account-login-inner">
               <form
-                onSubmit={updateUserProfile}
+                onSubmit={createAgentProfile}
                 className="ltn__form-box contact-form-box"
               >
                 <input
