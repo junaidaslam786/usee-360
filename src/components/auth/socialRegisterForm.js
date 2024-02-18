@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Link, useLocation, withRouter, useHistory } from "react-router-dom";
 import {
   JOB_TITLE,
@@ -53,62 +53,45 @@ const SocialRegisterForm = (props) => {
 
   const location = useLocation();
   const history = useHistory();
+  const { isAuthenticated, userDetails, role } = useContext(AuthContext);
+  console.log("userDetails", userDetails);
+  console.log("role", role);
+  console.log("isAuthenticated", isAuthenticated);
 
-  // const { updateAuthState } = useContext(AuthContext);
-
+  // const fetchAgentDetails = useCallback(async () => {
+  //   const response = await UserService.detail(id);
+  //   console.log("agent detail", response);
+  //   if (response?.error && response?.message) {
+  //     props.responseHandler(response.message);
+  //     return;
+  //   }
+  //   if (!response) {
+  //     props.responseHandler([
+  //       "Unable to get user detail, please try again later",
+  //     ]);
+  //     return;
+  //   }
+  //   if (response) {
+  //     setUserId(response.id);
+  //     // setCompanyName(response.companyName);
+  //     // setFirstName(response.firstName);
+  //     // setLastName(response.lastName);
+  //     // setSelectedCountry(response.country);
+  //     // setSelectedCity(response.city);
+  //     // setCompanyPosition(response.companyPosition);
+  //     // setJobTitle(response.jobTitle);
+  //     // setLicenseNo(response.licenseNo);
+  //     setEmail(response.email);
+  //     // setPhoneNumber(response.phoneNumber);
+  //     // setPassword(response.password);
+  //     // setConfirmPassword(response.confirmPassword);
+  //     // setDocument(response.document);
+  //     // setOrnNumber(response.ornNumber);
+  //   }
+  // }, [id]);
   // useEffect(() => {
-  //   const queryParams = new URLSearchParams(props.location.search);
-  //   const token = queryParams.get("token");
-  //   const userType = queryParams.get("userType");
-
-  //   const fetchDetails = async () => {
-  //     console.log("user type", userType);
-  //     const decoded = await getUserDetailsFromJwt2(token);
-  //     console.log(token);
-  //     if (decoded) {
-  //       const { id, email } = decoded;
-  //       setEmail(email);
-  //       // setUser(decoded);
-  //       setLoginToken(token);
-  //       setUserType(userType);
-  //       // Now calling updateAuthState with all necessary details
-  //       updateAuthState({
-  //         userDetails: decoded, // or construct userDetails object as needed
-  //         token: token,
-  //         isAuthenticated: true,
-  //         role: userType, // assuming userType is 'AGENT' or 'CUSTOMER'
-  //         email: email,
-  //       });
-
-  //       if (userType === "agent") {
-  //         history.push("/agent/dashboard");
-  //       } else if (userType === "customer") {
-  //         history.push("/customer/dashboard");
-  //       } else {
-  //         // Redirect to a default page or show an error if the role is unrecognized
-  //         history.push("/"); // or '/error' page
-  //       }
-
-  //       // try {
-  //       //   const response = await UserService.detail(id);
-  //       //   console.log('agent detail', response)
-  //       //   if (response && response.userType === USER_TYPE.AGENT) {
-  //       //     setUser(response);
-  //       //     // Check if the user is an agent, then redirect to dashboard
-  //       //     history.push(`/agent/dashboard`);
-  //       //     // history.push("agent/dashboard");
-  //       //   } else {
-  //       //     // If not an agent, keep them on the registration page or redirect as needed
-  //       //     // This block can be empty if no redirection is needed
-  //       //   }
-  //       // } catch (error) {
-  //       //   console.error("Error fetching user details:", error);
-  //       //   // Handle error or redirect user to an error page or login page
-  //       // }
-  //     }
-  //   };
-  //   fetchDetails();
-  // }, [props.location.search]);
+  //   fetchAgentDetails();
+  // }, [fetchAgentDetails]);
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -165,7 +148,7 @@ const SocialRegisterForm = (props) => {
     label: country.name,
   }));
 
-  const createAgentProfile = async (e) => {
+  const updateAgentProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -192,7 +175,7 @@ const SocialRegisterForm = (props) => {
     }
 
     try {
-      const response = await AuthService.agentOnboarding(formData);
+      const response = await AuthService.update(userId, formData);
 
       // Check for a successful response (you may need to adjust depending on your API's response structure)
       if (response?.error) {
@@ -242,7 +225,7 @@ const SocialRegisterForm = (props) => {
           <div className="col-lg-6 offset-lg-3">
             <div className="account-login-inner">
               <form
-                onSubmit={createAgentProfile}
+                onSubmit={updateAgentProfile}
                 className="ltn__form-box contact-form-box"
               >
                 <input
