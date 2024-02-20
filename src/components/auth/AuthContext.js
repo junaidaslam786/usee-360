@@ -1,3 +1,5 @@
+
+
 import React, { createContext, useState, useEffect } from "react";
 import { getUserDetailsFromJwt } from "../../utils";
 import AuthService from "../../services/auth";
@@ -9,68 +11,67 @@ export const AuthProvider = ({ children }) => {
     userDetails: null,
     isAuthenticated: false,
     token: null,
-    role: null,
+    type: null,
     email: null,
     loading: true,
+    error: null, // Added for error handling
   });
 
-  const updateAuthState = ({ userDetails, token, role, email }) => {
-    localStorage.setItem("userToken", token); // Consistently use "userToken"
-    localStorage.setItem("userType", role); // Consistently use "userRole"
+  const updateAuthState = ({ userDetails, token, type, email }) => {
+    localStorage.setItem("userToken", token);
+    localStorage.setItem("userType", type); // Updated key name for consistency
     setAuthState({
       userDetails,
       isAuthenticated: !!userDetails,
       token,
-      role,
+      type,
       email,
       loading: false,
+      error: null, // Reset error state on successful auth update
     });
+  };
+
+  const logout = () => {
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userType");
+    setAuthState({
+      userDetails: null,
+      isAuthenticated: false,
+      token: null,
+      type: null,
+      email: null,
+      loading: false,
+      error: null,
+    });
+  };
+
+  const handleError = (error) => {
+    setAuthState((prevState) => ({
+      ...prevState,
+      error, // Update state with error information
+    }));
   };
 
   useEffect(() => {
     const initializeAuthState = async () => {
       const token = localStorage.getItem("userToken");
-      const role = localStorage.getItem("userType");
+      const type = localStorage.getItem("userType");
       if (token) {
         try {
           const userDetails = getUserDetailsFromJwt(token);
           if (userDetails) {
-            setAuthState((prevState) => ({
-              ...prevState,
+            updateAuthState({
               userDetails,
-              isAuthenticated: true,
               token,
-              role,
+              type: type || userDetails.type,
               email: userDetails.email,
-              loading: false, // Set loading to false as auth state is initialized
-            }));
+            });
           } else {
-            // If userDetails couldn't be extracted, consider the token invalid/expired
-            localStorage.removeItem("userToken");
-            localStorage.removeItem("userType"); // Clear stored role if token is invalid/expired
-            setAuthState((prevState) => ({
-              ...prevState,
-              userDetails: null,
-              isAuthenticated: false,
-              token: null,
-              role: null,
-              email: null,
-              loading: false,
-            }));
+            logout(); // Use logout function to clear state and storage
           }
         } catch (error) {
           console.error("Error initializing auth state", error);
-          localStorage.removeItem("userToken");
-          localStorage.removeItem("userRole");
-          setAuthState((prevState) => ({
-            ...prevState,
-            userDetails: null,
-            isAuthenticated: false,
-            token: null,
-            role: null,
-            email: null,
-            loading: false,
-          }));
+          handleError(error.message);
         }
       } else {
         setAuthState((prevState) => ({ ...prevState, loading: false }));
@@ -81,8 +82,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...authState, updateAuthState }}>
+    <AuthContext.Provider value={{ ...authState, updateAuthState, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+export default AuthProvider;

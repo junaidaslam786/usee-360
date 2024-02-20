@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   BrowserRouter,
   Route,
@@ -34,7 +34,7 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
-import { AuthProvider } from "./components/auth/AuthContext";
+import { AuthContext, AuthProvider } from "./components/auth/AuthContext";
 import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -87,85 +87,59 @@ function checkIfHasRouteAccess(path) {
   return redirectRoute;
 }
 
-function AgentRoute({ component: Component, ...rest }) {
+function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false); // Declare isAuthenticated with useState
+  const { authState } = useContext(AuthContext);
+  // const token = getLoginToken();
+  // let isAuthenticated = false;
 
-  useEffect(() => {
-    const checkAuthentication = () => {
-      const token = getLoginToken();
-      if (token) {
-        const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-        if (decodedJwt.exp * 1000 < Date.now()) {
-          removeLoginToken();
-          setIsAuthenticated(false); // Update isAuthenticated based on token validation
-        } else {
-          setIsAuthenticated(true);
-          const userDetail = getUserDetailsFromJwt();
+  // if (token) {
+  //   const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+  //   if (decodedJwt.exp * 1000 < Date.now()) {
+  //     removeLoginToken();
+  //     isAuthenticated = false;
+  //   } else {
+  //     isAuthenticated = true;
 
-          // Add your redirect logic based on user details and access levels
-          if (!userDetail?.agent) {
-            history.push("/customer/dashboard");
-          } else if (checkIfHasRouteAccess(location.pathname)) {
-            history.push("/agent/dashboard");
-          }
-        }
-      } else {
-        setIsAuthenticated(false); // Ensure isAuthenticated is updated if no token is found
-      }
-    };
+  //     if (!userDetail?.agent) {
+  //       history.push("/customer/dashboard");
+  //       return null;
+  //     }
 
-    checkAuthentication();
-  }, [history, location.pathname]); // Include all variables used inside useEffect as dependencies
-
-  setMomentDefaultTimezone();
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/agent/login" />
-        )
-      }
-    />
-  );
-}
-
-function CustomerRoute({ component: Component, ...restOfProps }) {
-  let isAuthenticated = false;
-  const token = getLoginToken();
-  const history = useHistory();
-
-  if (token) {
-    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-    if (decodedJwt.exp * 1000 < Date.now()) {
-      removeLoginToken();
-      isAuthenticated = false;
-    } else {
-      isAuthenticated = true;
-
-      if (userDetail?.agent) {
-        history.push("/agent/dashboard");
-        return null;
-      }
-    }
-  }
+  //     if (checkIfHasRouteAccess(restOfProps?.path)) {
+  //       history.push("/agent/dashboard");
+  //     }
+  //   }
+  // }
 
   setMomentDefaultTimezone();
 
   return (
     <Route
       {...restOfProps}
-      render={(props) =>
-        isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/customer/login" />
-        )
-      }
+      render={(props) => {
+        if (authState?.isAuthenticated && authState?.type === 'Agent') {
+          return <Component {...props} />;
+        }
+        return <Redirect to={authState?.isAuthenticated ? "/customer/dashboard" : "/agent/login"} />;
+      }}
+    />
+  );
+}
+
+function CustomerRoute({ component: Component, ...restOfProps }) {
+  const { authState } = useContext(AuthContext);
+  setMomentDefaultTimezone();
+
+  return (
+    <Route
+      {...restOfProps}
+      render={(props) => {
+        if (authState?.isAuthenticated && authState?.type === 'Customer') {
+          return <Component {...props} />;
+        }
+        return <Redirect to={authState?.isAuthenticated ? "/agent/dashboard" : "/customer/login"} />;
+      }}
     />
   );
 }

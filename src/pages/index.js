@@ -25,7 +25,6 @@ import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
 import PrivacyPolicy from "../components/homepage/section/privacy-policy";
 import SocialRegisterForm from "../components/auth/socialRegisterForm";
-import OAuthCallbackHandler from "../components/auth/authCallbackHandler";
 
 export default function HomePages({ page, type, hideBookDemo }) {
   const [responseMessage, setResponseMessage] = useState();
@@ -64,11 +63,7 @@ export default function HomePages({ page, type, hideBookDemo }) {
       ComponentToRender = SocialRegisterForm; // No need for the ternary if always the same
       break;
 
-    // case "auth-callback":
-    //   pageTitle = "Facebook Callback";
-    //   pageSubTitle = "Facebook Callback";
-    //   ComponentToRender = OAuthCallbackHandler;
-    //   break;
+  
 
     case "reset-password":
       pageTitle = "Account";

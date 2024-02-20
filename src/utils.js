@@ -109,7 +109,7 @@ export const getUserDetailsFromJwt2 = async (token) => {
         throw new Error(refreshResponse.message);
       }
       // Store the new access token and use it to decode the user details
-      localStorage.setItem('token', refreshResponse.accessToken);
+      localStorage.setItem('userToken', refreshResponse.accessToken);
       tokenToDecode = refreshResponse.accessToken;
     }
     

@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import AuthService from "../../services/auth";
 import { USER_TYPE } from "../../constants";
 import { setLoginToken, setUserTimezone } from "../../utils";
+import { AuthContext } from "./AuthContext";
 import OtpVerification from "../partial/otp-verification";
 import PasswordChecklist from "react-password-checklist";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,8 @@ export default function Login({ type, responseHandler }) {
   const [user, setUser] = useState(null);
   const closeModal = useRef(null);
 
+  const {updateAuthState} = useContext(AuthContext);
+
   const handleFacebookAuth = async () => {
     try {
       
@@ -40,7 +43,14 @@ export default function Login({ type, responseHandler }) {
 
   const onVerified = (user, token) => {
     // Redirect to the dashboard or appropriate page after successful verification
-    setLoginToken(token);
+    
+    updateAuthState({
+      userDetails: user,
+      token,
+      type: user.type,
+      email: user.email,
+    })
+
     const returnUrl =
       new URLSearchParams(window.location.search).get("returnUrl") ||
       `/${type}/dashboard`;
@@ -76,7 +86,14 @@ export default function Login({ type, responseHandler }) {
         return;
       }
 
-      setLoginToken(formResponse.token);
+      updateAuthState({
+        userDetails: formResponse.user,
+        token: formResponse.token,
+        type: formResponse.user.type,
+        email: formResponse.user.email,
+      })
+
+      // setLoginToken(formResponse.token);
       const returnUrl =
         new URLSearchParams(window.location.search).get("returnUrl") ||
         `/${type}/dashboard`;

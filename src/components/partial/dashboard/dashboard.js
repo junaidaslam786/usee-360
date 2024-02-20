@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DashboardFilter from "./dashboard-filter";
 import {
   getUserDetailsFromJwt,
@@ -11,42 +11,31 @@ import { AuthContext } from "../../auth/AuthContext";
 
 export default function Dashboard({ type }) {
   const history = useHistory();
-  // const userDetail = getUserDetailsFromJwt();
-  // console.log("userDetail", userDetail);
-  const { isAuthenticated, userDetails, role, loading } =
-    useContext(AuthContext);
-  console.log("userDetails", userDetails);
-  console.log("role", role);
-  console.log("isAuthenticated", isAuthenticated);
+  const { authState } = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   if (!userDetail) {
-  //     removeLoginToken();
-  //     history.push(`/${type}/login`);
-  //   }
-  // }, [userDetail]);
+
+  const { userDetails } = authState;
+
+  console.log("userDetails", userDetails);
+  console.log("authState", authState);  
+  
 
   useEffect(() => {
-    if (loading) return; // Exit early while loading is true
-
-    // Redirect logic
-    if (!isAuthenticated) {
-      history.push(`/${type}/login`);
-    } else if (type === USER_TYPE.CUSTOMER && role !== USER_TYPE.CUSTOMER) {
-      history.push("/customer/login");
-    } else if (type === USER_TYPE.AGENT && role !== USER_TYPE.AGENT) {
-      history.push("/agent/login");
+    if (!authState?.loading) { // Only proceed if not loading
+      if (!authState?.isAuthenticated) {
+        history.push(`/${type}/login`);
+      } else if (type !== authState?.type) {
+        history.push(`/${authState.type}/dashboard`);
+      }
     }
-    // Since we're using `type` from props, ensure it aligns with `role` stored in context
-  }, [isAuthenticated, role, history, type, loading]); // Include `loading` in dependency array
+  }, [authState.isAuthenticated, authState.type, authState.loading, history, type]); // Include authState.loading in dependency array
+  
 
-  if (loading) {
-    return <div>Loading...</div>; // Or any other loading indicator
-  }
-
-  if (!userDetails) {
+  if (!authState?.isAuthenticated || !authState?.userDetails) {
     return null; // Or some loading indicator or redirect
   }
+
+  
 
   return (
     <React.Fragment>
