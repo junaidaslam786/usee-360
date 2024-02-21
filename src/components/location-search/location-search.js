@@ -344,132 +344,219 @@ export default function LocationSearch() {
 
   useEffect(() => {
     const google = window.google;
-    let map;
-    let centerMarker;
-    const geocoder = new google.maps.Geocoder();
-
-    // Function to add a marker to the map
-    const addMarkerOnMap = (map, position, icon, iconDimensions) => {
-      return new google.maps.Marker({
-        position,
-        map,
-        icon: {
-          url: icon,
-          scaledSize: new google.maps.Size(
-            iconDimensions.width,
-            iconDimensions.height
-          ),
-        },
-      });
-    };
-
-    // Reverse geocoding to get address from lat and lng
-    const reverseGeocode = async (location) => {
-      return new Promise((resolve, reject) => {
-        geocoder.geocode({ location }, (results, status) => {
-          if (status === google.maps.GeocoderStatus.OK) {
-            resolve(results[0].formatted_address);
-          } else {
-            reject(status);
-          }
-        });
-      });
-    };
-
-    // Initialize the map
-    const initializeMap = () => {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center,
-        zoom: 17,
+    const mapElement = document.getElementById("map");
+    const initMap = (location) => {
+      const map = new google.maps.Map(mapElement, {
+        zoom: 15,
+        center: location,
       });
       setMap(map);
 
-      // Setup autocomplete
-      const autocomplete = new google.maps.places.Autocomplete(
-        document.getElementById("autocomplete")
-      );
-      autocomplete.bindTo("bounds", map);
-      autocomplete.addListener("place_changed", async () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry) {
-          alert("No details available for input: '" + place.name + "'");
-          return;
-        }
-        const newCenter = place.geometry.location;
-        setCenter(newCenter.toJSON()); // Update center state
-        map.setCenter(newCenter);
-
-        // Ensure centerMarker is moved to new center
-        if (centerMarker) {
-          centerMarker.setMap(null); // Remove the old marker
-        }
-        centerMarker = addMarkerOnMap(
-          map,
-          newCenter.toJSON(),
-          "assets/img/icons/map-marker.png",
-          { width: 30, height: 40.5 }
-        );
-
-        // Redraw circle at new center with current radius
-        drawCircle(newCenter.toJSON(), radius);
+      // Add a marker for the user's location
+      new google.maps.Marker({
+        position: location,
+        map: map,
+        title: "Your Location",
       });
-
-      // Configure drawing manager for polygons
-      const drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYGON,
-        drawingControl: true,
-        drawingControlOptions: {
-          position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON],
-        },
-        polygonOptions: {
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
-          strokeWeight: 2,
-          clickable: true,
-          editable: true,
-          draggable: true,
-          zIndex: 1,
-        },
-      });
-
-      drawingManager.setMap(map);
-      setDrawingManagerState(drawingManager);
-
-      // Listener for polygon completion
-      google.maps.event.addListener(
-        drawingManager,
-        "polygoncomplete",
-        (polygon) => {
-          setPolygonState(polygon); // Update polygon state
-          searchByPolygon(polygon); // Trigger search with the drawn polygon
-          drawingManager.setDrawingMode(null); // Disable drawing mode after polygon is complete
-        }
-      );
     };
 
-    // Attempt to fetch user's current location
+    // Check if the Geolocation API is supported
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const currentLocation = {
+        (position) => {
+          const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          setCenter(currentLocation);
-          setCenterAddress(await reverseGeocode(currentLocation));
-          initializeMap();
-          drawCircle(currentLocation, radius);
+          setCenter(pos);
+          initMap(pos); // Initialize the map with the user's current location
         },
-        (error) => {
-          console.error("Geolocation error: ", error);
-          initializeMap(); // Initialize map with default center if geolocation fails
-        }
+        () => {
+          console.error("The Geolocation service failed.");
+          initMap(center); // Fallback to default location
+        },
+        { enableHighAccuracy: true}
       );
     } else {
-      initializeMap(); // Initialize map with default center if geolocation is not supported
+      // Browser doesn't support Geolocation
+      console.log("Browser doesn't support Geolocation");
+      initMap(center); // Fallback to default location
     }
-  }, []); // Re-run useEffect when radius changes to redraw circle
+  }, []);
+
+  // Add this useEffect hook after the previous useEffect for initializing the map
+useEffect(() => {
+  if (!mapstate) return; // Ensure the map has been initialized
+
+  const google = window.google; // Ensure Google Maps API is loaded
+  const autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('autocomplete'), // Your input element for location search
+    { types: ['geocode'] }
+  );
+
+  // Set the data fields to return when the user selects a place.
+  autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
+
+  const onPlaceChanged = () => {
+    const place = autocomplete.getPlace();
+
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    // If the place has a geometry, present it on a map.
+    if (place.geometry.viewport) {
+      mapstate.fitBounds(place.geometry.viewport);
+    } else {
+      mapstate.setCenter(place.geometry.location);
+      mapstate.setZoom(17); // Why 17? Because it looks good.
+    }
+
+    // Place a marker on the location searched
+    new google.maps.Marker({
+      map: mapstate,
+      position: place.geometry.location,
+    });
+
+    setCenter(place.geometry.location.toJSON()); // Update center state with searched location
+  };
+
+  // Bind the onPlaceChanged function to the place_changed event on the autocomplete object
+  autocomplete.addListener('place_changed', onPlaceChanged);
+}, [mapstate]);
+
+
+  // useEffect(() => {
+  //   const google = window.google;
+  //   let map;
+  //   let centerMarker;
+  //   const geocoder = new google.maps.Geocoder();
+
+  //   // Function to add a marker to the map
+  //   const addMarkerOnMap = (map, position, icon, iconDimensions) => {
+  //     return new google.maps.Marker({
+  //       position,
+  //       map,
+  //       icon: {
+  //         url: icon,
+  //         scaledSize: new google.maps.Size(
+  //           iconDimensions.width,
+  //           iconDimensions.height
+  //         ),
+  //       },
+  //     });
+  //   };
+
+  //   // Reverse geocoding to get address from lat and lng
+  //   const reverseGeocode = async (location) => {
+  //     return new Promise((resolve, reject) => {
+  //       geocoder.geocode({ location }, (results, status) => {
+  //         if (status === google.maps.GeocoderStatus.OK) {
+  //           resolve(results[0].formatted_address);
+  //         } else {
+  //           reject(status);
+  //         }
+  //       });
+  //     });
+  //   };
+
+  //   // Initialize the map
+  //   const initializeMap = () => {
+  //     map = new google.maps.Map(document.getElementById("map"), {
+  //       center,
+  //       zoom: 17,
+  //     });
+  //     setMap(map);
+
+  //     // Setup autocomplete
+  //     const autocomplete = new google.maps.places.Autocomplete(
+  //       document.getElementById("autocomplete")
+  //     );
+  //     autocomplete.bindTo("bounds", map);
+  //     autocomplete.addListener("place_changed", async () => {
+  //       const place = autocomplete.getPlace();
+  //       if (!place.geometry) {
+  //         alert("No details available for input: '" + place.name + "'");
+  //         return;
+  //       }
+  //       const newCenter = place.geometry.location;
+  //       setCenter(newCenter.toJSON()); // Update center state
+  //       map.setCenter(newCenter);
+
+  //       // Ensure centerMarker is moved to new center
+  //       if (centerMarker) {
+  //         centerMarker.setMap(null); // Remove the old marker
+  //       }
+  //       centerMarker = addMarkerOnMap(
+  //         map,
+  //         newCenter.toJSON(),
+  //         "assets/img/icons/map-marker.png",
+  //         { width: 30, height: 40.5 }
+  //       );
+
+  //       // Redraw circle at new center with current radius
+  //       drawCircle(newCenter.toJSON(), radius);
+  //     });
+
+  //     // Configure drawing manager for polygons
+  //     const drawingManager = new google.maps.drawing.DrawingManager({
+  //       drawingMode: google.maps.drawing.OverlayType.POLYGON,
+  //       drawingControl: true,
+  //       drawingControlOptions: {
+  //         position: google.maps.ControlPosition.TOP_CENTER,
+  //         drawingModes: [google.maps.drawing.OverlayType.POLYGON],
+  //       },
+  //       polygonOptions: {
+  //         fillColor: "#FF0000",
+  //         fillOpacity: 0.35,
+  //         strokeWeight: 2,
+  //         clickable: true,
+  //         editable: true,
+  //         draggable: true,
+  //         zIndex: 1,
+  //       },
+  //     });
+
+  //     drawingManager.setMap(map);
+  //     setDrawingManagerState(drawingManager);
+
+  //     // Listener for polygon completion
+  //     google.maps.event.addListener(
+  //       drawingManager,
+  //       "polygoncomplete",
+  //       (polygon) => {
+  //         setPolygonState(polygon); // Update polygon state
+  //         searchByPolygon(polygon); // Trigger search with the drawn polygon
+  //         drawingManager.setDrawingMode(null); // Disable drawing mode after polygon is complete
+  //       }
+  //     );
+  //   };
+
+  //   // Attempt to fetch user's current location
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (position) => {
+  //         const currentLocation = {
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         };
+  //         setCenter(currentLocation);
+  //         setCenterAddress(await reverseGeocode(currentLocation));
+  //         initializeMap();
+  //         drawCircle(currentLocation, radius);
+  //       },
+  //       (error) => {
+  //         console.error("Geolocation error: ", error);
+  //         initializeMap(); // Initialize map with default center if geolocation fails
+  //       }
+  //     );
+  //   } else {
+  //     initializeMap(); // Initialize map with default center if geolocation is not supported
+  //   }
+  // }, []); // Re-run useEffect when radius changes to redraw circle
 
   useEffect(() => {
     if (!mapstate || !center || typeof radius !== "number") return;
@@ -480,23 +567,21 @@ export default function LocationSearch() {
     <div className="map-container">
       <div className="custom_position2">
         {/* <div className="buttons-container"> */}
-          <button
-            className={`open-button ${active ? "" : "closed-button"}`}
-            onClick={handleActive}
-          >
-            {active ? "Close Search" : "Open Search"}
-          </button>
-          <button
-            className={`open-button-reset ${
-              active ? "" : "closed-button-reset"
-            }`}
-            onClick={handleReset}
-          >
-            Reset
-          </button>
-          <button className="exit-button" onClick={handleExit}>
-            exit
-          </button>
+        <button
+          className={`open-button ${active ? "" : "closed-button"}`}
+          onClick={handleActive}
+        >
+          {active ? "Close Search" : "Open Search"}
+        </button>
+        <button
+          className={`open-button-reset ${active ? "" : "closed-button-reset"}`}
+          onClick={handleReset}
+        >
+          Reset
+        </button>
+        <button className="exit-button" onClick={handleExit}>
+          exit
+        </button>
         {/* </div> */}
       </div>
 

@@ -1,74 +1,112 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import { PARKING, PRICE_TYPE, UNITS } from "../../../constants";
+import {
+  BEDROOMS,
+  COMMERCIAL_PROPERTY,
+  PARKING,
+  PRICE_TYPE,
+  PROPERTY_TYPES,
+  RESIDENTIAL_PROPERTY,
+  UNITS,
+} from "../../../constants";
 import Select from "react-select";
 
-const propertyOptions = {
-  commercial: [
-    "Office",
-    "Retail",
-    "Shopping Center",
-    "Shop",
-    "Store",
-    "Hotel",
-    "Club Restaurant",
-    "Hotel Room",
-  ],
-  residential: [
-    "Apartments",
-    "House",
-    "Bungalow",
-    "Studio",
-    "Room",
-    "Duplex",
-    "Triplex",
-    "Cottage",
-  ],
-};
-
 function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
-  //   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [propertyCategory, setPropertyCategory] = useState("commercial");
-  const [propertyCategoryType, setPropertyCategoryType] = useState("sale");
+  const [propertyCategoryType, setPropertyCategoryType] =
+    useState("");
+  const [propertyType, setPropertyType] = useState("");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [unit, setUnit] = useState();
   const [area, setArea] = useState();
-  const [selectedAreas, setSelectedAreas] = useState([]);
+  // const [selectedAreas, setSelectedAreas] = useState([]);
   const [bedrooms, setBedrooms] = useState();
   const [bathrooms, setBathrooms] = useState();
   const [parking, setParking] = useState();
   const [carSpace, setCarSpace] = useState();
-  const [priceType, setPriceType] = useState();
+  // Initializing states for checkboxes
+  const [parkingChecked, setParkingChecked] = useState(false);
+  const [disabilityAccess, setDisabilityAccess] = useState(false);
+  const [internetConnectivity, setInternetConnectivity] = useState(false);
+  const [alarms, setAlarms] = useState(false);
+  const [cameras, setCameras] = useState(false);
+  const [balcony, setBalcony] = useState(false);
+  const [swimmingPool, setSwimmingPool] = useState(false);
+  const [patio, setPatio] = useState(false);
+  const [gardenSpace, setGardenSpace] = useState(false);
 
   const handleConfirm = () => {
     const newFilters = {
-      propertyCategory,
       propertyCategoryType,
+      propertyType,
       minPrice,
       maxPrice,
       area,
       unit,
-      selectedAreas,
+      // selectedAreas,
       bedrooms,
       bathrooms,
       parking,
       carSpace,
-      priceType,
+     
+      // Including checkbox states
+      parkingChecked,
+      disabilityAccess,
+      internetConnectivity,
+      alarms,
+      cameras,
+      balcony,
+      swimmingPool,
+      patio,
+      gardenSpace,
     };
 
     onFiltersChange(newFilters);
     onRequestClose();
-    
   };
 
+  const handleCheckboxChange = (e) => {
+    const { id, checked } = e.target;
+    switch (id) {
+      case "parking":
+        setParkingChecked(checked);
+        break;
+      case "disability-access":
+        setDisabilityAccess(checked);
+        break;
+      case "internet-connectivity":
+        setInternetConnectivity(checked);
+        break;
+      case "alarms":
+        setAlarms(checked);
+        break;
+      case "cameras":
+        setCameras(checked);
+        break;
+      case "balcony":
+        setBalcony(checked);
+        break;
+      case "swimming-pool":
+        setSwimmingPool(checked);
+        break;
+      case "patio":
+        setPatio(checked);
+        break;
+      case "garden-space":
+        setGardenSpace(checked);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const propertyTypeOptions =
+    propertyCategoryType === "commercial"
+      ? COMMERCIAL_PROPERTY
+      : RESIDENTIAL_PROPERTY;
 
   const handleAreaChange = (selectedOptions) => {
-    setArea(selectedOptions); 
-  };
-
-  const handleChangeCategory = (event) => {
-    setPropertyCategory(event.target.value);
+    setArea(selectedOptions);
   };
 
   // Generate area options
@@ -134,61 +172,36 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
           </div>
           <div className="modal-body">
             <div className="row mb-custom">
-              {/* <div className="col-md-6">
-                <div className="input-item">
-                  <label>I'm looking to</label>
-                  <select
-                    className="nice-select"
-                    onChange={(e) => setPropertyCategoryType(e.target.value)}
-                    defaultValue={"sale"}
-                  >
-                    <option value={"sale"}>Buy</option>
-                    <option value={"rent"}>Rent</option>
-                  </select>
-                </div>
-              </div> */}
-              {/* {propertyCategoryType === "rent" && (
-                <div className="col-md-6">
-                  <div className="input-item">
-                    <label>Price Type</label>
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={PRICE_TYPE}
-                      onChange={(e) => setPriceType(e)}
-                      value={priceType}
-                      required
-                    />
-                  </div>
-                </div>
-              )} */}
-
               <div className="col-md-6">
                 <div className="input-item">
-                  <label htmlFor="property-category">Property Category:</label>
-                  <select
-                    id="property-category"
-                    value={propertyCategory}
-                    onChange={handleChangeCategory}
-                    className="nice-select"
-                  >
-                    <option value="commercial">Commercial</option>
-                    <option value="residential">Residential</option>
-                  </select>
+                  <label htmlFor="property-category-type">
+                    Property Category:
+                  </label>
+                  <Select
+                    classNamePrefix={"custom-select"}
+                    options={PROPERTY_TYPES}
+                    value={PROPERTY_TYPES.find(
+                      (option) => option.value === propertyCategoryType
+                    )}
+                    onChange={(selectedOption) =>
+                      setPropertyCategoryType(selectedOption.value)
+                    }
+                  />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="input-item">
                   <label htmlFor="property-type">Property Type:</label>
-                  <select id="property-type" className="nice-select">
-                    {propertyOptions[propertyCategory].map((type, index) => (
-                      <option
-                        key={index}
-                        value={type.toLowerCase().replace(/\s+/g, "-")}
-                      >
-                        {type}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    classNamePrefix={"custom-select"}
+                    options={propertyTypeOptions}
+                    value={propertyTypeOptions.find(
+                      (option) => option.value === propertyType
+                    )}
+                    onChange={(selectedOption) =>
+                      setPropertyType(selectedOption.value)
+                    }
+                  />
                 </div>
               </div>
 
@@ -252,7 +265,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                 </div>
               </div>
               {/* Conditionally render checkboxes if property category is commercial */}
-              {propertyCategory === "commercial" && (
+              {propertyCategoryType === "commercial" && (
                 <div className="col-md-12">
                   {/* <h4>Additional Features</h4> */}
                   <div className="form-check">
@@ -260,6 +273,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                       type="checkbox"
                       className="form-check-input"
                       id="parking"
+                      checked={parkingChecked}
+                      onChange={handleCheckboxChange}
                     />
                     <label className="form-check-label" htmlFor="parking">
                       Parking
@@ -270,6 +285,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                       type="checkbox"
                       className="form-check-input"
                       id="disability-access"
+                      checked={disabilityAccess}
+                      onChange={handleCheckboxChange}
                     />
                     <label
                       className="form-check-label"
@@ -283,6 +300,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                       type="checkbox"
                       className="form-check-input"
                       id="internet-connectivity"
+                      checked={internetConnectivity}
+                      onChange={handleCheckboxChange}
                     />
                     <label
                       className="form-check-label"
@@ -297,6 +316,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                       type="checkbox"
                       className="form-check-input"
                       id="alarms"
+                      checked={alarms}
+                      onChange={handleCheckboxChange}
                     />
                     <label
                       className="form-check-label"
@@ -310,6 +331,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                       type="checkbox"
                       className="form-check-input"
                       id="cameras"
+                      checked={cameras}
+                      onChange={handleCheckboxChange}
                     />
                     <label
                       className="form-check-label"
@@ -321,50 +344,36 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                 </div>
               )}
               {/* Conditionally render checkboxes and select fields if property category is residentials */}
-              {propertyCategory === "residential" && (
+              {propertyCategoryType === "residential" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
                       <label htmlFor="bedrooms">Bedrooms:</label>
-                      <select
-                        id="bedrooms"
-                        value={bedrooms}
-                        onChange={(e) => setBedrooms(e.target.value)}
-                        className="nice-select"
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                      </select>
+                      <Select
+                        classNamePrefix="custom-select"
+                        options={BEDROOMS}
+                        onChange={(selectedOption) =>
+                          setBedrooms(selectedOption.value)
+                        }
+                        value={BEDROOMS.find(
+                          (option) => option.value === bedrooms
+                        )}
+                      />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="input-item">
                       <label htmlFor="bathrooms">Bathrooms:</label>
-                      <select
-                        id="bathrooms"
-                        value={bathrooms}
-                        onChange={(e) => setBathrooms(e.target.value)}
-                        className="nice-select"
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                      </select>
+                      <Select
+                        classNamePrefix="custom-select"
+                        options={BEDROOMS}
+                        onChange={(selectedOption) =>
+                          setBathrooms(selectedOption.value)
+                        }
+                        value={BEDROOMS.find(
+                          (option) => option.value === bathrooms
+                        )}
+                      />
                     </div>
                   </div>
                   <h4>Parking</h4>
@@ -388,23 +397,16 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   <div className="col-md-6">
                     <div className="input-item">
                       <label>No of Spaces:</label>
-                      <select
-                        id="car-spaces"
-                        value={carSpace}
-                        onChange={(e) => setCarSpace(e.target.value)}
-                        className="nice-select"
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                      </select>
+                      <Select
+                        classNamePrefix="custom-select"
+                        options={BEDROOMS}
+                        onChange={(selectedOption) =>
+                          setCarSpace(selectedOption.value)
+                        }
+                        value={BEDROOMS.find(
+                          (option) => option.value === carSpace
+                        )}
+                      />
                     </div>
                   </div>
                   <h4>Outdoor Features</h4>
@@ -414,6 +416,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                         type="checkbox"
                         className="form-check-input"
                         id="balcony"
+                        checked={balcony}
+                        onChange={handleCheckboxChange}
                       />
                       <label className="form-check-label" htmlFor="parking">
                         Balcony
@@ -424,6 +428,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                         type="checkbox"
                         className="form-check-input"
                         id="swimming-pool"
+                        checked={swimmingPool}
+                        onChange={handleCheckboxChange}
                       />
                       <label className="form-check-label" htmlFor="parking">
                         Swimming Pool
@@ -434,6 +440,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                         type="checkbox"
                         className="form-check-input"
                         id="Patio"
+                        checked={patio}
+                        onChange={handleCheckboxChange}
                       />
                       <label className="form-check-label" htmlFor="parking">
                         Patio
@@ -444,6 +452,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                         type="checkbox"
                         className="form-check-input"
                         id="garden-space"
+                        checked={gardenSpace}
+                        onChange={handleCheckboxChange}
                       />
                       <label className="form-check-label" htmlFor="parking">
                         Garden Space

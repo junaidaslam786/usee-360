@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   RESIDENTIAL_PROPERTY,
   COMMERCIAL_PROPERTY,
@@ -23,6 +23,7 @@ export default function SearchForm() {
   const [priceType, setPriceType] = useState();
 
   const [filters, setFilters] = useState({});
+
 
   const handleFiltersChange = (newFilters) => {
     console.log(newFilters);
@@ -51,7 +52,27 @@ export default function SearchForm() {
 
   const selectedFiltersCount = useMemo(() => countSelectedFilters(), [filters]);
 
- 
+  const constructSelectedFilters = () => {
+    const selectedFilters = {
+      ...(propertyCategory && { propertyCategory }),
+      ...(priceType && { priceType }),
+      ...(lat && { lat }),
+      ...(lng && { lng }),
+      ...Object.entries(filters).reduce((acc, [key, value]) => {
+        if (value) acc[key] = value; // Adjust this logic based on how you determine a filter is 'selected'
+        return acc;
+      }, {}),
+    };
+
+    return selectedFilters;
+  };
+
+    const selectedFilters = constructSelectedFilters();
+  // const handleFndNowClick = () => {
+    //   const selectedFilters = constructSelectedFilters();
+  //   history.push('/property-grid', {...selectedFilters});
+  // };
+
 
   const handleFocus = () => {
     setShowLink(true);
@@ -62,8 +83,6 @@ export default function SearchForm() {
       setShowLink(false);
     }, 300);
   };
-
-
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -179,13 +198,9 @@ export default function SearchForm() {
                           <Link
                             to={{
                               pathname: "/property-grid",
-                              state: {
-                                ...filters,
-                                propertyCategory,
-                                lat,
-                                lng,
-                              },
+                              state: selectedFilters,
                             }}
+                            on
                             className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
                           >
                             Find Now

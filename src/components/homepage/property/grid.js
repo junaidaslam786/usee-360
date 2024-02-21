@@ -17,14 +17,9 @@ import { FaPaw } from "react-icons/fa";
 export default function PropertyGrid(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [propertyCategoryFilter, setPropertyCategory] = useState("");
-  const [propertyCategoryTypeFilter, setPropertyCategoryType] = useState("");
-  const [propertyTypeFilter, setPropertyType] = useState("");
-  const [minPriceFilter, setMinPrice] = useState("");
-  const [maxPriceFilter, setMaxPrice] = useState("");
+
   const [latFilter, setLatFilter] = useState(null);
   const [lngFilter, setLngFilter] = useState(null);
-  const [roomsFilter, setRooms] = useState(null);
   const [address, setAddress] = useState("");
   const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
@@ -43,231 +38,55 @@ export default function PropertyGrid(props) {
     window.location.pathname
   )}`;
 
-  // const loadProperties = async (search, page = 1) => {
-  //   let payload = {
-  //     page: page,
-  //     size: 10,
-  //   };
+ 
 
-  //   if (location.state) {
-  //     const {
-  //       propertyCategory,
-  //       propertyCategoryType,
-  //       propertyType,
-  //       rooms,
-  //       lat,
-  //       lng,
-  //       minPrice,
-  //       maxPrice,
-  //       ...additionalFilters
-  //     } = location.state;
+  const loadProperties = async (page = 1) => {
+    // Extract filters from location state or default to an empty object
+    const filtersFromLocation = location.state || {};
 
-  //     // Merge additional filters directly into the payload
-  //     Object.assign(payload, additionalFilters);
+    // Remove false or undefined filters
+    // const activeFilters = Object.entries(filtersFromLocation).reduce(
+    //   (acc, [key, value]) => {
+    //     if (value) {
+    //       acc[key] = value;
+    //     }
+    //     return acc;
+    //   },
+    //   {}
+    // );
 
-  //     // Set specific filter values into the payload, checking if the search type is not "filter"
-  //   // This ensures that direct state changes from the URL/location are respected
-  //   if (propertyCategory && search !== "filter") {
-  //     payload.propertyCategory = propertyCategory;
-  //     setPropertyCategory(propertyCategory); // Assuming you manage a state for this
-  //   }
-  //   if (propertyCategoryType && search !== "filter") {
-  //     payload.propertyCategoryType = propertyCategoryType;
-  //     setPropertyCategoryType(propertyCategoryType); // And so on for each filter
-  //   }
-  //   if (propertyType && search !== "filter") {
-  //     payload.propertyType = propertyType;
-  //     setPropertyType(propertyType);
-  //   }
-  //   if (rooms && search !== "filter") {
-  //     payload.rooms = rooms;
-  //     setRooms(rooms);
-  //   }
-  //   if (lat) {
-  //     payload.lat = lat;
-  //   }
-  //   if (lng) {
-  //     payload.lng = lng;
-  //   }
-  //   if (minPrice && search !== "filter") {
-  //     payload.minPrice = parseInt(minPrice);
-  //     setMinPrice(minPrice);
-  //   }
-  //   if (maxPrice && search !== "filter") {
-  //     payload.maxPrice = parseInt(maxPrice);
-  //     setMaxPrice(maxPrice);
-  //   }
-
-  //     // if (propertyCategory) {
-  //     //   payload.propertyCategory = propertyCategory;
-  //     //   if (search != "filter") {
-  //     //     setPropertyCategory(propertyCategory);
-  //     //   }
-  //     // }
-  //     // if (propertyCategoryType) {
-  //     //   payload.propertyCategoryType = propertyCategoryType;
-  //     //   if (search != "filter") {
-  //     //     setPropertyCategoryType(propertyCategoryType);
-  //     //   }
-  //     // }
-  //     // if (propertyType) {
-  //     //   payload.propertyType = propertyType;
-  //     //   if (search != "filter") {
-  //     //     setPropertyType(propertyType);
-  //     //   }
-  //     // }
-  //     // if (rooms) {
-  //     //   payload.rooms = rooms;
-  //     //   if (search != "filter") {
-  //     //     setRooms(rooms);
-  //     //   }
-  //     // }
-  //     // if (lat) {
-  //     //   payload.lat = lat;
-  //     // }
-  //     // if (lng) {
-  //     //   payload.lng = lng;
-  //     // }
-  //     // if (minPrice) {
-  //     //   payload.minPrice = minPrice;
-  //     //   if (search != "filter") {
-  //     //     setMinPrice(minPrice);
-  //     //   }
-  //     // }
-  //     // if (maxPrice) {
-  //     //   payload.maxPrice = maxPrice;
-  //     //   if (search != "filter") {
-  //     //     setMaxPrice(maxPrice);
-  //     //   }
-  //     // }
-  //   }
-
-  //   if (search == "filter") {
-  //     if (propertyCategoryFilter) {
-  //       payload.propertyCategory = propertyCategoryFilter;
-  //     }
-
-  //     if (propertyCategoryTypeFilter) {
-  //       payload.propertyCategoryType = propertyCategoryTypeFilter;
-  //     }
-
-  //     if (propertyTypeFilter) {
-  //       payload.propertyType = propertyTypeFilter;
-  //     }
-
-  //     if (minPriceFilter) {
-  //       payload.minPrice = parseInt(minPriceFilter);
-  //     }
-
-  //     if (maxPriceFilter) {
-  //       payload.maxPrice = parseInt(maxPriceFilter);
-  //     }
-
-  //     if (roomsFilter) {
-  //       payload.rooms = roomsFilter;
-  //     }
-
-  //     if (latFilter) {
-  //       payload.lat = latFilter;
-  //     }
-
-  //     if (lngFilter) {
-  //       payload.lng = lngFilter;
-  //     }
-
-  //     if (sort.current.value !== "null") {
-  //       payload.sort = ["price", sort.current.value];
-  //     }
-  //   }
-
-  //   const response = await HomepageService.listProperties("", payload);
-  //   if (response?.error && response?.message) {
-  //     props.responseHandler(response.message);
-  //     return;
-  //   }
-
-  //   setProperties(response.data);
-  //   setCurrentPage(response.page);
-  //   setTotalPages(response.totalPage);
-  // };
-
-  const loadProperties = async (search, page = 1) => {
+    console.log("filtersFromLocation", filtersFromLocation);
+  
+    // Construct the payload with filters and include dynamic lat/lng if present
     let payload = {
-      page: page,
-      size: 10,
+      ...filtersFromLocation,
+      ...(latFilter !== null && { lat: latFilter }),
+      ...(lngFilter !== null && { lng: lngFilter }),
+      page,
+      size: 10, // Assuming a default size of 10, adjust as needed
     };
-
-    // Merging additional filters and setting predefined filters from location.state
-    if (location.state) {
-      const {
-        propertyCategory,
-        propertyCategoryType,
-        propertyType,
-        rooms,
-        lat,
-        lng,
-        minPrice,
-        maxPrice,
-        ...additionalFilters
-      } = location.state;
-
-      Object.assign(payload, additionalFilters);
-
-      if (search !== "filter") {
-        payload = {
-          ...payload,
-          propertyCategory,
-          propertyCategoryType,
-          propertyType,
-          rooms,
-          lat,
-          lng,
-          minPrice: parseInt(minPrice),
-          maxPrice: parseInt(maxPrice),
-        };
-
-        // Update local state if not in "filter" mode
-        setPropertyCategory(propertyCategory);
-        setPropertyCategoryType(propertyCategoryType);
-        setPropertyType(propertyType);
-        setRooms(rooms);
-        setMinPrice(minPrice);
-        setMaxPrice(maxPrice);
+  
+    // Apply sorting if specified
+    if (sort.current && sort.current.value !== "null") {
+      payload.sort = [sort.current.value.split("_")[0], sort.current.value.split("_")[1]]; // Example: "price_ASC"
+    }
+  
+    try {
+      const response = await HomepageService.listProperties("", payload);
+      if (response.error && response.message) {
+        props.responseHandler(response.message);
+      } else {
+        setProperties(response.data);
+        setCurrentPage(response.page);
+        setTotalPages(response.totalPage);
       }
+    } catch (error) {
+      console.error('Error loading properties:', error);
+      props.responseHandler("Failed to load properties. Please try again.");
     }
-
-    // Applying user-modified filters from the component's state when in "filter" mode
-    if (search === "filter") {
-      payload = {
-        ...payload,
-        propertyCategory: propertyCategoryFilter,
-        propertyCategoryType: propertyCategoryTypeFilter,
-        propertyType: propertyTypeFilter,
-        minPrice: parseInt(minPriceFilter),
-        maxPrice: parseInt(maxPriceFilter),
-        rooms: roomsFilter,
-        lat: latFilter,
-        lng: lngFilter,
-        // Conditionally add sort if it's not "null"
-        ...(sort.current.value !== "null" && {
-          sort: ["price", sort.current.value],
-        }),
-      };
-    }
-
-    // Fetch properties with the constructed payload
-    const response = await HomepageService.listProperties("", payload);
-    if (response?.error && response?.message) {
-      props.responseHandler(response.message);
-      return;
-    }
-
-    // Update component state with fetched properties and pagination info
-    setProperties(response.data);
-    setCurrentPage(response.page);
-    setTotalPages(response.totalPage);
   };
 
+  
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
 
@@ -315,15 +134,7 @@ export default function PropertyGrid(props) {
   // Handler for the "Find Now" button click
   const handleFindNowClick = () => {
     // Check if any filters have been applied
-    const hasFilters =
-      propertyCategoryFilter ||
-      propertyCategoryTypeFilter ||
-      propertyTypeFilter ||
-      minPriceFilter ||
-      maxPriceFilter ||
-      roomsFilter ||
-      latFilter ||
-      lngFilter;
+    const hasFilters = latFilter || lngFilter;
 
     if (hasFilters) {
       // If any filters have been set, load properties with filters
@@ -334,22 +145,12 @@ export default function PropertyGrid(props) {
     }
   };
 
-  const resetFilters = () => {
-    setPropertyCategory("");
-    setPropertyCategoryType("");
-    setPropertyType("");
-    setMinPrice("");
-    setMaxPrice("");
-    setLatFilter(null);
-    setLngFilter(null);
-    setRooms(null);
-    setAddress("");
-    // Directly call loadProperties without filters here if needed
-    loadProperties();
-  };
+  useEffect(() => {
+    loadProperties(currentPage);
+  }, [location.state, currentPage, latFilter, lngFilter, sort.current?.value]);
 
   useEffect(() => {
-    loadProperties();
+    // loadProperties(currentPage);
     if (token) {
       const fetchAllWishlistProperties = async () => {
         await loadWishlistProperties();
@@ -773,223 +574,6 @@ export default function PropertyGrid(props) {
                   </ul>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4  mb-100">
-              <aside className="sidebar ltn__shop-sidebar">
-                <h3 className="mb-10">Advance Filters</h3>
-                <div className="widget ltn__menu-widget">
-                  <h4 className="ltn__widget-title">I'm looking to</h4>
-                  <ul>
-                    <div>
-                      <li>
-                        <label className="checkbox-item">
-                          Rent
-                          <input
-                            type="radio"
-                            name="propertyCategory"
-                            value="rent"
-                            onChange={(e) =>
-                              setPropertyCategory(e.target.value)
-                            }
-                            checked={propertyCategoryFilter === "rent"}
-                          />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          Buy
-                          <input
-                            type="radio"
-                            name="propertyCategory"
-                            value="sale"
-                            onChange={(e) =>
-                              setPropertyCategory(e.target.value)
-                            }
-                            checked={propertyCategoryFilter === "sale"}
-                          />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                    </div>
-                  </ul>
-                  <hr />
-                  <h4 className="ltn__widget-title">Category</h4>
-                  <ul>
-                    <div>
-                      <li>
-                        <label className="checkbox-item">
-                          Commercial
-                          <input
-                            type="radio"
-                            name="propertyCategoryType"
-                            value="commercial"
-                            onChange={(e) =>
-                              setPropertyCategoryType(e.target.value)
-                            }
-                            checked={
-                              propertyCategoryTypeFilter === "commercial"
-                            }
-                          />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                      <li>
-                        <label className="checkbox-item">
-                          Residential
-                          <input
-                            type="radio"
-                            name="propertyCategoryType"
-                            value="residential"
-                            onChange={(e) =>
-                              setPropertyCategoryType(e.target.value)
-                            }
-                            checked={
-                              propertyCategoryTypeFilter === "residential"
-                            }
-                          />
-                          <span className="checkmark" />
-                        </label>
-                      </li>
-                    </div>
-                  </ul>
-                  {propertyCategoryTypeFilter ? (
-                    <div>
-                      <hr />
-                      <h4 className="ltn__widget-title">Type</h4>
-                    </div>
-                  ) : null}
-                  {propertyCategoryTypeFilter &&
-                  propertyCategoryTypeFilter === "commercial" ? (
-                    <ul>
-                      <div>
-                        {COMMERCIAL_PROPERTY.map((el, index) => (
-                          <li key={index}>
-                            <label className="checkbox-item">
-                              {el.label}
-                              <input
-                                type="radio"
-                                name="propertyType"
-                                key={index}
-                                value={el.value}
-                                onChange={(e) =>
-                                  setPropertyType(e.target.value)
-                                }
-                                checked={propertyTypeFilter === el.value}
-                              />
-                              <span className="checkmark" />
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    </ul>
-                  ) : null}
-                  {propertyCategoryTypeFilter &&
-                  propertyCategoryTypeFilter === "residential" ? (
-                    <ul>
-                      <div>
-                        {RESIDENTIAL_PROPERTY.map((el, index) => (
-                          <li key={index}>
-                            <label className="checkbox-item">
-                              {el.label}
-                              <input
-                                type="radio"
-                                name="propertyType"
-                                key={index}
-                                value={el.value}
-                                onChange={(e) =>
-                                  setPropertyType(e.target.value)
-                                }
-                                checked={propertyTypeFilter === el.value}
-                              />
-                              <span className="checkmark" />
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    </ul>
-                  ) : null}
-                  <hr />
-                  <h4 className="ltn__widget-title">Filter by price</h4>
-                  <div className="row">
-                    <div className="col-md-6 p-2">
-                      <label>Min Price</label>
-                      <input
-                        type="number"
-                        placeholder="100"
-                        min="0"
-                        onChange={(e) => setMinPrice(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.charCode < 48) {
-                            e.preventDefault();
-                          }
-                        }}
-                        value={minPriceFilter}
-                      />
-                    </div>
-                    <div className="col-md-6 p-2">
-                      <label>Max Price</label>
-                      <input
-                        type="number"
-                        placeholder="10000"
-                        min="0"
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.charCode < 48) {
-                            e.preventDefault();
-                          }
-                        }}
-                        value={maxPriceFilter}
-                      />
-                    </div>
-                  </div>
-                  {propertyCategoryTypeFilter &&
-                  propertyCategoryTypeFilter === "residential" ? (
-                    <div>
-                      <hr />
-                      <h4 className="ltn__widget-title">Rooms</h4>
-                    </div>
-                  ) : null}
-                  {propertyCategoryTypeFilter &&
-                  propertyCategoryTypeFilter === "residential" ? (
-                    <ul>
-                      <div>
-                        {BEDROOMS.map((el, index) => (
-                          <li key={index}>
-                            <label className="checkbox-item">
-                              {el.label}
-                              <input
-                                type="radio"
-                                name="bedrooms"
-                                key={index}
-                                value={el.value}
-                                onChange={(e) => setRooms(e.target.value)}
-                                checked={roomsFilter === el.value}
-                              />
-                              <span className="checkmark" />
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    </ul>
-                  ) : null}
-                </div>
-              </aside>
-              <button
-                className="mt-4 btn theme-btn-1"
-                onClick={handleFindNowClick}
-              >
-                Submit
-              </button>
-              <button
-                className="mt-4 btn theme-btn-2"
-                onClick={() => {
-                  window.history.replaceState({}, document.title);
-                  window.location.reload(true);
-                }}
-              >
-                Reset
-              </button>
             </div>
           </div>
         </div>

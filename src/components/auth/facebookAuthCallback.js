@@ -1,11 +1,10 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import axios from "axios";
 import { AuthContext } from "./AuthContext";
 import { toast } from "react-toastify"; // Ensure react-toastify is installed
-import { httpGet } from "../../rest-api";
-import { getUserDetailsFromJwt, getUserDetailsFromJwt2, setLoginToken, setUserType } from "../../utils";
-import UserService from "../../services/agent/user";
+import {
+  getUserDetailsFromJwt, getUserDetailsFromJwt2,
+} from "../../utils";
 
 const FacebookAuthCallback = () => {
   const { updateAuthState } = useContext(AuthContext);
@@ -23,32 +22,29 @@ const FacebookAuthCallback = () => {
       history.push("/login");
       return;
     }
+
     const fetchAuthDetails = async () => {
       try {
-        const user = await getUserDetailsFromJwt2(token);
-        
-        if (user && userType === "agent") {
-          const {id, email } = user;
-          
-          setLoginToken(token);
-          setUserType(userType);
+        // Assuming getUserDetailsFromJwt correctly parses the JWT and returns user details
+        const userDetails = await getUserDetailsFromJwt2(token);
 
-          const userDetail = await UserService.detail(id);
-          console.log("userDetail", userDetail);
-
+        if (userDetails) {
           updateAuthState({
-            userDetails: userDetail,
-            token: token,
+            userDetails,
+            token,
             isAuthenticated: true,
-            role: userType,
-            email: email,
+            type: userType,
+            email: userDetails.email,
           });
-          // const dashboardPath =
-          //   userType === "agent" ? "/agent/dashboard" : "/customer/dashboard";
-          // history.push(dashboardPath);
-          history.push("/agent/register-social");
+
+          // Redirect users based on their type
+          const redirectPath =
+            userType === "agent" ? "/agent/register-social" : "/customer/dashboard";
+          history.push(redirectPath);
         } else {
-          history.push("/agent/register-social");
+          // Handle case where user details could not be fetched
+          toast.error("Failed to fetch user details.");
+          history.push("/login");
         }
       } catch (error) {
         console.error("Authentication failed:", error);
@@ -58,7 +54,7 @@ const FacebookAuthCallback = () => {
     };
 
     fetchAuthDetails();
-  }, [location, history, updateAuthState]);
+  }, [location.search, history, updateAuthState]);
 
   return (
     <div>

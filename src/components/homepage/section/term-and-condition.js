@@ -11,23 +11,23 @@ class TermAndCondition extends Component {
                 <strong>INTRODUCTION</strong>
                 <ul>
                   <li>
-                    <strong>Who we are</strong>. We are ZELLE LTD Limited a
-                    company incorporated in England with company number 13742020
-                    whose registered office is Birtles Farm Hocker Lane, Over
-                    Alderley, Macclesfield, SK10 4SB. Our registered VAT number
-                    is [TBC].
+                    <strong>Who we are</strong>. We are ZELLE LTD , a limited
+                    company incorporated in UK with company number 13742020 .The
+                    registered office for the company is Birtles Farm Hocker
+                    Lane, Over Alderley, Macclesfield, SK10 4SB. The Usee-360
+                    brand was established by Zelle Ltd .As a brand , Usee-360 is
+                    brand recognized internationally, Usee Portal company
+                    incorporated in Dubai / UAE, License No 1166569.
                   </li>
                   <li>
-                    <strong>How to contact us</strong>. You can contact us by
-                    telephoning our customer service team by emailing us at
-                    &nbsp;
+                    <strong>How to contact us</strong>. You can contact our
+                    customer service team by emailing us at &nbsp;
                     <a href="info@usee-360.com">info@usee-360.com</a>.
                   </li>
                   <li>
-                    <strong>How we may contact you</strong>. If we have to
-                    contact you we will do so by telephone or by writing to you
-                    at the email address or postal address you provided to us in
-                    your order.
+                    <strong>How we may contact you</strong>. . If we have to
+                    contact you we will do so by writing to you at the email
+                    address you provided to us during registration.
                   </li>
                   <li>
                     <strong>“Writing” includes emails</strong>. When we use the
@@ -60,9 +60,8 @@ class TermAndCondition extends Component {
                     <strong>Acceptance of these terms</strong>. By using our
                     site, you confirm that you accept these terms and that you
                     agree to comply with them. If you do not agree to these
-                    terms, you must not use our site or order any products
-                    through our site. We recommend that you print a copy of
-                    these terms for future reference.
+                    terms, you must not use our site or services. We recommend
+                    that you print a copy of these terms for future reference.
                   </li>
                   <li>
                     <strong>There are other terms that may apply to you</strong>
@@ -80,7 +79,7 @@ class TermAndCondition extends Component {
                   <li>
                     <strong>We may make changes to our site.</strong> We may
                     update and change our site from time to time to reflect
-                    changes to our services, our users’ needs and our business
+                    changes to our services, our users needs and our business
                     priorities. We will try to give you reasonable notice of any
                     major changes.
                   </li>
@@ -91,23 +90,20 @@ class TermAndCondition extends Component {
                     available or be uninterrupted. We may suspend or withdraw or
                     restrict the availability of all or any part of our site for
                     business and operational reasons. We will try to give you
-                    reasonable notice of any suspension or withdrawal.
+                    reasonable notice of any suspension or withdrawal. You are
+                    also responsible for ensuring that all persons who access
+                    our site through your internet connection are aware of these
+                    terms of use and other applicable terms and conditions, and
+                    that they comply with them.
                   </li>
                 </ul>
               </li>
             </ol>
-            <p>
-              You are also responsible for ensuring that all persons who access
-              our site through your internet connection are aware of these terms
-              of use and other applicable terms and conditions, and that they
-              comply with them.
-            </p>
+
             <ul>
               <li>
-                <strong>Our site is only for users in the England. </strong>Our
-                site is directed to people residing in the England. We do not
-                represent that content available on or through our site is
-                appropriate for use or available in other locations.
+                <strong>Our site to be used by </strong>international users
+                currently in UK and MENA.
               </li>
             </ul>
             <ol start="3">
@@ -141,10 +137,9 @@ class TermAndCondition extends Component {
                     <a href="https://usee360.com/customer/register">here</a>
                   </li>
                   <li>
-                    <strong></strong> The agreement between us will be for a
-                    minimum period of twelve (12) months. Once that period has
-                    run you may terminate your agreement with us on not less
-                    than 6 months written notice.
+                    The agreement between us will be for a minimum period of 30
+                    days. Once that period has run you may terminate your
+                    agreement with us.
                   </li>
                   <li>
                     <strong>You must keep your account details safe.</strong> If
@@ -175,37 +170,70 @@ class TermAndCondition extends Component {
                 <a name="_Toc13130888"></a> PRICE AND PAYMENT
                 <ul>
                   <li>
-                    <strong>Initial free usage period. </strong>For the first
-                    three months from your acceptance of our terms and creation
-                    of your account with us you will be entitled to upload
-                    property details to our site and to interact with your
-                    clients and viewers via the site in respect of those
-                    properties<strong>.</strong>
+                    <strong>Monthly Free Units</strong>
+                    <br />
+                    At ZELLE LTD, we are excited to offer our users monthly free
+                    units, which can be applied to access certain features
+                    within our U-See mobile application and website. These free
+                    units are credited to your account each month, providing you
+                    with complimentary access to select services and
+                    functionalities.<strong>.</strong>
                   </li>
                   <li>
-                    <strong>When payment must be made.</strong> Following the
-                    initial free period we shall charge you ZERO per month (or
-                    part thereof) for each property which is uploaded by you to
-                    our site for the period it remains on our site.
+                    <strong>Usee-Coin: In-App Currency</strong>
+                    <br />
+                    To enhance our user experience, we have introduced
+                    Usee-Coin, our exclusive in-app currency. Usee-Coin can be
+                    used to purchase additional units beyond the free monthly
+                    allocation, enabling access to premium features within our
+                    app and website.
                   </li>
                   <li>
-                    <strong>Upload fee.</strong> Following the initial free
-                    period we will also charge you an upload fee of ZERO per
-                    upload per property.
+                    <strong>Purchasing Usee-Coin</strong>
+                    <br />
+                    <ul>
+                      <li>
+                        Usee-Coin can be purchased directly within the U-See
+                        mobile application or on our website.
+                      </li>
+                      <li>
+                        All purchases of Usee-Coin are required to be made in
+                        advance. Once your payment is processed, the
+                        corresponding amount of Usee-Coin will be credited to
+                        your account immediately.
+                      </li>
+                      <li>
+                        The rate at which units can be redeemed using Usee-Coin
+                        will be clearly stated within the app and on our
+                        website.
+                      </li>
+                    </ul>
                   </li>
                   <li>
                     <strong>
-                      Access to our site and the services it provides will be
-                      suspended if you do not pay.
+                    Usage of Units
                     </strong>
-                    If you do not pay for the products when you are supposed to,
-                    and you still do not make payment within 7 days of us
-                    reminding you that payment is due, or you terminate your
-                    direct debit with us (if you have made subscription
-                    purchase) we may suspend your account and access to our site
-                    until you have paid us the outstanding amounts, or we may
-                    terminate your account. We will contact you to tell you if
-                    we are doing either of these things.
+                    <br/>
+                    Units, whether obtained through monthly free allocations or purchased via Usee-Coin, can be used to access various features within our platform. Detailed information on how units can be used will be provided within the app and on our website.
+                  </li>
+                  <li>
+                    <strong>
+                    Refunds and Cancellations
+                    </strong>
+                    <br/>
+                    <ul>
+                      <li>Purchases of Usee-Coin are final and only refundable under extreme circumstances. You can contact support for queries regarding refunds. Usee-Coin cannot be exchanged back for cash or credited back to your payment method under any circumstances.</li>
+                      <li>
+                      Unused monthly free units will not carry over to the next month; they will expire at the end of each billing cycle.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>
+                    Changes to Payment Terms
+                    </strong>
+                    <br/>
+                    ZELLE LTD reserves the right to modify the pricing, the allocation of monthly free units, and the terms related to Usee-Coin at any time. Any changes will be effective immediately upon posting in the updated Terms & Conditions on our website and mobile application. Your continued use of our services after such changes will constitute your acceptance of the new terms.
                   </li>
                 </ul>
               </li>

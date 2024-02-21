@@ -53,10 +53,13 @@ const SocialRegisterForm = (props) => {
 
   const location = useLocation();
   const history = useHistory();
-  const { isAuthenticated, userDetails, role } = useContext(AuthContext);
+  const { isAuthenticated, userDetails, type } = useContext(AuthContext);
   console.log("userDetails", userDetails);
-  console.log("role", role);
+  console.log("type", type);
   console.log("isAuthenticated", isAuthenticated);
+
+  const userEmail = userDetails.email;
+  setEmail(userEmail);
 
   // const fetchAgentDetails = useCallback(async () => {
   //   const response = await UserService.detail(id);
@@ -175,7 +178,7 @@ const SocialRegisterForm = (props) => {
     }
 
     try {
-      const response = await AuthService.update(userId, formData);
+      const response = await AuthService.agentOnboarding(formData);
 
       // Check for a successful response (you may need to adjust depending on your API's response structure)
       if (response?.error) {
@@ -438,4 +441,4 @@ const SocialRegisterForm = (props) => {
   );
 };
 
-export default withRouter(SocialRegisterForm);
+export default SocialRegisterForm;

@@ -12,7 +12,6 @@ export default function ServiceSelector() {
         <div className="row justify-content-center">
           <div className="col-lg-12">
             {" "}
-            {/* Adjusted for better centering */}
             <div className="service-selector-form tab-content bg-white box-shadow-1 position-relative pb-10 pt-10">
               <div
                 className="form-group"
@@ -20,24 +19,21 @@ export default function ServiceSelector() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                //   marginTop: "25px",
                 }}
               >
                 {" "}
-                {/* Flex container */}
+             
                 <label style={{ marginRight: "20px" }}>
                   Please Select a Service:
                 </label>{" "}
-                {/* Label with some margin */}
                 <select
                   className="nice-select"
-                  // value={selectedService}
+                  value={selectedService}
                   onChange={(e) => setSelectedService(e.target.value)}
                   style={{ width: "50%" }} // Adjust width as needed
                 >
                   <option value="">USEE</option>
                   <option value="properties">USEE Properties</option>
-                  {/* Additional services can be added here */}
                 </select>
               </div>
               {selectedService === "properties" && <SearchForm />}
