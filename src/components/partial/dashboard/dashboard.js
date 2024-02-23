@@ -11,29 +11,14 @@ import { AuthContext } from "../../auth/AuthContext";
 
 export default function Dashboard({ type }) {
   const history = useHistory();
-  const { authState } = useContext(AuthContext);
-
-
-  const { userDetails } = authState;
-
-  console.log("userDetails", userDetails);
-  console.log("authState", authState);  
-  
+  const userDetails = getUserDetailsFromJwt();
 
   useEffect(() => {
-    if (!authState?.loading) { // Only proceed if not loading
-      if (!authState?.isAuthenticated) {
-        history.push(`/${type}/login`);
-      } else if (type !== authState?.type) {
-        history.push(`/${authState.type}/dashboard`);
-      }
+    if (!userDetails) {
+      removeLoginToken();
+      history.push(`/${type}/login`);
     }
-  }, [authState.isAuthenticated, authState.type, authState.loading, history, type]); // Include authState.loading in dependency array
-  
-
-  if (!authState?.isAuthenticated || !authState?.userDetails) {
-    return null; // Or some loading indicator or redirect
-  }
+  }, [userDetails]);
 
   
 

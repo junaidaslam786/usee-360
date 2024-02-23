@@ -37,7 +37,7 @@ class TermAndCondition extends Component {
                 </ul>
               </li>
               <li>
-                <strong>OUR</strong> <strong>TERMS</strong>
+                <strong>OUR TERMS</strong>
                 <ul>
                   <li>
                     <strong>What these terms cover</strong>. These terms and
@@ -98,17 +98,15 @@ class TermAndCondition extends Component {
                   </li>
                 </ul>
               </li>
-            </ol>
-
-            <ul>
               <li>
-                <strong>Our site to be used by </strong>international users
-                currently in UK and MENA.
+                <strong>OUR SITE TO BE USED BY</strong>
+                <ul>
+                  <li><strong>International users.</strong> Currently in UK and MENA.
+                  </li>
+                </ul>
               </li>
-            </ul>
-            <ol start="3">
               <li>
-                OUR RELATIONSHIP WITH YOU
+                <strong>OUR RELATIONSHIP WITH YOU</strong>
                 <ul>
                   <li>
                     <strong>Our objective.</strong> Our purpose is to provide a
@@ -128,7 +126,7 @@ class TermAndCondition extends Component {
                 </ul>
               </li>
               <li>
-                YOUR ACCOUNT AND THE TERM OF OUR AGREEMENT WITH YOU
+                <strong>YOUR ACCOUNT AND THE TERM OF OUR AGREEMENT WITH YOU</strong>
                 <ul>
                   <li>
                     <strong>Setting up an account.</strong> In order to allow
@@ -166,27 +164,32 @@ class TermAndCondition extends Component {
                 </ul>
               </li>
               <li>
-                <a name="_Toc13130879"></a>
-                <a name="_Toc13130888"></a> PRICE AND PAYMENT
+                <strong>PRICE AND PAYMENT</strong>
                 <ul>
                   <li>
                     <strong>Monthly Free Units</strong>
                     <br />
-                    At ZELLE LTD, we are excited to offer our users monthly free
+                    <ul>
+                      <li>At ZELLE LTD, we are excited to offer our users monthly free
                     units, which can be applied to access certain features
                     within our U-See mobile application and website. These free
                     units are credited to your account each month, providing you
                     with complimentary access to select services and
-                    functionalities.<strong>.</strong>
+                    functionalities.
+                    </li>
+                    </ul>
                   </li>
                   <li>
                     <strong>Usee-Coin: In-App Currency</strong>
                     <br />
-                    To enhance our user experience, we have introduced
+                    <ul>
+                      <li>To enhance our user experience, we have introduced
                     Usee-Coin, our exclusive in-app currency. Usee-Coin can be
                     used to purchase additional units beyond the free monthly
                     allocation, enabling access to premium features within our
                     app and website.
+                    </li>
+                    </ul>
                   </li>
                   <li>
                     <strong>Purchasing Usee-Coin</strong>
@@ -203,135 +206,181 @@ class TermAndCondition extends Component {
                         your account immediately.
                       </li>
                       <li>
-                        The rate at which units can be redeemed using Usee-Coin
+                        The rate at which units can be redeemed using Usee-Coin 
                         will be clearly stated within the app and on our
                         website.
                       </li>
                     </ul>
                   </li>
                   <li>
-                    <strong>
-                    Usage of Units
-                    </strong>
-                    <br/>
-                    Units, whether obtained through monthly free allocations or purchased via Usee-Coin, can be used to access various features within our platform. Detailed information on how units can be used will be provided within the app and on our website.
-                  </li>
-                  <li>
-                    <strong>
-                    Refunds and Cancellations
-                    </strong>
+                    <strong>Usage of Units</strong>
                     <br/>
                     <ul>
-                      <li>Purchases of Usee-Coin are final and only refundable under extreme circumstances. You can contact support for queries regarding refunds. Usee-Coin cannot be exchanged back for cash or credited back to your payment method under any circumstances.</li>
                       <li>
-                      Unused monthly free units will not carry over to the next month; they will expire at the end of each billing cycle.
+                      Units, whether obtained through monthly free allocations or purchased 
+                      via Usee-Coin, can be used to access various features within our platform. 
+                      Detailed information on how units can be used will be provided within the 
+                      app and on our website.
                       </li>
                     </ul>
                   </li>
                   <li>
-                    <strong>
-                    Changes to Payment Terms
-                    </strong>
+                    <strong>Refunds and Cancellations</strong>
                     <br/>
-                    ZELLE LTD reserves the right to modify the pricing, the allocation of monthly free units, and the terms related to Usee-Coin at any time. Any changes will be effective immediately upon posting in the updated Terms & Conditions on our website and mobile application. Your continued use of our services after such changes will constitute your acceptance of the new terms.
+                    <ul>
+                      <li>Purchases of Usee-Coin are final and only refundable under extreme 
+                        circumstances. You can contact support for queries regarding refunds. 
+                        Usee-Coin cannot be exchanged back for cash or credited back to your 
+                        payment method under any circumstances.
+                      </li>
+                      <li>
+                      Unused monthly free units will not carry over to the next month; they 
+                      will expire at the end of each billing cycle.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Changes to Payment Terms</strong>
+                    <br/>
+                    <ul>
+                      <li>
+                      ZELLE LTD reserves the right to modify the pricing, the allocation of 
+                      monthly free units, and the terms related to Usee-Coin at any time. Any 
+                      changes will be effective immediately upon posting in the updated 
+                      Terms & Conditions on our website and mobile application. Your continued 
+                      use of our services after such changes will constitute your acceptance of 
+                      the new terms.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>
               <li>
-                INFORMATION ON OUR SITE
+                <strong>INFORMATION ON OUR SITE</strong>
                 <ul>
                   <li>
                     <strong>How you may use material on our site.</strong>
                   </li>
+                    <ul>
+                      <li>
+                      <p>
+                      We are the owner or the licensee of all intellectual property
+                      rights in our site, and in the material published on it.&nbsp;
+                      Those works are protected by copyright laws and treaties around
+                      the world. All such rights are reserved.
+                      </p>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      You may print off one copy, and may download extracts, of any
+                      page(s) from our site for your personal use and you may draw the
+                      attention of others within your organisation to content posted on
+                      our site.
+                      </p>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      You must not modify the paper or digital copies of any materials
+                      you have printed off or downloaded in any way, and you must not
+                      use any illustrations, photographs, video or audio sequences or
+                      any graphics separately from any accompanying text.
+                      </p>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      Our status (and that of any identified contributors) as the
+                      authors of content on our site must always be acknowledged.
+                      </p>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      You must not use any part of the content on our site for
+                      commercial purposes without obtaining a licence to do so from us
+                      or our licensors.
+                      </p>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      If you print off, copy or download any part of our site in breach
+                      of these terms of use, your right to use our site will cease
+                      immediately and you must, at our option, return or destroy any
+                      copies of the materials you have made.
+                      </p>
+                      </li>
+                    </ul>
                 </ul>
-              </li>
-            </ol>
-            <p>
-              We are the owner or the licensee of all intellectual property
-              rights in our site, and in the material published on it.&nbsp;
-              Those works are protected by copyright laws and treaties around
-              the world. All such rights are reserved.
-            </p>
-            <p>
-              You may print off one copy, and may download extracts, of any
-              page(s) from our site for your personal use and you may draw the
-              attention of others within your organisation to content posted on
-              our site.
-            </p>
-            <p>
-              You must not modify the paper or digital copies of any materials
-              you have printed off or downloaded in any way, and you must not
-              use any illustrations, photographs, video or audio sequences or
-              any graphics separately from any accompanying text.
-            </p>
-            <p>
-              Our status (and that of any identified contributors) as the
-              authors of content on our site must always be acknowledged.
-            </p>
-            <p>
-              You must not use any part of the content on our site for
-              commercial purposes without obtaining a licence to do so from us
-              or our licensors.
-            </p>
-            <p>
-              If you print off, copy or download any part of our site in breach
-              of these terms of use, your right to use our site will cease
-              immediately and you must, at our option, return or destroy any
-              copies of the materials you have made.
-            </p>
-            <ul>
-              <li>
-                <strong>Do not</strong>
-                <strong>rely on information on this site. </strong>The content
-                on our site (including user reviews) is provided for general
-                information only. It is not intended to amount to advice on
-                which you should rely. You must obtain professional or
-                specialist advice before taking, or refraining from, any action
-                on the basis of the content on our site. We disclaim all
-                liability and responsibility arising from any reliance placed on
-                such materials by you, or by anyone who may be informed of any
-                of its contents.
-              </li>
-            </ul>
-            <p>
-              Although we make reasonable efforts to update the information on
-              our site, we make no representations, warranties or guarantees,
-              whether express or implied, that the content on our site is
-              accurate, complete or up to date.
-            </p>
-            <ul>
-              <li>
-                <strong>
-                  We are not responsible for viruses and you must not introduce
-                  them.
-                </strong>
-                We do not guarantee that our site will be secure or free from
-                bugs or viruses. You are responsible for configuring your
-                information technology, computer programs and platform to access
-                our site. You should use your own virus protection software.
-              </li>
-            </ul>
-            <p>
-              You must not misuse our site by knowingly introducing viruses,
-              trojans, worms, logic bombs or other material that is malicious or
-              technologically harmful. You must not attempt to gain unauthorised
-              access to our site, the server on which our site is stored or any
-              server, computer or database connected to our site. You must not
-              attack our site via a denial-of-service attack or a distributed
-              denial-of service attack. By breaching this provision, you would
-              commit a criminal offence under the Computer Misuse Act 1990. We
-              will report any such breach to the relevant law enforcement
-              authorities and we will co-operate with those authorities by
-              disclosing your identity to them. In the event of such a breach,
-              your right to use our site will cease immediately.
-            </p>
-            <ol start="7">
-              <li>
-                USER CONTENT AND REVIEWS
                 <ul>
                   <li>
-                    <strong>User-generated</strong>
-                    <strong>content is not approved by us.</strong> Our site may
+                    <strong>Do not rely on information on this site.</strong>
+                    <ul>
+                      <li>
+                      The content on our site (including user reviews) is provided for general
+                      information only. It is not intended to amount to advice on
+                      which you should rely. You must obtain professional or
+                      specialist advice before taking, or refraining from, any action
+                      on the basis of the content on our site. We disclaim all
+                      liability and responsibility arising from any reliance placed on
+                      such materials by you, or by anyone who may be informed of any
+                      of its contents.
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      <p>
+                      Although we make reasonable efforts to update the information on
+                      our site, we make no representations, warranties or guarantees,
+                      whether express or implied, that the content on our site is
+                      accurate, complete or up to date.
+                      </p>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                  <strong>We are not responsible for viruses and you must not introduce them.
+                  </strong>
+                    <ul>
+                      <li>We do not guarantee that our site will be secure or free from
+                        bugs or viruses. You are responsible for configuring your
+                        information technology, computer programs and platform to access
+                        our site. You should use your own virus protection software.
+                        </li>
+                    </ul>
+                    <ul>
+                      <li>
+                      You must not misuse our site by knowingly introducing viruses,
+                      trojans, worms, logic bombs or other material that is malicious or
+                      technologically harmful. You must not attempt to gain unauthorised
+                      access to our site, the server on which our site is stored or any
+                      server, computer or database connected to our site. You must not
+                      attack our site via a denial-of-service attack or a distributed
+                      denial-of service attack. By breaching this provision, you would
+                      commit a criminal offence under the Computer Misuse Act 1990. We
+                      will report any such breach to the relevant law enforcement
+                      authorities and we will co-operate with those authorities by
+                      disclosing your identity to them. In the event of such a breach,
+                      your right to use our site will cease immediately.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>USER CONTENT AND REVIEWS</strong>
+                <ul>
+                  <li>
+                    <strong>User-generated content is not approved by us.</strong> Our site may
                     include information and materials uploaded by other users of
                     the site, including reviews from other users. This
                     information and these materials have not been verified or
@@ -339,9 +388,7 @@ class TermAndCondition extends Component {
                     site do not represent our views or values.
                   </li>
                   <li>
-                    <strong>
-                      How to complain about content uploaded by other users.{" "}
-                    </strong>
+                    <strong>How to complain about content uploaded by other users.</strong>
                     If you wish to complain about content uploaded by other
                     users please contact us at &nbsp;
                     <a href="info@usee-360.com">info@usee-360.com</a>.
@@ -350,112 +397,110 @@ class TermAndCondition extends Component {
                     <strong>You must comply with our content standards.</strong>
                     Whenever you make use of a feature that allows you to upload
                     content to our site, such content must be accurate (where it
-                    states facts), be genuinely held (where it states opinions
+                    states facts), be genuinely held where it states opinions
                     and must comply with the law applicable in England and Wales
                     and in any country from which it is posted and must be a
                     genuine representation of the property to be viewed in each
                     case. The content must not:
+                    <ul>
+                      <li>Be defamatory of any person.</li>
+                      <li>Be obscene, offensive, hateful or inflammatory.</li>
+                      <li>Bully, insult, intimidate or humiliate.</li>
+                      <li>Promote sexually explicit material.</li>
+                      <li>Promote violence.</li>
+                      <li>
+                        Promote discrimination based on race, sex, religion,
+                        nationality, disability, sexual orientation or age.
+                      </li>
+                      <li>
+                        Infringe any copyright, database right or trade mark of any
+                        other person.
+                      </li>
+                      <li>Be likely to deceive any person.</li>
+                      <li>
+                        Breach any legal duty owed to a third party, such as a
+                        contractual duty or a duty of confidence.
+                      </li>
+                      <li>Promote any illegal activity.</li>
+                      <li>Be in contempt of court.</li>
+                      <li>
+                        Be threatening, abuse or invade another’s privacy, or cause
+                        annoyance, inconvenience or needless anxiety.
+                      </li>
+                      <li>
+                        Be likely to harass, upset, embarrass, alarm or annoy any other
+                        person.
+                      </li>
+                      <li>
+                        Impersonate any person, or misrepresent your identity or
+                        affiliation with any person.
+                      </li>
+                      <li>
+                        Give the impression that the content emanates from us, if this
+                        is not the case.
+                      </li>
+                      <li>
+                        Advocate, promote, incite any party to commit, or assist any
+                        unlawful or criminal act such as (by way of example only)
+                        copyright infringement or computer misuse.
+                      </li>
+                      <li>
+                        Contain a statement which you know or believe, or have
+                        reasonable grounds for believing, that members of the public to
+                        whom the statement is, or is to be, published are likely to
+                        understand as a direct or indirect encouragement or other
+                        inducement to the commission, preparation or instigation of acts
+                        of terrorism.
+                      </li>
+                      <li>
+                        Contain any advertising or promote any services or web links to
+                        other sites.
+                      </li>
+                    </ul>
+                    <p>
+                        We have the right to remove any posting you make or content you
+                        upload on our site if, in our opinion, your post does not comply
+                        with the content standards set out above.
+                    </p>
+                  </li>
+                  <li>
+                    <li>
+                      <strong>Your warranty to us.</strong> You warrant and represent
+                      that any content that you upload does comply with the standards
+                      set out above, and you will be liable to us and indemnify us for
+                      any breach of that warranty or representation. This means you
+                      will be responsible for any loss or damage we suffer as a result
+                      of your breach of warranty or representation.
+                    </li>
+                    <li>
+                      <strong>Rights in your content.</strong> Any content you upload
+                      to our site will be considered non-confidential and
+                      non-proprietary. You retain all of your ownership rights in your
+                      content, but you are required to grant us and other users of our
+                      site a limited licence to use, store and copy that content and
+                      to distribute and make it available to third parties. You agree
+                      that we are free to copy, disclose, distribute, incorporate and
+                      otherwise use any user content and all data, images, sounds,
+                      text and other things embodied in it for any and all commercial
+                      or non-commercial purposes. To the extent that such material is
+                      protected by intellectual property rights, you grant us a
+                      perpetual, worldwide, royalty-free licence to use, copy, modify,
+                      distribute, sell and disclose to third parties any such material
+                      or data for any purpose related to our business You are solely
+                      responsible for securing and backing up your content.
+                    </li>
+                    <li>
+                      <strong>Disclosing your identity.</strong> We have the right to
+                      disclose your identity to any third party who is claiming that
+                      any content posted or uploaded by you to our site constitutes a
+                      violation of their intellectual property rights, or of their
+                      right to privacy.
+                    </li>
                   </li>
                 </ul>
               </li>
-            </ol>
-            <ul>
-              <li>Be defamatory of any person.</li>
-              <li>Be obscene, offensive, hateful or inflammatory.</li>
-              <li>Bully, insult, intimidate or humiliate.</li>
-              <li>Promote sexually explicit material.</li>
-              <li>Promote violence.</li>
               <li>
-                Promote discrimination based on race, sex, religion,
-                nationality, disability, sexual orientation or age.
-              </li>
-              <li>
-                Infringe any copyright, database right or trade mark of any
-                other person.
-              </li>
-              <li>Be likely to deceive any person.</li>
-              <li>
-                Breach any legal duty owed to a third party, such as a
-                contractual duty or a duty of confidence.
-              </li>
-              <li>Promote any illegal activity.</li>
-              <li>Be in contempt of court.</li>
-              <li>
-                Be threatening, abuse or invade another’s privacy, or cause
-                annoyance, inconvenience or needless anxiety.
-              </li>
-              <li>
-                Be likely to harass, upset, embarrass, alarm or annoy any other
-                person.
-              </li>
-              <li>
-                Impersonate any person, or misrepresent your identity or
-                affiliation with any person.
-              </li>
-              <li>
-                Give the impression that the content emanates from us, if this
-                is not the case.
-              </li>
-              <li>
-                Advocate, promote, incite any party to commit, or assist any
-                unlawful or criminal act such as (by way of example only)
-                copyright infringement or computer misuse.
-              </li>
-              <li>
-                Contain a statement which you know or believe, or have
-                reasonable grounds for believing, that members of the public to
-                whom the statement is, or is to be, published are likely to
-                understand as a direct or indirect encouragement or other
-                inducement to the commission, preparation or instigation of acts
-                of terrorism.
-              </li>
-              <li>
-                Contain any advertising or promote any services or web links to
-                other sites.
-              </li>
-            </ul>
-            <p>
-              We have the right to remove any posting you make or content you
-              upload on our site if, in our opinion, your post does not comply
-              with the content standards set out above.
-            </p>
-            <ul>
-              <li>
-                <strong>Your warranty to us.</strong> You warrant and represent
-                that any content that you upload does comply with the standards
-                set out above, and you will be liable to us and indemnify us for
-                any breach of that warranty or representation. This means you
-                will be responsible for any loss or damage we suffer as a result
-                of your breach of warranty or representation.
-              </li>
-              <li>
-                <strong>Rights in your content.</strong> Any content you upload
-                to our site will be considered non-confidential and
-                non-proprietary. You retain all of your ownership rights in your
-                content, but you are required to grant us and other users of our
-                site a limited licence to use, store and copy that content and
-                to distribute and make it available to third parties. You agree
-                that we are free to copy, disclose, distribute, incorporate and
-                otherwise use any user content and all data, images, sounds,
-                text and other things embodied in it for any and all commercial
-                or non-commercial purposes. To the extent that such material is
-                protected by intellectual property rights, you grant us a
-                perpetual, worldwide, royalty-free licence to use, copy, modify,
-                distribute, sell and disclose to third parties any such material
-                or data for any purpose related to our business You are solely
-                responsible for securing and backing up your content.
-              </li>
-              <li>
-                <strong>Disclosing your identity.</strong> We have the right to
-                disclose your identity to any third party who is claiming that
-                any content posted or uploaded by you to our site constitutes a
-                violation of their intellectual property rights, or of their
-                right to privacy.
-              </li>
-            </ul>
-            <ol start="8">
-              <li>
-                LINKS TO AND FROM OTHER WEBSITES
+                <strong>LINKS TO AND FROM OTHER WEBSITES</strong>
                 <ul>
                   <li>
                     <strong>
@@ -470,39 +515,51 @@ class TermAndCondition extends Component {
                   </li>
                   <li>
                     <strong>Rules about linking to our site</strong>
+                    <ul>
+                      <li>
+                      <p>
+                        You may link to our home page, provided you do so in a way that is 
+                        fair and legal and does not damage our reputation or take 
+                        advantage of it.
+                      </p>
+                      </li>
+                      <li>
+                      <p>
+                        You must not establish a link in such a way as to suggest any form
+                        of association, approval or endorsement on our part where none
+                        exists.
+                      </p>
+                      </li>
+                      <li>
+                      <p>
+                        You must not establish a link to our site in any website that is
+                        not owned by you.
+                      </p>
+                      </li>
+                      <li>
+                      <p>
+                        Our site must not be framed on any other site, nor may you create
+                        a link to any part of our site other than the home page.
+                      </p>
+                      </li>
+                      <li>
+                      <p>
+                        We reserve the right to withdraw linking permission without
+                        notice.
+                      </p>
+                      </li>
+                      <li>
+                      <p>
+                        The website in which you are linking must comply in all respects
+                        with the content standards set out above.
+                      </p>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>
-            </ol>
-            <p>
-              You may link to our home page, provided you do so in a way that is
-              fair and legal and does not damage our reputation or take
-              advantage of it.
-            </p>
-            <p>
-              You must not establish a link in such a way as to suggest any form
-              of association, approval or endorsement on our part where none
-              exists.
-            </p>
-            <p>
-              You must not establish a link to our site in any website that is
-              not owned by you.
-            </p>
-            <p>
-              Our site must not be framed on any other site, nor may you create
-              a link to any part of our site other than the home page.
-            </p>
-            <p>
-              We reserve the right to withdraw linking permission without
-              notice.
-            </p>
-            <p>
-              The website in which you are linking must comply in all respects
-              with the content standards set out above.
-            </p>
-            <ol start="9">
               <li>
-                TERMINATION
+                <strong>TERMINATION</strong>
                 <ul>
                   <li>
                     <strong>
@@ -532,11 +589,8 @@ class TermAndCondition extends Component {
                   </li>
                 </ul>
               </li>
-            </ol>
-            <ol start="10">
               <li>
-                <a name="_Toc13130889"></a> OUR RESPONSIBILITY FOR LOSS OR
-                DAMAGE SUFFERED BY YOU
+                <strong>OUR RESPONSIBILITY FOR LOSS OR DAMAGE SUFFERED BY YOU</strong>
                 <ul>
                   <li>
                     <strong>
@@ -583,34 +637,32 @@ class TermAndCondition extends Component {
                         otherwise, even if it is foreseeable, arising under or
                         in connection with:
                       </li>
+                      <li>
+                        use of, or inability to use our site; or
+                      </li>
+                      <li>
+                        use of, or reliance on any content displayed on our site.
+                      </li>
                     </ul>
                   </li>
-                  <li>use of, or inability to use our site; or</li>
+                </ul>
+                <p>< br></br>In particular, we will not be liable for:</p>
+                <ul>
+                  <li>any loss of profit, sales, business or revenue;</li>
+                  <li>loss or corruption of data, information or software;</li>
+                  <li>loss of business opportunity, goodwill or reputation;</li>
+                  <li>loss of anticipated savings;</li>
+                  <li>or any indirect or consequential loss or damage; and</li>
                   <li>
-                    use of, or reliance on any content displayed on our site.
+                    our total liability to you for all other losses arising under or
+                    in connection with any contract between us, whether in contract,
+                    tort (including negligence), breach of statutory duty, or
+                    otherwise, shall be limited to 0.
                   </li>
                 </ul>
               </li>
-            </ol>
-            <p>in particular, we will not be liable for:</p>
-            <ul>
-              <li>any loss of profit, sales, business or revenue;</li>
-              <li>loss or corruption of data, information or software;</li>
-              <li>loss of business opportunity, goodwill or reputation;</li>
-              <li>loss of anticipated savings;</li>
-              <li>or any indirect or consequential loss or damage; and</li>
-            </ul>
-            <ul>
               <li>
-                our total liability to you for all other losses arising under or
-                in connection with any contract between us, whether in contract,
-                tort (including negligence), breach of statutory duty, or
-                otherwise, shall be limited to 0.
-              </li>
-            </ul>
-            <ol start="11">
-              <li>
-                <a name="_Toc13130892"></a> OTHER IMPORTANT TERMS
+                <strong>OTHER IMPORTANT TERMS</strong>
                 <ul>
                   <li>
                     <strong>Events outside of our control.</strong> We will not

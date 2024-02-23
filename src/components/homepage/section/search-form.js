@@ -92,23 +92,23 @@ export default function SearchForm() {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("autocomplete")
-    );
+  // useEffect(() => {
+  //   const autocomplete = new window.google.maps.places.Autocomplete(
+  //     document.getElementById("autocomplete")
+  //   );
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
+  //   autocomplete.addListener("place_changed", () => {
+  //     const place = autocomplete.getPlace();
+  //     if (!place.geometry) {
+  //       window.alert("No details available for input: '" + place.name + "'");
+  //       return;
+  //     }
 
-      setAddress(place.formatted_address);
-      setLat(place.geometry.location.lat());
-      setLng(place.geometry.location.lng());
-    });
-  }, []);
+  //     setAddress(place.formatted_address);
+  //     setLat(place.geometry.location.lat());
+  //     setLng(place.geometry.location.lng());
+  //   });
+  // }, []);
 
   return (
     <div className="ltn__car-dealer-form-area mt-120 mb-120">
@@ -148,7 +148,7 @@ export default function SearchForm() {
                         </div>
                       )}
 
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                      {/* <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Location</label>
                         <input
                           type="text"
@@ -174,7 +174,7 @@ export default function SearchForm() {
                             Search by drawing on map
                           </Link>
                         )}
-                      </div>
+                      </div> */}
 
                       <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-6 col-md-6">
                         <div

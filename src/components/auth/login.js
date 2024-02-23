@@ -25,7 +25,7 @@ export default function Login({ type, responseHandler }) {
   const [user, setUser] = useState(null);
   const closeModal = useRef(null);
 
-  const {updateAuthState} = useContext(AuthContext);
+  // const {updateAuthState} = useContext(AuthContext);
 
   const handleFacebookAuth = async () => {
     try {
@@ -44,12 +44,13 @@ export default function Login({ type, responseHandler }) {
   const onVerified = (user, token) => {
     // Redirect to the dashboard or appropriate page after successful verification
     
-    updateAuthState({
-      userDetails: user,
-      token,
-      type: user.type,
-      email: user.email,
-    })
+    setLoginToken(token);
+    // updateAuthState({
+    //   userDetails: user,
+    //   token,
+    //   type: user.type,
+    //   email: user.email,
+    // })
 
     const returnUrl =
       new URLSearchParams(window.location.search).get("returnUrl") ||
@@ -86,14 +87,14 @@ export default function Login({ type, responseHandler }) {
         return;
       }
 
-      updateAuthState({
-        userDetails: formResponse.user,
-        token: formResponse.token,
-        type: formResponse.user.type,
-        email: formResponse.user.email,
-      })
+      // updateAuthState({
+      //   userDetails: formResponse.user,
+      //   token: formResponse.token,
+      //   type: formResponse.user.type,
+      //   email: formResponse.user.email,
+      // })
 
-      // setLoginToken(formResponse.token);
+      setLoginToken(formResponse.token);
       const returnUrl =
         new URLSearchParams(window.location.search).get("returnUrl") ||
         `/${type}/dashboard`;

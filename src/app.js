@@ -34,9 +34,9 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
-import { AuthContext, AuthProvider } from "./components/auth/AuthContext";
+import { AuthProvider } from "./components/auth/AuthContext";
 import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import GoogleMapsSearch from "./components/location-search/google-map";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -89,57 +89,68 @@ function checkIfHasRouteAccess(path) {
 
 function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
-  const { authState } = useContext(AuthContext);
-  // const token = getLoginToken();
-  // let isAuthenticated = false;
+  const token = getLoginToken();
+  let isAuthenticated = false;
 
-  // if (token) {
-  //   const decodedJwt = JSON.parse(atob(token.split(".")[1]));
-  //   if (decodedJwt.exp * 1000 < Date.now()) {
-  //     removeLoginToken();
-  //     isAuthenticated = false;
-  //   } else {
-  //     isAuthenticated = true;
+  if (token) {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      removeLoginToken();
+      isAuthenticated = false;
+    } else {
+      isAuthenticated = true;
 
-  //     if (!userDetail?.agent) {
-  //       history.push("/customer/dashboard");
-  //       return null;
-  //     }
-
-  //     if (checkIfHasRouteAccess(restOfProps?.path)) {
-  //       history.push("/agent/dashboard");
-  //     }
-  //   }
-  // }
+      if (!userDetail?.agent) {
+        history.push("/customer/dashboard");
+        return null;
+      }
+    
+      if (checkIfHasRouteAccess(restOfProps?.path)) {
+        history.push("/agent/dashboard");
+      }
+    }
+  }
 
   setMomentDefaultTimezone();
 
   return (
     <Route
       {...restOfProps}
-      render={(props) => {
-        if (authState?.isAuthenticated && authState?.type === 'Agent') {
-          return <Component {...props} />;
-        }
-        return <Redirect to={authState?.isAuthenticated ? "/customer/dashboard" : "/agent/login"} />;
-      }}
+      render={(props) =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/agent/login" />
+      }
     />
   );
 }
 
 function CustomerRoute({ component: Component, ...restOfProps }) {
-  const { authState } = useContext(AuthContext);
+  let isAuthenticated = false;
+  const token = getLoginToken();
+  const history = useHistory();
+
+  if (token) {
+    const decodedJwt = JSON.parse(atob(token.split(".")[1]));
+    if (decodedJwt.exp * 1000 < Date.now()) {
+      removeLoginToken();
+      isAuthenticated = false;
+    } else {
+      isAuthenticated = true;
+
+      if (userDetail?.agent) {
+        history.push("/agent/dashboard");
+        return null;
+      }
+    }
+  }
+
   setMomentDefaultTimezone();
 
   return (
     <Route
       {...restOfProps}
-      render={(props) => {
-        if (authState?.isAuthenticated && authState?.type === 'Customer') {
-          return <Component {...props} />;
-        }
-        return <Redirect to={authState?.isAuthenticated ? "/agent/dashboard" : "/customer/login"} />;
-      }}
+      render={(props) =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/customer/login" />
+      }
     />
   );
 }
@@ -149,7 +160,7 @@ const App = () => {
     <BrowserRouter basename="/">
       <ToastContainer />
       <div>
-        <AuthProvider>
+        {/* <AuthProvider> */}
           <Switch>
             {/* Main Routes */}
             <Route exact path="/" component={Home} />
@@ -418,6 +429,7 @@ const App = () => {
 
             {/* Location Search */}
             <Route path="/location-search" component={LocationSearch} />
+            <Route path="/map-search" component={GoogleMapsSearch} />
 
             {/*Iframe Routes */}
             <Route
@@ -431,7 +443,7 @@ const App = () => {
 
             <Route path="*" component={() => <HomePages page="error" />} />
           </Switch>
-        </AuthProvider>
+        {/* </AuthProvider> */}
       </div>
     </BrowserRouter>
   );
