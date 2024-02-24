@@ -11,6 +11,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
 import FilterModal from "./filterModal";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 export default function SearchForm() {
   const [address, setAddress] = useStateIfMounted();
@@ -23,6 +24,11 @@ export default function SearchForm() {
   const [priceType, setPriceType] = useState();
 
   const [filters, setFilters] = useState({});
+
+  const {isLoaded} =useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY',
+    libraries: ['places'],
+  })
 
 
   const handleFiltersChange = (newFilters) => {
@@ -92,23 +98,25 @@ export default function SearchForm() {
     setIsModalOpen(false);
   };
 
-  // useEffect(() => {
-  //   const autocomplete = new window.google.maps.places.Autocomplete(
-  //     document.getElementById("autocomplete")
-  //   );
-
-  //   autocomplete.addListener("place_changed", () => {
-  //     const place = autocomplete.getPlace();
-  //     if (!place.geometry) {
-  //       window.alert("No details available for input: '" + place.name + "'");
-  //       return;
-  //     }
-
-  //     setAddress(place.formatted_address);
-  //     setLat(place.geometry.location.lat());
-  //     setLng(place.geometry.location.lng());
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (isLoaded) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
+  
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          window.alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+  
+        setAddress(place.formatted_address);
+        setLat(place.geometry.location.lat());
+        setLng(place.geometry.location.lng());
+      });
+    }
+  }, [isLoaded]);
 
   return (
     <div className="ltn__car-dealer-form-area mt-120 mb-120">
@@ -148,7 +156,7 @@ export default function SearchForm() {
                         </div>
                       )}
 
-                      {/* <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
+                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
                         <label>Location</label>
                         <input
                           type="text"
@@ -163,7 +171,7 @@ export default function SearchForm() {
                         {showLink && (
                           <Link
                             to={{
-                              pathname: "/location-search",
+                              pathname: "/map-search",
                             }}
                             className="draw-on-map"
                           >
@@ -174,7 +182,7 @@ export default function SearchForm() {
                             Search by drawing on map
                           </Link>
                         )}
-                      </div> */}
+                      </div>
 
                       <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-6 col-md-6">
                         <div

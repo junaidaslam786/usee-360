@@ -7,11 +7,7 @@ import {
 } from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
-import {
-  RESIDENTIAL_PROPERTY,
-  COMMERCIAL_PROPERTY,
-  BEDROOMS,
-} from "../../../constants";
+
 import { FaPaw } from "react-icons/fa";
 
 export default function PropertyGrid(props) {
@@ -43,18 +39,6 @@ export default function PropertyGrid(props) {
   const loadProperties = async (page = 1) => {
     // Extract filters from location state or default to an empty object
     const filtersFromLocation = location.state || {};
-
-    // Remove false or undefined filters
-    // const activeFilters = Object.entries(filtersFromLocation).reduce(
-    //   (acc, [key, value]) => {
-    //     if (value) {
-    //       acc[key] = value;
-    //     }
-    //     return acc;
-    //   },
-    //   {}
-    // );
-
     console.log("filtersFromLocation", filtersFromLocation);
   
     // Construct the payload with filters and include dynamic lat/lng if present

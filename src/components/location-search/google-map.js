@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import HomepageService from "../../services/homepage";
 import { formatPrice } from "../../utils";
 import { useHistory } from "react-router-dom";
+import "./location-search.css";
 
 const mapContainerStyle = {
   width: "100vw",
@@ -40,25 +41,79 @@ const GoogleMapsSearch = () => {
   const mapRef = useRef(null);
   const [active, setActive] = useState(false);
   const [properties, setProperties] = useState([]);
-  const [radius, setRadius] = useState(2000);
+  const [radius, setRadius] = useState(0);
   const [polygons, setPolygons] = useState([]);
   const [showRadius, setShowRadius] = useState(false);
   const [map, setMap] = useState(null);
+  const [mapType, setMapType] = useState("roadmap");
+  const [filters, setFilters] = useState({});
 
   const history = useHistory();
 
   const searchBoxRef = useRef(null);
   const [markers, setMarkers] = useState([]);
 
+  const resetMapState = () => {
+    polygons.forEach((polygon) => {
+      polygon.setMap(null);
+    });
+    setPolygons([]);
+
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    setMarkers([]);
+    setProperties([]);
+
+    setShowRadius(false);
+  };
+
+  const changeMapType = (type) => {
+    setMapType(type);
+  };
+
   const onSearchBoxLoad = (ref) => {
     searchBoxRef.current = ref;
   };
 
+  const handleFindNowClick = () => {
+    const selectedFilters = countSelectedFilters();
+    history.push("/property-grid", { filters: selectedFilters });
+  };
+
+  const countSelectedFilters = () => {
+    let count = 0;
+    // Adjust the logic if your filters structure is different
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== null && value !== undefined) {
+        if (typeof value === "object") {
+          if (Array.isArray(value) && value.length > 0) {
+            count++;
+          } else if (!Array.isArray(value) && Object.keys(value).length > 0) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+      }
+    });
+    return count;
+  };
   const radiusOptions = [
+    { value: "", label: "--Select Radius--" },
+    { value: 500, label: "0.5km" },
     { value: 1000, label: "1km" },
-    { value: 2000, label: "2km" },
     { value: 3000, label: "3km" },
     { value: 5000, label: "5km" },
+    { value: 7500, label: "7.5km" },
+    { value: 10000, label: "10km" },
+    { value: 15000, label: "15km" },
+    { value: 20000, label: "20km" },
+    { value: 25000, label: "25km" },
+    { value: 30000, label: "30km" },
+    { value: 50000, label: "50km" },
+    { value: 100000, label: "100km" },
   ];
 
   const searchByCircle = useCallback(async () => {
@@ -137,13 +192,13 @@ const GoogleMapsSearch = () => {
             lng: position.coords.longitude,
           };
           // Only update if there's a significant change in location
-          if (
-            !currentLocation ||
-            Math.abs(currentLocation.lat - newLocation.lat) > 0.001 ||
-            Math.abs(currentLocation.lng - newLocation.lng) > 0.001
-          ) {
-            setCurrentLocation(newLocation);
-          }
+          // if (
+          //   !currentLocation ||
+          //   Math.abs(currentLocation.lat - newLocation.lat) > 0.001 ||
+          //   Math.abs(currentLocation.lng - newLocation.lng) > 0.001
+          // ) {
+          setCurrentLocation(newLocation);
+          // }
         },
         (error) => {
           console.error("Error fetching the location", error);
@@ -199,22 +254,6 @@ const GoogleMapsSearch = () => {
     [markers, history] // Ensure dependencies are correctly listed
   );
 
-  const addMarkerOnMap = (map, position, icon, icondimensions) => {
-    const marker = new window.google.maps.Marker({
-      position,
-      map: map,
-      animation: window.google.maps.Animation.DROP,
-      icon: {
-        url: icon,
-        scaledSize: new window.google.maps.Size(
-          icondimensions.width,
-          icondimensions.height
-        ), // Optional: set the size of the icon
-      },
-    });
-    return marker;
-  };
-
   const handlePolygonComplete = useCallback(
     (overlay) => {
       if (overlay instanceof window.google.maps.Polygon) {
@@ -229,7 +268,7 @@ const GoogleMapsSearch = () => {
 
         searchPropertiesInPolygon(polygon);
 
-        setPolygons(prevPolygons => [...prevPolygons, overlay]);
+        setPolygons((prevPolygons) => [...prevPolygons, overlay]);
 
         // Optionally, clear the drawn polygon
         // polygon.setMap(null);
@@ -245,7 +284,7 @@ const GoogleMapsSearch = () => {
       drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
-        position: window.google.maps.ControlPosition.TOP_CENTER,
+        position: window.google.maps.ControlPosition.LEFT_TOP,
         drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
       },
       polygonOptions: {
@@ -309,27 +348,50 @@ const GoogleMapsSearch = () => {
   if (!isLoaded) return "Loading Maps";
 
   return (
-    <div className="map-container">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          position: "absolute",
-          left: "50%",
-          top: "25px",
-        }}
-      >
-        <StandaloneSearchBox
-          onLoad={onSearchBoxLoad}
-          onPlacesChanged={onPlacesChanged}
+    <>
+      <div className="map-container">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            position: "absolute",
+            left: "50%",
+            top: "25px",
+          }}
         >
-          <input
-            type="text"
-            placeholder="Search for places..."
+          <StandaloneSearchBox
+            onLoad={onSearchBoxLoad}
+            onPlacesChanged={onPlacesChanged}
+          >
+            <input
+              type="text"
+              placeholder="Search for places..."
+              style={{
+                boxSizing: `border-box`,
+                border: `1px solid transparent`,
+                width: `280px`,
+                height: `32px`,
+                padding: `0 12px`,
+                borderRadius: `3px`,
+                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                fontSize: `14px`,
+                outline: `none`,
+                textOverflow: `ellipses`,
+                position: "absolute",
+                right: "150px",
+                zIndex: 1000,
+              }}
+            />
+          </StandaloneSearchBox>
+          <select
+            id="radiusSelect"
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
             style={{
               boxSizing: `border-box`,
               border: `1px solid transparent`,
-              width: `240px`,
+              width: `150px`,
               height: `32px`,
               padding: `0 12px`,
               borderRadius: `3px`,
@@ -338,147 +400,263 @@ const GoogleMapsSearch = () => {
               outline: `none`,
               textOverflow: `ellipses`,
               position: "absolute",
-              //   marginLeft: "-120px",
+              transform: "translateX(-50%)",
+              opacity: 0.75,
               zIndex: 1000,
             }}
-          />
-        </StandaloneSearchBox>
-        <select
-          id="radiusSelect"
-          value={radius}
-          onChange={(e) => setRadius(Number(e.target.value))}
+          >
+            {radiusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => {
+              setShowRadius(!showRadius);
+              if (!showRadius) {
+                searchByCircle();
+              }
+            }}
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "3px",
+              opacity: 0.75,
+              color: "white",
+              backgroundColor: "#00c800",
+              zIndex: 1000,
+            }}
+          >
+            {showRadius ? "Hide Radius" : "Search by Radius"}
+          </button>
+          <button
+            // className={`open-button ${active ? "" : "closed-button"}`}
+            onClick={handleActive}
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "155px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: active ? "red" : "#00c800",
+            }}
+          >
+            {active ? "Close Search" : "Open Search"}
+          </button>
+          <button
+            onClick={resetMapState}
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "308px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: "#00c800",
+            }}
+          >
+            Reset Map
+          </button>
+          <button
+            onClick={handleFindNowClick}
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "400px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: "#00c800",
+            }}
+          >
+            Go To Properties
+          </button>
+        </div>
+        <div
           style={{
-            boxSizing: `border-box`,
-            border: `1px solid transparent`,
-            width: `150px`,
-            height: `32px`,
-            padding: `0 12px`,
-            borderRadius: `3px`,
-            boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-            fontSize: `14px`,
-            outline: `none`,
-            textOverflow: `ellipses`,
+            display: "flex",
+            justifyContent: "center",
             position: "absolute",
-            transform: "translateX(-50%)",
-            zIndex: 1000,
+            left: "50%",
+            bottom: "75px",
           }}
         >
-          {radiusOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button
-        onClick={getCurrentLocation}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1000,
-          color: "blue",
-        }}
-      >
-        Get Current Location
-      </button>
-      <GoogleMap
-        ref={mapRef}
-        mapContainerStyle={mapContainerStyle}
-        zoom={15}
-        center={currentLocation}
-        options={options}
-      >
-        <Marker
-          position={currentLocation}
-          icon={{
-            url: "/assets/img/icons/map-marker-3.png",
-            // scaledSize: new window.google.maps.Size(25, 25),
-          }}
-        />
-        {/* Render drawn polygons */}
-        {polygons.map((polygon, index) => (
-          <Polygon
-            key={index}
-            paths={polygon}
-            options={{ fillColor: "#FF0000" }}
-          />
-        ))}
-        <DrawingManager
-          drawingMode={window.google.maps.drawing.OverlayType.POLYGON}
-          onPolygonComplete={handlePolygonComplete}
-          // options={{
-          //   drawingControl: true,
-          //   drawingControlOptions: {
-          //     position: window.google.maps.ControlPosition.TOP_CENTER,
-          //     drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
-          //   },
-          //   polygonOptions: {
-          //     fillColor: "#FF0000",
-          //     fillOpacity: 0.35,
-          //     strokeWeight: 2,
-          //     clickable: true,
-          //     editable: true,
-          //     zIndex: 1,
-          //   },
-          // }}
-        />
-        {/* <DrawingManager
-          drawingMode={['polygon']}
-          onOverlayComplete={handlePolygonComplete}
-        /> */}
-        {properties.map((property) => (
-          <Marker
-            key={property.id} // Ideally, use a unique property ID if available
-            position={{
-              lat: parseFloat(property.latitude),
-              lng: parseFloat(property.longitude),
+          <button
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "308px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: "#00c800",
             }}
-            // Optional: Customize the marker icon and other properties
-            icon={{
-              url: "/assets/img/icons/property-marker.png",
-              scaledSize: new window.google.maps.Size(38, 38),
+            onClick={() => changeMapType("satellite")}
+          >
+            Satellite
+          </button>
+          <button
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "308px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: "#00c800",
             }}
-            onClick={() => history.push(`/property-details/${property.id}`)}
-          />
-        ))}
-        {showRadius && (
-          <Circle
-            center={currentLocation}
-            radius={radius}
-            options={{
-              strokeColor: "#FF0000",
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: "#FF0000",
-              fillOpacity: 0.35,
+            onClick={() => changeMapType("hybrid")}
+          >
+            Hybrid
+          </button>
+          <button
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `150px`,
+              height: `32px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+              position: "absolute",
+              left: "308px",
+              opacity: 0.75,
+              zIndex: 1000,
+              color: "white",
+              backgroundColor: "#00c800",
             }}
-          />
-        )}
-      </GoogleMap>
-      <button
-        onClick={() => {
-          setShowRadius(!showRadius);
-          if (!showRadius) {
-            searchByCircle();
-          }
-        }}
-        style={{
-          position: "absolute",
-          top: "45px",
-          right: "10px",
-          zIndex: 1000,
-        }}
-      >
-        {showRadius ? "Hide Radius" : "Show Radius"}
-      </button>
+            onClick={() => changeMapType("terrain")}
+          >
+            Terrain
+          </button>
+        </div>
 
-      <button
-        className={`open-button ${active ? "" : "closed-button"}`}
-        onClick={handleActive}
-      >
-        {active ? "Close Search" : "Open Search"}
-      </button>
+        <GoogleMap
+          ref={mapRef}
+          mapContainerStyle={mapContainerStyle}
+          zoom={15}
+          center={currentLocation}
+          options={{ ...options, mapTypeId: mapType }}
+          mapTypeControlOptions={{
+            position: window.google.maps.ControlPosition.TOP_LEFT,
+          }}
+        >
+          <Marker
+            position={currentLocation}
+            icon={{
+              url: "/assets/img/icons/map-marker-2.png",
+              // scaledSize: new window.google.maps.Size(25, 25),
+            }}
+          />
+          {/* Render drawn polygons */}
+          {polygons.map((polygon, index) => (
+            <Polygon
+              key={index}
+              paths={polygon}
+              options={{ fillColor: "#FF0000" }}
+            />
+          ))}
+          <DrawingManager
+            drawingMode={window.google.maps.drawing.OverlayType.POLYGON}
+            onPolygonComplete={handlePolygonComplete}
+            options={{
+              drawingControl: true,
+              drawingControlOptions: {
+                position: window.google.maps.ControlPosition.BOTTOM_CENTER,
+                drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
+              },
+              polygonOptions: { fillColor: "#FF0000" },
+            }}
+          />
+          {properties.map((property) => (
+            <Marker
+              key={property.id} // Ideally, use a unique property ID if available
+              position={{
+                lat: parseFloat(property.latitude),
+                lng: parseFloat(property.longitude),
+              }}
+              // Optional: Customize the marker icon and other properties
+              icon={{
+                url: "/assets/img/icons/property-marker.png",
+                scaledSize: new window.google.maps.Size(38, 38),
+              }}
+              onClick={() => history.push(`/property-details/${property.id}`)}
+            />
+          ))}
+          {showRadius && (
+            <Circle
+              center={currentLocation}
+              radius={radius}
+              options={{
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
+              }}
+            />
+          )}
+        </GoogleMap>
+      </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <div className="scrollable">
           {properties &&
@@ -518,7 +696,7 @@ const GoogleMapsSearch = () => {
             ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
