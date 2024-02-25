@@ -351,14 +351,7 @@ const GoogleMapsSearch = () => {
     <>
       <div className="map-container">
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            position: "absolute",
-            left: "50%",
-            top: "25px",
-          }}
+          className="top-bar"
         >
           <StandaloneSearchBox
             onLoad={onSearchBoxLoad}
@@ -367,43 +360,13 @@ const GoogleMapsSearch = () => {
             <input
               type="text"
               placeholder="Search for places..."
-              style={{
-                boxSizing: `border-box`,
-                border: `1px solid transparent`,
-                width: `280px`,
-                height: `32px`,
-                padding: `0 12px`,
-                borderRadius: `3px`,
-                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-                fontSize: `14px`,
-                outline: `none`,
-                textOverflow: `ellipses`,
-                position: "absolute",
-                right: "150px",
-                zIndex: 1000,
-              }}
             />
           </StandaloneSearchBox>
           <select
             id="radiusSelect"
             value={radius}
             onChange={(e) => setRadius(Number(e.target.value))}
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              transform: "translateX(-50%)",
-              opacity: 0.75,
-              zIndex: 1000,
-            }}
+            
           >
             {radiusOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -418,94 +381,26 @@ const GoogleMapsSearch = () => {
                 searchByCircle();
               }
             }}
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "3px",
-              opacity: 0.75,
-              color: "white",
-              backgroundColor: "#00c800",
-              zIndex: 1000,
-            }}
+            
           >
             {showRadius ? "Hide Radius" : "Search by Radius"}
           </button>
           <button
             // className={`open-button ${active ? "" : "closed-button"}`}
             onClick={handleActive}
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "155px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: active ? "red" : "#00c800",
-            }}
+            
           >
             {active ? "Close Search" : "Open Search"}
           </button>
           <button
             onClick={resetMapState}
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "308px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: "#00c800",
-            }}
+           
           >
             Reset Map
           </button>
           <button
             onClick={handleFindNowClick}
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "400px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: "#00c800",
-            }}
+           
           >
             Go To Properties
           </button>

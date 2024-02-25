@@ -1,9 +1,12 @@
 .map-container {
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 #map {
@@ -100,24 +103,7 @@ button.open-button {
   color: white;
   transition: all 0.3s ease-in-out;
 }
-/* Adjusting the Close button */
-/* button.open-button {
-  line-height: 27px;
-  padding-left: 12px;
-  padding-right: 12px;
-  z-index: 999;
-  border: 0.5px solid #ffffff;
-  border-radius: 5px;
-  box-shadow: 0px 0px 40px black;
-  background: #00c800;
-  color: white;
-  transition: all 0.3s ease-in-out;
-} */
 
-/* button.closed-button {
-  left: 16px;
-  transition: all 0.3s ease-in-out;
-} */
 
 button.open-button-reset {
   position: absolute;
@@ -207,6 +193,7 @@ button.open-button-reset {
   cursor: pointer;
 }
 
+/* This is the new styles for map-search component */
 
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
@@ -220,9 +207,9 @@ button.open-button-reset {
     width: 100%;
     margin: 8px 0; /* Stack vertically with space */
   }
-  .map-container > div {
+  .top-bar, .map-container > div {
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */
   }
 }
 
@@ -253,3 +240,37 @@ button.open-button-reset {
 .map-container input:focus {
   outline: 2px solid #00c800; /* High contrast for better visibility */
 }
+
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #fff; /* or any color */
+  z-index: 1000;
+}
+
+
+.sidebarforsearch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -100%;
+  width: 300px; /* Adjust based on your design */
+  transition: left 0.3s ease;
+  overflow-y: auto;
+  background-color: #f9f9f9; /* or any color */
+  z-index: 999;
+}
+
+.map-container.adjusted {
+  margin-left: 300px; /* Same as sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
