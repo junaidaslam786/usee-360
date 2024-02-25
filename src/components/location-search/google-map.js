@@ -349,15 +349,19 @@ const GoogleMapsSearch = () => {
 
   return (
     <>
-      <div className="map-container">
+      <div >
         <div className="top-bar">
           <div className="top-bar-search-radius">
             <StandaloneSearchBox
               onLoad={onSearchBoxLoad}
               onPlacesChanged={onPlacesChanged}
-              className="map-search-box"
+              
             >
-              <input type="text" placeholder="Search for places..." />
+              <input type="text" placeholder="Search for places..." style={{
+                width: "100%",
+                padding: "10px",
+                marginBottom: 0,
+              }} />
             </StandaloneSearchBox>
             <select
               id="radiusSelect"
@@ -393,79 +397,22 @@ const GoogleMapsSearch = () => {
           </div>
         </div>
         <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            position: "absolute",
-            left: "50%",
-            bottom: "75px",
-          }}
+          
         >
           <button
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "308px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: "#00c800",
-            }}
+            
             onClick={() => changeMapType("satellite")}
           >
             Satellite
           </button>
           <button
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "308px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: "#00c800",
-            }}
+            
             onClick={() => changeMapType("hybrid")}
           >
             Hybrid
           </button>
           <button
-            style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `150px`,
-              height: `32px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
-              position: "absolute",
-              left: "308px",
-              opacity: 0.75,
-              zIndex: 1000,
-              color: "white",
-              backgroundColor: "#00c800",
-            }}
+            
             onClick={() => changeMapType("terrain")}
           >
             Terrain
