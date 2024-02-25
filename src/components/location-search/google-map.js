@@ -350,60 +350,47 @@ const GoogleMapsSearch = () => {
   return (
     <>
       <div className="map-container">
-        <div
-          className="top-bar"
-        >
-          <StandaloneSearchBox
-            onLoad={onSearchBoxLoad}
-            onPlacesChanged={onPlacesChanged}
-          >
-            <input
-              type="text"
-              placeholder="Search for places..."
-            />
-          </StandaloneSearchBox>
-          <select
-            id="radiusSelect"
-            value={radius}
-            onChange={(e) => setRadius(Number(e.target.value))}
-            
-          >
-            {radiusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={() => {
-              setShowRadius(!showRadius);
-              if (!showRadius) {
-                searchByCircle();
-              }
-            }}
-            
-          >
-            {showRadius ? "Hide Radius" : "Search by Radius"}
-          </button>
-          <button
-            // className={`open-button ${active ? "" : "closed-button"}`}
-            onClick={handleActive}
-            
-          >
-            {active ? "Close Search" : "Open Search"}
-          </button>
-          <button
-            onClick={resetMapState}
-           
-          >
-            Reset Map
-          </button>
-          <button
-            onClick={handleFindNowClick}
-           
-          >
-            Go To Properties
-          </button>
+        <div className="top-bar">
+          <div className="top-bar-search-radius">
+            <StandaloneSearchBox
+              onLoad={onSearchBoxLoad}
+              onPlacesChanged={onPlacesChanged}
+              className="map-search-box"
+            >
+              <input type="text" placeholder="Search for places..." />
+            </StandaloneSearchBox>
+            <select
+              id="radiusSelect"
+              value={radius}
+              onChange={(e) => setRadius(Number(e.target.value))}
+            >
+              {radiusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => {
+                setShowRadius(!showRadius);
+                if (!showRadius) {
+                  searchByCircle();
+                }
+              }}
+            >
+              {showRadius ? "Hide Radius" : "Search by Radius"}
+            </button>
+          </div>
+          <div className="btns-group-property">
+            <button
+              // className={`open-button ${active ? "" : "closed-button"}`}
+              onClick={handleActive}
+            >
+              {active ? "Close Search" : "Open Search"}
+            </button>
+            <button onClick={resetMapState}>Reset Map</button>
+            <button onClick={handleFindNowClick}>Go To Properties</button>
+          </div>
         </div>
         <div
           style={{

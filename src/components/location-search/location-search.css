@@ -17,6 +17,8 @@ body {
   height: 100%;
 }
 
+
+
 .sidebarforsearch {
   display: flex;
   flex-direction: column;
@@ -195,6 +197,51 @@ button.open-button-reset {
 
 /* This is the new styles for map-search component */
 
+.top-bar-search-radius {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* top: 0;
+  left: 0; */
+  width: 50%;
+  /* padding: 10px; */
+  background-color: #fff;
+  z-index: 1000;
+}
+
+.top-bar-search-radius select {
+  width: 20%;
+  /* padding: 10px;
+  margin: 5px; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+ .top-bar-search-radius input {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+ }
+
+ .btns-group-property{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* top: 0;
+  left: 0; */
+  width: 50%;
+  /* padding: 10px; */
+  background-color: #fff;
+  z-index: 1000;
+ 
+ }
+
+ .map-search-box {
+  width: 100%;
+ }
+
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   .map-container {
@@ -214,25 +261,25 @@ button.open-button-reset {
 }
 
 /* Flexible Layouts Using Flexbox */
-.map-container > div {
+/* .map-container > div {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-}
+} */
 
 /* Touch-friendly UI */
-.map-container button,
+/* .map-container button,
 .map-container select,
 .map-container input[type="text"] {
-  min-height: 44px; /* Larger touch targets */
+  min-height: 44px; 
   padding: 12px;
-}
+} */
 
 /* Optimized Input Fields */
-.map-container input[type="text"] {
+/* .map-container input[type="text"] {
   border: 1px solid #ccc;
-  box-shadow: none; /* Cleaner look */
-}
+  box-shadow: none; 
+} */
 
 /* Accessibility Enhancements */
 .map-container a:focus,
@@ -243,15 +290,15 @@ button.open-button-reset {
 
 .top-bar {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
+  /* flex-direction: row; */
+  /* flex-wrap: nowrap; */
+  justify-content: space-between;
+  /* align-items: center; */
   /* position: absolute; */
   top: 0;
   left: 0;
   width: 100%;
-  padding: 10px;
+  /* padding: 10px; */
   background-color: #fff; /* or any color */
   z-index: 1000;
 }
