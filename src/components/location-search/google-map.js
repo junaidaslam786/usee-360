@@ -5,7 +5,7 @@ import {
   StandaloneSearchBox,
   Circle,
   DrawingManager,
-  Polygon,
+  Polygon
 } from "@react-google-maps/api";
 import React, { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
@@ -351,16 +351,16 @@ const GoogleMapsSearch = () => {
     <>
       <div >
         <div className="top-bar">
-          <div className="top-bar-search-radius">
-            <StandaloneSearchBox
+            <StandaloneSearchBox 
               onLoad={onSearchBoxLoad}
               onPlacesChanged={onPlacesChanged}
               
             >
               <input type="text" placeholder="Search for places..." style={{
                 width: "100%",
-                padding: "10px",
+                height: "auto",
                 marginBottom: 0,
+                paddingInline: "5px",
               }} />
             </StandaloneSearchBox>
             <select
@@ -384,39 +384,15 @@ const GoogleMapsSearch = () => {
             >
               {showRadius ? "Hide Radius" : "Search by Radius"}
             </button>
-          </div>
-          <div className="btns-group-property">
+
             <button
-              // className={`open-button ${active ? "" : "closed-button"}`}
+              className={`open-button ${active ? "" : "closed-button"}`}
               onClick={handleActive}
             >
-              {active ? "Close Search" : "Open Search"}
+              {active ? "<-- Close Sidebar" : "Open Sidebar -->"}
             </button>
             <button onClick={resetMapState}>Reset Map</button>
             <button onClick={handleFindNowClick}>Go To Properties</button>
-          </div>
-        </div>
-        <div
-          
-        >
-          <button
-            
-            onClick={() => changeMapType("satellite")}
-          >
-            Satellite
-          </button>
-          <button
-            
-            onClick={() => changeMapType("hybrid")}
-          >
-            Hybrid
-          </button>
-          <button
-            
-            onClick={() => changeMapType("terrain")}
-          >
-            Terrain
-          </button>
         </div>
 
         <GoogleMap
@@ -450,7 +426,7 @@ const GoogleMapsSearch = () => {
             options={{
               drawingControl: true,
               drawingControlOptions: {
-                position: window.google.maps.ControlPosition.BOTTOM_CENTER,
+                position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
                 drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
               },
               polygonOptions: { fillColor: "#FF0000" },
@@ -485,6 +461,23 @@ const GoogleMapsSearch = () => {
             />
           )}
         </GoogleMap>
+        <div className="bottom-bar">
+          <button
+            onClick={() => changeMapType("satellite")}
+          >
+            Satellite
+          </button>
+          <button
+            onClick={() => changeMapType("hybrid")}
+          >
+            Hybrid
+          </button>
+          <button
+            onClick={() => changeMapType("terrain")}
+          >
+            Terrain
+          </button>
+        </div>      
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <div className="scrollable">
