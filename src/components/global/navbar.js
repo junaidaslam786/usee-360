@@ -100,9 +100,9 @@ export default function Navbar(props) {
                         <li className="listItems">
                           <Link to="/contact">Contact</Link>
                         </li>
-                        <li className="listItems">
+                        {/* <li className="listItems">
                           <Link to="/services">Search</Link>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                   </nav>

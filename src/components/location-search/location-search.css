@@ -231,8 +231,8 @@ button.open-button-reset {
 .top-bar {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%; /* Full width */
+  left: 50%;
+  width: auto; /* Full width */
   gap: 10px;
   z-index: 2;
   display: flex;
@@ -240,7 +240,8 @@ button.open-button-reset {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #171b2a;
+  background-color: #171b2a00;
+  transform: translateX(-50%);
   /* box-shadow: 0 2px 4px rgba(0,0,0,0.1);  */
 }
 

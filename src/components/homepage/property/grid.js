@@ -9,6 +9,7 @@ import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
 
 import { FaPaw } from "react-icons/fa";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 export default function PropertyGrid(props) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,43 +35,154 @@ export default function PropertyGrid(props) {
     window.location.pathname
   )}`;
 
- 
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
+    libraries: ["places", "drawing"],
+  });
+
+  // const loadProperties = async (page = 1) => {
+
+  //   const { state } = location;
+
+  //   const filtersFromLocation = state?.filters ?? {};
+  //   const propertiesFromState = state?.properties ?? [];
+
+  //   console.log("filtersFromLocation", filtersFromLocation);
+  //   console.log("propertiesFromState", propertiesFromState);
+
+  //   if (propertiesFromState) {
+  //     setProperties(propertiesFromState);
+  //     setCurrentPage(1); // Assuming the first page
+  //     setTotalPages(Math.ceil(propertiesFromState.length / 10)); // Assuming 10 properties per page
+  //     return; // Skip the rest of the function
+  //   }
+
+  //   // Construct the payload with filters and include dynamic lat/lng if present
+  //   let payload = {
+  //     ...filtersFromLocation,
+  //     ...(latFilter !== null && { lat: latFilter }),
+  //     ...(lngFilter !== null && { lng: lngFilter }),
+  //     page,
+  //     size: 10, // Assuming a default size of 10, adjust as needed
+  //   };
+
+  //   // Apply sorting if specified
+  //   if (sort.current && sort.current.value !== "null") {
+  //     payload.sort = [
+  //       sort.current.value.split("_")[0],
+  //       sort.current.value.split("_")[1],
+  //     ]; // Example: "price_ASC"
+  //   }
+
+  //   try {
+  //     const response = await HomepageService.listProperties("", payload);
+  //     if (response.error && response.message) {
+  //       props.responseHandler(response.message);
+  //     } else {
+  //       setProperties(response.data);
+  //       setCurrentPage(response.page);
+  //       setTotalPages(response.totalPage);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error loading properties:", error);
+  //     props.responseHandler("Failed to load properties. Please try again.");
+  //   }
+  // };
+
+  // const loadProperties = async (page = 1) => {
+  //   // Extract filters from location state or default to an empty object
+  //   const filtersFromLocation = location.state || {};
+  //   console.log("filtersFromLocation", filtersFromLocation);
+
+  //   // Construct the payload with filters and include dynamic lat/lng if present
+  //   let payload = {
+  //     ...filtersFromLocation,
+  //     ...(latFilter !== null && { lat: latFilter }),
+  //     ...(lngFilter !== null && { lng: lngFilter }),
+  //     page,
+  //     size: 10, // Assuming a default size of 10, adjust as needed
+  //   };
+
+  //   // Apply sorting if specified
+  //   if (sort.current && sort.current.value !== "null") {
+  //     payload.sort = [sort.current.value.split("_")[0], sort.current.value.split("_")[1]]; // Example: "price_ASC"
+  //   }
+
+  //   try {
+  //     const response = await HomepageService.listProperties("", payload);
+  //     if (response.error && response.message) {
+  //       props.responseHandler(response.message);
+  //     } else {
+  //       setProperties(response.data);
+  //       setCurrentPage(response.page);
+  //       setTotalPages(response.totalPage);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error loading properties:', error);
+  //     props.responseHandler("Failed to load properties. Please try again.");
+  //   }
+  // };
 
   const loadProperties = async (page = 1) => {
-    // Extract filters from location state or default to an empty object
-    const filtersFromLocation = location.state || {};
+    const { state } = location; // Assuming you have access to 'location'
+
+    // Extract filters and properties from location state with default values
+    const filtersFromLocation = state?.filters ?? {};
+    const propertiesFromState = state?.properties ?? [];
+    const source = state?.source; // Source of the navigation ('search-form' or 'google-maps')
+
     console.log("filtersFromLocation", filtersFromLocation);
-  
-    // Construct the payload with filters and include dynamic lat/lng if present
-    let payload = {
-      ...filtersFromLocation,
-      ...(latFilter !== null && { lat: latFilter }),
-      ...(lngFilter !== null && { lng: lngFilter }),
-      page,
-      size: 10, // Assuming a default size of 10, adjust as needed
-    };
-  
-    // Apply sorting if specified
-    if (sort.current && sort.current.value !== "null") {
-      payload.sort = [sort.current.value.split("_")[0], sort.current.value.split("_")[1]]; // Example: "price_ASC"
+    console.log("propertiesFromState", propertiesFromState);
+    console.log("source", source);
+
+    // If the source is google-maps, and properties are provided, use them directly
+    if (source === "google-maps" && propertiesFromState.length > 0) {
+      setProperties(propertiesFromState);
+      setCurrentPage(1); // Assuming the first page
+      setTotalPages(Math.ceil(propertiesFromState.length / 10)); // Assuming 10 properties per page
+      return; // Skip fetching new data if we already have properties
     }
-  
-    try {
-      const response = await HomepageService.listProperties("", payload);
-      if (response.error && response.message) {
-        props.responseHandler(response.message);
-      } else {
-        setProperties(response.data);
-        setCurrentPage(response.page);
-        setTotalPages(response.totalPage);
+
+    // If the source is search-form, or no source but filters are provided, fetch properties based on filters
+    if (
+      source === "search-form" ||
+      (!source && Object.keys(filtersFromLocation).length > 0)
+    ) {
+      // Construct the payload with filters and include dynamic lat/lng if present
+      let payload = {
+        ...filtersFromLocation,
+        ...(latFilter !== null && { lat: latFilter }),
+        ...(lngFilter !== null && { lng: lngFilter }),
+        page,
+        size: 10, // Assuming a default size of 10, adjust as needed
+      };
+
+      // Apply sorting if specified
+      if (sort.current && sort.current.value !== "null") {
+        payload.sort = [
+          sort.current.value.split("_")[0],
+          sort.current.value.split("_")[1],
+        ]; // Example: "price_ASC"
       }
-    } catch (error) {
-      console.error('Error loading properties:', error);
-      props.responseHandler("Failed to load properties. Please try again.");
+
+      try {
+        const response = await HomepageService.listProperties("", payload);
+        if (response.error && response.message) {
+          props.responseHandler(response.message);
+        } else {
+          setProperties(response.data);
+          setCurrentPage(response.page);
+          setTotalPages(response.totalPage);
+        }
+      } catch (error) {
+        console.error("Error loading properties:", error);
+        props.responseHandler("Failed to load properties. Please try again.");
+      }
     }
+    // Optionally, handle cases where neither properties nor filters are provided, or handle other sources
   };
 
-  
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
 
@@ -134,8 +246,10 @@ export default function PropertyGrid(props) {
   }, [location.state, currentPage, latFilter, lngFilter, sort.current?.value]);
 
   useEffect(() => {
-    // loadProperties(currentPage);
-    if (token) {
+    // Removed the initial loadProperties call for brevity; adjust as needed.
+
+    // This part remains unchanged; it's your logic for fetching wishlist properties.
+    if (token && isLoaded) {
       const fetchAllWishlistProperties = async () => {
         await loadWishlistProperties();
       };
@@ -143,22 +257,25 @@ export default function PropertyGrid(props) {
       fetchAllWishlistProperties();
     }
 
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("autocomplete")
-    );
+    // Ensure Google Maps Places API is loaded before initializing Autocomplete
+    if (isLoaded) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          window.alert("No details available for input: '" + place.name + "'");
+          return;
+        }
 
-      setAddress(place.formatted_address);
-      setLatFilter(place.geometry.location.lat());
-      setLngFilter(place.geometry.location.lng());
-    });
-  }, []);
+        setAddress(place.formatted_address);
+        setLatFilter(place.geometry.location.lat());
+        setLngFilter(place.geometry.location.lng());
+      });
+    }
+  }, [isLoaded, token]); // Depend on isLoaded to re-run this effect when the API is ready
 
   return (
     <div>
@@ -283,8 +400,10 @@ export default function PropertyGrid(props) {
                                     {/* Icon for views */}
                                   </span>
                                   <span className="view-count">
-                                    {element.productViews.length} Views{" "}
-                                    {/* Displaying the count of views */}
+                                    {element.productViews
+                                      ? element.productViews.length
+                                      : 0}{" "}
+                                    Views
                                   </span>
                                   {/* Carbon Footprint Section */}
                                   <div

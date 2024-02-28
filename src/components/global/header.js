@@ -8,7 +8,7 @@ class Page_header extends Component {
     const CustomClass = this.props.customclass ? this.props.customclass : "";
 
     return (
-      <div className={`ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image ${CustomClass}`}>
+      <div className={`ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image mb-0 ${CustomClass}`}>
         <div className="container">
           <div className="row">
             <div className="col-lg-12">

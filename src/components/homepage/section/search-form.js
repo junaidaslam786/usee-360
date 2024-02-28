@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import {
   RESIDENTIAL_PROPERTY,
@@ -25,9 +25,12 @@ export default function SearchForm() {
 
   const [filters, setFilters] = useState({});
 
+ const isMounted = useRef(false);
+
   const {isLoaded} =useJsApiLoader({
+    id: "google-map-script",
     googleMapsApiKey: 'AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY',
-    libraries: ['places'],
+    libraries: ["places", "drawing"],
   })
 
 
@@ -84,10 +87,14 @@ export default function SearchForm() {
     setShowLink(true);
   };
 
+  // Update handleBlur to use clearTimeout for cleanup
   const handleBlur = () => {
-    setTimeout(() => {
-      setShowLink(false);
+    const timeoutId = setTimeout(() => {
+      if (isMounted.current) { // Only update state if the component is still mounted
+        setShowLink(false);
+      }
     }, 300);
+    return () => clearTimeout(timeoutId); // Cleanup function to clear the timeout
   };
 
   const openModal = () => {
@@ -106,7 +113,7 @@ export default function SearchForm() {
   
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
-        if (!place.geometry) {
+        if (!place.geometry || !isMounted.current) {
           window.alert("No details available for input: '" + place.name + "'");
           return;
         }
@@ -116,6 +123,9 @@ export default function SearchForm() {
         setLng(place.geometry.location.lng());
       });
     }
+    return () => {
+      isMounted.current = false; 
+    };
   }, [isLoaded]);
 
   return (
@@ -206,7 +216,7 @@ export default function SearchForm() {
                           <Link
                             to={{
                               pathname: "/property-grid",
-                              state: selectedFilters,
+                              state: { filters: selectedFilters, source: 'search-form' },
                             }}
                             on
                             className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
