@@ -7,8 +7,8 @@ export default function ServiceSelector() {
   const [selectedService, setSelectedService] = useState("");
 
   const options = [
-    { value: "", label: "USEE Select" },
-    { value: "properties", label: "USEE Properties" },
+    { value: "", label: "Usee-360 Select" },
+    { value: "properties", label: "Usee-360 Properties" },
     // Add more options as needed
   ];
 
@@ -17,7 +17,7 @@ export default function ServiceSelector() {
       ...provided,
       borderRadius: "40px",
       borderWidth: "1.5px",
-      // width: "auto",
+      width: "100%",
       borderColor: state.isFocused ? "#00c800" : "black",
       paddingInline: "50px",
       boxShadow: state.isFocused ? "0 0 0 1px blue" : "none",
@@ -26,6 +26,10 @@ export default function ServiceSelector() {
       },
       // This removes the default arrow, you'll add a custom one below
       WebkitAppearance: "none",
+    }),
+    valueContainer: (provided, state) => ({
+      ...provided,
+      padding: '0 8px', // Adjust padding to ensure space around the selected value
     }),
     dropdownIndicator: (provided, state) => ({
       ...provided,
@@ -38,11 +42,17 @@ export default function ServiceSelector() {
 
   const CustomControl = ({ children, ...props }) => (
     <components.Control {...props}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <img
-          src="assets/img/brand-logo/2.png"
+          src="assets/img/logo.png"
           alt=""
-          style={{ width: 'auto', height: 25, marginRight: 10}}
+          style={{ width: "auto", height: 25, marginRight: 10 }}
         />
         {children}
       </div>
@@ -54,14 +64,16 @@ export default function ServiceSelector() {
       className="service-selector-area"
       style={{
         backgroundImage: "url(assets/img/hero-section-bg.webp)",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="container">
         <div
           className="row justify-content-center"
           style={{
-            opacity: "0.75",
-            color: "transparent",
+            // opacity: "0.75",
           }}
         >
           <div className="col-lg-12">
@@ -78,8 +90,14 @@ export default function ServiceSelector() {
                 }}
               >
                 {" "}
-                <label style={{ marginRight: "20px" }}>
-                  Select a USEE Service:
+                <label
+                  style={{
+                    marginRight: "20px",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: "25px",
+                  }}
+                >
+                  Select a Usee-360 Service:
                 </label>{" "}
                 <Select
                   // classNamePrefix="custom-select"
@@ -92,6 +110,7 @@ export default function ServiceSelector() {
                   options={options}
                   styles={customStyles}
                   components={{ Control: CustomControl }}
+
                 />
               </div>
               {selectedService === "properties" && <SearchForm />}
