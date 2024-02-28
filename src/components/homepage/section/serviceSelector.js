@@ -15,27 +15,61 @@ export default function ServiceSelector() {
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
+      backgroundColor: "rgba(255, 255, 255, 0)",
       borderRadius: "40px",
-      borderWidth: "1.5px",
+      borderWidth: "1.8px",
       width: "100%",
-      borderColor: state.isFocused ? "#00c800" : "black",
-      paddingInline: "50px",
-      boxShadow: state.isFocused ? "0 0 0 1px blue" : "none",
+      borderColor: state.isFocused ? "#00c800" : "white",
+      paddingInline: "20px",
+      boxShadow: state.isFocused ? "0 0 0 1px 00c800" : "none",
       "&:hover": {
-        borderColor: state.isFocused ? "#00c800" : "black",
+        borderColor: state.isFocused ? "#00c800" : "#00c800",
       },
       // This removes the default arrow, you'll add a custom one below
       WebkitAppearance: "none",
     }),
     valueContainer: (provided, state) => ({
       ...provided,
-      padding: '0 8px', // Adjust padding to ensure space around the selected value
+      padding: '0px 0px', // Adjust padding to ensure space around the selected value
     }),
     dropdownIndicator: (provided, state) => ({
       ...provided,
       backgroundImage: 'url("your-custom-arrow-image-url")',
       backgroundSize: "contain",
-      padding: "10px 8px", // Adjust padding around the arrow
+      padding: "0px 10px", // Adjust padding around the arrow
+    }),
+    // Add singleValue custom style here
+    singleValue: (provided, state) => ({
+      ...provided,
+      color: "#ffffff", // Change this to your desired color for the selected value text
+      padding: "0px 20px",
+      fontFamily: "Poppins, sans-serif",
+      fontSize: "18px",
+    }),
+    // menu: (provided, state) => ({
+    //   ...provided,
+    //   // Add your custom styles for the dropdown container here
+    //   backgroundColor: "white", // Example: Changing background color to white
+    //   borderColor: "lightgray",
+    //   borderWidth: "1.8px",
+    //   borderRadius: "20px",
+    //   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    // }),
+    option: (provided, state) => ({
+      ...provided,
+      // Custom styles for options
+      backgroundColor: state.isSelected ? "#432e3c" : "white",
+      color: state.isSelected ? "white" : "black",
+      padding: 20,
+      fontFamily: "Poppins, sans-serif",
+  
+      // Change the background color on hover and when the option is focused but not yet selected
+      ':hover': {
+        backgroundColor: "#00c800",
+      },
+      ':active': {
+        backgroundColor: state.isSelected ? "#432e3c" : "#00c800",
+      },
     }),
     // You can add more custom styles for other parts as needed
   };
@@ -50,9 +84,9 @@ export default function ServiceSelector() {
         }}
       >
         <img
-          src="assets/img/logo.png"
+          src="assets/img/logo-2.png"
           alt=""
-          style={{ width: "auto", height: 25, marginRight: 10 }}
+          style={{ width: "auto", height: 25 }}
         />
         {children}
       </div>
@@ -67,34 +101,28 @@ export default function ServiceSelector() {
         backgroundSize: "cover",
         backgroundPosition: "center center",
         backgroundRepeat: "no-repeat",
-      }}
-    >
+        backgroundColor: "rgba(0, 0, 0, 0.6)", // Overlay color
+        backgroundBlendMode: "overlay"
+      }}>
       <div className="container">
-        <div
-          className="row justify-content-center"
-          style={{
-            // opacity: "0.75",
-          }}
-        >
+        <div className="row justify-content-center">
           <div className="col-lg-12">
             {" "}
-            <div className="service-selector-form tab-content bg-white box-shadow-1 position-relative pb-10 pt-10">
-              <div
-                className="form-group "
-                style={{
+            <div className="service-selector-form tab-content position-relative pb-10 pt-10" style={{
+                  backgroundColor: "rgba(255, 255, 255, 0)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginTop: "120px",
                   marginBottom: "120px",
-                }}
-              >
+                }}>
                 {" "}
                 <label
                   style={{
                     marginRight: "20px",
                     fontFamily: "Poppins, sans-serif",
                     fontSize: "25px",
+                    color: "white"
                   }}
                 >
                   Select a Usee-360 Service:
@@ -110,11 +138,9 @@ export default function ServiceSelector() {
                   options={options}
                   styles={customStyles}
                   components={{ Control: CustomControl }}
-
                 />
-              </div>
-              {selectedService === "properties" && <SearchForm />}
             </div>
+              {selectedService === "properties" && <SearchForm />}
           </div>
         </div>
       </div>
