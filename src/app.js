@@ -34,15 +34,19 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
-import { AuthProvider } from "./components/auth/AuthContext";
 import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
 import GoogleMapsSearch from "./components/location-search/google-map";
 
 const userDetail = getUserDetailsFromJwt();
+console.log('userDetail app', userDetail);
+
+const userType = getUserType();
+console.log('userType', userType);
 
 function checkIfHasRouteAccess(path) {
   let redirectRoute = false;
   const userDetail = getUserDetailsFromJwt();
+  console.log('userDetail agentRouteAccess', userDetail);
 
   switch (path) {
     case "/agent/add-property":
@@ -90,6 +94,7 @@ function checkIfHasRouteAccess(path) {
 function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
   const token = getLoginToken();
+  console.log('agent token', token)
   let isAuthenticated = false;
 
   if (token) {
@@ -100,7 +105,7 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     } else {
       isAuthenticated = true;
 
-      if (!userDetail?.agent) {
+      if (!userDetail && userType === "agent") {
         history.push("/customer/dashboard");
         return null;
       }

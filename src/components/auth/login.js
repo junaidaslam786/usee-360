@@ -87,13 +87,6 @@ export default function Login({ type, responseHandler }) {
         return;
       }
 
-      // updateAuthState({
-      //   userDetails: formResponse.user,
-      //   token: formResponse.token,
-      //   type: formResponse.user.type,
-      //   email: formResponse.user.email,
-      // })
-
       setLoginToken(formResponse.token);
       const returnUrl =
         new URLSearchParams(window.location.search).get("returnUrl") ||

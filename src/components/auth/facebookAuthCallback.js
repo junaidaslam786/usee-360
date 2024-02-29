@@ -1,13 +1,14 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
 import { toast } from "react-toastify"; // Ensure react-toastify is installed
 import {
-  getUserDetailsFromJwt, getUserDetailsFromJwt2,
+  getUserDetailsFromJwt,
+  setLoginToken,
+  setUserType,
+  checkAgentDetails,
 } from "../../utils";
 
 const FacebookAuthCallback = () => {
-  const { updateAuthState } = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
@@ -23,38 +24,36 @@ const FacebookAuthCallback = () => {
       return;
     }
 
-    const fetchAuthDetails = async () => {
-      try {
-        // Assuming getUserDetailsFromJwt correctly parses the JWT and returns user details
-        const userDetails = await getUserDetailsFromJwt2(token);
+    const userDetails = getUserDetailsFromJwt(token);
+    console.log("user details from token", userDetails);
 
-        if (userDetails) {
-          updateAuthState({
-            userDetails,
-            token,
-            isAuthenticated: true,
-            type: userType,
-            email: userDetails.email,
-          });
+    if (userDetails) {
+      setLoginToken(token);
+      setUserType(userType);
 
-          // Redirect users based on their type
+      if (userType === "agent") {
+        // User is an agent
+        (async () => {
+          // Use an async IIFE to await isAgent
+          const agentDetails = await checkAgentDetails();
+          console.log("agentDetails", agentDetails);
+          // Determine redirectPath based on agentDetails
           const redirectPath =
-            userType === "agent" ? "/agent/register-social" : "/customer/dashboard";
+            agentDetails &&
+            agentDetails?.user?.signupStep === -1 &&
+            agentDetails?.user?.active === false
+              ? "/agent/register-social"
+              : `/${agentDetails.agentType}/dashboard`;
           history.push(redirectPath);
-        } else {
-          // Handle case where user details could not be fetched
-          toast.error("Failed to fetch user details.");
-          history.push("/login");
-        }
-      } catch (error) {
-        console.error("Authentication failed:", error);
-        toast.error("Authentication failed. Please try again.");
-        history.push("/login");
+        })();
+      } else if (userType === "customer") {
+        history.push("customer/dashboard");
       }
-    };
-
-    fetchAuthDetails();
-  }, [location.search, history, updateAuthState]);
+    } else {
+      toast.error("Failed to fetch user details.");
+      history.push("/login");
+    }
+  }, [location.search, history]);
 
   return (
     <div>

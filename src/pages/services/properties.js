@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Navbar from "../../components/global/navbar";
 import PageHeader from "../../components/global/header";
@@ -8,13 +8,24 @@ import Video from "../../components/homepage/section/video-v3";
 import Service from "../../components/homepage/section/service-v2";
 import CallToActionV1 from "../../components/homepage/section/call-to-action-v1";
 import Footer from "../../components/global/footer";
+import PropertyGrid from "../../components/homepage/property/grid";
 
 function PropertiesServicePage() {
+  const [filters, setFilters] = useState({});
+
+  const handleFiltersChange = (newFilters) => {
+    setFilters(prevFilters =>
+      Object.assign({}, prevFilters, newFilters)
+    );
+    console.log('filters from parent property page',filters);
+  };
+
   return (
     <div>
       <Navbar />
       <PageHeader headertitle="Homes" subheader="Service" />
-      <SearchForm />
+      <SearchForm onFiltersChange={handleFiltersChange} />
+      <PropertyGrid  filters={filters}/>
       <ServiceDetails />
       <Video />
       <Service />

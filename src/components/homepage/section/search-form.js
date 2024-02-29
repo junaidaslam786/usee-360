@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
-import {
-  RESIDENTIAL_PROPERTY,
-  COMMERCIAL_PROPERTY,
-  BEDROOMS,
-  PRICE_TYPE,
-} from "../../../constants";
+import { PRICE_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +8,7 @@ import Select from "react-select";
 import FilterModal from "./filterModal";
 import { useJsApiLoader } from "@react-google-maps/api";
 
-export default function SearchForm() {
+export default function SearchForm({ onFiltersChange }) {
   const [address, setAddress] = useStateIfMounted();
   const [types, setTypes] = useState([]);
   const [propertyCategory, setPropertyCategory] = useState("sale");
@@ -25,18 +20,24 @@ export default function SearchForm() {
 
   const [filters, setFilters] = useState({});
 
- const isMounted = useRef(false);
+  const isMounted = useRef(false);
 
-  const {isLoaded} =useJsApiLoader({
+  const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: 'AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY',
+    googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
     libraries: ["places", "drawing"],
-  })
-
+  });
 
   const handleFiltersChange = (newFilters) => {
     console.log(newFilters);
     setFilters(newFilters);
+    // Call the parent component's callback function to update the parent state
+    // onFiltersChange(newFilters);
+  };
+
+  const sendFilters = () => {
+    const combinedFilters = constructSelectedFilters();
+    onFiltersChange(combinedFilters);
   };
 
   const countSelectedFilters = () => {
@@ -76,12 +77,11 @@ export default function SearchForm() {
     return selectedFilters;
   };
 
-    const selectedFilters = constructSelectedFilters();
+  const selectedFilters = constructSelectedFilters();
   // const handleFndNowClick = () => {
-    //   const selectedFilters = constructSelectedFilters();
+  //   const selectedFilters = constructSelectedFilters();
   //   history.push('/property-grid', {...selectedFilters});
   // };
-
 
   const handleFocus = () => {
     setShowLink(true);
@@ -90,7 +90,8 @@ export default function SearchForm() {
   // Update handleBlur to use clearTimeout for cleanup
   const handleBlur = () => {
     const timeoutId = setTimeout(() => {
-      if (isMounted.current) { // Only update state if the component is still mounted
+      if (isMounted.current) {
+        // Only update state if the component is still mounted
         setShowLink(false);
       }
     }, 300);
@@ -110,21 +111,21 @@ export default function SearchForm() {
       const autocomplete = new window.google.maps.places.Autocomplete(
         document.getElementById("autocomplete")
       );
-  
+
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry || !isMounted.current) {
           window.alert("No details available for input: '" + place.name + "'");
           return;
         }
-  
+
         setAddress(place.formatted_address);
         setLat(place.geometry.location.lat());
         setLng(place.geometry.location.lng());
       });
     }
     return () => {
-      isMounted.current = false; 
+      isMounted.current = false;
     };
   }, [isLoaded]);
 
@@ -213,16 +214,12 @@ export default function SearchForm() {
                             onRequestClose={closeModal}
                             onFiltersChange={handleFiltersChange}
                           />
-                          <Link
-                            to={{
-                              pathname: "/property-grid",
-                              state: { filters: selectedFilters, source: 'search-form' },
-                            }}
-                            on
+                          <button
                             className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
+                            onClick={sendFilters}
                           >
                             Find Now
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </form>
@@ -232,7 +229,6 @@ export default function SearchForm() {
             </div>
           </div>
         </div>
-        {/* Filter Modal */}
       </div>
     </div>
   );

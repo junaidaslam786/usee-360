@@ -46,34 +46,33 @@ export const findCurrentTimeSlot = (timeslots) => {
   return null;
 }
 
-// In AuthService or a similar service file
+
 export const checkAgentDetails = async () => {
   try {
-    const token = getLoginToken(); // Assumes you have a function to get the stored token
+    const token = getLoginToken();
     if (!token) {
       throw new Error('No token found');
     }
 
-    // Setting up headers for authorization
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${token}`);
-
-    const id = token.id;
-
-    const response = await UserService.detail(id);
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch agent details');
+    const userDetails = getUserDetailsFromJwt(token);
+    if (!userDetails || !userDetails.id) {
+      throw new Error('Failed to decode token or no user ID found');
     }
 
-    const data = await response.json();
-    // Assuming the backend response includes a flag or specific data indicating the user is an agent
-    return data; // This should include information to identify if the user is an agent
+    // Use UserService.detail to fetch user details by ID
+    const agentDetails = await UserService.detail(userDetails.id);
+    if (agentDetails.error) {
+      throw new Error(agentDetails.error.message || 'Failed to fetch agent details');
+    }
+
+    return agentDetails; // Successfully fetched agent details
   } catch (error) {
     console.error('Error fetching agent details:', error);
-    return null;
+    return null; // Or handle the error as needed
   }
 };
+
+
 
 
 export const getUserDetailsFromJwt = (token) => {

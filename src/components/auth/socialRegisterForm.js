@@ -23,7 +23,6 @@ import {
   setUserType,
 } from "../../utils";
 import UserService from "../../services/agent/user";
-import { AuthContext } from "./AuthContext";
 
 const SocialRegisterForm = (props) => {
   const [companyName, setCompanyName] = useState("");
@@ -38,8 +37,9 @@ const SocialRegisterForm = (props) => {
   const [licenseNo, setLicenseNo] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState(USER_TYPE.AGENT);
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
   const [document, setDocument] = useState();
   const [jobTitlePlaceHolder, setJobTitlePlaceHolder] = useState(
     DEFAULT_LICENSE_NO_TEXT
@@ -53,48 +53,26 @@ const SocialRegisterForm = (props) => {
 
   const location = useLocation();
   const history = useHistory();
-  const { isAuthenticated, userDetails, type } = useContext(AuthContext);
-  console.log("userDetails", userDetails);
-  console.log("type", type);
-  console.log("isAuthenticated", isAuthenticated);
+  
 
-  const userEmail = userDetails.email;
-  setEmail(userEmail);
+  // const userDetails = getUserDetailsFromJwt();
 
-  // const fetchAgentDetails = useCallback(async () => {
-  //   const response = await UserService.detail(id);
-  //   console.log("agent detail", response);
-  //   if (response?.error && response?.message) {
-  //     props.responseHandler(response.message);
-  //     return;
-  //   }
-  //   if (!response) {
-  //     props.responseHandler([
-  //       "Unable to get user detail, please try again later",
-  //     ]);
-  //     return;
-  //   }
-  //   if (response) {
-  //     setUserId(response.id);
-  //     // setCompanyName(response.companyName);
-  //     // setFirstName(response.firstName);
-  //     // setLastName(response.lastName);
-  //     // setSelectedCountry(response.country);
-  //     // setSelectedCity(response.city);
-  //     // setCompanyPosition(response.companyPosition);
-  //     // setJobTitle(response.jobTitle);
-  //     // setLicenseNo(response.licenseNo);
-  //     setEmail(response.email);
-  //     // setPhoneNumber(response.phoneNumber);
-  //     // setPassword(response.password);
-  //     // setConfirmPassword(response.confirmPassword);
-  //     // setDocument(response.document);
-  //     // setOrnNumber(response.ornNumber);
-  //   }
-  // }, [id]);
-  // useEffect(() => {
-  //   fetchAgentDetails();
-  // }, [fetchAgentDetails]);
+  const fetchDetails = async () => {
+    const userDetails = await getUserDetailsFromJwt();
+    const userEmail = userDetails.email;
+    const id = userDetails.id;
+    const role = userDetails.agent.agentType
+    setEmail(userEmail);
+    setUserId(id);
+    setRole(role);
+    setPhoneNumber(userDetails.phoneNumber);
+  }
+  
+  useEffect(() => {
+    fetchDetails()
+  }, [])
+
+ 
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -157,6 +135,7 @@ const SocialRegisterForm = (props) => {
 
     // Update the data object, setting signupStep to 2
     const formData = new FormData();
+    formData.append("userId", userId);
     formData.append("companyName", companyName);
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -166,19 +145,20 @@ const SocialRegisterForm = (props) => {
     formData.append("companyPosition", companyPosition);
     formData.append("jobTitle", jobTitle);
     formData.append("licenseNo", licenseNo);
+    formData.append('role', role);
     formData.append("email", email);
     formData.append("otpVerified", true);
     formData.append("ornNumber", ornNumber);
-    formData.append("signupStep", 2); // Since we're onboarding, setting directly to 2
+    formData.append("signupStep", 2); 
     formData.append("phoneNumber", phoneNumber);
-    formData.append("password", password);
-    formData.append("confirmPassword", confirmPassword);
+    // formData.append("password", password);
+    // formData.append("confirmPassword", confirmPassword);
     if (document) {
       formData.append("document", document);
     }
 
     try {
-      const response = await AuthService.agentOnboarding(formData);
+      const response = await UserService.update(formData);
 
       // Check for a successful response (you may need to adjust depending on your API's response structure)
       if (response?.error) {
@@ -198,9 +178,8 @@ const SocialRegisterForm = (props) => {
         toast.info(
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
-        history.push("agent/login"); // Adjust as necessary
       }
-      history.push("agent/dashboard"); // Adjust the path as necessary
+      history.push(`${response?.user.userType}/login`); // Adjust as necessary
     } catch (error) {
       console.error("Error during agent onboarding:", error);
       toast.error("Failed to onboard agent. Please try again.");
@@ -372,7 +351,7 @@ const SocialRegisterForm = (props) => {
                   value={phoneNumber}
                   required
                 />
-                <small>
+                {/* <small>
                   Password must Contain 8 Characters, One Uppercase, One
                   Lowercase, One Number and One Special Case Character.
                 </small>
@@ -411,7 +390,7 @@ const SocialRegisterForm = (props) => {
                       capital: "Must contains a capital letter.",
                     }}
                   />
-                </div>
+                </div> */}
                 {/* <div id="recaptcha-container" className="mb-30"></div> */}
 
                 <div className="btn-wrapper text-center">

@@ -11,6 +11,8 @@ import WishlistService from "../../../services/customer/wishlist";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 
+import SearchForm from '../section/search-form'
+
 export default function PropertyGrid(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,146 +43,89 @@ export default function PropertyGrid(props) {
     libraries: ["places", "drawing"],
   });
 
+  
+
   // const loadProperties = async (page = 1) => {
+  //   const { state } = location; // Assuming you have access to 'location'
 
-  //   const { state } = location;
-
+  //   // Extract filters and properties from location state with default values
   //   const filtersFromLocation = state?.filters ?? {};
   //   const propertiesFromState = state?.properties ?? [];
+  //   const source = state?.source; // Source of the navigation ('search-form' or 'google-maps')
 
   //   console.log("filtersFromLocation", filtersFromLocation);
   //   console.log("propertiesFromState", propertiesFromState);
+  //   console.log("source", source);
 
-  //   if (propertiesFromState) {
+  //   // If the source is google-maps, and properties are provided, use them directly
+  //   if (source === "google-maps" && propertiesFromState.length > 0) {
   //     setProperties(propertiesFromState);
   //     setCurrentPage(1); // Assuming the first page
   //     setTotalPages(Math.ceil(propertiesFromState.length / 10)); // Assuming 10 properties per page
-  //     return; // Skip the rest of the function
+  //     return; // Skip fetching new data if we already have properties
   //   }
 
-  //   // Construct the payload with filters and include dynamic lat/lng if present
-  //   let payload = {
-  //     ...filtersFromLocation,
-  //     ...(latFilter !== null && { lat: latFilter }),
-  //     ...(lngFilter !== null && { lng: lngFilter }),
-  //     page,
-  //     size: 10, // Assuming a default size of 10, adjust as needed
-  //   };
+  //   // If the source is search-form, or no source but filters are provided, fetch properties based on filters
+  //   if (
+  //     source === "search-form" ||
+  //     (!source && Object.keys(filtersFromLocation).length > 0)
+  //   ) {
+  //     // Construct the payload with filters and include dynamic lat/lng if present
+  //     let payload = {
+  //       ...filtersFromLocation,
+  //       ...(latFilter !== null && { lat: latFilter }),
+  //       ...(lngFilter !== null && { lng: lngFilter }),
+  //       page,
+  //       size: 10, // Assuming a default size of 10, adjust as needed
+  //     };
 
-  //   // Apply sorting if specified
-  //   if (sort.current && sort.current.value !== "null") {
-  //     payload.sort = [
-  //       sort.current.value.split("_")[0],
-  //       sort.current.value.split("_")[1],
-  //     ]; // Example: "price_ASC"
-  //   }
-
-  //   try {
-  //     const response = await HomepageService.listProperties("", payload);
-  //     if (response.error && response.message) {
-  //       props.responseHandler(response.message);
-  //     } else {
-  //       setProperties(response.data);
-  //       setCurrentPage(response.page);
-  //       setTotalPages(response.totalPage);
+  //     // Apply sorting if specified
+  //     if (sort.current && sort.current.value !== "null") {
+  //       payload.sort = [
+  //         sort.current.value.split("_")[0],
+  //         sort.current.value.split("_")[1],
+  //       ]; // Example: "price_ASC"
   //     }
-  //   } catch (error) {
-  //     console.error("Error loading properties:", error);
-  //     props.responseHandler("Failed to load properties. Please try again.");
-  //   }
-  // };
 
-  // const loadProperties = async (page = 1) => {
-  //   // Extract filters from location state or default to an empty object
-  //   const filtersFromLocation = location.state || {};
-  //   console.log("filtersFromLocation", filtersFromLocation);
-
-  //   // Construct the payload with filters and include dynamic lat/lng if present
-  //   let payload = {
-  //     ...filtersFromLocation,
-  //     ...(latFilter !== null && { lat: latFilter }),
-  //     ...(lngFilter !== null && { lng: lngFilter }),
-  //     page,
-  //     size: 10, // Assuming a default size of 10, adjust as needed
-  //   };
-
-  //   // Apply sorting if specified
-  //   if (sort.current && sort.current.value !== "null") {
-  //     payload.sort = [sort.current.value.split("_")[0], sort.current.value.split("_")[1]]; // Example: "price_ASC"
-  //   }
-
-  //   try {
-  //     const response = await HomepageService.listProperties("", payload);
-  //     if (response.error && response.message) {
-  //       props.responseHandler(response.message);
-  //     } else {
-  //       setProperties(response.data);
-  //       setCurrentPage(response.page);
-  //       setTotalPages(response.totalPage);
+  //     try {
+  //       const response = await HomepageService.listProperties("", payload);
+  //       if (response.error && response.message) {
+  //         props.responseHandler(response.message);
+  //       } else {
+  //         setProperties(response.data);
+  //         setCurrentPage(response.page);
+  //         setTotalPages(response.totalPage);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error loading properties:", error);
+  //       props.responseHandler("Failed to load properties. Please try again.");
   //     }
-  //   } catch (error) {
-  //     console.error('Error loading properties:', error);
-  //     props.responseHandler("Failed to load properties. Please try again.");
   //   }
+  //   // Optionally, handle cases where neither properties nor filters are provided, or handle other sources
   // };
 
   const loadProperties = async (page = 1) => {
-    const { state } = location; // Assuming you have access to 'location'
+    const filtersData = props.filters ? props.filters : {};
+    console.log('filters data from props',filtersData)
+    let payload = {
+      ...filtersData,
+      page,
+      size: 10,
+    };
 
-    // Extract filters and properties from location state with default values
-    const filtersFromLocation = state?.filters ?? {};
-    const propertiesFromState = state?.properties ?? [];
-    const source = state?.source; // Source of the navigation ('search-form' or 'google-maps')
-
-    console.log("filtersFromLocation", filtersFromLocation);
-    console.log("propertiesFromState", propertiesFromState);
-    console.log("source", source);
-
-    // If the source is google-maps, and properties are provided, use them directly
-    if (source === "google-maps" && propertiesFromState.length > 0) {
-      setProperties(propertiesFromState);
-      setCurrentPage(1); // Assuming the first page
-      setTotalPages(Math.ceil(propertiesFromState.length / 10)); // Assuming 10 properties per page
-      return; // Skip fetching new data if we already have properties
-    }
-
-    // If the source is search-form, or no source but filters are provided, fetch properties based on filters
-    if (
-      source === "search-form" ||
-      (!source && Object.keys(filtersFromLocation).length > 0)
-    ) {
-      // Construct the payload with filters and include dynamic lat/lng if present
-      let payload = {
-        ...filtersFromLocation,
-        ...(latFilter !== null && { lat: latFilter }),
-        ...(lngFilter !== null && { lng: lngFilter }),
-        page,
-        size: 10, // Assuming a default size of 10, adjust as needed
-      };
-
-      // Apply sorting if specified
-      if (sort.current && sort.current.value !== "null") {
-        payload.sort = [
-          sort.current.value.split("_")[0],
-          sort.current.value.split("_")[1],
-        ]; // Example: "price_ASC"
+    try {
+      const response = await HomepageService.listProperties("", payload);
+      if (response.error && response.message) {
+        props.responseHandler(response.message);
+      } else {
+        setProperties(response.data);
+        setCurrentPage(response.page);
+        setTotalPages(response.totalPage);
       }
-
-      try {
-        const response = await HomepageService.listProperties("", payload);
-        if (response.error && response.message) {
-          props.responseHandler(response.message);
-        } else {
-          setProperties(response.data);
-          setCurrentPage(response.page);
-          setTotalPages(response.totalPage);
-        }
-      } catch (error) {
-        console.error("Error loading properties:", error);
-        props.responseHandler("Failed to load properties. Please try again.");
-      }
+    } catch (err) {
+      console.error("Error loading properties:", err);
+      props.responseHandler("Failed to load properties. Please try again.");
     }
-    // Optionally, handle cases where neither properties nor filters are provided, or handle other sources
   };
 
   const loadWishlistProperties = async () => {
@@ -282,7 +227,8 @@ export default function PropertyGrid(props) {
       <div className="ltn__product-area ltn__product-gutter">
         <div className="container">
           <div className="row">
-            <div className="col-lg-8 order-lg-2 mb-100">
+            <div className="col-lg-12 order-lg-2 mb-100">
+              {/* <SearchForm /> */}
               <div className="ltn__shop-options">
                 <ul className="justify-content-start">
                   <li>
@@ -334,38 +280,14 @@ export default function PropertyGrid(props) {
                 >
                   <div className="ltn__product-tab-content-inner ltn__product-grid-view">
                     <div className="row">
-                      <div className="col-lg-12">
-                        {/* Search Widget */}
-                        <div className="ltn__search-widget mb-30">
-                          <form>
-                            <input
-                              type="text"
-                              name="ltn__name"
-                              id="autocomplete"
-                              placeholder="Search Location..."
-                              value={address}
-                              onChange={(event) =>
-                                setAddress(event.target.value)
-                              }
-                            />
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                loadProperties("filter");
-                              }}
-                            >
-                              <i className="fas fa-search" />
-                            </button>
-                          </form>
-                        </div>
-                      </div>
+                      
                       {properties && properties.length === 0 ? (
                         <div className="col-lg-12">
                           <p>No Data!</p>
                         </div>
                       ) : (
                         properties.map((element, i) => (
-                          <div className="col-xl-6 col-sm-6 col-12" key={i}>
+                          <div className="col-xl-4 col-sm-4 col-12" key={i}>
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
