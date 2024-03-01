@@ -34,8 +34,9 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
-import FacebookAuthCallback from "./components/auth/facebookAuthCallback";
+import FacebookAuthCallback from "./components/auth/oAuthCallback";
 import GoogleMapsSearch from "./components/location-search/google-map";
+import OAuthCallback from "./components/auth/oAuthCallback";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -224,7 +225,7 @@ const App = () => {
               )}
             />
 
-            <Route path="/facebook/users" component={FacebookAuthCallback} />
+            <Route path="/oauth/users" component={OAuthCallback} />
 
             {/* Agent Routes */}
             <Route

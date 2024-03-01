@@ -19,6 +19,7 @@ import {
   checkAgentDetails,
   getUserDetailsFromJwt,
   getUserDetailsFromJwt2,
+  removeLoginToken,
   setLoginToken,
   setUserType,
 } from "../../utils";
@@ -50,29 +51,34 @@ const SocialRegisterForm = (props) => {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
+  const [type, setType] = useState("");
 
   const location = useLocation();
   const history = useHistory();
-  
 
   // const userDetails = getUserDetailsFromJwt();
-
-  const fetchDetails = async () => {
-    const userDetails = await getUserDetailsFromJwt();
-    const userEmail = userDetails.email;
-    const id = userDetails.id;
-    const role = userDetails.agent.agentType
-    setEmail(userEmail);
-    setUserId(id);
-    setRole(role);
-    setPhoneNumber(userDetails.phoneNumber);
-  }
-  
   useEffect(() => {
-    fetchDetails()
-  }, [])
+    let isMounted = true;
+    const fetchDetails = async () => {
+      if (isMounted) {
+        const userDetails = await getUserDetailsFromJwt();
+        const userEmail = userDetails.email;
+        const id = userDetails.id;
+        const role = userDetails.agent.agentType;
+        setType(role);
+        setEmail(userEmail);
+        setUserId(id);
+        setRole(role);
+        setPhoneNumber(userDetails.phoneNumber);
+      }
+    };
 
- 
+    fetchDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -145,11 +151,11 @@ const SocialRegisterForm = (props) => {
     formData.append("companyPosition", companyPosition);
     formData.append("jobTitle", jobTitle);
     formData.append("licenseNo", licenseNo);
-    formData.append('role', role);
+    formData.append("role", role);
     formData.append("email", email);
     formData.append("otpVerified", true);
     formData.append("ornNumber", ornNumber);
-    formData.append("signupStep", 2); 
+    formData.append("signupStep", 2);
     formData.append("phoneNumber", phoneNumber);
     // formData.append("password", password);
     // formData.append("confirmPassword", confirmPassword);
@@ -179,7 +185,8 @@ const SocialRegisterForm = (props) => {
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
       }
-      history.push(`agent/login`); // Adjust as necessary
+      removeLoginToken();
+      history.push('/agent/login'); 
     } catch (error) {
       console.error("Error during agent onboarding:", error);
       toast.error("Failed to onboard agent. Please try again.");

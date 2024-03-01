@@ -185,6 +185,7 @@ export const getLoginToken = () => {
 export const removeLoginToken = () => {
   localStorage.removeItem("userToken");
   localStorage.removeItem("userTimezone");
+  localStorage.removeItem("userType");
   return true;
 }
 

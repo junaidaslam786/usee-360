@@ -8,7 +8,7 @@ import {
   checkAgentDetails,
 } from "../../utils";
 
-const FacebookAuthCallback = () => {
+const OAuthCallback = () => {
   const location = useLocation();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
@@ -62,4 +62,4 @@ const FacebookAuthCallback = () => {
   );
 };
 
-export default FacebookAuthCallback;
+export default OAuthCallback;

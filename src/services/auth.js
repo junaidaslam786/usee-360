@@ -203,6 +203,59 @@ const AuthService = {
     }
   },
 
+  getLinkdInAuthUrl: async (userType) => {
+    try {
+      // Include the userType in the body of the request
+      const response = await httpPost(`${apiUrlPrefix}/linkedin`, {
+        userType: userType,
+      });
+      return response.data.url; // assuming the URL is returned in this structure
+    } catch (error) {
+      console.error("Error fetching LinkedIn auth URL:", error);
+      return null;
+    }
+  },
+
+  getGoogleAuthUrl: async (userType) => {
+    try {
+      // Include the userType in the body of the request
+      const response = await httpPost(`${apiUrlPrefix}/google`, {
+        userType: userType,
+      });
+      return response.data.url; // assuming the URL is returned in this structure
+    } catch (error) {
+      console.error("Error fetching Google auth URL:", error);
+      return null;
+    }
+  },
+
+  getTwitterAuthUrl: async (userType) => {
+    try {
+      // Include the userType in the body of the request
+      const response = await httpPost(`${apiUrlPrefix}/twitter`, {
+        userType: userType,
+      });
+      return response.data.url; // assuming the URL is returned in this structure
+    } catch (error) {
+      console.error("Error fetching Twitter auth URL:", error);
+      return null;
+    }
+  },
+
+  getMicrosofAuthUrl: async (userType) => {
+    try {
+      // Include the userType in the body of the request
+      const response = await httpPost(`${apiUrlPrefix}/microsoft`, {
+        userType: userType,
+      });
+      return response.data.url; // assuming the URL is returned in this structure
+    } catch (error) {
+      console.error("Error fetching Microsoft auth URL:", error);
+      return null;
+    }
+  },
+
+
   // Add this method to your AuthService object
 
   exchangeCodeForToken: async (code, state) => {

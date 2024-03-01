@@ -29,7 +29,6 @@ export default function Login({ type, responseHandler }) {
 
   const handleFacebookAuth = async () => {
     try {
-      
       const url = await AuthService.getFacebookAuthUrl(type);
       if (url) {
         window.location.href = url; // Redirect to the Facebook auth URL
@@ -41,17 +40,61 @@ export default function Login({ type, responseHandler }) {
     }
   };
 
+  const handleLinkdinAuth = async () => {
+    try {
+      const url = await AuthService.getLinkdInAuthUrl(type);
+      if (url) {
+        window.location.href = url; // Redirect to the Linkdin auth URL
+      } else {
+        responseHandler("Unable to connect to Linkdin", false);
+      }
+    } catch (err) {
+      responseHandler("Failed to authenticate with Linkdin", false);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    try {
+      const url = await AuthService.getGoogleAuthUrl(type);
+      if (url) {
+        window.location.href = url;
+      } else {
+        responseHandler("Unable to connect to Google", false);
+      }
+    } catch (err) {
+      responseHandler("Failed to authenticate with Google", false);
+    }
+  };
+
+  const handleTwitterAuth = async () => {
+    try {
+      const url = await AuthService.getTwitterAuthUrl(type);
+      if (url) {
+        window.location.href = url;
+      } else {
+        responseHandler("Unable to connect to Twitter", false);
+      }
+    } catch (err) {
+      responseHandler("Failed to authenticate with Twitter", false);
+    }
+  };
+
+  const handleMicrosoftAuth = async () => {
+    try {
+      const url = await AuthService.getMicrosofAuthUrl(type);
+      if (url) {
+        window.location.href = url;
+      } else {
+        responseHandler("Unable to connect to Microsoft", false);
+      }
+    } catch (err) {
+      responseHandler("Failed to authenticate with Microsoft", false);
+    }
+  };
+
   const onVerified = (user, token) => {
     // Redirect to the dashboard or appropriate page after successful verification
-    
     setLoginToken(token);
-    // updateAuthState({
-    //   userDetails: user,
-    //   token,
-    //   type: user.type,
-    //   email: user.email,
-    // })
-
     const returnUrl =
       new URLSearchParams(window.location.search).get("returnUrl") ||
       `/${type}/dashboard`;
@@ -263,21 +306,25 @@ export default function Login({ type, responseHandler }) {
                       icon={faTwitter}
                       size="2x"
                       style={{ color: "#1DA1F2" }}
+                      onClick={handleTwitterAuth}
                     />
                     <FontAwesomeIcon
                       icon={faMicrosoft}
                       size="2x"
                       style={{ color: "#F25022" }}
+                      onClick={handleMicrosoftAuth}
                     />
                     <FontAwesomeIcon
                       icon={faLinkedin}
                       size="2x"
                       style={{ color: "#0077B5" }}
+                      onClick={handleLinkdinAuth}
                     />
                     <FontAwesomeIcon
                       icon={faGoogle}
                       size="2x"
                       style={{ color: "#DB4437" }}
+                      onClick={handleGoogleAuth}
                     />
                   </div>
                 </div>
