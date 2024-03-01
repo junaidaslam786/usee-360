@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { PRICE_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
@@ -20,6 +20,9 @@ export default function SearchForm({ onFiltersChange }) {
 
   const [filters, setFilters] = useState({});
 
+  const history = useHistory();
+  const location = useLocation();
+
   const isMounted = useRef(false);
 
   const { isLoaded } = useJsApiLoader({
@@ -37,7 +40,12 @@ export default function SearchForm({ onFiltersChange }) {
 
   const sendFilters = () => {
     const combinedFilters = constructSelectedFilters();
-    onFiltersChange(combinedFilters);
+    // Check if the current page is not the properties page
+    if (location.pathname !== '/services/properties') {
+      history.push('/services/properties', { filters: combinedFilters });
+    } else if (onFiltersChange) {
+      onFiltersChange(combinedFilters);
+    }
   };
 
   const countSelectedFilters = () => {

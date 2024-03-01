@@ -11,9 +11,8 @@ import WishlistService from "../../../services/customer/wishlist";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 
-import SearchForm from '../section/search-form'
 
-export default function PropertyGrid(props) {
+export default function PropertyGrid({filters, mapProperties, responseHandler}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -25,7 +24,7 @@ export default function PropertyGrid(props) {
   const [wishlistId, setWishlistId] = useState();
   const [wishlistTitle, setWishlistTitle] = useState();
   const [wishlistImage, setWishlistImage] = useState();
-  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
+  const [carbonFootprint, setCarbonFootprint] = useState("_");
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = getLoginToken();
@@ -90,7 +89,7 @@ export default function PropertyGrid(props) {
   //     try {
   //       const response = await HomepageService.listProperties("", payload);
   //       if (response.error && response.message) {
-  //         props.responseHandler(response.message);
+  //         responseHandler(response.message);
   //       } else {
   //         setProperties(response.data);
   //         setCurrentPage(response.page);
@@ -98,14 +97,22 @@ export default function PropertyGrid(props) {
   //       }
   //     } catch (error) {
   //       console.error("Error loading properties:", error);
-  //       props.responseHandler("Failed to load properties. Please try again.");
+  //       responseHandler("Failed to load properties. Please try again.");
   //     }
   //   }
   //   // Optionally, handle cases where neither properties nor filters are provided, or handle other sources
   // };
 
   const loadProperties = async (page = 1) => {
-    const filtersData = props.filters ? props.filters : {};
+
+    if (mapProperties && mapProperties.length > 0) {
+      setProperties(mapProperties);
+      setCurrentPage(1);
+      setTotalPages(Math.ceil(mapProperties.length / 10));
+      return;
+    }
+
+    const filtersData = filters ? filters : {};
     console.log('filters data from props',filtersData)
     let payload = {
       ...filtersData,
@@ -116,7 +123,7 @@ export default function PropertyGrid(props) {
     try {
       const response = await HomepageService.listProperties("", payload);
       if (response.error && response.message) {
-        props.responseHandler(response.message);
+        responseHandler(response.message);
       } else {
         setProperties(response.data);
         setCurrentPage(response.page);
@@ -124,7 +131,7 @@ export default function PropertyGrid(props) {
       }
     } catch (err) {
       console.error("Error loading properties:", err);
-      props.responseHandler("Failed to load properties. Please try again.");
+      responseHandler("Failed to load properties. Please try again.");
     }
   };
 
@@ -144,7 +151,7 @@ export default function PropertyGrid(props) {
 
     const reponse = await WishlistService.addToWishlist(propertyId);
     if (reponse?.error && reponse?.message) {
-      props.responseHandler(reponse.message);
+      responseHandler(reponse.message);
       return;
     }
 
@@ -165,11 +172,11 @@ export default function PropertyGrid(props) {
 
     const reponse = await WishlistService.removeFromWishlist(propertyId);
     if (reponse?.error && reponse?.message) {
-      props.responseHandler(reponse.message);
+      responseHandler(reponse.message);
       return;
     }
 
-    props.responseHandler("Property removed from wishlist.", true);
+    responseHandler("Property removed from wishlist.", true);
   };
 
   // Handler for the "Find Now" button click
@@ -188,7 +195,7 @@ export default function PropertyGrid(props) {
 
   useEffect(() => {
     loadProperties(currentPage);
-  }, [location.state, currentPage, latFilter, lngFilter, sort.current?.value]);
+  }, [location.state, currentPage, latFilter, lngFilter, sort.current?.value, filters]);
 
   useEffect(() => {
     // Removed the initial loadProperties call for brevity; adjust as needed.

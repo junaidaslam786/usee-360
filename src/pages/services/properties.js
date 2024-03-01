@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useLocation } from "react-router-dom";
 import Navbar from "../../components/global/navbar";
 import PageHeader from "../../components/global/header";
 import SearchForm from "../../components/homepage/section/search-form";
@@ -13,11 +13,12 @@ import PropertyGrid from "../../components/homepage/property/grid";
 function PropertiesServicePage() {
   const [filters, setFilters] = useState({});
 
+  const location = useLocation();
+  const propertiesFromMap = location.state?.properties;
+
   const handleFiltersChange = (newFilters) => {
-    setFilters(prevFilters =>
-      Object.assign({}, prevFilters, newFilters)
-    );
-    console.log('filters from parent property page',filters);
+    setFilters(newFilters)
+    console.log('filters from parent property page',newFilters);
   };
 
   return (
@@ -25,7 +26,7 @@ function PropertiesServicePage() {
       <Navbar />
       <PageHeader headertitle="Homes" subheader="Service" />
       <SearchForm onFiltersChange={handleFiltersChange} />
-      <PropertyGrid  filters={filters}/>
+      <PropertyGrid  filters={filters} mapProperties={propertiesFromMap}/>
       <ServiceDetails />
       <Video />
       <Service />

@@ -179,7 +179,7 @@ const SocialRegisterForm = (props) => {
           "Your account requires approval from the SuperAdmin. It will take 24-48 hours to approve your account."
         );
       }
-      history.push(`${response?.user.userType}/login`); // Adjust as necessary
+      history.push(`agent/login`); // Adjust as necessary
     } catch (error) {
       console.error("Error during agent onboarding:", error);
       toast.error("Failed to onboard agent. Please try again.");

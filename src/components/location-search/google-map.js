@@ -91,7 +91,7 @@ const GoogleMapsSearch = () => {
 
   const handleGotoProperties = () => {
     history.push({
-      pathname: "/property-grid",
+      pathname: "/services/properties",
       state: { properties: properties, source: "google-maps" },
     });
   };

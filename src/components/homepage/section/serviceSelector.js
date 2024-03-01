@@ -2,15 +2,22 @@ import React, { useState } from "react";
 import SearchForm from "./search-form";
 import _ from "lodash";
 import Select, { components } from "react-select";
+import { useHistory } from "react-router-dom";
 
 export default function ServiceSelector() {
   const [selectedService, setSelectedService] = useState("");
+
+  const history = useHistory();
 
   const options = [
     { value: "", label: "Usee-360 Select" },
     { value: "properties", label: "Usee-360 Properties" },
     // Add more options as needed
   ];
+
+  const handleFiltersChange = (filters) => {
+    history.push("/services/properties", { filters });
+  };
 
   const customStyles = {
     control: (provided, state) => ({
@@ -30,7 +37,7 @@ export default function ServiceSelector() {
     }),
     valueContainer: (provided, state) => ({
       ...provided,
-      padding: '0px 0px', // Adjust padding to ensure space around the selected value
+      padding: "0px 0px", // Adjust padding to ensure space around the selected value
     }),
     dropdownIndicator: (provided, state) => ({
       ...provided,
@@ -46,15 +53,7 @@ export default function ServiceSelector() {
       fontFamily: "Poppins, sans-serif",
       fontSize: "18px",
     }),
-    // menu: (provided, state) => ({
-    //   ...provided,
-    //   // Add your custom styles for the dropdown container here
-    //   backgroundColor: "white", // Example: Changing background color to white
-    //   borderColor: "lightgray",
-    //   borderWidth: "1.8px",
-    //   borderRadius: "20px",
-    //   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    // }),
+
     option: (provided, state) => ({
       ...provided,
       // Custom styles for options
@@ -62,12 +61,12 @@ export default function ServiceSelector() {
       color: state.isSelected ? "white" : "black",
       padding: 20,
       fontFamily: "Poppins, sans-serif",
-  
+
       // Change the background color on hover and when the option is focused but not yet selected
-      ':hover': {
+      ":hover": {
         backgroundColor: "#00c800",
       },
-      ':active': {
+      ":active": {
         backgroundColor: state.isSelected ? "#432e3c" : "#00c800",
       },
     }),
@@ -102,45 +101,51 @@ export default function ServiceSelector() {
         backgroundPosition: "center center",
         backgroundRepeat: "no-repeat",
         backgroundColor: "rgba(0, 0, 0, 0.6)", // Overlay color
-        backgroundBlendMode: "overlay"
-      }}>
+        backgroundBlendMode: "overlay",
+      }}
+    >
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-12">
             {" "}
-            <div className="service-selector-form tab-content position-relative pb-10 pt-10" style={{
-                  backgroundColor: "rgba(255, 255, 255, 0)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: "120px",
-                  marginBottom: "120px",
-                }}>
-                {" "}
-                <label
-                  style={{
-                    marginRight: "20px",
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: "25px",
-                    color: "white"
-                  }}
-                >
-                  Select a Usee-360 Service:
-                </label>{" "}
-                <Select
-                  // classNamePrefix="custom-select"
-                  value={options.find(
-                    (option) => option.value === selectedService
-                  )}
-                  onChange={(selectedOption) =>
-                    setSelectedService(selectedOption.value)
-                  }
-                  options={options}
-                  styles={customStyles}
-                  components={{ Control: CustomControl }}
-                />
+            <div
+              className="service-selector-form tab-content position-relative pb-10 pt-10"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "120px",
+                marginBottom: "120px",
+              }}
+            >
+              {" "}
+              <label
+                style={{
+                  marginRight: "20px",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "25px",
+                  color: "white",
+                }}
+              >
+                Select a Usee-360 Service:
+              </label>{" "}
+              <Select
+                // classNamePrefix="custom-select"
+                value={options.find(
+                  (option) => option.value === selectedService
+                )}
+                onChange={(selectedOption) =>
+                  setSelectedService(selectedOption.value)
+                }
+                options={options}
+                styles={customStyles}
+                components={{ Control: CustomControl }}
+              />
             </div>
-              {selectedService === "properties" && <SearchForm />}
+            {selectedService === "properties" && (
+              <SearchForm onFiltersChange={handleFiltersChange} />
+            )}
           </div>
         </div>
       </div>

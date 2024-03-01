@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import DashboardFilter from "./dashboard-filter";
 import {
+  checkAgentDetails,
   getUserDetailsFromJwt,
   getUserDetailsFromJwt2,
   removeLoginToken,
@@ -8,19 +9,46 @@ import {
 import { AGENT_TYPE, AGENT_TYPE_LABEL, USER_TYPE } from "../../../constants";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../auth/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Dashboard({ type }) {
   const history = useHistory();
   const userDetails = getUserDetailsFromJwt();
+  console.log("usersDetails", userDetails);
 
   useEffect(() => {
-    if (!userDetails) {
-      removeLoginToken();
+    // Only proceed if userDetails exist
+    if (userDetails) {
+      // Handle agent-specific logic
+      if (userDetails.agent.agentType === "agent") {
+        checkAgentDetails()
+          .then((response) => {
+            if (response.user.active === false) {
+              toast("Super admin will approve your account in 24 hours");
+              removeLoginToken();
+              history.push(`/${type}/login`);
+            } else {
+              // Directly go to the dashboard if the agent is active
+              if (history.location.pathname !== `/${type}/dashboard`) {
+                history.push(`/${type}/dashboard`);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking agent details:", error);
+            toast.error("There was a problem checking your account status.");
+          });
+      } else {
+        // Non-agent users go directly to the dashboard
+        if (history.location.pathname !== `/${type}/dashboard`) {
+          history.push(`/${type}/dashboard`);
+        }
+      }
+    } else {
+      // If no userDetails, redirect to login
       history.push(`/${type}/login`);
     }
-  }, [userDetails]);
-
-  
+  }, [userDetails, type, history]);
 
   return (
     <React.Fragment>
