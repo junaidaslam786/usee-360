@@ -32,7 +32,7 @@ export default function PropertyDetails(props) {
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
-  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
+  const [carbonFootprint, setCarbonFootprint] = useState("_");
   const [userDetails, setUserDetails] = useState({});
   const [ornNumber, setOrnNumber] = useState();
 
@@ -46,20 +46,7 @@ export default function PropertyDetails(props) {
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
 
-  // const fetchUserDetails = useCallback(async () => {
-  //   try {
-  //     const response = await UserService.detail(userId);
-  //     console.log("user-details", response);
-  //     setUserDetails(response);
-  //     setOrnNumber(response.ornNumber);
-  //     if (response?.error && response?.message) {
-  //       props.responseHandler(response.message);
-  //       return;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching user details:", error);
-  //   }
-  // }, [userId, props]);
+  
 
   const postPropertyViewLog = async (propertyId) => {
     try {

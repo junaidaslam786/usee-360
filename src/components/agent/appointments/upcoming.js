@@ -4,6 +4,7 @@ import {
   getUserDetailsFromJwt,
   formatAppointmentDate,
   convertGmtToTime,
+  getUserTimezone,
 } from "../../../utils";
 import Modal from "react-modal";
 import ViewAppointment from "./view-appointment";
@@ -11,6 +12,7 @@ import { useHistory } from "react-router";
 import AppointmentService from "../../../services/agent/appointment";
 import { APPOINTMENT_STATUS, USER_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
+import moment from "moment";
 
 export default function Upcoming(props) {
   const [currentPage, setCurrentPage] = useStateIfMounted();
@@ -25,30 +27,34 @@ export default function Upcoming(props) {
   const userDetail = getUserDetailsFromJwt();
   const history = useHistory();
 
-  const loadAllList = useCallback(async (page = 1) => {
-    let appendQuery = props?.selectedFilter
-      ? `&filter=${props?.selectedFilter}`
-      : "";
-    appendQuery = `${appendQuery}${
-      props?.startDate && props?.endDate
-        ? `&startDate=${props.startDate}&endDate=${props.endDate}`
-        : ""
-    }`;
-    appendQuery = `${appendQuery}${
-      props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
-    }`;
+  const loadAllList = useCallback(
+    async (page = 1) => {
+      let appendQuery = props?.selectedFilter
+        ? `&filter=${props?.selectedFilter}`
+        : "";
+      appendQuery = `${appendQuery}${
+        props?.startDate && props?.endDate
+          ? `&startDate=${props.startDate}&endDate=${props.endDate}`
+          : ""
+      }`;
+      appendQuery = `${appendQuery}${
+        props?.selectedUser ? `&selectedUser=${props.selectedUser}` : ""
+      }`;
 
-    const response = await AppointmentService.list({
-      type: "upcoming",
-      page,
-      appendQuery,
-    });
-    if (response?.data) {
-      setList(response.data);
-      setCurrentPage(parseInt(response.page));
-      setTotalPages(parseInt(response.totalPage));
-    }
-  }, [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]);
+      const response = await AppointmentService.list({
+        type: "upcoming",
+        page,
+        appendQuery,
+      });
+      console.log(response);
+      if (response?.data) {
+        setList(response.data);
+        setCurrentPage(parseInt(response.page));
+        setTotalPages(parseInt(response.totalPage));
+      }
+    },
+    [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]
+  );
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -136,6 +142,14 @@ export default function Upcoming(props) {
     setIsNotesModalOpen(true);
   };
 
+  const isWithinFiveMinutes = (appointmentTimeGmt) => {
+    const now = moment(); // Current time as a moment object
+    const appointmentTime = moment.tz(appointmentTimeGmt, "HH:mm:ss", "GMT").tz(getUserTimezone());
+    const timeDiff = appointmentTime.diff(now, 'minutes'); // Difference in minutes
+    return timeDiff <= 5 && timeDiff >= 0; // Check if within 5 minutes
+  };
+  
+
   useEffect(() => {
     const fetchAllAppointments = async () => {
       await loadAllList();
@@ -193,7 +207,18 @@ export default function Upcoming(props) {
                           pathname: `/precall/${element.id}/agent`,
                         }}
                       >
-                        <button className="joinCall">Join Call</button>
+                        <button
+                          className="joinCall"
+                          disabled={
+                            !isWithinFiveMinutes(element.appointmentTimeGmt)
+                          }
+                          style={{
+                            backgroundColor: isWithinFiveMinutes(element.appointmentTimeGmt) ? "" : "#282B38", 
+                            // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000", 
+                          }}
+                        >
+                          Join Call
+                        </button>
                       </Link>
                     ) : (
                       <button className="supervisor-btn">

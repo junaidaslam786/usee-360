@@ -20,7 +20,7 @@ export default function Dashboard({ type }) {
     // Only proceed if userDetails exist
     if (userDetails) {
       // Handle agent-specific logic
-      if (userDetails.agent.agentType === "agent") {
+      if (userDetails && userDetails.agent && userDetails.agent.agentType === "agent") {
         checkAgentDetails()
           .then((response) => {
             if (response.user.active === false) {

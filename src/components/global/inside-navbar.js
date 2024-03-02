@@ -36,7 +36,7 @@ class Navbar extends Component {
                     </ul>
                   </div>
                 </div> */}
-                <div className="col-md-5">
+                {/* <div className="col-md-5">
                   <div className="top-bar-right text-end">
                     <div className="ltn__top-bar-menu">
                       <ul>
@@ -46,7 +46,7 @@ class Navbar extends Component {
                       </ul>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

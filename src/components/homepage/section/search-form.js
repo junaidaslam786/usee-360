@@ -67,8 +67,9 @@ export default function SearchForm({ onFiltersChange }) {
     });
     return count;
   };
+  console.log(countSelectedFilters())
 
-  const selectedFiltersCount = useMemo(() => countSelectedFilters(), [filters]);
+  // const selectedFiltersCount = useMemo(() => countSelectedFilters(), [filters]);
 
   const constructSelectedFilters = () => {
     const selectedFilters = {
@@ -86,10 +87,9 @@ export default function SearchForm({ onFiltersChange }) {
   };
 
   const selectedFilters = constructSelectedFilters();
-  // const handleFndNowClick = () => {
-  //   const selectedFilters = constructSelectedFilters();
-  //   history.push('/property-grid', {...selectedFilters});
-  // };
+  const selectedFiltersCount = Object.keys(selectedFilters).length;
+console.log('Count of selected filters:', selectedFiltersCount);
+ 
 
   const handleFocus = () => {
     setShowLink(true);

@@ -24,7 +24,7 @@ export default function Completed(props) {
   const [showNotesList, setShowNotesList] = useState(false);
   const [notesList, setNotesList] = useState([]);
   const openViewModal = useRef(null);
-  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
+  const [carbonFootprint, setCarbonFootprint] = useState("_");
 
   const loadAllList = useCallback(
     async (page = 1) => {
@@ -179,6 +179,16 @@ export default function Completed(props) {
                     onClick={() => handleViewAppointmentButtonClick(element.id)}
                   >
                     <i className="fa-solid fa-eye" /> View
+                  </button>
+                </div>
+              </div>
+              <div className="tabInner-data">
+                <div>
+                  <button
+                    className="view"
+                    // onClick={() => handleViewAppointmentButtonClick(element.id)}
+                  >
+                    <i className="fa-solid fa-download" /> Download
                   </button>
                 </div>
               </div>
