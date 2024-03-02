@@ -103,7 +103,7 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     } else {
       isAuthenticated = true;
 
-      if (!userDetail && userType !== "agent") {
+      if (!userDetail && userType === "agent") {
         history.push("/customer/dashboard");
         return null;
       }
