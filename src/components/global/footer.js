@@ -91,7 +91,7 @@ class Footer_v1 extends Component {
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 col-12">
                 <div className="footer-widget footer-menu-widget clearfix">
-                  <h4 className="footer-title">Address</h4>
+                  <h4 className="footer-title">Contact Information</h4>
                   <div className="footer-address">
                     <ul>
                       <li>
@@ -104,6 +104,7 @@ class Footer_v1 extends Component {
                           </p>
                         </div>
                       </li>
+
                       <li>
                         <div className="footer-address-icon">
                           <i className="icon-call" />
@@ -122,6 +123,14 @@ class Footer_v1 extends Component {
                               info@usee-360.com
                             </a>
                           </p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="footer-address-icon">
+                          <i className="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div className="footer-address-info">
+                          <p>Business Bay, Dubai, UAE</p>
                         </div>
                       </li>
                     </ul>

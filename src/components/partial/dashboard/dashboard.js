@@ -4,17 +4,28 @@ import {
   checkAgentDetails,
   getUserDetailsFromJwt,
   getUserDetailsFromJwt2,
+  getUserType,
   removeLoginToken,
 } from "../../../utils";
 import { AGENT_TYPE, AGENT_TYPE_LABEL, USER_TYPE } from "../../../constants";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../auth/AuthContext";
 import { toast } from "react-toastify";
+import InformativeModal from "../informative-modal";
 
 export default function Dashboard({ type }) {
+
+  const [showModal, setShowModal] = useState(true);
   const history = useHistory();
   const userDetails = getUserDetailsFromJwt();
-  console.log("usersDetails", userDetails);
+  const userType = getUserType();
+
+  useEffect(() => {
+    // Show the modal only if the logged-in user is a customer
+    if (userDetails && userType === USER_TYPE.CUSTOMER) {
+      setShowModal(true);
+    }
+  }, [userDetails]);
 
   useEffect(() => {
     // Only proceed if userDetails exist
@@ -102,6 +113,7 @@ export default function Dashboard({ type }) {
         </div>
       </div>
       <DashboardFilter type={type} />
+      <InformativeModal isOpen={showModal} onRequestClose= {() => setShowModal(false)}/>
     </React.Fragment>
   );
 }
