@@ -14,6 +14,19 @@ import {
   UNITS,
   BEDROOMS,
   AGENT_TYPE,
+  LAYOUT_OPTIONS,
+  YES_NO_OPTIONS,
+  KITCHEN_OPTIONS,
+  POOL_TYPE_OPTIONS,
+  ROOM_TYPE_OPTIONS,
+  VIEW_OPTIONS,
+  DISPLAY_WINDOW_OPTIONS,
+  BUILDING_AMENITIES_OPTIONS,
+  SECURITY_FEATURES_OPTIONS,
+  CONDITION_OPTIONS,
+  OUTDOOR_SPACES_OPTIONS,
+  FURNISHED_OPTIONS,
+  PARKING_OPTION_TYPES,
 } from "../../../constants";
 import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
@@ -28,7 +41,6 @@ import UploadQrCode from "./upload-qrCode";
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
-  
 
   const [id, setId] = useStateIfMounted();
   const [title, setTitle] = useStateIfMounted("");
@@ -64,12 +76,72 @@ export default function Add(props) {
   const [qrCode, setQrCode] = useStateIfMounted(null);
   const [qrCodePath, setQrCodePath] = useStateIfMounted("");
   const [jobTitle, setJobTitle] = useStateIfMounted("");
-
   const [propertySubTypeOptions, setPropertySubTypeOptions] =
     useStateIfMounted(null);
   const [deedTitle, setDeedTitle] = useStateIfMounted("");
   const [users, setUsers] = useStateIfMounted([]);
   const [userFullUser, setUserFullUser] = useStateIfMounted({});
+
+  const [layout, setLayout] = useStateIfMounted("");
+  const [conferenceRoom, setConferenceRoom] = useStateIfMounted(false);
+  const [capacity, setCapacity] = useStateIfMounted("");
+  const [kitchen, setKitchen] = useStateIfMounted("");
+  const [store, setStore] = useStateIfMounted("");
+  const [foordCourt, setFoodCourt] = useStateIfMounted(false);
+  const [restRoom, setRestRoom] = useStateIfMounted(false);
+  const [pools, setPools] = useStateIfMounted("");
+  const [poolType, setPoolType] = useStateIfMounted("");
+  const [hotelRoom, setHotelRoom] = useStateIfMounted("");
+  const [areaBar, setAreaBar] = useStateIfMounted(0);
+  const [loungeArea, setLoungeArea] = useStateIfMounted(0);
+  const [capacityOfVip, setCapacityOfVip] = useStateIfMounted(0);
+  const [noOfDanceFloor, setNoOfDanceFloor] = useStateIfMounted(0);
+  const [noOfPrivateRooms, setNoOfPrivateRooms] = useStateIfMounted(0);
+
+  const [kitchenArea, setKitchenArea] = useStateIfMounted(0);
+  const [outdoorSeating, setOutdoorSeating] = useStateIfMounted(false);
+  const [outdoorSeatingArea, setOutdoorSeatingArea] = useStateIfMounted(0);
+
+  const [roomSize, setRoomSize] = useStateIfMounted(0);
+  const [noOfBeds, setNoOfBeds] = useStateIfMounted(0);
+  const [roomType, setRoomType] = useStateIfMounted("");
+  const [floorLevel, setFloorLevel] = useStateIfMounted(0);
+  const [view, setView] = useStateIfMounted("");
+  const [balcony, setBalcony] = useStateIfMounted(false);
+
+  const [displayWindowArea, setDisplayWindowArea] = useStateIfMounted(0);
+  const [displayWindow, setDisplayWindow] = useStateIfMounted("");
+
+  const [residentialFloorLevel, setResidentialFloorLevel] =
+    useStateIfMounted(0);
+  const [buildingAmenities, setBuildingAmenities] = useStateIfMounted([]);
+
+  const [fireplace, setFireplace] = useStateIfMounted(false);
+  const [woodBurning, setWoodBurning] = useStateIfMounted(false);
+  const [gas, setGas] = useStateIfMounted(false);
+  const [noOfFloors, setNoOfFloors] = useStateIfMounted(0);
+  const [basement, setBasement] = useStateIfMounted(false);
+  const [residentialKitchen, setResidentialKitchen] = useStateIfMounted("");
+
+  // common tags useState
+  const [securityFeatures, setSecurityFeatures] = useStateIfMounted(false);
+  const [alaramCameraB, setAlaramCameraB] = useStateIfMounted("");
+  const [disabilityAccess, setDisabilityAccess] = useStateIfMounted(false);
+  const [publicTransport, setPublicTransport] = useStateIfMounted(false);
+  const [yearBuilt, setYearBuilt] = useStateIfMounted("");
+  const [condition, setCondition] = useStateIfMounted("");
+  const [availabilityDate, setAvailabilityDate] = useStateIfMounted("");
+  const [additionalFeatures, setAdditionalFeatures] = useStateIfMounted("");
+
+  const [petFreindliness, setPetFreindliness] = useStateIfMounted(false);
+  const [commercialParking, setCommercialParking] = useStateIfMounted(false);
+  const [noOfSpacesCommercial, setNoOfSpacesCommercial] = useStateIfMounted(0);
+
+  const [outdoorSpaces, setOutdoorSpaces] = useStateIfMounted(false);
+  const [noOfBathrooms, setNoOfBathrooms] = useStateIfMounted(0);
+  const [furnished, setFurnished] = useStateIfMounted(false);
+  const [parkingResidential, setParkingResidential] = useStateIfMounted(false);
+  const [parkingType, setParkingType] = useStateIfMounted("");
 
   const history = useHistory();
 
@@ -130,7 +202,6 @@ export default function Add(props) {
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
 
-   
     if (permitNumber) {
       formdata.append("permitNumber", permitNumber);
     }
@@ -169,6 +240,118 @@ export default function Add(props) {
     if (deedTitle) {
       formdata.append("metaTags[9]", deedTitle);
     }
+
+    // Append new fields with checks
+  if (propertyType?.value === "commercial") {
+    switch (propertySubType?.value) {
+      case "office":
+        formdata.append("metaTags[layout]", layout);
+        formdata.append("metaTags[conferenceRoom]", conferenceRoom);
+        if (conferenceRoom === "yes") {
+          formdata.append("metaTags[capacity]", capacity);
+        }
+        formdata.append("metaTags[kitchen]", kitchen);
+        break;
+      case "shopping_center":
+        formdata.append("metaTags[store]", store);
+        formdata.append("metaTags[foodCourt]", foordCourt);
+        formdata.append("metaTags[restRoom]", restRoom);
+        break;
+      case "hotels":
+        formdata.append("metaTags[pools]", pools);
+        formdata.append("metaTags[poolType]", poolType);
+        formdata.append("metaTags[hotelRoom]", hotelRoom);
+        break;
+      case "club":
+        formdata.append("metaTags[areaBar]", areaBar);
+        formdata.append("metaTags[loungeArea]", loungeArea);
+        formdata.append("metaTags[capacityOfVip]", capacityOfVip);
+        formdata.append("metaTags[noOfDanceFloor]", noOfDanceFloor);
+        formdata.append("metaTags[noOfPrivateRooms]", noOfPrivateRooms);
+        break;
+      case "restaurant":
+        formdata.append("metaTags[kitchenArea]", kitchenArea);
+        formdata.append("metaTags[outdoorSeating]", outdoorSeating);
+        if (outdoorSeating === "yes") {
+          formdata.append("metaTags[outdoorSeatingArea]", outdoorSeatingArea);
+        }
+        break;
+      case "hotel_room":
+        formdata.append("metaTags[roomSize]", roomSize);
+        formdata.append("metaTags[noOfBeds]", noOfBeds);
+        formdata.append("metaTags[roomType]", roomType);
+        formdata.append("metaTags[floorLevel]", floorLevel);
+        formdata.append("metaTags[view]", view);
+        formdata.append("metaTags[balcony]", balcony);
+        break;
+      case "retail":
+      case "shop":
+      case "store":
+        formdata.append("metaTags[displayWindowArea]", displayWindowArea);
+        formdata.append("metaTags[displayWindow]", displayWindow);
+        break;
+    }
+
+    // Common commercial tags
+    formdata.append("metaTags[petFriendliness]", petFreindliness);
+    formdata.append("metaTags[commercialParking]", commercialParking);
+    if (commercialParking === "yes") {
+      formdata.append("metaTags[noOfSpacesCommercial]", noOfSpacesCommercial);
+    }
+  }
+
+  if (propertyType?.value === "residential") {
+    switch (propertySubType?.value) {
+      case "apartment":
+      case "studio":
+      case "room":
+        // Fields common to apartment, studio, and room
+        formdata.append("metaTags[residentialFloorLevel]", residentialFloorLevel);
+        if (buildingAmenities.length > 0) {
+          buildingAmenities.forEach((amenity, index) => {
+            formdata.append(`metaTags[buildingAmenities][${index}]`, amenity);
+          });
+        }
+        break;
+      case "house":
+      case "bungalow":
+      case "duplex":
+      case "triplex":
+      case "cottage":
+        // Fields specific to house, bungalow, duplex, triplex, cottage
+        formdata.append("metaTags[fireplace]", fireplace);
+        if (fireplace === "yes") {
+          formdata.append("metaTags[woodBurning]", woodBurning);
+          formdata.append("metaTags[gas]", gas);
+        }
+        formdata.append("metaTags[noOfFloors]", noOfFloors);
+        formdata.append("metaTags[basement]", basement);
+        formdata.append("metaTags[residentialKitchen]", residentialKitchen);
+        break;
+      // Add more cases for other residential subtypes as needed
+    }
+
+    // Common residential tags
+    formdata.append("metaTags[outdoorSpaces]", outdoorSpaces);
+    formdata.append("metaTags[noOfBathrooms]", noOfBathrooms);
+    formdata.append("metaTags[furnished]", furnished);
+    formdata.append("metaTags[parkingResidential]", parkingResidential);
+    if (parkingResidential === "yes") {
+      formdata.append("metaTags[parkingType]", parkingType);
+    }
+}
+
+  // Common fields for both types
+  formdata.append("metaTags[securityFeatures]", securityFeatures);
+  if (securityFeatures === "yes") {
+    formdata.append("metaTags[alaramCameraB]", alaramCameraB);
+  }
+  formdata.append("metaTags[disabilityAccess]", disabilityAccess);
+  formdata.append("metaTags[publicTransport]", publicTransport);
+  formdata.append("metaTags[yearBuilt]", yearBuilt);
+  formdata.append("metaTags[condition]", condition);
+  formdata.append("metaTags[availabilityDate]", availabilityDate);
+  formdata.append("metaTags[additionalFeatures]", additionalFeatures);
 
     if (id) {
       apiUrl = "update";
@@ -235,7 +418,6 @@ export default function Add(props) {
     // You might want to do more here, like updating the form data that will be submitted
   };
 
-  
   const setPropertyCategoryTypeHandler = (e) => {
     setPropertyCategoryType(e);
   };
@@ -511,9 +693,899 @@ export default function Add(props) {
           </div>
         </div>
 
+        {/*Commercail Meta Tags */}
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "office" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Layout</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={LAYOUT_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setLayout(selectedOption ? selectedOption.value : "")
+                      }
+                      value={LAYOUT_OPTIONS.find(
+                        (option) => option.value === layout
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Conference Room</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setConferenceRoom(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === conferenceRoom
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              {conferenceRoom === "yes" && (
+                <div className="col-md-12">
+                  <div className="input-item">
+                    <label>Capacity</label>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      onChange={(e) => setCapacity(e.target.value)}
+                      value={capacity}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Kitchen</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={KITCHEN_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setKitchen(selectedOption ? selectedOption.value : "")
+                      }
+                      value={KITCHEN_OPTIONS.find(
+                        (option) => option.value === kitchen
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "shopping_center" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Stores</label>
+                  <div className="input-item">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      onChange={(e) => setStore(e.target.value)}
+                      value={store}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Food Court</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setFoodCourt(selectedOption ? selectedOption.value : "")
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === foordCourt
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Rest Room</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setRestRoom(selectedOption ? selectedOption.value : "")
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === restRoom
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "hotels" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Pools</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setPools(e.target.value)}
+                    value={pools}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Pool Type</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={POOL_TYPE_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setPoolType(selectedOption ? selectedOption.value : "")
+                      }
+                      value={POOL_TYPE_OPTIONS.find(
+                        (option) => option.value === poolType
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Rooms</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setHotelRoom(e.target.value)}
+                    value={hotelRoom}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "club" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Area of Bar (Square Meter)</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setAreaBar(e.target.value)}
+                    value={areaBar}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Lounge Area (Square Meter)</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setLoungeArea(e.target.value)}
+                    value={loungeArea}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Capacity of VIP</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setCapacityOfVip(e.target.value)}
+                    value={capacityOfVip}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Dance Floor</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setNoOfDanceFloor(e.target.value)}
+                    value={noOfDanceFloor}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Private Rooms</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setNoOfPrivateRooms(e.target.value)}
+                    value={noOfPrivateRooms}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "restaurant" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Kitchen Area (Square Meter)</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setKitchenArea(e.target.value)}
+                    value={kitchenArea}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Outdoor Seating</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setOutdoorSeating(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === outdoorSeating
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              {outdoorSeating === "yes" && (
+                <div className="col-md-12">
+                  <div className="input-item">
+                    <label>Outdoor Seating Area (Square Meter)</label>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      onChange={(e) => setOutdoorSeatingArea(e.target.value)}
+                      value={outdoorSeatingArea}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          propertySubType?.value === "hotel_room" && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Room Size (Square Meter)</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setRoomSize(e.target.value)}
+                    value={roomSize}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Beds</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setNoOfBeds(e.target.value)}
+                    value={noOfBeds}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Room Type</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={ROOM_TYPE_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setRoomType(selectedOption ? selectedOption.value : "")
+                      }
+                      value={ROOM_TYPE_OPTIONS.find(
+                        (option) => option.value === roomType
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Floor Level</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setFloorLevel(e.target.value)}
+                    value={floorLevel}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>View</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={VIEW_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setView(selectedOption ? selectedOption.value : "")
+                      }
+                      value={VIEW_OPTIONS.find(
+                        (option) => option.value === view
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Balcony/Terrace</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setBalcony(selectedOption ? selectedOption.value : "")
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === balcony
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "commercial" &&
+          (propertySubType?.value === "retail" ||
+            propertySubType?.value === "shop" ||
+            propertySubType?.value === "store") && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Display Window Area (Square Meter)</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setDisplayWindowArea(e.target.value)}
+                    value={displayWindowArea}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Display Window</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={DISPLAY_WINDOW_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setDisplayWindow(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      value={DISPLAY_WINDOW_OPTIONS.find(
+                        (option) => option.value === displayWindow
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {/* Residential Meta Tags */}
+        {propertyType?.value === "residential" &&
+          (propertySubType?.value === "apartment" ||
+            propertySubType?.value === "studio" ||
+            propertySubType?.value === "room") && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Floor Level</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setResidentialFloorLevel(e.target.value)}
+                    value={residentialFloorLevel}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Building Amenities</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      isMulti
+                      options={BUILDING_AMENITIES_OPTIONS}
+                      onChange={(selectedOptions) =>
+                        setBuildingAmenities(
+                          selectedOptions.map((option) => option.value)
+                        )
+                      }
+                      value={BUILDING_AMENITIES_OPTIONS.filter((option) =>
+                        buildingAmenities.includes(option.value)
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {propertyType?.value === "residential" &&
+          (propertySubType?.value === "house" ||
+            propertySubType?.value === "bungalow" ||
+            propertySubType?.value === "duplex" ||
+            propertySubType?.value === "triplex" ||
+            propertySubType?.value === "cottage") && (
+            <div className="row">
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Fireplace</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setFireplace(selectedOption ? selectedOption.value : "")
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === fireplace
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+                {fireplace === "yes" && (
+                  <div className="col-md-12">
+                    <div className="input-item">
+                      <label>Wood Burning</label>
+                      <div className="input-item">
+                        <Select
+                          classNamePrefix="custom-select"
+                          options={YES_NO_OPTIONS}
+                          onChange={(selectedOption) =>
+                            setWoodBurning(
+                              selectedOption ? selectedOption.value : ""
+                            )
+                          }
+                          value={YES_NO_OPTIONS.find(
+                            (option) => option.value === woodBurning
+                          )}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="input-item">
+                      <label>Gas</label>
+                      <div className="input-item">
+                        <Select
+                          classNamePrefix="custom-select"
+                          options={YES_NO_OPTIONS}
+                          onChange={(selectedOption) =>
+                            setGas(selectedOption ? selectedOption.value : "")
+                          }
+                          value={YES_NO_OPTIONS.find(
+                            (option) => option.value === gas
+                          )}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Floors</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setNoOfFloors(e.target.value)}
+                    value={noOfFloors}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Basement</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={YES_NO_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setBasement(selectedOption ? selectedOption.value : "")
+                      }
+                      value={YES_NO_OPTIONS.find(
+                        (option) => option.value === basement
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Kitchen</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={KITCHEN_OPTIONS}
+                      onChange={(selectedOption) =>
+                        setResidentialKitchen(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      value={KITCHEN_OPTIONS.find(
+                        (option) => option.value === residentialKitchen
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {/* common comercial feature tag */}
+        {propertyType?.value === "commercial" && (
+          <div className="row">
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Pet Friendliness</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={YES_NO_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setPetFreindliness(
+                        selectedOption ? selectedOption.value : ""
+                      )
+                    }
+                    value={YES_NO_OPTIONS.find(
+                      (option) => option.value === petFreindliness
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Parking Facility</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={YES_NO_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setCommercialParking(
+                        selectedOption ? selectedOption.value : ""
+                      )
+                    }
+                    value={YES_NO_OPTIONS.find(
+                      (option) => option.value === commercialParking
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            {commercialParking === "yes" && (
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Number of Parking</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    onChange={(e) => setNoOfSpacesCommercial(e.target.value)}
+                    value={noOfSpacesCommercial}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* common residential feature tag */}
+        {propertyType?.value === "residential" && (
+          <div className="row">
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Outdoor Spaces</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={OUTDOOR_SPACES_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setOutdoorSpaces(
+                        selectedOption ? selectedOption.value : ""
+                      )
+                    }
+                    value={OUTDOOR_SPACES_OPTIONS.find(
+                      (option) => option.value === outdoorSpaces
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Number of Bathrooms</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => setNoOfBathrooms(e.target.value)}
+                  value={noOfBathrooms}
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Furnished</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={FURNISHED_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setFurnished(selectedOption ? selectedOption.value : "")
+                    }
+                    value={FURNISHED_OPTIONS.find(
+                      (option) => option.value === furnished
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Parking</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={YES_NO_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setParkingResidential(
+                        selectedOption ? selectedOption.value : ""
+                      )
+                    }
+                    value={YES_NO_OPTIONS.find(
+                      (option) => option.value === parkingResidential
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            {parkingResidential === "yes" && (
+              <div className="col-md-12">
+                <div className="input-item">
+                  <label>Parking Type</label>
+                  <div className="input-item">
+                    <Select
+                      classNamePrefix="custom-select"
+                      options={PARKING_OPTION_TYPES}
+                      onChange={(selectedOption) =>
+                        setParkingType(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      value={PARKING_OPTION_TYPES.find(
+                        (option) => option.value === parkingType
+                      )}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Common Features */}
+        <div className="row">
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Security Features</label>
+              <div className="input-item">
+                <Select
+                  classNamePrefix="custom-select"
+                  options={YES_NO_OPTIONS}
+                  onChange={(selectedOption) =>
+                    setSecurityFeatures(
+                      selectedOption ? selectedOption.value : ""
+                    )
+                  }
+                  value={YES_NO_OPTIONS.find(
+                    (option) => option.value === securityFeatures
+                  )}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          {securityFeatures === "yes" && (
+            <div className="col-md-12">
+              <div className="input-item">
+                <label>Alaram/Camera</label>
+                <div className="input-item">
+                  <Select
+                    classNamePrefix="custom-select"
+                    options={SECURITY_FEATURES_OPTIONS}
+                    onChange={(selectedOption) =>
+                      setAlaramCameraB(
+                        selectedOption ? selectedOption.value : ""
+                      )
+                    }
+                    value={SECURITY_FEATURES_OPTIONS.find(
+                      (option) => option.value === alaramCameraB
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Disability Access</label>
+              <div className="input-item">
+                <Select
+                  classNamePrefix="custom-select"
+                  options={YES_NO_OPTIONS}
+                  onChange={(selectedOption) =>
+                    setDisabilityAccess(
+                      selectedOption ? selectedOption.value : ""
+                    )
+                  }
+                  value={YES_NO_OPTIONS.find(
+                    (option) => option.value === disabilityAccess
+                  )}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Public Transport</label>
+              <div className="input-item">
+                <Select
+                  classNamePrefix="custom-select"
+                  options={YES_NO_OPTIONS}
+                  onChange={(selectedOption) =>
+                    setPublicTransport(
+                      selectedOption ? selectedOption.value : ""
+                    )
+                  }
+                  value={YES_NO_OPTIONS.find(
+                    (option) => option.value === publicTransport
+                  )}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Year Built</label>
+              <input
+                type="number"
+                placeholder="0"
+                onChange={(e) => setYearBuilt(e.target.value)}
+                value={yearBuilt}
+                required
+              />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Condition</label>
+              <div className="input-item">
+                <Select
+                  classNamePrefix="custom-select"
+                  options={CONDITION_OPTIONS}
+                  onChange={(selectedOption) =>
+                    setCondition(selectedOption ? selectedOption.value : "")
+                  }
+                  value={CONDITION_OPTIONS.find(
+                    (option) => option.value === condition
+                  )}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Availability Date</label>
+              <input
+                type="date"
+                value={availabilityDate}
+                onChange={(e) => setAvailabilityDate(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="input-item">
+              <label>Additional Features</label>
+              <textarea
+                className="mb-custom"
+                value={additionalFeatures}
+                placeholder="Additional Features"
+                onChange={(e) => setAdditionalFeatures(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Permit Number and QR Code for Dubai properties */}
         {userFullUser.cityName === "Dubai" &&
-          userFullUser.countryName === "United Arab Emirates" &&  jobTitle === "developer" && (
+          userFullUser.countryName === "United Arab Emirates" &&
+          jobTitle === "developer" && (
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">

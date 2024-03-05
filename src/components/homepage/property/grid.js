@@ -42,66 +42,6 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     libraries: ["places", "drawing"],
   });
 
-  
-
-  // const loadProperties = async (page = 1) => {
-  //   const { state } = location; // Assuming you have access to 'location'
-
-  //   // Extract filters and properties from location state with default values
-  //   const filtersFromLocation = state?.filters ?? {};
-  //   const propertiesFromState = state?.properties ?? [];
-  //   const source = state?.source; // Source of the navigation ('search-form' or 'google-maps')
-
-  //   console.log("filtersFromLocation", filtersFromLocation);
-  //   console.log("propertiesFromState", propertiesFromState);
-  //   console.log("source", source);
-
-  //   // If the source is google-maps, and properties are provided, use them directly
-  //   if (source === "google-maps" && propertiesFromState.length > 0) {
-  //     setProperties(propertiesFromState);
-  //     setCurrentPage(1); // Assuming the first page
-  //     setTotalPages(Math.ceil(propertiesFromState.length / 10)); // Assuming 10 properties per page
-  //     return; // Skip fetching new data if we already have properties
-  //   }
-
-  //   // If the source is search-form, or no source but filters are provided, fetch properties based on filters
-  //   if (
-  //     source === "search-form" ||
-  //     (!source && Object.keys(filtersFromLocation).length > 0)
-  //   ) {
-  //     // Construct the payload with filters and include dynamic lat/lng if present
-  //     let payload = {
-  //       ...filtersFromLocation,
-  //       ...(latFilter !== null && { lat: latFilter }),
-  //       ...(lngFilter !== null && { lng: lngFilter }),
-  //       page,
-  //       size: 10, // Assuming a default size of 10, adjust as needed
-  //     };
-
-  //     // Apply sorting if specified
-  //     if (sort.current && sort.current.value !== "null") {
-  //       payload.sort = [
-  //         sort.current.value.split("_")[0],
-  //         sort.current.value.split("_")[1],
-  //       ]; // Example: "price_ASC"
-  //     }
-
-  //     try {
-  //       const response = await HomepageService.listProperties("", payload);
-  //       if (response.error && response.message) {
-  //         responseHandler(response.message);
-  //       } else {
-  //         setProperties(response.data);
-  //         setCurrentPage(response.page);
-  //         setTotalPages(response.totalPage);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error loading properties:", error);
-  //       responseHandler("Failed to load properties. Please try again.");
-  //     }
-  //   }
-  //   // Optionally, handle cases where neither properties nor filters are provided, or handle other sources
-  // };
 
   const loadProperties = async (page = 1) => {
 
