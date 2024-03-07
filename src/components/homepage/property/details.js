@@ -6,7 +6,9 @@ import {
   formatPrice,
   getLoginToken,
   getUserDetailsFromJwt,
+  iconsMap,
   setPropertyMetaData,
+  tagsOrder,
 } from "../../../utils";
 import PropertyService from "../../../services/agent/property";
 import UserService from "../../../services/agent/user";
@@ -35,6 +37,7 @@ export default function PropertyDetails(props) {
   const [carbonFootprint, setCarbonFootprint] = useState("_");
   const [userDetails, setUserDetails] = useState({});
   const [ornNumber, setOrnNumber] = useState();
+  const [propertyTags, setPropertyTags] = useState([]);
 
   const token = getLoginToken();
   const history = useHistory();
@@ -46,7 +49,8 @@ export default function PropertyDetails(props) {
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
 
-  
+  console.log("propertyTags keys:", Object.keys(propertyTags));
+  console.log("iconsMap keys:", Object.keys(iconsMap));
 
   const postPropertyViewLog = async (propertyId) => {
     try {
@@ -76,20 +80,22 @@ export default function PropertyDetails(props) {
 
       postPropertyViewLog(params.id);
 
-      if (response?.productMetaTags) {
-        const {
-          typeMetaTag,
-          categoryTypeMetaTag,
-          unitMetaTag,
-          areaMetaTag,
-          bedroomsMetaTag,
-        } = setPropertyMetaData(response.productMetaTags);
-        setPropertyType(typeMetaTag);
-        setPropertyCategoryType(categoryTypeMetaTag);
-        setPropertyUnit(unitMetaTag);
-        setPropertyArea(areaMetaTag);
-        setPropertyBedrooms(bedroomsMetaTag);
-      }
+
+      // Use slice() to clone the array before reversing to avoid mutating the original array
+      const reversedMetaTags = response.productMetaTags.slice().reverse(); 
+
+  
+      const metaTagsMap = reversedMetaTags.reduce((acc, tag) => {
+        const label = tag.categoryField.label;
+        acc[label] = tag.value;
+        return acc;
+      }, {});
+
+      // Now you have a dynamic map of all meta tags which can be used directly in the component
+      // Example: metaTagsMap['Parking Facility'] will give you the value of the Parking Facility tag
+      setPropertyMetaData(metaTagsMap);
+      setPropertyTags(metaTagsMap);
+
       setCity(response?.city);
       setRegion(response?.region);
       setPermitNumber(response?.permitNumber);
@@ -274,45 +280,21 @@ export default function PropertyDetails(props) {
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>
               <div className="property-detail-feature-list clearfix mb-45">
-                <ul>
-                  <li>
-                    <div className="property-detail-feature-list-item">
-                      <i className="flaticon-double-bed" />
-                      <div>
-                        <h6>Type</h6>
-                        <small>{propertyType?.label || ""}</small>
+                <ul style={{display: 'flex', flexDirection: 'column'}}>
+                  {Object.entries(propertyTags).map(([key, value]) => (
+                    <li key={key}>
+                      <div className="property-detail-feature-list-item">
+                        <i className={iconsMap[key] || "flaticon-double-bed"} />
+                        <div>
+                          <h6>{key}</h6>
+                          <small>{value}</small>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="property-detail-feature-list-item">
-                      <i className="flaticon-double-bed" />
-                      <div>
-                        <h6>Bedrooms</h6>
-                        <small>{propertyBedrooms?.label || ""}</small>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="property-detail-feature-list-item">
-                      <i className="flaticon-double-bed" />
-                      <div>
-                        <h6>Area</h6>
-                        <small>{propertyArea || ""}</small>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="property-detail-feature-list-item">
-                      <i className="flaticon-double-bed" />
-                      <div>
-                        <h6>Unit</h6>
-                        <small>{propertyUnit?.label || ""}</small>
-                      </div>
-                    </div>
-                  </li>
+                    </li>
+                  ))}
                 </ul>
               </div>
+
               {property?.virtualTourType &&
                 property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
                   <div className="property-detail-feature-list clearfix mb-45">
@@ -353,18 +335,19 @@ export default function PropertyDetails(props) {
                       <p>Permit Number: {permitNumber}</p>
                     </div>
                   </div>
-                  <div className="widget ltn__author-widget" style={{display: 'flex', alignItems: "center"}}>
-                    
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/${qrCode}`}
-                        alt={qrCode}
-                        style={{
-                          width: "100%", // Set the width of the square
-                          height: "100%", // Set the height to match the width, making it square
-                          objectFit: "contain", // This will cover the square area, potentially cropping the image
-                        }}
-                      />
-                    
+                  <div
+                    className="widget ltn__author-widget"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <img
+                      src={`${process.env.REACT_APP_API_URL}/${qrCode}`}
+                      alt={qrCode}
+                      style={{
+                        width: "100%", // Set the width of the square
+                        height: "100%", // Set the height to match the width, making it square
+                        objectFit: "contain", // This will cover the square area, potentially cropping the image
+                      }}
+                    />
                   </div>
                 </>
               )}

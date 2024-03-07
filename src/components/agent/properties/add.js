@@ -27,6 +27,7 @@ import {
   OUTDOOR_SPACES_OPTIONS,
   FURNISHED_OPTIONS,
   PARKING_OPTION_TYPES,
+  FIREPLACE_VALUE_OPTIONS,
 } from "../../../constants";
 import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
 import UserService from "../../../services/agent/user";
@@ -142,6 +143,7 @@ export default function Add(props) {
   const [furnished, setFurnished] = useStateIfMounted(false);
   const [parkingResidential, setParkingResidential] = useStateIfMounted(false);
   const [parkingType, setParkingType] = useStateIfMounted("");
+  const [garageSpaces, setGarageSpaces] = useStateIfMounted(0);
 
   const history = useHistory();
 
@@ -242,116 +244,118 @@ export default function Add(props) {
     }
 
     // Append new fields with checks
-  if (propertyType?.value === "commercial") {
-    switch (propertySubType?.value) {
-      case "office":
-        formdata.append("metaTags[layout]", layout);
-        formdata.append("metaTags[conferenceRoom]", conferenceRoom);
-        if (conferenceRoom === "yes") {
-          formdata.append("metaTags[capacity]", capacity);
-        }
-        formdata.append("metaTags[kitchen]", kitchen);
-        break;
-      case "shopping_center":
-        formdata.append("metaTags[store]", store);
-        formdata.append("metaTags[foodCourt]", foordCourt);
-        formdata.append("metaTags[restRoom]", restRoom);
-        break;
-      case "hotels":
-        formdata.append("metaTags[pools]", pools);
-        formdata.append("metaTags[poolType]", poolType);
-        formdata.append("metaTags[hotelRoom]", hotelRoom);
-        break;
-      case "club":
-        formdata.append("metaTags[areaBar]", areaBar);
-        formdata.append("metaTags[loungeArea]", loungeArea);
-        formdata.append("metaTags[capacityOfVip]", capacityOfVip);
-        formdata.append("metaTags[noOfDanceFloor]", noOfDanceFloor);
-        formdata.append("metaTags[noOfPrivateRooms]", noOfPrivateRooms);
-        break;
-      case "restaurant":
-        formdata.append("metaTags[kitchenArea]", kitchenArea);
-        formdata.append("metaTags[outdoorSeating]", outdoorSeating);
-        if (outdoorSeating === "yes") {
-          formdata.append("metaTags[outdoorSeatingArea]", outdoorSeatingArea);
-        }
-        break;
-      case "hotel_room":
-        formdata.append("metaTags[roomSize]", roomSize);
-        formdata.append("metaTags[noOfBeds]", noOfBeds);
-        formdata.append("metaTags[roomType]", roomType);
-        formdata.append("metaTags[floorLevel]", floorLevel);
-        formdata.append("metaTags[view]", view);
-        formdata.append("metaTags[balcony]", balcony);
-        break;
-      case "retail":
-      case "shop":
-      case "store":
-        formdata.append("metaTags[displayWindowArea]", displayWindowArea);
-        formdata.append("metaTags[displayWindow]", displayWindow);
-        break;
+    if (propertyType?.value === "commercial") {
+      switch (propertySubType?.value) {
+        case "office":
+          formdata.append("metaTags[10]", layout);
+          formdata.append("metaTags[11]", conferenceRoom);
+          if (conferenceRoom === "yes") {
+            formdata.append("metaTags[12]", capacity);
+          }
+          formdata.append("metaTags[13]", kitchen);
+          break;
+        case "shopping_center":
+          formdata.append("metaTags[17]", store);
+          formdata.append("metaTags[18]", foordCourt);
+          formdata.append("metaTags[19]", restRoom);
+          break;
+        case "hotels":
+          formdata.append("metaTags[20]", pools);
+          formdata.append("metaTags[21]", poolType);
+          formdata.append("metaTags[22]", hotelRoom);
+          break;
+        case "club":
+          formdata.append("metaTags[23]", areaBar);
+          formdata.append("metaTags[24]", loungeArea);
+          formdata.append("metaTags[25]", capacityOfVip);
+          formdata.append("metaTags[26]", noOfDanceFloor);
+          formdata.append("metaTags[27]", noOfPrivateRooms);
+          break;
+        case "restaurant":
+          formdata.append("metaTags[28]", kitchenArea);
+          formdata.append("metaTags[29]", outdoorSeating);
+          if (outdoorSeating === "yes") {
+            formdata.append("metaTags[30]", outdoorSeatingArea);
+          }
+          break;
+        case "hotel_room":
+          formdata.append("metaTags[31]", roomSize);
+          formdata.append("metaTags[32]", noOfBeds);
+          formdata.append("metaTags[33]", roomType);
+          formdata.append("metaTags[34]", floorLevel);
+          formdata.append("metaTags[35]", view);
+          formdata.append("metaTags[36]", balcony);
+          break;
+        case "retail":
+        case "shop":
+        case "store":
+          formdata.append("metaTags[14]", displayWindowArea);
+          formdata.append("metaTags[15]", displayWindow);
+          break;
+      }
+
+      // Common commercial tags
+      formdata.append("metaTags[46]", petFreindliness);
+      formdata.append("metaTags[40]", commercialParking);
+      if (commercialParking === "yes") {
+        formdata.append("metaTags[41]", noOfSpacesCommercial);
+      }
     }
 
-    // Common commercial tags
-    formdata.append("metaTags[petFriendliness]", petFreindliness);
-    formdata.append("metaTags[commercialParking]", commercialParking);
-    if (commercialParking === "yes") {
-      formdata.append("metaTags[noOfSpacesCommercial]", noOfSpacesCommercial);
-    }
-  }
+    if (propertyType?.value === "residential") {
+      switch (propertySubType?.value) {
+        case "apartment":
+        case "studio":
+        case "room":
+          // Fields common to apartment, studio, and room
+          formdata.append(
+            "metaTags[residentialFloorLevel]",
+            residentialFloorLevel
+          );
+          if (buildingAmenities.length > 0) {
+            buildingAmenities.forEach((amenity, index) => {
+              formdata.append(`metaTags[48][${index}]`, amenity);
+            });
+          }
+          break;
+        case "house":
+        case "bungalow":
+        case "duplex":
+        case "triplex":
+        case "cottage":
+          // Fields specific to house, bungalow, duplex, triplex, cottage
+          formdata.append("metaTags[49]", fireplace);
+          if (fireplace === "yes") {
+            formdata.append("metaTags[50]", woodBurning);
+          }
+          formdata.append("metaTags[51]", noOfFloors);
+          formdata.append("metaTags[52]", basement);
+          formdata.append("metaTags[13]", residentialKitchen);
+          break;
+        // Add more cases for other residential subtypes as needed
+      }
 
-  if (propertyType?.value === "residential") {
-    switch (propertySubType?.value) {
-      case "apartment":
-      case "studio":
-      case "room":
-        // Fields common to apartment, studio, and room
-        formdata.append("metaTags[residentialFloorLevel]", residentialFloorLevel);
-        if (buildingAmenities.length > 0) {
-          buildingAmenities.forEach((amenity, index) => {
-            formdata.append(`metaTags[buildingAmenities][${index}]`, amenity);
-          });
-        }
-        break;
-      case "house":
-      case "bungalow":
-      case "duplex":
-      case "triplex":
-      case "cottage":
-        // Fields specific to house, bungalow, duplex, triplex, cottage
-        formdata.append("metaTags[fireplace]", fireplace);
-        if (fireplace === "yes") {
-          formdata.append("metaTags[woodBurning]", woodBurning);
-          formdata.append("metaTags[gas]", gas);
-        }
-        formdata.append("metaTags[noOfFloors]", noOfFloors);
-        formdata.append("metaTags[basement]", basement);
-        formdata.append("metaTags[residentialKitchen]", residentialKitchen);
-        break;
-      // Add more cases for other residential subtypes as needed
+      // Common residential tags
+      formdata.append("metaTags[outdoorSpaces]", outdoorSpaces);
+      formdata.append("metaTags[noOfBathrooms]", noOfBathrooms);
+      formdata.append("metaTags[furnished]", furnished);
+      formdata.append("metaTags[53]", parkingResidential);
+      if (parkingResidential === "yes") {
+        formdata.append("metaTags[54]", parkingType);
+      }
     }
 
-    // Common residential tags
-    formdata.append("metaTags[outdoorSpaces]", outdoorSpaces);
-    formdata.append("metaTags[noOfBathrooms]", noOfBathrooms);
-    formdata.append("metaTags[furnished]", furnished);
-    formdata.append("metaTags[parkingResidential]", parkingResidential);
-    if (parkingResidential === "yes") {
-      formdata.append("metaTags[parkingType]", parkingType);
+    // Common fields for both types
+    formdata.append("metaTags[37]", securityFeatures);
+    if (securityFeatures === "yes") {
+      formdata.append("metaTags[38]", alaramCameraB);
     }
-}
-
-  // Common fields for both types
-  formdata.append("metaTags[securityFeatures]", securityFeatures);
-  if (securityFeatures === "yes") {
-    formdata.append("metaTags[alaramCameraB]", alaramCameraB);
-  }
-  formdata.append("metaTags[disabilityAccess]", disabilityAccess);
-  formdata.append("metaTags[publicTransport]", publicTransport);
-  formdata.append("metaTags[yearBuilt]", yearBuilt);
-  formdata.append("metaTags[condition]", condition);
-  formdata.append("metaTags[availabilityDate]", availabilityDate);
-  formdata.append("metaTags[additionalFeatures]", additionalFeatures);
+    formdata.append("metaTags[39]", disabilityAccess);
+    formdata.append("metaTags[42]", publicTransport);
+    formdata.append("metaTags[43]", yearBuilt);
+    formdata.append("metaTags[44]", condition);
+    formdata.append("metaTags[45]", availabilityDate);
+    formdata.append("metaTags[47]", additionalFeatures);
 
     if (id) {
       apiUrl = "update";
@@ -1196,34 +1200,18 @@ export default function Add(props) {
                 {fireplace === "yes" && (
                   <div className="col-md-12">
                     <div className="input-item">
-                      <label>Wood Burning</label>
+                      <label>Wood Burning Gas</label>
                       <div className="input-item">
                         <Select
                           classNamePrefix="custom-select"
-                          options={YES_NO_OPTIONS}
+                          options={FIREPLACE_VALUE_OPTIONS}
                           onChange={(selectedOption) =>
                             setWoodBurning(
                               selectedOption ? selectedOption.value : ""
                             )
                           }
-                          value={YES_NO_OPTIONS.find(
+                          value={FIREPLACE_VALUE_OPTIONS.find(
                             (option) => option.value === woodBurning
-                          )}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="input-item">
-                      <label>Gas</label>
-                      <div className="input-item">
-                        <Select
-                          classNamePrefix="custom-select"
-                          options={YES_NO_OPTIONS}
-                          onChange={(selectedOption) =>
-                            setGas(selectedOption ? selectedOption.value : "")
-                          }
-                          value={YES_NO_OPTIONS.find(
-                            (option) => option.value === gas
                           )}
                           required
                         />
@@ -1438,6 +1426,20 @@ export default function Add(props) {
                     />
                   </div>
                 </div>
+                {parkingType === "Garage/Carport" && (
+                  <div className="col-md-12">
+                    <div className="input-item">
+                      <label>Number of Parking</label>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        onChange={(e) => setGarageSpaces(e.target.value)}
+                        value={garageSpaces}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

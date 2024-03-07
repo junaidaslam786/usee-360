@@ -262,6 +262,192 @@ export const formatPrice = (price) => {
   const formatter = new Intl.NumberFormat("en-US");
   return `${DEFAULT_CURRENCY} ${formatter.format(price)}`;
 };
+// export const iconsMap = {
+//   "Property Type": "flaticon-building",
+//   "Property Category Type": "flaticon-category",
+//   "Unit": "flaticon-unit",
+
+//   "Area": "flaticon-area",
+//   "No. of bedrooms": "flaticon-beds",
+//   "Commercial Properties": "",
+//   "Price Type": "flaticon-pricetag",
+//   // deedTitleMetaTag: "flaticon-deed",
+//   // Add more mappings based on your actual icons
+//   "Layout": "flaticon-layout",
+
+//   "Conference Room": "flaticon-conference",
+
+//   "Conference Room Capacity": "flaticon-capacity",
+//   "Kitchen": "flaticon-kitchen",
+//   "Display Window Type Value(Other)": "flaticon-display",
+//   "Display Window Type": "flaticon-window",
+//   "Number of Stores": "flaticon-stores",
+//   "Food Court": "flaticon-food-court",
+//   "Rest Rooms": "flaticon-restroom",
+//   "Number Of Pools": "flaticon-swimming",
+//   "Pool Types": "flaticon-swimming",
+//   "Number of Rooms": "flaticon-room",
+//   "Area of Bar(m²)": "flaticon-bar",
+//   "Area of Lounge(m²)": "flaticon-lounge",
+//   "Capacity of VIP Section": "flaticon-vip",
+//   "Number of Dance Floors": "flaticon-dance-floor",
+//   "Number of Private Rooms": "flaticon-private-room",
+//   "Area of Kitchen": "flaticon-kitchen-area",
+//   "Outdoor Seating": "flaticon-outdoor-seating",
+//   "Area of Outdoor Seating(m²)": "flaticon-outdoor-area",
+//   "Room Size(m²)": "flaticon-room-size",
+//   "Number of Beds": "flaticon-bed",
+//   "Room Type": "flaticon-room-type",
+//   "Floor Level": "flaticon-floor-level",
+//   "View": "flaticon-view",
+//   "Balcony/Terrace": "flaticon-balcony",
+//   "Security Features": "flaticon-security",
+
+//   "Security Features Value": "flaticon-security-value",
+
+//   "Disability Access": "flaticon-disability-access",
+//   "Parking Facility": "flaticon-parking",
+//   "Parking Facility(Number of Spaces)": "flaticon-parking-spaces",
+//   "Public Transport Access": "flaticon-transport",
+//   "Year Built": "flaticon-year",
+//   "Condition": "flaticon-condition",
+//   "Availability Date": "flaticon-calendar",
+
+//   "Pet Friendliness": "flaticon-pet-friendly",
+//   "Additional Features": "flaticon-additional-features",
+//   // Assuming buildingAmenities is an array of amenities, represent it with a general icon
+//   "Building Amenities": "flaticon-building-amenities",
+//   "Fireplace": "flaticon-fireplace",
+//   // fireplaceValue might also be an array or special value, adjust as necessary
+//   "Fireplace Value": "flaticon-fireplace-value",
+//   "Number of Floors": "flaticon-floors",
+//   "Basement": "flaticon-basement",
+//   "Parking": "flaticon-parking",
+//   "Parking Option": "flaticon-parking-options",
+//   "Garage/Carport(No. of Spaces)": "flaticon-garage",
+//   // outdoorSpaces might be an array, represented with a general icon
+//   "Outdoor Spaces": "flaticon-outdoor-spaces",
+//   "Number of Bathrooms": "flaticon-bathroom",
+//   "Furnished": "flaticon-furniture",
+// };
+
+export const iconsMap = {
+  "Property Type": "fas fa-building", // FontAwesome equivalent
+  "Property Category Type": "fas fa-tags", // General tag icon, as specific category icon might not be available
+  "Unit": "fas fa-th-large", // General representation of units
+  "Area": "fas fa-vector-square", // Represents area/space
+  "No. of bedrooms": "fas fa-bed", // FontAwesome
+  "Commercial Properties": "fas fa-store", // Represents commercial properties
+  "Price Type": "fas fa-tag", // FontAwesome
+  "Layout": "fas fa-object-group", // Represents layout/design
+  "Conference Room": "fas fa-chalkboard-teacher", // Represents teaching/conference space
+  "Conference Room Capacity": "fas fa-users", // Represents group/capacity
+  "Kitchen": "fas fa-utensils", // FontAwesome
+  "Display Window Type Value(Other)": "fas fa-tv", // Represents display screens/windows
+  "Display Window Type": "fas fa-window-maximize", // Represents windows
+  "Number of Stores": "fas fa-shopping-cart", // General shopping/store icon
+  "Food Court": "fas fa-pizza-slice", // Represents food options
+  "Rest Rooms": "fas fa-restroom", // FontAwesome
+  "Number Of Pools": "fas fa-swimming-pool", // FontAwesome
+  "Pool Types": "fas fa-swimmer", // Represents swimming activity
+  "Number of Rooms": "fas fa-door-closed", // General representation of rooms
+  "Area of Bar(m²)": "fas fa-glass-martini-alt", // Represents bar area
+  "Area of Lounge(m²)": "fas fa-couch", // Represents lounge area
+  "Capacity of VIP Section": "fas fa-star", // VIP/star quality representation
+  "Number of Dance Floors": "fas fa-music", // Represents music/dance
+  "Number of Private Rooms": "fas fa-user-secret", // Represents privacy
+  "Area of Kitchen": "fas fa-utensils", // Duplicate of Kitchen, as specific area icon might not be available
+  "Outdoor Seating": "fas fa-tree", // Represents outdoor/nature
+  "Area of Outdoor Seating(m²)": "fas fa-chair", // Represents seating
+  "Room Size(m²)": "fas fa-expand-arrows-alt", // Represents size/expansion
+  "Number of Beds": "fas fa-bed", // Duplicate of No. of bedrooms
+  "Room Type": "fas fa-info", // General info icon, as specific room type might not be available
+  "Floor Level": "fas fa-building", // Use building icon with levels indicated
+  "View": "fas fa-eye", // Represents view/visibility
+  "Balcony/Terrace": "fas fa-tree", // Use nature-related icon for outdoor space
+  "Security Features": "fas fa-lock", // Represents security
+  "Security Features Value": "fas fa-shield-alt", // Represents protection/value
+  "Disability Access": "fas fa-wheelchair", // FontAwesome
+  "Parking Facility": "fas fa-parking", // FontAwesome
+  "Parking Facility(Number of Spaces)": "fas fa-car", // Represents vehicles/parking
+  "Public Transport Access": "fas fa-bus", // Represents public transport
+  "Year Built": "fas fa-calendar-alt", // Represents date/calendar
+  "Condition": "fas fa-thermometer-half", // General condition/temperature icon
+  "Availability Date": "fas fa-calendar-check", // Represents availability/scheduling
+  "Pet Friendliness": "fas fa-paw", // Represents pets
+  "Additional Features": "fas fa-plus-square", // Represents additional options/features
+  "Building Amenities": "fas fa-building", // Duplicate of Property Type, as amenities icon might not be specific
+  "Fireplace": "fas fa-fire", // Represents fireplace
+  "Fireplace Value": "fas fa-fire-alt", // Alternative fire icon for value
+  "Number of Floors": "fas fa-layer-group", // Represents layers/floors
+  "Basement": "fas fa-warehouse", // Represents storage/lower levels
+  "Parking": "fas fa-parking", // Duplicate of Parking Facility
+  "Parking Option": "fas fa-cogs", // Represents options/settings
+  "Garage/Carport(No. of Spaces)": "fas fa-car", // Use car icon, as specific garage icon might not be available
+  "Outdoor Spaces": "fas fa-tree", // Represents outdoor spaces/nature
+  "Number of Bathrooms": "fas fa-bath", // Represents bathroom facilities
+  "Furnished": "fas fa-couch", // Represents furniture/living space
+};
+
+
+export const tagsOrder = [
+  "typeMetaTag",
+  "categoryTypeMetaTag",
+  "unitMetaTag",
+  "areaMetaTag",
+  "bedroomsMetaTag",
+  "subTypeMetaTag",
+  "priceTypeMetaTag",
+  "deedTitleMetaTag",
+  "layout",
+  "conferenceRoom",
+  "conferenceRoomCapacity",
+  "kitchen",
+  "displayWindowArea",
+  "displayWindowType",
+  "numberOfStores",
+  "foodCourt",
+  "restRooms",
+  "numberOfPools",
+  "poolTypes",
+  "numberOfRooms",
+  "barArea",
+  "loungeArea",
+  "vipSectionCapacity",
+  "numberOfDanceFloors",
+  "numberOfPrivateRooms",
+  "kitchenArea",
+  "outdoorSeating",
+  "outdoorSeatingArea",
+  "roomSize",
+  "numberOfBeds",
+  "roomType",
+  "floorLevel",
+  "view",
+  "balconyTerrace",
+  "securityFeatures",
+  "securityFeaturesValue",
+  "disabilityAccess",
+  "parkingFacility",
+  "parkingSpaces",
+  "publicTransportAccess",
+  "yearBuilt",
+  "condition",
+  "availabilityDate",
+  "petFriendliness",
+  "additionalFeatures",
+  "buildingAmenities",
+  "fireplace",
+  "fireplaceValue",
+  "numberOfFloors",
+  "basement",
+  "parking",
+  "parkingOption",
+  "garageCarportSpaces",
+  "outdoorSpaces",
+  "numberOfBathrooms",
+  "furnished",
+];
 
 export const loadPropertyMetaData = (property, type) => {
   let metaData = "";

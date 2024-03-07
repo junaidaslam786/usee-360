@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import Select from "react-select";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import {
+  GoogleMap,
+  Marker,
+  Autocomplete,
+  useJsApiLoader,
+} from "@react-google-maps/api";
+
+const libraries = ["places", "drawing"];
 
 const LocationForm = ({
   address,
@@ -10,12 +17,58 @@ const LocationForm = ({
   setPostalCode,
   region,
   setRegion,
-  latitude,
-  longitude,
+  latitude = -34.397,
+  longitude = 150.644,
   setLatitude,
   setLongitude,
 }) => {
-  // Function to update address fields based on the place object
+  // Google Maps API options
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
+    // googleMapsApiKey: process.env.GOOGLE_API_KEY,
+    libraries,
+  });
+
+  const [map, setMap] = useState(null);
+  // Ensure latitude and longitude are numbers
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+
+  // const [addressInput, setAddressInput] = useState("");
+  const [markerPosition, setMarkerPosition] = useState({ lat, lng });
+  const geocoder = useRef(null);
+  const autocompleteRef = useRef(null);
+
+  const onMapLoad = useCallback((map) => {
+    setMap(map);
+  }, []);
+
+  const onUnmount = useCallback(function callback(map) {
+    setMap(null);
+  }, []);
+
+
+
+  const fetchCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setMarkerPosition({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          // Optionally set these as well if you want to store the initial position
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        () => {
+          console.error("Error fetching the current location");
+        }
+      );
+    }
+  };
+
   const setAddressFields = (place) => {
     place.address_components.forEach((component) => {
       const componentType = component.types[0];
@@ -38,94 +91,103 @@ const LocationForm = ({
     setLongitude(place.geometry.location.lng());
   };
 
-  // Initialize Google Maps Autocomplete and Marker
   useEffect(() => {
-    const initAutocomplete = () => {
-      if (!window.google) {
-        console.error("Google Maps API not loaded");
-        return;
+    if (isLoaded) {
+      geocoder.current = new window.google.maps.Geocoder();
+    }
+  }, [isLoaded]);
+
+  useEffect(() => {
+    fetchCurrentLocation(); // Fetch the current location when the component mounts
+  }, []);
+
+  const onAutocompleteLoad = useCallback((autocomplete) => {
+    autocompleteRef.current = autocomplete;
+    // autocompleteRef.current.setFields(['address_component', 'geometry', 'name']);
+  }, []);
+
+  const onPlaceSelected = useCallback(() => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace();
+      if (place.geometry) {
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setLatitude(lat);
+        setLongitude(lng);
+        setMarkerPosition({ lat, lng });
+        setAddress(place.formatted_address); // Assuming setAddress updates an internal state
+        setAddressFields(place); // Update additional fields based on the selected place
+      } else {
+        console.log("No details available for input: '" + place.name + "'");
       }
+    }
+  }, [setAddress, setLatitude, setLongitude, setAddressFields]);
 
-      const mapElement = document.getElementById("map");
-      const autocompleteElement = document.getElementById("autocomplete");
+  const onMarkerDragEnd = useCallback((e) => {
+    const newLat = e.latLng.lat();
+    const newLng = e.latLng.lng();
+    setLatitude(newLat);
+    setLongitude(newLng);
+    setMarkerPosition({ lat: newLat, lng: newLng });
 
-      if (mapElement && autocompleteElement) {
-        const map = new window.google.maps.Map(mapElement, {
-          center: {
-            lat: latitude || 24.466667,
-            lng: longitude || 54.366669,
-          },
-          zoom: 17,
-        });
-
-        const marker = new window.google.maps.Marker({
-          map,
-          position: map.getCenter(),
-          draggable: true,
-        });
-
-        const autocomplete = new window.google.maps.places.Autocomplete(
-          autocompleteElement
-        );
-        autocomplete.bindTo("bounds", map);
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (!place.geometry) {
-            window.alert(`No details available for input: ${place.name}`);
-            return;
-          }
-
-          setAddress(place.formatted_address);
-          setAddressFields(place);
-
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
-
-          marker.setPosition(place.geometry.location);
-        });
-
-        marker.addListener("dragend", () => {
-          const position = marker.getPosition();
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ location: position }, (results, status) => {
-            if (status === "OK") {
-              if (results[0]) {
-                setAddressFields(results[0]);
-                setAddress(results[0].formatted_address);
-              }
+    // Perform reverse geocoding
+    if (geocoder.current) {
+      geocoder.current.geocode(
+        { location: { lat: newLat, lng: newLng } },
+        (results, status) => {
+          if (status === "OK") {
+            if (results[0]) {
+              setAddress(results[0].formatted_address);
+              // Optionally, update other address-related states here
             }
-          });
-        });
-      }
-    };
+          } else {
+            console.error("Geocoder failed due to: " + status);
+          }
+        }
+      );
+    }
+  }, []);
 
-    initAutocomplete();
-  }, [latitude, longitude, setAddress, setCity, setPostalCode, setRegion]);
+  
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <h6>Listing Location</h6>
       <div className="row">
         <div className="col-md-12">
-          <div className="input-item input-item-textarea ltn__custom-icon">
+          <Autocomplete
+            onLoad={onAutocompleteLoad}
+            onPlaceChanged={onPlaceSelected}
+          >
             <input
               type="text"
               value={address}
               onChange={(event) => setAddress(event.target.value)}
               id="autocomplete"
-              name="ltn__name"
               placeholder="*Address"
             />
-          </div>
+          </Autocomplete>
         </div>
         <div className="col-lg-12 mb-map">
           <div className="property-details-google-map mb-60">
-            <div id="map" className="map" />
+            <GoogleMap
+              id="map"
+              mapContainerStyle={{ width: "100%", height: "400px" }}
+              center={markerPosition}
+              zoom={17}
+              onLoad={onMapLoad}
+              onUnmount={onUnmount}
+            >
+              <Marker
+                position={markerPosition}
+                draggable={true}
+                onDragEnd={onMarkerDragEnd}
+              />
+            </GoogleMap>
           </div>
         </div>
         <div className="col-md-6">
