@@ -71,8 +71,7 @@ export default function Add(props) {
   const [virtualTourVideo, setVirtualTourVideo] = useStateIfMounted("");
   const [virtualTourUrl, setVirtualTourUrl] = useStateIfMounted("");
   const [isChecked, setIsChecked] = useStateIfMounted(false);
-  const [map, setMap] = useStateIfMounted(null);
-  const [marker, setMarker] = useStateIfMounted(null);
+
   const [permitNumber, setPermitNumber] = useStateIfMounted("");
   const [qrCode, setQrCode] = useStateIfMounted(null);
   const [qrCodePath, setQrCodePath] = useStateIfMounted("");
@@ -444,6 +443,7 @@ export default function Add(props) {
         console.log("usersArray", usersArray);
 
         const response = await PropertyService.detail(params.id);
+        console.log("Property Details", response);
         if (response?.id) {
           setTitle(response.title);
           setDescription(response.description);
@@ -468,30 +468,199 @@ export default function Add(props) {
           }
 
           if (response.productMetaTags.length > 0) {
-            response.productMetaTags.sort(
-              (a, b) => a.categoryField.id - b.categoryField.id
-            );
+            response.productMetaTags.forEach((metaTag) => {
+              const fieldLabel = metaTag.categoryField.label;
+              const fieldValue = metaTag.value;
+              switch (fieldLabel) {
+                case "Year Built":
+                  setYearBuilt(fieldValue);
+                  break;
+                case "Parking Facility":
+                  setParkingResidential(fieldValue === "yes");
+                  break;
+                case "Property Category Type":
+                  setPropertyCategoryType(
+                    PROPERTY_CATEGORY_TYPES.find(
+                      (type) => type.value === fieldValue
+                    )
+                  );
+                case "Property Type":
+                  setPropertyType(
+                    PROPERTY_TYPES.find((type) => type.value === fieldValue)
+                  );
+                  break;
+                case "Commercial Properties":
+                  setPropertySubType(
+                    COMMERCIAL_PROPERTY.find(
+                      (type) => type.value === fieldValue
+                    )
+                  );
+                  break;
+                case "Price Type":
+                  setPriceType(
+                    PRICE_TYPE.find((type) => type.value === fieldValue)
+                  );
+                  break;
+                case "Unit":
+                  setUnit(UNITS.find((type) => type.value === fieldValue));
+                  break;
+                case "Area":
+                  setArea(fieldValue);
+                  break;
+                case "Bedrooms":
+                  setBedrooms(
+                    fieldValue
+                  );
+                  break;
+                case "No. of bedrooms":
+                  setNoOfBeds(fieldValue);
+                  break;
+                case "Deed Title":
+                  setDeedTitle(fieldValue);
+                  break;
+                case "Layout":
+                  setLayout(fieldValue);
+                  break;
+                case "Conference Room":
+                  setConferenceRoom(fieldValue);
+                  break;
+                case "Capacity":
+                  setCapacity(fieldValue);
+                  break;
+                case "Kitchen":
+                  setKitchen(fieldValue);
+                  break;
+                case "Number of Stores":
+                  setStore(fieldValue);
+                  break;
+                case "Food Court":
+                  setFoodCourt(fieldValue);
+                  break;
+                case "Rest Room":
+                  setRestRoom(fieldValue);
+                  break;
+                case "Number of Pools":
+                  setPools(fieldValue);
+                  break;
+                case "Pool Type":
+                  setPoolType(fieldValue);
+                  break;
+                case "Number of Rooms":
+                  setHotelRoom(fieldValue);
+                  break;
+                case "Area of Bar (Square Meter)":
+                  setAreaBar(fieldValue);
+                  break;
+                case "Lounge Area (Square Meter)":
+                  setLoungeArea(fieldValue);
+                  break;
+                case "Capacity of VIP":
+                  setCapacity(fieldValue);
+                  break;
+                case "Number of Dance Floor":
+                  setNoOfDanceFloor(fieldValue);
+                  break;
+                case "Number of Private Rooms":
+                  setNoOfPrivateRooms(fieldValue);
+                  break;
+                case "Outdoor Seating":
+                  setOutdoorSeating(fieldValue === "yes");
+                  break;
+                case "Area of Outdoor Seating(m²)":
+                  setOutdoorSeatingArea(fieldValue);
+                  break;
+                case "Room Size(m²)":
+                  setRoomSize(fieldValue);
+                  break;
+                case "Number of Beds":
+                  setNoOfBeds(fieldValue);
+                  break;
+                case "Room Type":
+                  setRoomType(fieldValue);
+                  break;
+                case "Floor Level":
+                  setFloorLevel(fieldValue);
+                  break;
+                case "View":
+                  setView(fieldValue);
+                  break;
+                case "Balcony/Terrace":
+                  setBalcony(fieldValue);
+                  break;
+                case "Security Features":
+                  setSecurityFeatures(fieldValue);
+                  break;
+                case "Security Features Value":
+                  setAlaramCameraB(fieldValue);
+                  break;
+                case "Disability Access":
+                  setDisabilityAccess(fieldValue);
+                  break;
+                case "Parking Facility(Number of Spaces)":
+                  setNoOfSpacesCommercial(fieldValue);
+                  break;
+                case "Public Transport Access":
+                  setPublicTransport(fieldValue);
+                  break;
+                case "Condition":
+                  setCondition(fieldValue);
+                  break;
+                case "Availability Date":
+                  setAvailabilityDate(fieldValue);
+                  break;
+                case "Pet Friendliness":
+                  setPetFreindliness(fieldValue);
+                  break;
+                case "Additional Features":
+                  setAdditionalFeatures(fieldValue);
+                  break;
+                case "Building Amenities":
+                  // Assuming building amenities is an array of selected amenities
+                  // Convert fieldValue (likely a comma-separated string) to an array and update the state
+                  setBuildingAmenities(fieldValue.split(","));
+                  break;
+                case "Parking Facility":
+                  setParkingResidential(fieldValue);
+                  // setCommercialParking(fieldValue);
+                  break;
+                case "Parking Facility":
+                  setCommercialParking(fieldValue);
+                  break;
+                case "Parking Option":
+                  setParkingType(fieldValue);
+                  break;
+                case "Number of Bathrooms":
+                  setNoOfBathrooms(fieldValue);
+                  break;
+                case "Furnished":
+                  setFurnished(fieldValue);
+                  break;
+                case "Commercial Parking":
+                  setCommercialParking(fieldValue);
+                  break;
+                case "Outdoor Spaces":
+                  setOutdoorSpaces(fieldValue);
+                  break;
+                case "Garage Spaces":
+                  setGarageSpaces(fieldValue);
+                  break;
+                case "Fireplace":
+                  setFireplace(fieldValue);
+                  break;
+                case "Conference Room Capacity":
+                  setCapacity(fieldValue);
+                  break;
+                case "Kitchen Area":
+                  setKitchenArea(fieldValue);
+                  break;
+                case "Outdoor Seating Area":
+                  setOutdoorSeatingArea(fieldValue);
+                  break;
 
-            const {
-              typeMetaTag,
-              categoryTypeMetaTag,
-              unitMetaTag,
-              areaMetaTag,
-              bedroomsMetaTag,
-              subTypeMetaTag,
-              priceTypeMetaTag,
-              deedTitleMetaTag,
-            } = setPropertyMetaData(response.productMetaTags);
-            setPropertyType(typeMetaTag);
-            setPropertyCategoryType(categoryTypeMetaTag);
-            setUnit(unitMetaTag);
-            setArea(areaMetaTag);
-            setBedrooms(bedroomsMetaTag);
-            setPropertySubType(subTypeMetaTag);
-            setPriceType(priceTypeMetaTag);
-            setDeedTitle(deedTitleMetaTag);
-            setPermitNumber(response.permitNumber);
-            setQrCode(response.qrCode);
+                default:
+                  console.log("Unhandled meta tag:", fieldLabel);
+              }
+            });
           }
 
           if (response.productImages) {

@@ -295,12 +295,12 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                                     </span>
                                   </div>
                                 </div>
-                                <h2 className="product-title go-top">
+                                <h2 className="product-title go-top" style={{height: '100px'}}>
                                   <Link to={`/property-details/${element.id}`}>
                                     {element.title}
                                   </Link>
                                 </h2>
-                                <div className="product-img-location go-top">
+                                <div className="product-img-location go-top" style={{height: '80px'}}>
                                   <ul>
                                     <li>
                                       <Link to="#">

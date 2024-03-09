@@ -9,14 +9,27 @@ import {
 } from "../../constants";
 import AlertService from "../../services/agent/alert";
 import { useStateIfMounted } from "use-state-if-mounted";
+import Modal from "react-modal";
 
 export default function Sidebar({ type, responseHandler }) {
   const history = useHistory();
   const [count, setCount] = useStateIfMounted();
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const userDetail = getUserDetailsFromJwt();
+
+
+  const handleDeleteModalOpen = () => {
+    setConfirmDeleteModal(true);
+  }
+
+  const handleDeleteModalCancel = () => {
+    setConfirmDeleteModal(false); // Close the modal
+  };
 
   const handleClick = () => {
     removeLoginToken();
+    setConfirmDeleteModal(false)
+    responseHandler('Logged out successfully', true); 
     history.push(`/${type}/login`);
   };
 
@@ -175,10 +188,35 @@ export default function Sidebar({ type, responseHandler }) {
         <i className="fa-solid fa-calendar" />
       </NavLink>
 
-      <a onClick={handleClick} href="#">
+      <a onClick={handleDeleteModalOpen} href="#">
         Logout
         <i className="fas fa-sign-out-alt" />
       </a>
+
+      <Modal
+          isOpen={confirmDeleteModal}
+          onRequestClose={() => setConfirmDeleteModal(false)}
+          className="MyModal Cancelled"
+          overlayClassName="MyModalOverlay"
+          ariaHideApp={false}
+        >
+          <h2>Confirmation</h2>
+          <p>Are you sure you want to logout?</p>
+          <div className="ButtonContainer">
+            <button
+              className="btn theme-btn-1 modal-btn-custom"
+              onClick={handleClick}
+            >
+              Yes
+            </button>
+            <button
+              className="btn theme-btn-2 modal-btn-custom"
+              onClick={handleDeleteModalCancel}
+            >
+              No
+            </button>
+          </div>
+        </Modal>
     </div>
   );
 }

@@ -117,7 +117,7 @@ export const VIEW_OPTIONS = [
 export const SECURITY_FEATURES_OPTIONS = [
   { value: "Alarms", label: "Alarms" },
   { value: "Cameras", label: "Cameras" },
-  { value: "Both", label: "Both" },
+  { value: "Alarms/Camera", label: "Alarms/Camera" },
 ];
 
 export const CONDITION_OPTIONS = [

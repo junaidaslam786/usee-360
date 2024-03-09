@@ -49,8 +49,7 @@ export default function PropertyDetails(props) {
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
 
-  console.log("propertyTags keys:", Object.keys(propertyTags));
-  console.log("iconsMap keys:", Object.keys(iconsMap));
+  
 
   const postPropertyViewLog = async (propertyId) => {
     try {

@@ -262,74 +262,6 @@ export const formatPrice = (price) => {
   const formatter = new Intl.NumberFormat("en-US");
   return `${DEFAULT_CURRENCY} ${formatter.format(price)}`;
 };
-// export const iconsMap = {
-//   "Property Type": "flaticon-building",
-//   "Property Category Type": "flaticon-category",
-//   "Unit": "flaticon-unit",
-
-//   "Area": "flaticon-area",
-//   "No. of bedrooms": "flaticon-beds",
-//   "Commercial Properties": "",
-//   "Price Type": "flaticon-pricetag",
-//   // deedTitleMetaTag: "flaticon-deed",
-//   // Add more mappings based on your actual icons
-//   "Layout": "flaticon-layout",
-
-//   "Conference Room": "flaticon-conference",
-
-//   "Conference Room Capacity": "flaticon-capacity",
-//   "Kitchen": "flaticon-kitchen",
-//   "Display Window Type Value(Other)": "flaticon-display",
-//   "Display Window Type": "flaticon-window",
-//   "Number of Stores": "flaticon-stores",
-//   "Food Court": "flaticon-food-court",
-//   "Rest Rooms": "flaticon-restroom",
-//   "Number Of Pools": "flaticon-swimming",
-//   "Pool Types": "flaticon-swimming",
-//   "Number of Rooms": "flaticon-room",
-//   "Area of Bar(m²)": "flaticon-bar",
-//   "Area of Lounge(m²)": "flaticon-lounge",
-//   "Capacity of VIP Section": "flaticon-vip",
-//   "Number of Dance Floors": "flaticon-dance-floor",
-//   "Number of Private Rooms": "flaticon-private-room",
-//   "Area of Kitchen": "flaticon-kitchen-area",
-//   "Outdoor Seating": "flaticon-outdoor-seating",
-//   "Area of Outdoor Seating(m²)": "flaticon-outdoor-area",
-//   "Room Size(m²)": "flaticon-room-size",
-//   "Number of Beds": "flaticon-bed",
-//   "Room Type": "flaticon-room-type",
-//   "Floor Level": "flaticon-floor-level",
-//   "View": "flaticon-view",
-//   "Balcony/Terrace": "flaticon-balcony",
-//   "Security Features": "flaticon-security",
-
-//   "Security Features Value": "flaticon-security-value",
-
-//   "Disability Access": "flaticon-disability-access",
-//   "Parking Facility": "flaticon-parking",
-//   "Parking Facility(Number of Spaces)": "flaticon-parking-spaces",
-//   "Public Transport Access": "flaticon-transport",
-//   "Year Built": "flaticon-year",
-//   "Condition": "flaticon-condition",
-//   "Availability Date": "flaticon-calendar",
-
-//   "Pet Friendliness": "flaticon-pet-friendly",
-//   "Additional Features": "flaticon-additional-features",
-//   // Assuming buildingAmenities is an array of amenities, represent it with a general icon
-//   "Building Amenities": "flaticon-building-amenities",
-//   "Fireplace": "flaticon-fireplace",
-//   // fireplaceValue might also be an array or special value, adjust as necessary
-//   "Fireplace Value": "flaticon-fireplace-value",
-//   "Number of Floors": "flaticon-floors",
-//   "Basement": "flaticon-basement",
-//   "Parking": "flaticon-parking",
-//   "Parking Option": "flaticon-parking-options",
-//   "Garage/Carport(No. of Spaces)": "flaticon-garage",
-//   // outdoorSpaces might be an array, represented with a general icon
-//   "Outdoor Spaces": "flaticon-outdoor-spaces",
-//   "Number of Bathrooms": "flaticon-bathroom",
-//   "Furnished": "flaticon-furniture",
-// };
 
 export const iconsMap = {
   "Property Type": "fas fa-building", // FontAwesome equivalent
@@ -337,7 +269,7 @@ export const iconsMap = {
   "Unit": "fas fa-th-large", // General representation of units
   "Area": "fas fa-vector-square", // Represents area/space
   "No. of bedrooms": "fas fa-bed", // FontAwesome
-  "Commercial Properties": "fas fa-store", // Represents commercial properties
+  "Commercial Properties Sub Type": "fas fa-store", // Represents commercial properties
   "Price Type": "fas fa-tag", // FontAwesome
   "Layout": "fas fa-object-group", // Represents layout/design
   "Conference Room": "fas fa-chalkboard-teacher", // Represents teaching/conference space

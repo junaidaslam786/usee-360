@@ -4,7 +4,7 @@ import ViewOffer from "./view-offer";
 import { VIRTUAL_TOUR_TYPE } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
 import PropertyService from "../../../services/agent/property";
-import { formatPrice, setPropertyMetaData } from "../../../utils";
+import { formatPrice, iconsMap, setPropertyMetaData } from "../../../utils";
 
 export default function Details(props) {
   const [property, setProperty] = useState({});
@@ -15,6 +15,7 @@ export default function Details(props) {
   const [propertyUnit, setPropertyUnit] = useState();
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
+  const [propertyTags, setPropertyTags] = useState([]);
   const params = useParams();
 
   // const postPropertyViewLog = async (propertyId) => {
@@ -44,14 +45,28 @@ export default function Details(props) {
 
     // postPropertyViewLog(params.id);
 
-    if (response?.productMetaTags) {
-      const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
-      setPropertyType(typeMetaTag);
-      setPropertyCategoryType(categoryTypeMetaTag);
-      setPropertyUnit(unitMetaTag);
-      setPropertyArea(areaMetaTag);
-      setPropertyBedrooms(bedroomsMetaTag);
-    }
+    // if (response?.productMetaTags) {
+    //   const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
+    //   setPropertyType(typeMetaTag);
+    //   setPropertyCategoryType(categoryTypeMetaTag);
+    //   setPropertyUnit(unitMetaTag);
+    //   setPropertyArea(areaMetaTag);
+    //   setPropertyBedrooms(bedroomsMetaTag);
+    // }
+
+    // Use slice() to clone the array before reversing to avoid mutating the original array
+    const reversedMetaTags = response.productMetaTags.slice().reverse();
+
+    const metaTagsMap = reversedMetaTags.reduce((acc, tag) => {
+      const label = tag.categoryField.label;
+      acc[label] = tag.value;
+      return acc;
+    }, {});
+
+    // Now you have a dynamic map of all meta tags which can be used directly in the component
+    // Example: metaTagsMap['Parking Facility'] will give you the value of the Parking Facility tag
+    setPropertyMetaData(metaTagsMap);
+    setPropertyTags(metaTagsMap);
 
     if (response?.productImages?.length > 0) {
       setPropertyImages(response.productImages);
@@ -60,7 +75,7 @@ export default function Details(props) {
     if (response?.productDocuments?.length > 0) {
       setPropertyDocuments(response.productDocuments);
     }
-  }
+  };
 
   useEffect(() => {
     loadProperty();
@@ -68,17 +83,15 @@ export default function Details(props) {
 
   return (
     <section>
-      {
-        propertyImages?.length > 0 ? (
-          <Slideshow fadeImages={propertyImages}/>
-        ) : (
-          <img
-            className="detail-feature-image"
-            src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-            alt="#"
-          />
-        )
-      }
+      {propertyImages?.length > 0 ? (
+        <Slideshow fadeImages={propertyImages} />
+      ) : (
+        <img
+          className="detail-feature-image"
+          src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+          alt="#"
+        />
+      )}
       <div className="row property-desc">
         <span className="ltn__blog-category pb-20">
           <Link className="bg-orange" to="#">
@@ -92,7 +105,7 @@ export default function Details(props) {
           </small>
         </div>
         <div className="col-md-2">
-          <h3>{ formatPrice(property.price) }</h3>
+          <h3>{formatPrice(property.price)}</h3>
         </div>
       </div>
       <div className="row property-details">
@@ -120,19 +133,44 @@ export default function Details(props) {
             <p>{property.description}</p>
           </div>
         </div>
+        <h4 className="title-2">Features</h4>
+        <div className="property-detail-feature-list clearfix mb-45">
+          <ul style={{ display: "flex", flexDirection: "column" }}>
+            {Object.entries(propertyTags).map(([key, value]) => (
+              <li key={key}>
+                <div className="property-detail-feature-list-item">
+                  <i className={iconsMap[key] || "flaticon-double-bed"} />
+                  <div>
+                    <h6>{key}</h6>
+                    <small>{value}</small>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="col-md-5">
-          {
-            propertyDocuments && (
-              propertyDocuments.map((element, index) => (
-                <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" className="btn theme-btn-1 mb-3" key={index}>View {element.title}</a>
-              )
-            ))
-          }
-          {
-            (property?.virtualTourType && property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL) && (
-              <a href={property.virtualTourUrl} target="_blank" className="btn theme-btn-3 mb-3">View Tour</a>
-            )
-          }
+          {propertyDocuments &&
+            propertyDocuments.map((element, index) => (
+              <a
+                href={`${process.env.REACT_APP_API_URL}/${element.file}`}
+                target="_blank"
+                className="btn theme-btn-1 mb-3"
+                key={index}
+              >
+                View {element.title}
+              </a>
+            ))}
+          {property?.virtualTourType &&
+            property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
+              <a
+                href={property.virtualTourUrl}
+                target="_blank"
+                className="btn theme-btn-3 mb-3"
+              >
+                View Tour
+              </a>
+            )}
         </div>
       </div>
       {property?.virtualTourType &&
@@ -148,7 +186,10 @@ export default function Details(props) {
           </div>
         )}
       <div className="row property-details">
-        <ViewOffer property={property} responseHandler={props.responseHandler} />
+        <ViewOffer
+          property={property}
+          responseHandler={props.responseHandler}
+        />
       </div>
     </section>
   );

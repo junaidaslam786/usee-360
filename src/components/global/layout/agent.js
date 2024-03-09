@@ -5,7 +5,7 @@ import "./agent.css";
 
 export default function AgentLayout({ ComponentToRender, componentProps }) {
   return (
-    <div className="liton__wishlist-area pb-70">
+    <div className="liton__wishlist-area pb-70 mt-120">
       <div className="container">
         <div className="row">
           <div className="col-lg-12">
