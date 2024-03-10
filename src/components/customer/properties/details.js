@@ -5,7 +5,11 @@ import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
 import WishlistService from "../../../services/customer/wishlist";
 import PropertyService from "../../../services/agent/property";
-import { formatPrice, getLoginToken, setPropertyMetaData } from "../../../utils";
+import {
+  formatPrice,
+  getLoginToken,
+  setPropertyMetaData,
+} from "../../../utils";
 
 export default function Details(props) {
   // State variables
@@ -21,7 +25,7 @@ export default function Details(props) {
 
   const params = useParams();
   const history = useHistory();
-  const token = getLoginToken(); 
+  const token = getLoginToken();
   const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
     window.location.pathname
   )}`;
@@ -30,12 +34,12 @@ export default function Details(props) {
     try {
       const logData = {
         id: propertyId,
-        logType: "viewed"
+        logType: "viewed",
       };
 
       await PropertyService.addPropertyLog(logData);
     } catch (error) {
-      console.error('Error posting property view log:', error);
+      console.error("Error posting property view log:", error);
       // Handle the error appropriately
     }
   };
@@ -127,9 +131,14 @@ export default function Details(props) {
     await loadWishlistProperties();
   };
 
-  const isAddedToWishlist = useCallback((propertyId) => {
-    return wishlistProperties.some(({ productId }) => productId === propertyId);
-  }, [wishlistProperties]);
+  const isAddedToWishlist = useCallback(
+    (propertyId) => {
+      return wishlistProperties.some(
+        ({ productId }) => productId === propertyId
+      );
+    },
+    [wishlistProperties]
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -140,17 +149,15 @@ export default function Details(props) {
   }, [loadProperty, loadWishlistProperties, token, params.id]);
   return (
     <section>
-      {
-        propertyImages?.length > 0 ? (
-          <Slideshow fadeImages={propertyImages} />
-        ) : (
-          <img
-            className="mb-50"
-            src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
-            alt={property.title}
-          />
-        )
-      }
+      {propertyImages?.length > 0 ? (
+        <Slideshow fadeImages={propertyImages} />
+      ) : (
+        <img
+          className="mb-50"
+          src={`${process.env.REACT_APP_API_URL}/${property.featuredImage}`}
+          alt={property.title}
+        />
+      )}
       <div className="row property-desc">
         <span className="ltn__blog-category pb-20">
           <Link className="bg-orange" to="#">
@@ -188,39 +195,69 @@ export default function Details(props) {
             </div>
           </div>
           <h5>Description:</h5>
-          <div><p>{property.description}</p></div>
+          <div>
+            <p>{property.description}</p>
+          </div>
         </div>
         <div className="col-md-5">
-          <a href={`/customer/add-appointment?id=${property.id}`} className="btn theme-btn-1 mb-3 w-100">Usee-360 Booking</a>
-          <button
-            className={`btn theme-btn-${isAddedToWishlist(property.id) ? '2' : '3'} mb-3 w-100`}
-            onClick={() => isAddedToWishlist(property.id) ? removeWishList(property.id) : addToWishList(property.id)}
+          <a
+            href={`/customer/add-appointment?id=${property.id}`}
+            className="btn theme-btn-1 mb-3 w-100"
           >
-            {isAddedToWishlist(property.id) ? "Remove from wishlist" : "Add to wishlist"}
+            Usee-360 Booking
+          </a>
+          <button
+            className={`btn theme-btn-${
+              isAddedToWishlist(property.id) ? "2" : "3"
+            } mb-3 w-100`}
+            onClick={() =>
+              isAddedToWishlist(property.id)
+                ? removeWishList(property.id)
+                : addToWishList(property.id)
+            }
+          >
+            {isAddedToWishlist(property.id)
+              ? "Remove from wishlist"
+              : "Add to wishlist"}
           </button>
-          {
-            propertyDocuments?.map((element, index) => (
-              <a href={`${process.env.REACT_APP_API_URL}/${element.file}`} target="_blank" rel="noopener noreferrer" className="btn theme-btn-1 mb-3 w-100" key={index}>View {element.title}</a>
-            ))
-          }
-          {
-            property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
-              <a href={property.virtualTourUrl} target="_blank" rel="noopener noreferrer" className="btn theme-btn-3 mb-3">View Tour</a>
-            )
-          }
+          {propertyDocuments?.map((element, index) => (
+            <a
+              href={`${process.env.REACT_APP_API_URL}/${element.file}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn theme-btn-1 mb-3 w-100"
+              key={index}
+            >
+              View {element.title}
+            </a>
+          ))}
+          {property?.virtualTourType === VIRTUAL_TOUR_TYPE.URL && (
+            <a
+              href={property.virtualTourUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn theme-btn-3 mb-3"
+            >
+              View Tour
+            </a>
+          )}
         </div>
-        {
-          property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
-            <div className="property-detail-feature-list clearfix mb-45">
-              <video width="100%" height="100%" controls>
-                <source src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          )
-        }
-        <ViewOffer property={property} responseHandler={props.responseHandler} />
+        {property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
+          <div className="property-detail-feature-list clearfix mb-45">
+            <video width="100%" height="100%" controls>
+              <source
+                src={`${process.env.REACT_APP_API_URL}/${property.virtualTourUrl}`}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        )}
+        <ViewOffer
+          property={property}
+          responseHandler={props.responseHandler}
+        />
       </div>
     </section>
   );
-}  
+}

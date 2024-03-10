@@ -5,6 +5,7 @@ import {
 } from "../../../utils";
 import { AGENT_TYPE, AGENT_TYPES, AGENT_USER_ACCESS_TYPE } from "../../../constants";
 import UserService from "../../../services/agent/user";
+import { useHistory } from "react-router-dom";
 
 export default function Add(props) {
     const [firstName, setFirstName] = useState("");
@@ -16,6 +17,8 @@ export default function Add(props) {
     const [accessLevels, setAccessLevels] = useState([]);
     const [loading, setLoading] = useState();
     const userDetail = getUserDetailsFromJwt();
+
+    const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,6 +55,7 @@ export default function Add(props) {
             setPhoneNumber("");
             setRole(AGENT_TYPES.find((agentType) => agentType.value === AGENT_TYPE.MANAGER));
             setAccessLevels([]);
+            history.push('/agent/users');
         }
     };
 
