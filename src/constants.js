@@ -165,6 +165,22 @@ export const FURNISHED_OPTIONS = [
   { value: "Partially Furnished", label: "Partially Furnished" },
 ];
 
+export const RADIUS_OPTIONS = [
+  { value: "", label: "--Select Radius--" },
+  { value: 500, label: "0.5km" },
+  { value: 1000, label: "1km" },
+  { value: 3000, label: "3km" },
+  { value: 5000, label: "5km" },
+  { value: 7500, label: "7.5km" },
+  { value: 10000, label: "10km" },
+  { value: 15000, label: "15km" },
+  { value: 20000, label: "20km" },
+  { value: 25000, label: "25km" },
+  { value: 30000, label: "30km" },
+  { value: 50000, label: "50km" },
+  { value: 100000, label: "100km" },
+];
+
 export const OFFER_STATUS = {
   PENDING: "pending",
   ACCEPTED: "accepted",

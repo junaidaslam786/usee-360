@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter,
   Route,
@@ -26,7 +26,6 @@ import PropertiesService from "./pages/services/properties";
 import AgentPages from "./pages/agent";
 import CustomerPages from "./pages/customer";
 
-import LocationSearch from "./components/location-search/location-search";
 import IframePropertyDetails from "./components/homepage/iframe/details";
 import IframePropertyGrid from "./components/homepage/iframe/grid";
 import HomePages from "./pages";
@@ -34,7 +33,6 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 
 // import { Elements } from "@stripe/react-stripe-js";
 // import { loadStripe } from "@stripe/stripe-js";
-import FacebookAuthCallback from "./components/auth/oAuthCallback";
 import GoogleMapsSearch from "./components/location-search/google-map";
 import OAuthCallback from "./components/auth/oAuthCallback";
 
@@ -410,6 +408,10 @@ const App = () => {
               component={() => <CustomerPages page="add-appointment" />}
             />
             <CustomerRoute
+              path="/customer/alerts"
+              component={() => <CustomerPages page="alerts" />}
+            />
+            <CustomerRoute
               path="/customer/calendar"
               component={() => <CustomerPages page="calendar" />}
             />
@@ -431,7 +433,6 @@ const App = () => {
             <Route path="/precall/:id/:usertype" component={Precall} />
 
             {/* Location Search */}
-            <Route path="/location-search" component={LocationSearch} />
             <Route path="/map-search" component={GoogleMapsSearch} />
 
             {/*Iframe Routes */}

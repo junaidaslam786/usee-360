@@ -31,7 +31,6 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
   const toggleButton = useRef(null);
   const sort = useRef(null);
   const history = useHistory();
-  const location = useLocation();
   const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
     window.location.pathname
   )}`;
@@ -48,7 +47,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     if (mapProperties && mapProperties.length > 0) {
       setProperties(mapProperties);
       setCurrentPage(1);
-      setTotalPages(Math.ceil(mapProperties.length / 10));
+      setTotalPages(Math.ceil(mapProperties.length / 12));
       return;
     }
 
@@ -57,7 +56,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     let payload = {
       ...filtersData,
       page,
-      size: 10,
+      size: 12,
     };
 
     try {
@@ -119,23 +118,10 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     responseHandler("Property removed from wishlist.", true);
   };
 
-  // Handler for the "Find Now" button click
-  const handleFindNowClick = () => {
-    // Check if any filters have been applied
-    const hasFilters = latFilter || lngFilter;
-
-    if (hasFilters) {
-      // If any filters have been set, load properties with filters
-      loadProperties("filter");
-    } else {
-      // If no filters have been set, load properties without filters
-      loadProperties();
-    }
-  };
 
   useEffect(() => {
     loadProperties(currentPage);
-  }, [location.state, currentPage, latFilter, lngFilter, sort.current?.value, filters]);
+  }, [currentPage, filters]);
 
   useEffect(() => {
     // Removed the initial loadProperties call for brevity; adjust as needed.
@@ -378,7 +364,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                     <div className="row">
                       <div className="col-lg-12">
                         {/* Search Widget */}
-                        <div className="ltn__search-widget mb-30">
+                        {/* <div className="ltn__search-widget mb-30">
                           <form action="#">
                             <input
                               type="text"
@@ -389,7 +375,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                               <i className="fas fa-search" />
                             </button>
                           </form>
-                        </div>
+                        </div> */}
                       </div>
                       {properties && properties.length === 0 ? (
                         <div className="col-lg-12">
@@ -505,7 +491,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                         onClick={(e) => {
                           e.preventDefault();
                           if (currentPage !== 1) {
-                            loadProperties("filter", currentPage - 1);
+                            setCurrentPage(currentPage - 1);
                           }
                         }}
                       >
@@ -522,7 +508,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                             to="#"
                             onClick={(e) => {
                               e.preventDefault();
-                              loadProperties("filter", i + 1);
+                              setCurrentPage(i + 1);
                             }}
                           >
                             {i + 1}
@@ -536,7 +522,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                         onClick={(e) => {
                           e.preventDefault();
                           if (currentPage !== totalPages) {
-                            loadProperties("filter", currentPage + 1);
+                            setCurrentPage(currentPage + 1);
                           }
                         }}
                       >

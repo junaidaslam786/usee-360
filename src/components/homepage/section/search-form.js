@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { PRICE_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
@@ -8,12 +8,13 @@ import Select from "react-select";
 import FilterModal from "./filterModal";
 import { useJsApiLoader } from "@react-google-maps/api";
 
+const libraries = ["places", "drawing"];
+
 export default function SearchForm({ onFiltersChange }) {
-  const [address, setAddress] = useStateIfMounted();
-  const [types, setTypes] = useState([]);
+  const [address, setAddress] = useStateIfMounted("");
   const [propertyCategory, setPropertyCategory] = useState("sale");
-  const [lat, setLat] = useStateIfMounted();
-  const [lng, setLng] = useStateIfMounted();
+  const [lat, setLat] = useStateIfMounted(null);
+  const [lng, setLng] = useStateIfMounted(null);
   const [showLink, setShowLink] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [priceType, setPriceType] = useState();
@@ -28,68 +29,40 @@ export default function SearchForm({ onFiltersChange }) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
-    libraries: ["places", "drawing"],
+    libraries,
   });
 
   const handleFiltersChange = (newFilters) => {
     console.log(newFilters);
     setFilters(newFilters);
-    // Call the parent component's callback function to update the parent state
-    // onFiltersChange(newFilters);
   };
 
   const sendFilters = () => {
     const combinedFilters = constructSelectedFilters();
     // Check if the current page is not the properties page
-    if (location.pathname !== '/services/properties') {
-      history.push('/services/properties', { filters: combinedFilters });
+    if (location.pathname !== "/services/properties") {
+      history.push("/services/properties", { filters: combinedFilters });
     } else if (onFiltersChange) {
       onFiltersChange(combinedFilters);
     }
   };
 
-  const countSelectedFilters = () => {
-    let count = 0;
-    // Adjust the logic if your filters structure is different
-    Object.keys(filters).forEach((key) => {
-      const value = filters[key];
-      if (value !== null && value !== undefined) {
-        if (typeof value === "object") {
-          if (Array.isArray(value) && value.length > 0) {
-            count++;
-          } else if (!Array.isArray(value) && Object.keys(value).length > 0) {
-            count++;
-          }
-        } else {
-          count++;
-        }
-      }
-    });
-    return count;
-  };
-  console.log(countSelectedFilters())
-
-  // const selectedFiltersCount = useMemo(() => countSelectedFilters(), [filters]);
-
   const constructSelectedFilters = () => {
     const selectedFilters = {
       ...(propertyCategory && { propertyCategory }),
       ...(priceType && { priceType }),
-      ...(lat && { lat }),
-      ...(lng && { lng }),
+      ...(lat != null && { lat }),
+      ...(lng != null && { lng }),
       ...Object.entries(filters).reduce((acc, [key, value]) => {
         if (value) acc[key] = value; // Adjust this logic based on how you determine a filter is 'selected'
         return acc;
       }, {}),
     };
-
     return selectedFilters;
   };
 
   const selectedFilters = constructSelectedFilters();
   const selectedFiltersCount = Object.keys(selectedFilters).length;
-console.log('Count of selected filters:', selectedFiltersCount);
- 
 
   const handleFocus = () => {
     setShowLink(true);
@@ -115,27 +88,38 @@ console.log('Count of selected filters:', selectedFiltersCount);
   };
 
   useEffect(() => {
-    if (isLoaded) {
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        document.getElementById("autocomplete")
-      );
+    if (isLoaded && lat != null && lng != null) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        lat,
+        lng,
+      }));
+    }
+  }, [isLoaded, lat, lng]);
 
+  useEffect(() => {
+    let autocomplete;
+    if (isLoaded) {
+      autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete2")
+      );
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
-        if (!place.geometry || !isMounted.current) {
-          window.alert("No details available for input: '" + place.name + "'");
-          return;
+        if (place.geometry) {
+          setLat((prevLat) => place.geometry.location.lat());
+          setLng((prevLng) => place.geometry.location.lng());
+          setAddress(place.formatted_address);
+        } else {
+          console.error("No geometry for selected place.");
         }
-
-        setAddress(place.formatted_address);
-        setLat(place.geometry.location.lat());
-        setLng(place.geometry.location.lng());
       });
     }
     return () => {
-      isMounted.current = false;
+      if (autocomplete) {
+        window.google.maps.event.clearInstanceListeners(autocomplete);
+      }
     };
-  }, [isLoaded]);
+  }, [isLoaded, setAddress, setLat, setLng]);
 
   return (
     <div className="ltn__car-dealer-form-area mt-120 mb-120">
@@ -179,8 +163,8 @@ console.log('Count of selected filters:', selectedFiltersCount);
                         <label>Location</label>
                         <input
                           type="text"
-                          id="autocomplete"
-                          value={address}
+                          id="autocomplete2"
+                          value={address || ""}
                           onChange={(event) => setAddress(event.target.value)}
                           placeholder="Location Name"
                           className="m-0"

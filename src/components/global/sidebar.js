@@ -10,6 +10,7 @@ import {
 import AlertService from "../../services/agent/alert";
 import { useStateIfMounted } from "use-state-if-mounted";
 import Modal from "react-modal";
+import CustomerAlertService from "../../services/customer/alert";
 
 export default function Sidebar({ type, responseHandler }) {
   const history = useHistory();
@@ -17,10 +18,9 @@ export default function Sidebar({ type, responseHandler }) {
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const userDetail = getUserDetailsFromJwt();
 
-
   const handleDeleteModalOpen = () => {
     setConfirmDeleteModal(true);
-  }
+  };
 
   const handleDeleteModalCancel = () => {
     setConfirmDeleteModal(false); // Close the modal
@@ -28,27 +28,51 @@ export default function Sidebar({ type, responseHandler }) {
 
   const handleClick = () => {
     removeLoginToken();
-    setConfirmDeleteModal(false)
-    responseHandler('Logged out successfully', true); 
+    setConfirmDeleteModal(false);
+    responseHandler("Logged out successfully", true);
     history.push(`/${type}/login`);
   };
 
+  // useEffect(() => {
+  //   const fetchAlertCount = async () => {
+  //     const response = await AlertService.unReadCount();
+  //     if (response?.error && response?.message) {
+  //       responseHandler(response.message);
+  //       setTimeout(() => {
+  //         handleClick();
+  //       }, 2000);
+  //       return;
+  //     }
+
+  //     setCount(response);
+  //   };
+
+  //   fetchAlertCount();
+  // }, []);
+
   useEffect(() => {
     const fetchAlertCount = async () => {
-      const response = await AlertService.unReadCount();
+      let response;
+      if (userDetail.userType === USER_TYPE.AGENT) {
+        response = await AlertService.unReadCount();
+      } else if (userDetail.userType === USER_TYPE.CUSTOMER) {
+        response = await CustomerAlertService.unReadCount();
+      } else {
+        return; // or handle unexpected user type
+      }
+
       if (response?.error && response?.message) {
         responseHandler(response.message);
         setTimeout(() => {
           handleClick();
         }, 2000);
-        return;
+      } else {
+        setCount(response);
       }
-
-      setCount(response);
     };
 
     fetchAlertCount();
-  }, []);
+  }, [userDetail.userType]); // Depend on userType to re-fetch if it changes
 
   const isAgent = userDetail?.agent?.agentType === AGENT_TYPE.AGENT;
 
@@ -58,38 +82,18 @@ export default function Sidebar({ type, responseHandler }) {
         Dashboard
         <i className="fas fa-home" />
       </NavLink>
-
       <NavLink to={`/${type}/profile`}>
         My Profile
         <i className="fas fa-user" />
       </NavLink>
-
       <NavLink to={`/${type}/appointments`}>
         Appointments
         <i className="fa-solid fa-clock" />
       </NavLink>
-
       <NavLink to={`/${type}/add-appointment`}>
         Add Appointments
         <i className="fa-solid fa-calendar-check"></i>
       </NavLink>
-
-      {/* <NavLink to={`/${type}/payment`}>
-        Payments
-        <i className="fa-solid fa-credit-card"></i>
-      </NavLink>
-
-      <NavLink to={`/${type}/subscription`}>
-        Subscription
-        <i className="fa-solid fa-subscript"></i>
-      </NavLink>
-
-      <NavLink to={`/${type}/analytics-page`}>
-        Analytics
-        <i className="fa-solid fa-analytics"></i>
-      </NavLink> */}
-
-      {/* Agent Specific Links */}
       {isAgent && (
         <>
           <NavLink to={`/${type}/payment`}>
@@ -107,6 +111,17 @@ export default function Sidebar({ type, responseHandler }) {
         </>
       )}
 
+      {type === USER_TYPE.CUSTOMER && (
+        <NavLink to="/customer/alerts">
+          Alerts
+          <span className="position-relative">
+            <i className="fa-solid fa-bell" />
+            <span className="badge rounded-pill bg-danger alert-badge">
+              {count}
+            </span>
+          </span>
+        </NavLink>
+      )}
       {type === USER_TYPE.AGENT ? (
         <React.Fragment>
           <NavLink
@@ -182,41 +197,38 @@ export default function Sidebar({ type, responseHandler }) {
           </NavLink>
         </React.Fragment>
       )}
-
       <NavLink to={`/${type}/calendar`}>
         My Calendar
         <i className="fa-solid fa-calendar" />
       </NavLink>
-
       <a onClick={handleDeleteModalOpen} href="#">
         Logout
         <i className="fas fa-sign-out-alt" />
       </a>
-
       <Modal
-          isOpen={confirmDeleteModal}
-          onRequestClose={() => setConfirmDeleteModal(false)}
-          className="MyModal Cancelled"
-          overlayClassName="MyModalOverlay"
-          ariaHideApp={false}
-        >
-          <h2>Confirmation</h2>
-          <p>Are you sure you want to logout?</p>
-          <div className="ButtonContainer">
-            <button
-              className="btn theme-btn-1 modal-btn-custom"
-              onClick={handleClick}
-            >
-              Yes
-            </button>
-            <button
-              className="btn theme-btn-2 modal-btn-custom"
-              onClick={handleDeleteModalCancel}
-            >
-              No
-            </button>
-          </div>
-        </Modal>
+        isOpen={confirmDeleteModal}
+        onRequestClose={() => setConfirmDeleteModal(false)}
+        className="MyModal Cancelled"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Confirmation</h2>
+        <p>Are you sure you want to logout?</p>
+        <div className="ButtonContainer">
+          <button
+            className="btn theme-btn-1 modal-btn-custom"
+            onClick={handleClick}
+          >
+            Yes
+          </button>
+          <button
+            className="btn theme-btn-2 modal-btn-custom"
+            onClick={handleDeleteModalCancel}
+          >
+            No
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

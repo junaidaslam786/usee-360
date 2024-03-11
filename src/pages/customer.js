@@ -13,6 +13,7 @@ import { USER_TYPE } from "../constants";
 import CustomerLayout from "../components/global/layout/customer";
 import { setResponseHandler } from "../utils";
 import ResponseHandler from "../components/partial/response-handler";
+import Alerts from "../components/customer/alerts";
 
 export default function CustomerPages({ page }) {
   const [responseMessage, setResponseMessage] = useState();
@@ -54,10 +55,10 @@ export default function CustomerPages({ page }) {
       ComponentToRender = AgentCalendar;
       break;
 
-    // case "alerts":
-    //   pageTitle = "Alerts";
-    //   ComponentToRender = Alerts;
-    //   break;
+    case "alerts":
+      pageTitle = "Alerts";
+      ComponentToRender = Alerts;
+      break;
 
     case "property-details":
       pageTitle = "Property Details";

@@ -8,23 +8,17 @@ import {
   getUserDetailsFromJwt,
   iconsMap,
   setPropertyMetaData,
-  tagsOrder,
 } from "../../../utils";
 import PropertyService from "../../../services/agent/property";
-import UserService from "../../../services/agent/user";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
-import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
+import { VIRTUAL_TOUR_TYPE } from "../../../constants";
 import { FaPaw } from "react-icons/fa";
-import { set } from "lodash";
 
 export default function PropertyDetails(props) {
   const [property, setProperty] = useState({});
   const [propertyCategoryType, setPropertyCategoryType] = useState();
-  const [propertyType, setPropertyType] = useState();
-  const [propertyBedrooms, setPropertyBedrooms] = useState();
-  const [propertyArea, setPropertyArea] = useState();
-  const [propertyUnit, setPropertyUnit] = useState();
+  
   const [agentImage, setAgentImage] = useState();
   const [agentName, setAgentName] = useState();
   const [permitNumber, setPermitNumber] = useState();
@@ -35,7 +29,6 @@ export default function PropertyDetails(props) {
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [carbonFootprint, setCarbonFootprint] = useState("_");
-  const [userDetails, setUserDetails] = useState({});
   const [ornNumber, setOrnNumber] = useState();
   const [propertyTags, setPropertyTags] = useState([]);
 

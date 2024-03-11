@@ -6,7 +6,6 @@ import {
   Circle,
   DrawingManager,
   Polygon,
-  StreetViewPanorama,
 } from "@react-google-maps/api";
 import React, { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
@@ -14,6 +13,7 @@ import HomepageService from "../../services/homepage";
 import { formatPrice } from "../../utils";
 import { useHistory } from "react-router-dom";
 import "./location-search.css";
+import { RADIUS_OPTIONS } from "../../constants";
 
 const mapContainerStyle = {
   width: "100vw",
@@ -21,16 +21,20 @@ const mapContainerStyle = {
 };
 
 const options = {
-  disableDefaultUI: true,
+  disableDefaultUI: false, // Or simply remove this line to use default UI
   zoomControl: true,
+  streetViewControl: true,
+  mapTypeControl: true,
 };
+
+const libraries = ["places", "drawing"];
 
 const GoogleMapsSearch = () => {
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
     // googleMapsApiKey: process.env.GOOGLE_API_KEY,
-    libraries: ["places", "drawing"],
+    libraries,
   });
 
   const [currentLocation, setCurrentLocation] = useState({
@@ -46,7 +50,6 @@ const GoogleMapsSearch = () => {
   const [showRadius, setShowRadius] = useState(false);
   const [map, setMap] = useState(null);
   const [mapType, setMapType] = useState("roadmap");
-  const [filters, setFilters] = useState({});
   const [streetViewPosition, setStreetViewPosition] = useState(null);
 
   const history = useHistory();
@@ -54,17 +57,13 @@ const GoogleMapsSearch = () => {
   const searchBoxRef = useRef(null);
   const [markers, setMarkers] = useState([]);
 
-  const panoramaOptions = {
-    position: currentLocation,
-    pov: {
-      heading: 34,
-      pitch: 10,
-    },
-  };
+  const onMapLoad = useCallback((map) => {
+    setMap(map);
+  }, []);
 
-  const handleMarkerClick = () => {
-    setStreetViewPosition(currentLocation);
-  };
+  const onUnmount = useCallback(function callback(map) {
+    setMap(null);
+  }, []);
 
   const resetMapState = () => {
     polygons.forEach((polygon) => {
@@ -81,10 +80,6 @@ const GoogleMapsSearch = () => {
     setShowRadius(false);
   };
 
-  const changeMapType = (type) => {
-    setMapType(type);
-  };
-
   const onSearchBoxLoad = (ref) => {
     searchBoxRef.current = ref;
   };
@@ -95,22 +90,6 @@ const GoogleMapsSearch = () => {
       state: { properties: properties, source: "google-maps" },
     });
   };
-
-  const radiusOptions = [
-    { value: "", label: "--Select Radius--" },
-    { value: 500, label: "0.5km" },
-    { value: 1000, label: "1km" },
-    { value: 3000, label: "3km" },
-    { value: 5000, label: "5km" },
-    { value: 7500, label: "7.5km" },
-    { value: 10000, label: "10km" },
-    { value: 15000, label: "15km" },
-    { value: 20000, label: "20km" },
-    { value: 25000, label: "25km" },
-    { value: 30000, label: "30km" },
-    { value: 50000, label: "50km" },
-    { value: 100000, label: "100km" },
-  ];
 
   const searchByCircle = useCallback(async () => {
     if (!showRadius) return;
@@ -252,15 +231,8 @@ const GoogleMapsSearch = () => {
         if (polygon[0] !== polygon[polygon.length - 1]) {
           polygon.push(polygon[0]);
         }
-        // Add polygon to state for visual feedback (optional)
-        // setPolygons([...polygons, polygon]);
-
         searchPropertiesInPolygon(polygon);
-
         setPolygons((prevPolygons) => [...prevPolygons, overlay]);
-
-        // Optionally, clear the drawn polygon
-        // polygon.setMap(null);
       }
     },
     [searchPropertiesInPolygon, polygons] // Add dependencies to avoid rerenders
@@ -355,17 +327,7 @@ const GoogleMapsSearch = () => {
               }}
             />
           </StandaloneSearchBox>
-          <select
-            id="radiusSelect"
-            value={radius}
-            onChange={(e) => setRadius(Number(e.target.value))}
-          >
-            {radiusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+
           <button
             onClick={() => {
               setShowRadius(!showRadius);
@@ -376,6 +338,17 @@ const GoogleMapsSearch = () => {
           >
             {showRadius ? "Hide Radius" : "Search by Radius"}
           </button>
+          <select
+            id="radiusSelect"
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+          >
+            {RADIUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
 
           <button
             className={`open-button ${active ? "" : "closed-button"}`}
@@ -388,118 +361,83 @@ const GoogleMapsSearch = () => {
           <button onClick={getCurrentLocation}>Get Current Location</button>
         </div>
 
-        {isLoaded ? (
-          <GoogleMap
-            ref={mapRef}
-            mapContainerStyle={mapContainerStyle}
-            zoom={15}
-            center={currentLocation}
-            options={{ ...options, mapTypeId: mapType }}
-            mapTypeControlOptions={{
-              position: window.google.maps.ControlPosition.TOP_LEFT,
-            }}
-          >
-            {/* <StreetViewPanorama options={panoramaOptions} /> */}
-            <Marker position={currentLocation} onClick={() => setStreetViewPosition(currentLocation)} icon={{
+        <GoogleMap
+          id="map"
+          ref={mapRef}
+          mapContainerStyle={mapContainerStyle}
+          zoom={15}
+          center={currentLocation}
+          onLoad={onMapLoad}
+          onUnmount={onUnmount}
+          options={options}
+          mapTypeControlOptions={{
+            position: window.google.maps.ControlPosition.TOP_LEFT,
+          }}
+        >
+          {/* <StreetViewPanorama options={panoramaOptions} /> */}
+          <Marker
+            position={currentLocation}
+            onClick={() => setStreetViewPosition(currentLocation)}
+            icon={{
               url: "/assets/img/icons/map-marker-2.png",
-            }} />
-
-            {streetViewPosition && (
-              <StreetViewPanorama
-                position={streetViewPosition}
-                visible={true}
-                pov={{
-                  heading: 0, // Initial heading (optional)
-                  pitch: 0, // Initial pitch (optional)
-                  zoom: 1, // Initial zoom level (optional)
-                }}
-                options={{
-                  enableCloseButton: true,
-                  fullscreenControl: false,
-                  showRoadLabels: true,
-                  motionTracking: true,
-                  motionTrackingControl: true,
-                  addressControl: true,
-                  linksControl: true,
-                  panControl: true,
-                  zoomControl: true,
-                  clickToGo: true,
-                  scrollwheel: true,
-                  visible: true,
-                  pano: streetViewPosition,
-                }}
-                
-              />
-            )}
+            }}
+          />
+          <Marker
+            position={currentLocation}
+            icon={{
+              url: "/assets/img/icons/map-marker-2.png",
+              // scaledSize: new window.google.maps.Size(25, 25),
+            }}
+          />
+          {/* Render drawn polygons */}
+          {polygons.map((polygon, index) => (
+            <Polygon
+              key={index}
+              paths={polygon}
+              options={{ fillColor: "#FF0000" }}
+            />
+          ))}
+          <DrawingManager
+            drawingMode={window.google.maps.drawing.OverlayType.POLYGON}
+            onPolygonComplete={handlePolygonComplete}
+            options={{
+              drawingControl: true,
+              drawingControlOptions: {
+                position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
+                drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
+              },
+              polygonOptions: { fillColor: "#FF0000" },
+            }}
+          />
+          {properties.map((property) => (
             <Marker
-              position={currentLocation}
+              key={property.id} // Ideally, use a unique property ID if available
+              position={{
+                lat: parseFloat(property.latitude),
+                lng: parseFloat(property.longitude),
+              }}
+              // Optional: Customize the marker icon and other properties
               icon={{
-                url: "/assets/img/icons/map-marker-2.png",
-                // scaledSize: new window.google.maps.Size(25, 25),
+                url: "/assets/img/icons/property-marker.png",
+                scaledSize: new window.google.maps.Size(38, 38),
               }}
+              onClick={() => history.push(`/property-details/${property.id}`)}
             />
-            {/* Render drawn polygons */}
-            {polygons.map((polygon, index) => (
-              <Polygon
-                key={index}
-                paths={polygon}
-                options={{ fillColor: "#FF0000" }}
-              />
-            ))}
-            <DrawingManager
-              drawingMode={window.google.maps.drawing.OverlayType.POLYGON}
-              onPolygonComplete={handlePolygonComplete}
+          ))}
+          {showRadius && (
+            <Circle
+              center={currentLocation}
+              radius={radius}
               options={{
-                drawingControl: true,
-                drawingControlOptions: {
-                  position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
-                  drawingModes: [
-                    window.google.maps.drawing.OverlayType.POLYGON,
-                  ],
-                },
-                polygonOptions: { fillColor: "#FF0000" },
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
               }}
             />
-            {properties.map((property) => (
-              <Marker
-                key={property.id} // Ideally, use a unique property ID if available
-                position={{
-                  lat: parseFloat(property.latitude),
-                  lng: parseFloat(property.longitude),
-                }}
-                // Optional: Customize the marker icon and other properties
-                icon={{
-                  url: "/assets/img/icons/property-marker.png",
-                  scaledSize: new window.google.maps.Size(38, 38),
-                }}
-                onClick={() => history.push(`/property-details/${property.id}`)}
-              />
-            ))}
-            {showRadius && (
-              <Circle
-                center={currentLocation}
-                radius={radius}
-                options={{
-                  strokeColor: "#FF0000",
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: "#FF0000",
-                  fillOpacity: 0.35,
-                }}
-              />
-            )}
-          </GoogleMap>
-        ) : (
-          // <Spinner />
-          <div>Loading...</div>
-        )}
-        <div className="bottom-bar">
-          <button onClick={() => changeMapType("satellite")}>Satellite</button>
-          <button onClick={() => changeMapType("hybrid")}>Hybrid</button>
-          <button onClick={() => changeMapType("terrain")}>Terrain</button>
-          <button onClick={handleMarkerClick}>Street View</button>
-
-        </div>
+          )}
+        </GoogleMap>
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
         <div className="scrollable">
