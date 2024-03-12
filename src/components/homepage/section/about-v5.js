@@ -5,7 +5,7 @@ class AboutV5 extends Component {
     const publicUrl = `${process.env.REACT_APP_PUBLIC_URL}/`;
 
     return (
-      <div className="ltn__about-us-area pb-115 go-top">
+      <div className="ltn__about-us-area pb-115 go-top mt-60">
         <div className="container">
           <div className="row">
             <div className="col-lg-5 align-self-center">

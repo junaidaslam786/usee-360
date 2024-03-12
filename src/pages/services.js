@@ -8,6 +8,7 @@ import Category from '../components/homepage/section/category-v2';
 import CallToActionV1 from '../components/homepage/section/call-to-action-v1';
 import Footer from '../components/global/footer';
 import ServiceSelector from '../components/homepage/section/serviceSelector';
+import CompanyHistory from '../components/homepage/section/companyHistory';
 
 function ServicePage() {
   return (
@@ -15,6 +16,7 @@ function ServicePage() {
       <Navbar />
       <PageHeader headertitle="What We Do" subheader="Service" />
       <ServiceSelector />
+      <CompanyHistory />
       <AboutV5 />
       <ServiceV1 />
       <Category />

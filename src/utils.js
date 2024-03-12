@@ -269,7 +269,8 @@ export const iconsMap = {
   "Unit": "fas fa-th-large", // General representation of units
   "Area": "fas fa-vector-square", // Represents area/space
   "No. of bedrooms": "fas fa-bed", // FontAwesome
-  "Commercial Properties Sub Type": "fas fa-store", // Represents commercial properties
+  "Commercial Property Type": "fas fa-store",
+   "Residential Property Type": "fas fa-store",
   "Price Type": "fas fa-tag", // FontAwesome
   "Layout": "fas fa-object-group", // Represents layout/design
   "Conference Room": "fas fa-chalkboard-teacher", // Represents teaching/conference space

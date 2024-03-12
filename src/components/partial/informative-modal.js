@@ -41,9 +41,9 @@ const InformativeModal = ({ isOpen, onRequestClose }) => {
       <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
         <p>
           {" "}
-          Dear Customer please conduct all you communications and dealing on
+          Dear Customer please conduct all your communications and dealings on
           Usee-360 to protect your rights and avoid any future misunderstanding
-          or disputes with agents and real estate.
+          or disputes.
         </p>
         <button
           onClick={onRequestClose}

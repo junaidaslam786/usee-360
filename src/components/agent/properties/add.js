@@ -137,7 +137,7 @@ export default function Add(props) {
   const [commercialParking, setCommercialParking] = useStateIfMounted(false);
   const [noOfSpacesCommercial, setNoOfSpacesCommercial] = useStateIfMounted(0);
 
-  const [outdoorSpaces, setOutdoorSpaces] = useStateIfMounted(false);
+  const [outdoorSpaces, setOutdoorSpaces] = useStateIfMounted([]);
   const [noOfBathrooms, setNoOfBathrooms] = useStateIfMounted(0);
   const [furnished, setFurnished] = useStateIfMounted(false);
   const [parkingResidential, setParkingResidential] = useStateIfMounted(false);
@@ -212,7 +212,7 @@ export default function Add(props) {
       if (propertyType.value == "commercial" && propertySubType?.value) {
         formdata.append("metaTags[7]", propertySubType.value);
       } else if (
-        propertyType.value == "residential" &&
+        propertyType?.value == "residential" &&
         propertySubType?.value
       ) {
         formdata.append("metaTags[6]", propertySubType.value);
@@ -307,10 +307,10 @@ export default function Add(props) {
         case "studio":
         case "room":
           // Fields common to apartment, studio, and room
-          formdata.append(
-            "metaTags[residentialFloorLevel]",
-            residentialFloorLevel
-          );
+          // formdata.append(
+          //   "metaTags[residentialFloorLevel]",
+          //   residentialFloorLevel
+          // );
           if (buildingAmenities.length > 0) {
             buildingAmenities.forEach((amenity, index) => {
               formdata.append(`metaTags[48][${index}]`, amenity);
@@ -335,9 +335,9 @@ export default function Add(props) {
       }
 
       // Common residential tags
-      formdata.append("metaTags[outdoorSpaces]", outdoorSpaces);
-      formdata.append("metaTags[noOfBathrooms]", noOfBathrooms);
-      formdata.append("metaTags[furnished]", furnished);
+      formdata.append("metaTags[56]", outdoorSpaces);
+      formdata.append("metaTags[57]", noOfBathrooms);
+      formdata.append("metaTags[58]", furnished);
       formdata.append("metaTags[53]", parkingResidential);
       if (parkingResidential === "yes") {
         formdata.append("metaTags[54]", parkingType);
@@ -379,7 +379,7 @@ export default function Add(props) {
       setLoading(false);
 
       if (formResponse?.error) {
-        props.responseHandler([formResponse.message || "An error occurred."]);
+        props.responseHandler([formResponse?.message || "An error occurred."]);
         return;
       }
 
@@ -406,6 +406,17 @@ export default function Add(props) {
     }
   };
 
+  const handleOutdoorSpacesChange = (e) => {
+    const { checked, value } = e.target;
+    setOutdoorSpaces((currentSpaces) => {
+      if (checked) {
+        return [...currentSpaces, value];
+      } else {
+        return currentSpaces.filter((space) => space !== value);
+      }
+    });
+  };
+  
   const handleImageSelect = (file) => {
     setFeaturedImage(file);
   };
@@ -489,9 +500,16 @@ export default function Add(props) {
                     PROPERTY_TYPES.find((type) => type.value === fieldValue)
                   );
                   break;
-                case "Commercial Properties":
+                case "Commercial Property Type":
                   setPropertySubType(
                     COMMERCIAL_PROPERTY.find(
+                      (type) => type.value === fieldValue
+                    )
+                  );
+                  break;
+                case "Residential Property Type":
+                  setPropertySubType(
+                    RESIDENTIAL_PROPERTY.find(
                       (type) => type.value === fieldValue
                     )
                   );
@@ -508,9 +526,7 @@ export default function Add(props) {
                   setArea(fieldValue);
                   break;
                 case "Bedrooms":
-                  setBedrooms(
-                    fieldValue
-                  );
+                  setBedrooms(fieldValue);
                   break;
                 case "No. of bedrooms":
                   setNoOfBeds(fieldValue);
@@ -1306,7 +1322,7 @@ export default function Add(props) {
             propertySubType?.value === "studio" ||
             propertySubType?.value === "room") && (
             <div className="row">
-              <div className="col-md-12">
+              {/* <div className="col-md-12">
                 <div className="input-item">
                   <label>Floor Level</label>
                   <input
@@ -1317,7 +1333,7 @@ export default function Add(props) {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-12">
                 <div className="input-item">
                   <label>Building Amenities</label>
@@ -1508,20 +1524,20 @@ export default function Add(props) {
             <div className="col-md-12">
               <div className="input-item">
                 <label>Outdoor Spaces</label>
-                <div className="input-item">
-                  <Select
-                    classNamePrefix="custom-select"
-                    options={OUTDOOR_SPACES_OPTIONS}
-                    onChange={(selectedOption) =>
-                      setOutdoorSpaces(
-                        selectedOption ? selectedOption.value : ""
-                      )
-                    }
-                    value={OUTDOOR_SPACES_OPTIONS.find(
-                      (option) => option.value === outdoorSpaces
-                    )}
-                    required
-                  />
+                <div>
+                  {OUTDOOR_SPACES_OPTIONS.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={option.value}
+                          checked={outdoorSpaces.includes(option.value)}
+                          onChange={(e) => handleOutdoorSpacesChange(e)}
+                        />
+                        {option.label}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
