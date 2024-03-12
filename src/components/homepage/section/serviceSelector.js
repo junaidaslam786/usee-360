@@ -15,7 +15,7 @@ export default function ServiceSelector() {
   ];
 
   const handleFiltersChange = (filters) => {
-    history.push("/services/properties", { filters });
+    history.push("/services/properties", { filters, propertyCategory: selectedService });
   };
 
   const customStyles = {

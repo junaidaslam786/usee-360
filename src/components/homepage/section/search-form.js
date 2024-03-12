@@ -10,9 +10,14 @@ import { useJsApiLoader } from "@react-google-maps/api";
 
 const libraries = ["places", "drawing"];
 
-export default function SearchForm({ onFiltersChange }) {
+export default function SearchForm({
+  onFiltersChange,
+  propertyCategory: defaultPropertyCategory,
+}) {
   const [address, setAddress] = useStateIfMounted("");
-  const [propertyCategory, setPropertyCategory] = useState("sale");
+  const [propertyCategory, setPropertyCategory] = useState(
+    defaultPropertyCategory || "sale"
+  );
   const [lat, setLat] = useStateIfMounted(null);
   const [lng, setLng] = useStateIfMounted(null);
   const [showLink, setShowLink] = useState(false);
@@ -25,6 +30,8 @@ export default function SearchForm({ onFiltersChange }) {
   const location = useLocation();
 
   const isMounted = useRef(false);
+
+  console.log("default propertyCategory", defaultPropertyCategory);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -41,7 +48,10 @@ export default function SearchForm({ onFiltersChange }) {
     const combinedFilters = constructSelectedFilters();
     // Check if the current page is not the properties page
     if (location.pathname !== "/services/properties") {
-      history.push("/services/properties", { filters: combinedFilters });
+      history.push("/services/properties", {
+        filters: combinedFilters,
+        propertyCategory: defaultPropertyCategory,
+      });
     } else if (onFiltersChange) {
       onFiltersChange(combinedFilters);
     }
@@ -64,6 +74,15 @@ export default function SearchForm({ onFiltersChange }) {
   const selectedFilters = constructSelectedFilters();
   const selectedFiltersCount = Object.keys(selectedFilters).length;
 
+  const resetFilters = () => {
+    setAddress("");
+    setPropertyCategory(defaultPropertyCategory || "sale");
+    setPriceType(null);
+    setFilters({});
+    setLat(null);
+    setLng(null);
+  };
+
   const handleFocus = () => {
     setShowLink(true);
   };
@@ -72,11 +91,10 @@ export default function SearchForm({ onFiltersChange }) {
   const handleBlur = () => {
     const timeoutId = setTimeout(() => {
       if (isMounted.current) {
-        // Only update state if the component is still mounted
         setShowLink(false);
       }
     }, 300);
-    return () => clearTimeout(timeoutId); // Cleanup function to clear the timeout
+    return () => clearTimeout(timeoutId);
   };
 
   const openModal = () => {
@@ -86,6 +104,10 @@ export default function SearchForm({ onFiltersChange }) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    setPropertyCategory(defaultPropertyCategory || "sale");
+  }, [defaultPropertyCategory]);
 
   useEffect(() => {
     if (isLoaded && lat != null && lng != null) {
@@ -133,84 +155,98 @@ export default function SearchForm({ onFiltersChange }) {
                   id="ltn__form_tab_1_1"
                 >
                   <div className="car-dealer-form-inner">
-                    <form action="#" className="ltn__car-dealer-form-box row">
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                        <label>I'm looking to</label>
-                        <select
-                          className="nice-select"
-                          onChange={(e) => setPropertyCategory(e.target.value)}
-                          defaultValue={"sale"}
-                        >
-                          <option value={"sale"}>Buy</option>
-                          <option value={"rent"}>Rent</option>
-                        </select>
-                      </div>
-
-                      {propertyCategory === "rent" && (
-                        <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-meter---- col-lg-3 col-md-6">
-                          <label>Price Type</label>
-                          <Select
-                            classNamePrefix="custom-select"
-                            options={PRICE_TYPE}
-                            onChange={(e) => setPriceType(e)}
-                            value={priceType}
-                            required
-                          />
-                        </div>
-                      )}
-
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-lg-3 col-md-6">
-                        <label>Location</label>
-                        <input
-                          type="text"
-                          id="autocomplete2"
-                          value={address || ""}
-                          onChange={(event) => setAddress(event.target.value)}
-                          placeholder="Location Name"
-                          className="m-0"
-                          onFocus={handleFocus}
-                          onBlur={handleBlur}
-                        />
-                        {showLink && (
-                          <Link
-                            to={{
-                              pathname: "/map-search",
-                            }}
-                            className="draw-on-map"
+                    <form action="#" className="ltn__car-dealer-form-box">
+                      {/* First row for inputs */}
+                      <div className="row">
+                        <div className="ltn__car-dealer-form-item col-lg-4 col-md-4">
+                          <label>I'm looking to</label>
+                          <select
+                            className="nice-select"
+                            value={propertyCategory}
+                            onChange={(e) =>
+                              setPropertyCategory(e.target.value)
+                            }
+                            // defaultValue={"sale"}
                           >
-                            <i
-                              className="fa fa-map-marker"
-                              aria-hidden="true"
-                            ></i>
-                            Search by drawing on map
-                          </Link>
-                        )}
-                      </div>
+                            <option value={"sale"}>Buy</option>
+                            <option value={"rent"}>Rent</option>
+                          </select>
+                        </div>
 
-                      <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-6 col-md-6">
-                        <div
-                          className="btn-wrapper mt-0 go-top pt-1"
-                          style={{ display: "flex" }}
-                        >
+                        {propertyCategory === "rent" && (
+                          <div className="ltn__car-dealer-form-item col-lg-4 col-md-4">
+                            <label>Price Type</label>
+                            <Select
+                              classNamePrefix="custom-select"
+                              options={PRICE_TYPE}
+                              onChange={(e) => setPriceType(e)}
+                              value={priceType}
+                            />
+                          </div>
+                        )}
+
+                        <div className="ltn__car-dealer-form-item col-lg-4 col-md-4">
+                          <label>Location</label>
+                          <input
+                            type="text"
+                            id="autocomplete2"
+                            value={address || ""}
+                            onChange={(event) => setAddress(event.target.value)}
+                            placeholder="Location Name"
+                            className="m-0"
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
+                          />
+                          {showLink && (
+                            <Link
+                              to={{
+                                pathname: "/map-search",
+                              }}
+                              className="draw-on-map"
+                            >
+                              <i
+                                className="fa fa-map-marker"
+                                aria-hidden="true"
+                              ></i>
+                              Search by drawing on map
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        className="row mt-3"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div className="col-lg-4 col-md-4">
                           <button
                             type="button"
-                            className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
+                            className="btn theme-btn-2 btn-effect-1 text-uppercase "
                             onClick={openModal}
                           >
                             <FontAwesomeIcon icon={faFilter} /> Filters (
                             {selectedFiltersCount})
                           </button>
-                          <FilterModal
-                            // className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
-                            isOpen={isModalOpen}
-                            onRequestClose={closeModal}
-                            onFiltersChange={handleFiltersChange}
-                          />
+                        </div>
+
+                        <div className="col-lg-4 col-md-4">
                           <button
-                            className="btn theme-btn-1 btn-effect-1 text-uppercase search-btn mt-4"
+                            className="btn theme-btn-1 btn-effect-1 text-uppercase "
                             onClick={sendFilters}
                           >
                             Find Now
+                          </button>
+                        </div>
+                        <div className="col-lg-4 col-md-4">
+                          <button
+                            type="button"
+                            className="btn theme-btn-2 btn-effect-2 text-uppercase "
+                            onClick={resetFilters}
+                          >
+                            Clear Filters
                           </button>
                         </div>
                       </div>
@@ -221,7 +257,125 @@ export default function SearchForm({ onFiltersChange }) {
             </div>
           </div>
         </div>
+        <FilterModal
+          // className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          onFiltersChange={handleFiltersChange}
+        />
       </div>
     </div>
+    // <div className="ltn__car-dealer-form-area mt-120 mb-120">
+    //   <div className="container">
+    //     <div className="row">
+    //       <div className="col-lg-12">
+    //         <div className="ltn__car-dealer-form-tab">
+    //           <div className="tab-content bg-white box-shadow-1 position-relative pb-10">
+    //             <div
+    //               className="tab-pane fade active show"
+    //               id="ltn__form_tab_1_1"
+    //             >
+    //               <div className="car-dealer-form-inner">
+    //                 <form action="#" className="ltn__car-dealer-form-box">
+    //                   {/* First row for inputs */}
+    //                   <div className="row">
+    //                     {/* I'm looking to */}
+    //                     <div className="ltn__car-dealer-form-item col-lg-4 col-md-4">
+    //                       <label>I'm looking to</label>
+    //                       <select
+    //                         className="nice-select"
+    //                         value={propertyCategory}
+    //                         onChange={(e) =>
+    //                           setPropertyCategory(e.target.value)
+    //                         }
+    //                       >
+    //                         <option value="sale">Buy</option>
+    //                         <option value="rent">Rent</option>
+    //                       </select>
+    //                     </div>
+    //                     {/* Price Type */}
+    //                     <div
+    //                       className={`ltn__car-dealer-form-item col-lg-4 col-md-4 ${
+    //                         propertyCategory !== "rent" ? "d-none" : ""
+    //                       }`}
+    //                     >
+    //                       <label>Price Type</label>
+    //                       <Select
+    //                         classNamePrefix="custom-select"
+    //                         options={PRICE_TYPE}
+    //                         onChange={(e) => setPriceType(e)}
+    //                         value={priceType}
+    //                       />
+    //                     </div>
+    //                     {/* Location */}
+    //                     <div className="ltn__car-dealer-form-item col-lg-4 col-md-4">
+    //                       <label>Location</label>
+    //                       <input
+    //                         type="text"
+    //                         id="autocomplete2"
+    //                         value={address || ""}
+    //                         onChange={(event) => setAddress(event.target.value)}
+    //                         placeholder="Location Name"
+    //                         className="m-0"
+    //                       />
+    //                       {showLink && (
+    //                         <Link
+    //                           to={{ pathname: "/map-search" }}
+    //                           className="draw-on-map"
+    //                         >
+    //                           <i
+    //                             className="fa fa-map-marker"
+    //                             aria-hidden="true"
+    //                           ></i>
+    //                           Search by drawing on map
+    //                         </Link>
+    //                       )}
+    //                     </div>
+    //                   </div>
+    //                   {/* Second row for buttons */}
+    //                   <div className="row mt-3">
+    //                     <div className="col-lg-4 col-md-4">
+    //                       <button
+    //                         type="button"
+    //                         className="btn theme-btn-2 btn-effect-1 text-uppercase"
+    //                         onClick={openModal}
+    //                       >
+    //                         <FontAwesomeIcon icon={faFilter} /> Filters (
+    //                         {selectedFiltersCount})
+    //                       </button>
+    //                     </div>
+    //                     <FilterModal
+    //                         // className="btn theme-btn-2 btn-effect-1 text-uppercase search-btn mt-4"
+    //                         isOpen={isModalOpen}
+    //                         onRequestClose={closeModal}
+    //                         onFiltersChange={handleFiltersChange}
+    //                       />
+    //                     <div className="col-lg-4 col-md-4">
+    //                       <button
+    //                         className="btn theme-btn-1 btn-effect-1 text-uppercase "
+    //                         onClick={sendFilters}
+    //                       >
+    //                         Find Now
+    //                       </button>
+    //                     </div>
+    //                     <div className="col-lg-4 col-md-4">
+    //                       <button
+    //                         type="button"
+    //                         className="btn theme-btn-2 btn-effect-2 text-uppercase "
+    //                         onClick={resetFilters}
+    //                       >
+    //                         Clear Filters
+    //                       </button>
+    //                     </div>
+    //                   </div>
+    //                 </form>
+    //               </div>
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
   );
 }

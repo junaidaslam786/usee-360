@@ -15,22 +15,27 @@ function PropertiesServicePage() {
 
   const location = useLocation();
   const propertiesFromMap = location.state?.properties;
-  const filtersFromLocation = location.state?.filters || {}
+  const filtersFromLocation = location.state?.filters || {};
+  const propertyCategoryFromLocation = location.state?.filters?.propertyCategory;
+  console.log('properties page category',propertyCategoryFromLocation)
 
   const handleFiltersChange = (newFilters) => {
-    setFiltersFromProps(newFilters)
-    console.log('filters from parent property page',newFilters);
+    setFiltersFromProps(newFilters);
+    console.log("filters from parent property page", newFilters);
   };
 
   // Merge filters from props and location. If the same keys exist, filters from location will take precedence
-  const mergedFilters = {...filtersFromProps, ...filtersFromLocation};
+  const mergedFilters = { ...filtersFromProps, ...filtersFromLocation };
 
   return (
     <div>
       <Navbar />
       <PageHeader headertitle="Homes" subheader="Service" />
-      <SearchForm onFiltersChange={handleFiltersChange} />
-      <PropertyGrid  filters={mergedFilters} mapProperties={propertiesFromMap}/>
+      <SearchForm
+        onFiltersChange={handleFiltersChange}
+        propertyCategory={propertyCategoryFromLocation}
+      />
+      <PropertyGrid filters={mergedFilters} mapProperties={propertiesFromMap} />
       <ServiceDetails />
       <Video />
       <Service />
