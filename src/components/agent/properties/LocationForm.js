@@ -38,7 +38,8 @@ const LocationForm = ({
   // const [addressInput, setAddressInput] = useState("");
   const [markerPosition, setMarkerPosition] = useState({ lat, lng });
   const geocoder = useRef(null);
-  const autocompleteRef = useRef(null);
+  const inputRef = useRef(null);
+  const options = {};
 
   const onMapLoad = useCallback((map) => {
     setMap(map);
@@ -47,8 +48,6 @@ const LocationForm = ({
   const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
-
-
 
   const fetchCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -91,37 +90,27 @@ const LocationForm = ({
     setLongitude(place.geometry.location.lng());
   };
 
-  useEffect(() => {
-    if (isLoaded) {
-      geocoder.current = new window.google.maps.Geocoder();
-    }
-  }, [isLoaded]);
+  // const onAutocompleteLoad = useCallback((autocomplete) => {
+  //   autocompleteRef.current = autocomplete;
+  //   // autocompleteRef.current.setFields(['address_component', 'geometry', 'name']);
+  // }, []);
 
-  useEffect(() => {
-    fetchCurrentLocation(); // Fetch the current location when the component mounts
-  }, []);
-
-  const onAutocompleteLoad = useCallback((autocomplete) => {
-    autocompleteRef.current = autocomplete;
-    // autocompleteRef.current.setFields(['address_component', 'geometry', 'name']);
-  }, []);
-
-  const onPlaceSelected = useCallback(() => {
-    if (autocompleteRef.current) {
-      const place = autocompleteRef.current.getPlace();
-      if (place.geometry) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setLatitude(lat);
-        setLongitude(lng);
-        setMarkerPosition({ lat, lng });
-        setAddress(place.formatted_address); // Assuming setAddress updates an internal state
-        setAddressFields(place); // Update additional fields based on the selected place
-      } else {
-        console.log("No details available for input: '" + place.name + "'");
-      }
-    }
-  }, [setAddress, setLatitude, setLongitude, setAddressFields]);
+  // const onPlaceSelected = useCallback(() => {
+  //   if (autocompleteRef.current) {
+  //     const place = autocompleteRef.current.getPlace();
+  //     if (place.geometry) {
+  //       const lat = place.geometry.location.lat();
+  //       const lng = place.geometry.location.lng();
+  //       setLatitude(lat);
+  //       setLongitude(lng);
+  //       setMarkerPosition({ lat, lng });
+  //       setAddress(place.formatted_address); // Assuming setAddress updates an internal state
+  //       setAddressFields(place); // Update additional fields based on the selected place
+  //     } else {
+  //       console.log("No details available for input: '" + place.name + "'");
+  //     }
+  //   }
+  // }, [setAddress, setLatitude, setLongitude, setAddressFields]);
 
   const onMarkerDragEnd = useCallback((e) => {
     const newLat = e.latLng.lat();
@@ -148,7 +137,43 @@ const LocationForm = ({
     }
   }, []);
 
-  
+  useEffect(() => {
+    if (isLoaded) {
+      geocoder.current = new window.google.maps.Geocoder();
+    }
+  }, [isLoaded]);
+
+  useEffect(() => {
+    fetchCurrentLocation(); // Fetch the current location when the component mounts
+  }, []);
+
+  useEffect(() => {
+    let autocomplete;
+    if (isLoaded && inputRef.current) {
+      // Rest of the code...
+      autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete3")
+      );
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          setLatitude(place.geometry.location.lat());
+          setLongitude(place.geometry.location.lng());
+          setAddress(place.formatted_address);
+          setMarkerPosition({ lat, lng });
+          setAddressFields(place);
+        } else {
+          console.error("No geometry for selected place.");
+        }
+      });
+    }
+
+    return () => {
+      if (autocomplete) {
+        window.google.maps.event.clearInstanceListeners(autocomplete);
+      }
+    };
+  }, [isLoaded]);
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -159,18 +184,19 @@ const LocationForm = ({
       <h6>Listing Location</h6>
       <div className="row">
         <div className="col-md-12">
-          <Autocomplete
+          {/* <Autocomplete
             onLoad={onAutocompleteLoad}
             onPlaceChanged={onPlaceSelected}
-          >
-            <input
-              type="text"
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-              id="autocomplete"
-              placeholder="*Address"
-            />
-          </Autocomplete>
+          > */}
+          <input
+            ref={inputRef}
+            type="text"
+            value={address}
+            onChange={(event) => setAddress(event.target.value)}
+            id="autocomplete3"
+            placeholder="*Address"
+          />
+          {/* </Autocomplete> */}
         </div>
         <div className="col-lg-12 mb-map">
           <div className="property-details-google-map mb-60">
