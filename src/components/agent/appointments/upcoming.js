@@ -46,7 +46,7 @@ export default function Upcoming(props) {
         page,
         appendQuery,
       });
-      console.log(response);
+      
       if (response?.data) {
         setList(response.data);
         setCurrentPage(parseInt(response.page));

@@ -18,19 +18,7 @@ export default function Details(props) {
   const [propertyTags, setPropertyTags] = useState([]);
   const params = useParams();
 
-  // const postPropertyViewLog = async (propertyId) => {
-  //   try {
-  //     const logData = {
-  //       propertyId: propertyId,
-  //       logType: "viewed"
-  //     };
-
-  //     await PropertyService.addPropertyLog(logData);
-  //   } catch (error) {
-  //     console.error('Error posting property view log:', error);
-  //     // Handle the error appropriately
-  //   }
-  // };
+  
 
   const loadProperty = async () => {
     const response = await PropertyService.detail(params.id);
@@ -43,16 +31,7 @@ export default function Details(props) {
 
     setProperty(response);
 
-    // postPropertyViewLog(params.id);
-
-    // if (response?.productMetaTags) {
-    //   const { typeMetaTag, categoryTypeMetaTag, unitMetaTag, areaMetaTag, bedroomsMetaTag } = setPropertyMetaData(response?.productMetaTags);
-    //   setPropertyType(typeMetaTag);
-    //   setPropertyCategoryType(categoryTypeMetaTag);
-    //   setPropertyUnit(unitMetaTag);
-    //   setPropertyArea(areaMetaTag);
-    //   setPropertyBedrooms(bedroomsMetaTag);
-    // }
+    
 
     // Use slice() to clone the array before reversing to avoid mutating the original array
     const reversedMetaTags = response.productMetaTags.slice().reverse();
@@ -79,7 +58,7 @@ export default function Details(props) {
 
   useEffect(() => {
     loadProperty();
-  }, [params.id]);
+  }, [params.id, loadProperty]);
 
   return (
     <section>

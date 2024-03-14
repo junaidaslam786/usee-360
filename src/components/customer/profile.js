@@ -100,7 +100,7 @@ export default function Profile(props) {
     };
 
     getUserProfile();
-  }, []);
+  }, [getUser]);
 
   return (
     <div>

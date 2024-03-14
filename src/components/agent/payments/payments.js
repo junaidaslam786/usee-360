@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
-const PaymentPage = () => {
+const PaymentPage = ({responseHandler}) => {
   const [showCardForm, setShowCardForm] = useState(false);
   const [customerId, setCustomerId] = useState(null);
 

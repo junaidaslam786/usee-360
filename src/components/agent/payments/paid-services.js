@@ -5,7 +5,7 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import { toast } from "react-toastify";
 import { Card, Button, Form, Row, Col, ToggleButton } from "react-bootstrap";
 
-const PaidServices = (props) => {
+const PaidServices = ({responseHandler}) => {
   const [services, setServices] = useState([]);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,7 +54,7 @@ const PaidServices = (props) => {
         setSubscriptionStatus(updatedSubscriptionStatus);
       }
     } catch (error) {
-      props.responseHandler([`Error fetching subscription details: ${error.message}`]);
+      responseHandler([`Error fetching subscription details: ${error.message}`]);
     }
   };
 
@@ -75,7 +75,7 @@ const PaidServices = (props) => {
         setServices(formattedServices);
       }
     } catch (error) {
-      props.responseHandler([`Error fetching services: ${error.message}`]);
+      responseHandler([`Error fetching services: ${error.message}`]);
     }
   };
 
@@ -101,7 +101,7 @@ const PaidServices = (props) => {
       "Value:",
       autoRenewValue[serviceId]
     );
-    toast.success(`Auto-renew value saved for ${serviceId}`);
+    responseHandler(`Auto-renew value saved for ${serviceId}`);
     // Implement the logic to save the auto-renew value in your backend
   };
 
@@ -119,21 +119,20 @@ const PaidServices = (props) => {
       );
 
       if (response?.success) {
-        console.log("Subscription successful", response);
-        toast.success("Subscription successful");
+        
         setSubscriptionStatus((prevStatus) => ({
           ...prevStatus,
           [serviceId]: true, // Update status to true for the subscribed service
         }));
-        props.responseHandler(["Subscription successful"], true);
+        responseHandler(["Subscription successful"], true);
       } else {
-        console.error("Subscription failed", response.message);
-        props.responseHandler([`Subscription failed: ${response.message}`]);
+        // console.error("Subscription failed", response.message);
+        responseHandler([`Subscription failed: ${response.message}`]);
         // Handle the failed subscription here
       }
     } catch (error) {
-      console.error("Error during subscription", error.message);
-      props.responseHandler([`Error during subscription: ${error.message}`]);
+      // console.error("Error during subscription", error.message);
+      responseHandler([`Error during subscription: ${error?.message}`]);
       // Handle any errors here
     }
   };
@@ -175,19 +174,19 @@ const PaidServices = (props) => {
 
         // Assuming the API response includes a success property to indicate the operation result
         if (response?.success) {
-            console.log("Purchase successful", response.data);
+            console.log("Purchase successful", response.message);
             setPurchaseSuccess(true);
             setSuccessMessage(`You have successfully purchased ${service.name}.`);
-            props.responseHandler([`You have successfully purchased ${service.name}.`], true); // Assuming second parameter `true` indicates success
+            responseHandler([`You have successfully purchased ${service.name}.`], true); // Assuming second parameter `true` indicates success
         } else {
             // Handle cases where the API operation was executed but resulted in an error
-            console.error("Purchase failed", response?.message || "Unknown error");
-            props.responseHandler([`Purchase failed: ${response?.message || "An error occurred during the purchase."}`]);
+            // console.error("Purchase failed", response?.message || "Unknown error");
+            responseHandler([`Purchase failed: ${response?.message || "An error occurred during the purchase."}`]);
         }
     } catch (error) {
         // Handle network errors or issues with executing the API call
         console.error("Error during purchase", error.message);
-        props.responseHandler([`Error during purchase: ${error.message}`]);
+        responseHandler([`Error during purchase: ${error.message}`]);
     }
 };
 

@@ -7,8 +7,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  PieChart,
-  Pie,
 } from "recharts";
 import "./agentReports.css";
 import AgentAnalyticsService from "../../../services/agent/analytics";
@@ -17,33 +15,6 @@ const AgentReport = () => {
   const [propertyVisits, setPropertyVisits] = useState([]);
   const [offerData, setOfferData] = useState([]);
   const [offerCounts, setOfferCounts] = useState({});
-
-  const transformOfferData = (data) => {
-    const offerMap = {};
-
-    data.forEach((offer) => {
-      if (!offerMap[offer.product.id]) {
-        offerMap[offer.product.id] = {
-          name: offer.product.title,
-          offers: 0,
-          accepted: 0,
-          rejected: 0,
-          pending: 0,
-        };
-      }
-      offerMap[offer.product.id].offers += 1;
-      offerMap[offer.product.id][offer.status] += 1;
-    });
-
-    return Object.values(offerMap);
-  };
-
-  const transformVisitData = (data) => {
-    return data.map((item) => ({
-      name: item.title,
-      visits: item.productViews.length,
-    }));
-  };
 
   const fetchOfferData = async () => {
     const response = await AgentAnalyticsService.getPropertyOffers(

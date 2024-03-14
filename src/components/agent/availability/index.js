@@ -119,7 +119,7 @@ export default function Index(props) {
 
     setTimeSlots(currentTimeSlots);
     setTimeOptions(assocArray);
-  },[]);
+  },[props, userId, setSelectedSlots, setUserId, setTimeOptions, setTimeSlots]);
 
   useEffect(() => {
     const fetchAvailabilitySlots = async () => {
