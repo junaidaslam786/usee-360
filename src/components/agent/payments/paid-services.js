@@ -4,16 +4,17 @@ import StripeService from "../../../services/agent/stripe-service";
 import { getUserDetailsFromJwt } from "../../../utils";
 import { toast } from "react-toastify";
 import { Card, Button, Form, Row, Col, ToggleButton } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 const PaidServices = () => {
   const [services, setServices] = useState([]);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [subscriptionStatus, setSubscriptionStatus] = useState({});
   const [userSubscriptions, setUserSubscriptions] = useState({});
   const [autoRenewValue, setAutoRenewValue] = useState({});
 
   const userDetails = getUserDetailsFromJwt();
+  const history = useHistory();
 
   const fetchSubscriptionDetails = async () => {
     try {
@@ -114,11 +115,13 @@ const PaidServices = () => {
 
       if (response?.success) {
         
+        toast("Subscription successful", true);
         setSubscriptionStatus((prevStatus) => ({
           ...prevStatus,
           [serviceId]: true, // Update status to true for the subscribed service
         }));
-        toast("Subscription successful", true);
+        // history.push('/agent/subscription')
+        window.location.reload();
       } else {
         // console.error("Subscription failed", response.message);
         toast(`Subscription failed: ${response.message}`);
