@@ -5,7 +5,7 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import { toast } from "react-toastify";
 import { Card, Button, Form, Row, Col, ToggleButton } from "react-bootstrap";
 
-const PaidServices = ({responseHandler}) => {
+const PaidServices = () => {
   const [services, setServices] = useState([]);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,7 +54,7 @@ const PaidServices = ({responseHandler}) => {
         setSubscriptionStatus(updatedSubscriptionStatus);
       }
     } catch (error) {
-      responseHandler([`Error fetching subscription details: ${error.message}`]);
+      toast(`Error fetching subscription details: ${error.message}`);
     }
   };
 
@@ -67,27 +67,21 @@ const PaidServices = ({responseHandler}) => {
           id: service.id,
           name: service.name,
           tokenPrice: service.tokensPerUnit,
-          quantity: 1, // Default quantity
+          quantity: 0, 
           autoRenew: false,
-          remainingFreeUnits: service.freeUnits,
-          remainingPaidUnits: service.totalUnits - service.freeUnits,
+          monthlyFreeUnits: service.freeUnits,
+
+          remainingFreeUnits: "-",
+          remainingPaidUnits: "-",
         }));
         setServices(formattedServices);
       }
     } catch (error) {
-      responseHandler([`Error fetching services: ${error.message}`]);
+      toast(`Error fetching services: ${error.message}`);
     }
   };
 
-  useEffect(() => {
-    const initializeData = async () => {
-      await fetchServices();
-      await fetchSubscriptionDetails(); 
-    };
-
-    initializeData();
-  }, []);
-
+  
   const handleAutoRenewValueChange = (index, value) => {
     const newAutoRenewValue = { ...autoRenewValue };
     newAutoRenewValue[services[index].id] = value;
@@ -101,7 +95,7 @@ const PaidServices = ({responseHandler}) => {
       "Value:",
       autoRenewValue[serviceId]
     );
-    responseHandler(`Auto-renew value saved for ${serviceId}`);
+    toast(`Auto-renew value saved for ${serviceId}`);
     // Implement the logic to save the auto-renew value in your backend
   };
 
@@ -124,15 +118,15 @@ const PaidServices = ({responseHandler}) => {
           ...prevStatus,
           [serviceId]: true, // Update status to true for the subscribed service
         }));
-        responseHandler(["Subscription successful"], true);
+        toast("Subscription successful", true);
       } else {
         // console.error("Subscription failed", response.message);
-        responseHandler([`Subscription failed: ${response.message}`]);
+        toast(`Subscription failed: ${response.message}`);
         // Handle the failed subscription here
       }
     } catch (error) {
       // console.error("Error during subscription", error.message);
-      responseHandler([`Error during subscription: ${error?.message}`]);
+      toast(`Error during subscription: ${error?.message}`);
       // Handle any errors here
     }
   };
@@ -162,41 +156,45 @@ const PaidServices = ({responseHandler}) => {
   };
 
   const handlePurchase = async (service) => {
+    const totalAmount = service.tokenPrice * service.quantity;
     try {
-        const totalAmount = service.tokenPrice * service.quantity;
         const response = await StripeService.createTransaction(
             userDetails.id,
             service.id,
             service.quantity,
             totalAmount,
-            `Used for ${service.name}` // Example description
+            `Used for ${service.name}`
         );
 
-        // Assuming the API response includes a success property to indicate the operation result
-        if (response?.success) {
-            console.log("Purchase successful", response.message);
+        if (response?.data?.message) {
+            // console.log("Purchase successful", response?.message);
             setPurchaseSuccess(true);
-            setSuccessMessage(`You have successfully purchased ${service.name}.`);
-            responseHandler([`You have successfully purchased ${service.name}.`], true); // Assuming second parameter `true` indicates success
+            // setSuccessMessage(`You have successfully purchased ${service.name}.`);
+            toast.success(`You have successfully purchased ${service.name}.`);
         } else {
-            // Handle cases where the API operation was executed but resulted in an error
-            // console.error("Purchase failed", response?.message || "Unknown error");
-            responseHandler([`Purchase failed: ${response?.message || "An error occurred during the purchase."}`]);
+            console.log("Purchase response received but not successful", response?.data?.message);
+            toast.error(`Purchase failed: ${response?.data?.message || "An unknown error occurred."}`);
         }
     } catch (error) {
-        // Handle network errors or issues with executing the API call
-        console.error("Error during purchase", error.message);
-        responseHandler([`Error during purchase: ${error.message}`]);
+        // console.error("Error during purchase", error);
+        toast.error(`Error during purchase: ${error.message}`);
     }
 };
+
+useEffect(() => {
+  const initializeData = async () => {
+    await fetchServices();
+    await fetchSubscriptionDetails(); 
+  };
+
+  initializeData();
+}, []);
 
 
   return (
     <div className="paid-services">
       <h2>Services</h2>
-      {purchaseSuccess && (
-        <div className="success-message">{successMessage}</div>
-      )}
+      
       {services.map((service, index) => {
         const isSubscribed =
           subscriptionStatus[service.id] ||
@@ -213,7 +211,7 @@ const PaidServices = ({responseHandler}) => {
                       <Card.Title>{service.name}</Card.Title>
                       {service.name === "Video Call" ? (
                         <Card.Text>
-                          Free Units Per Property: {service.remainingPaidUnits}
+                          Free Units Per Property: {service.monthlyFreeUnits}
                         </Card.Text>
                       ) : (
                         <Card.Text>
