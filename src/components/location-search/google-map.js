@@ -51,6 +51,7 @@ const GoogleMapsSearch = () => {
   const [map, setMap] = useState(null);
   const [mapType, setMapType] = useState("roadmap");
   const [streetViewPosition, setStreetViewPosition] = useState(null);
+  const [drawingMode, setDrawingMode] = useState(null);
 
   const history = useHistory();
 
@@ -305,6 +306,12 @@ const GoogleMapsSearch = () => {
     getCurrentLocation();
   }, []);
 
+  useEffect(() => {
+    if (isLoaded) {
+      setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
+    }
+  }, [isLoaded]);
+
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
 
@@ -330,14 +337,21 @@ const GoogleMapsSearch = () => {
 
           <button
             onClick={() => {
-              setShowRadius(!showRadius);
-              if (!showRadius) {
+              const newShowRadius = !showRadius;
+              setShowRadius(newShowRadius);
+              setDrawingMode(
+                newShowRadius
+                  ? null
+                  : window.google.maps.drawing.OverlayType.POLYGON
+              );
+              if (!newShowRadius) {
                 searchByCircle();
               }
             }}
           >
             {showRadius ? "Hide Radius" : "Search by Radius"}
           </button>
+
           <select
             id="radiusSelect"
             value={radius}
@@ -398,7 +412,7 @@ const GoogleMapsSearch = () => {
             />
           ))}
           <DrawingManager
-            drawingMode={window.google.maps.drawing.OverlayType.POLYGON}
+            drawingMode={drawingMode}
             onPolygonComplete={handlePolygonComplete}
             options={{
               drawingControl: true,

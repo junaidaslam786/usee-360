@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../../components/global/navbar";
 import PageHeader from "../../components/global/header";
@@ -11,31 +11,39 @@ import Footer from "../../components/global/footer";
 import PropertyGrid from "../../components/homepage/property/grid";
 
 function PropertiesServicePage() {
-  const [filtersFromProps, setFiltersFromProps] = useState({});
+  const [filters, setFilters] = useState({});
 
   const location = useLocation();
   const propertiesFromMap = location.state?.properties;
-  const filtersFromLocation = location.state?.filters || {};
-  const propertyCategoryFromLocation = location.state?.filters?.propertyCategory;
-  console.log('properties page category',propertyCategoryFromLocation)
+ 
 
-  const handleFiltersChange = (newFilters) => {
-    setFiltersFromProps(newFilters);
-    console.log("filters from parent property page", newFilters);
-  };
+ // This function handles updates to filters, including propertyCategory, from the SearchForm
+ const handleFiltersChange = (newFilters) => {
+  setFilters(prevFilters => ({
+    ...prevFilters,
+    ...newFilters, // Ensures propertyCategory and other filters are updated
+  }));
+};
 
-  // Merge filters from props and location. If the same keys exist, filters from location will take precedence
-  const mergedFilters = { ...filtersFromProps, ...filtersFromLocation };
+  useEffect(() => {
+    // If there are filters in the location state, use them; otherwise, keep the existing filters.
+    if (location.state?.filters) {
+      setFilters(location.state.filters);
+    }
+  }, [location.state?.filters]);
+
+  
 
   return (
     <div>
       <Navbar />
       <PageHeader headertitle="Homes" subheader="Service" />
       <SearchForm
+        key={JSON.stringify(filters)}
         onFiltersChange={handleFiltersChange}
-        propertyCategory={propertyCategoryFromLocation}
+        propertyCategory={filters.propertyCategory}
       />
-      <PropertyGrid filters={mergedFilters} mapProperties={propertiesFromMap} />
+      <PropertyGrid filters={filters} mapProperties={propertiesFromMap} />
       <ServiceDetails />
       <Video />
       <Service />
