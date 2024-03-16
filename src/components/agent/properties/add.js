@@ -87,7 +87,7 @@ export default function Add(props) {
   const [capacity, setCapacity] = useStateIfMounted("");
   const [kitchen, setKitchen] = useStateIfMounted("");
   const [store, setStore] = useStateIfMounted("");
-  const [foordCourt, setFoodCourt] = useStateIfMounted(false);
+  const [foodCourt, setFoodCourt] = useStateIfMounted(false);
   const [restRoom, setRestRoom] = useStateIfMounted(false);
   const [pools, setPools] = useStateIfMounted("");
   const [poolType, setPoolType] = useStateIfMounted("");
@@ -255,7 +255,7 @@ export default function Add(props) {
           break;
         case "shopping_center":
           formdata.append("metaTags[17]", store);
-          formdata.append("metaTags[18]", foordCourt);
+          formdata.append("metaTags[18]", foodCourt);
           formdata.append("metaTags[19]", restRoom);
           break;
         case "hotels":
@@ -987,7 +987,7 @@ export default function Add(props) {
                         setFoodCourt(selectedOption ? selectedOption.value : "")
                       }
                       value={YES_NO_OPTIONS.find(
-                        (option) => option.value === foordCourt
+                        (option) => option.value === foodCourt
                       )}
                       required
                     />
