@@ -12,9 +12,9 @@ import {
 import Select from "react-select";
 
 function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
-  const [propertyCategoryType, setPropertyCategoryType] =
+  const [propertyType, setPropertyType] =
     useState("");
-  const [propertyType, setPropertyType] = useState("");
+  const [propertySubType, setPropertySubType] = useState("");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [unit, setUnit] = useState();
@@ -37,8 +37,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
 
   const handleConfirm = () => {
     const newFilters = {
-      propertyCategoryType,
       propertyType,
+      propertySubType,
       minPrice,
       maxPrice,
       area,
@@ -101,7 +101,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
   };
 
   const propertyTypeOptions =
-    propertyCategoryType === "commercial"
+    propertyType === "commercial"
       ? COMMERCIAL_PROPERTY
       : RESIDENTIAL_PROPERTY;
 
@@ -181,25 +181,25 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     classNamePrefix={"custom-select"}
                     options={PROPERTY_TYPES}
                     value={PROPERTY_TYPES.find(
-                      (option) => option.value === propertyCategoryType
+                      (option) => option.value === propertyType
                     )}
                     onChange={(selectedOption) =>
-                      setPropertyCategoryType(selectedOption.value)
+                      setPropertyType(selectedOption.value)
                     }
                   />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="input-item">
-                  <label htmlFor="property-type">Property Type:</label>
+                  <label htmlFor="property-type">Property Sub Type:</label>
                   <Select
                     classNamePrefix={"custom-select"}
                     options={propertyTypeOptions}
                     value={propertyTypeOptions.find(
-                      (option) => option.value === propertyType
+                      (option) => option.value === propertySubType
                     )}
                     onChange={(selectedOption) =>
-                      setPropertyType(selectedOption.value)
+                      setPropertySubType(selectedOption.value)
                     }
                   />
                 </div>
@@ -265,9 +265,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                 </div>
               </div>
               {/* Conditionally render checkboxes if property category is commercial */}
-              {propertyCategoryType === "commercial" && (
+              {/* {propertyCategoryType === "commercial" && (
                 <div className="col-md-12">
-                  {/* <h4>Additional Features</h4> */}
                   <div className="form-check">
                     <input
                       type="checkbox"
@@ -342,9 +341,9 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     </label>
                   </div>
                 </div>
-              )}
+              )} */}
               {/* Conditionally render checkboxes and select fields if property category is residentials */}
-              {propertyCategoryType === "residential" && (
+              {/* {propertyCategoryType === "residential" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -461,7 +460,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     </div>
                   </div>
                 </>
-              )}
+              )} */}
             </div>
             <div className="modal-btn">
               <button

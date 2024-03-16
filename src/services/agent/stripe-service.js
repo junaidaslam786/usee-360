@@ -1,6 +1,5 @@
-import { httpGet, httpPost, generateStripeHeaders } from "../../rest-api"; // Assuming rest-api is in the same directory
+import { httpGet, httpPost, generateStripeHeaders, httpPut } from "../../rest-api"; // Assuming rest-api is in the same directory
 
-const apiUrlPrefix = "your-backend-endpoint-prefix"; // Replace with the actual endpoint prefix
 
 const StripeService = {
   createPaymentIntent: async (amount, currency) => {
@@ -81,7 +80,7 @@ const StripeService = {
     return response;
   },
 
-  // Add new services according to your backend routes
+
   createPaymentIntent: async (data) => {
     try {
       const response = await httpPost("/create-payment-intent", data);
@@ -419,6 +418,36 @@ const StripeService = {
       };
     }
   },
+
+  autoRenewSubscriptions: async (userId, subscriptionId, featureId, autoRenew, autoRenewUnits) => {
+    try {
+      const response = await httpPut(`agent/user/${userId}/subscription`, {
+        subscriptionId,
+        featureId,
+        autoRenew,
+        autoRenewUnits
+      });
+
+      if (response?.error) {
+        // Handle error appropriately
+        console.error(
+          "Error in auto-renewing subscription:",
+          response.message
+        );
+        return { success: false, message: response.message };
+      }
+
+      console.log("Subscription auto-renewed successfully:", response);
+      return { success: true, message: "Subscription auto-renewed successfully" };
+    } catch (error) {
+      console.error("Error in auto-renewing subscription:", error);
+      return {
+        success: false,
+        message: "An error occurred during auto-renewal.",
+      };
+    }
+  }
+
 };
 
 export default StripeService;

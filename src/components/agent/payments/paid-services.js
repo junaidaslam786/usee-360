@@ -11,6 +11,7 @@ const PaidServices = () => {
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState({});
   const [userSubscriptions, setUserSubscriptions] = useState({});
+  const [subscriptionId, setSubscriptionId] = useState(null);
   const [autoRenewValue, setAutoRenewValue] = useState({});
 
   const userDetails = getUserDetailsFromJwt();
@@ -21,6 +22,7 @@ const PaidServices = () => {
       const response = await StripeService.getUserSubscriptionDetails(
         userDetails.id
       );
+      setSubscriptionId(response?.data?.subscription?.id);
       console.log("Subscriptions Detail", response);
       if (response.data && response.data.userSubscriptions) {
         const subscriptionMap = {};
@@ -45,6 +47,8 @@ const PaidServices = () => {
                 remainingFreeUnits: subscription.freeRemainingUnits,
                 remainingPaidUnits: subscription.paidRemainingUnits,
                 monthlyFreeUnits: subscription.feature.freeUnits,
+                autoRenew: subscription.autoRenew,
+                autoRenewUnits: subscription.autoRenewUnits,
               };
             }
             return service;
@@ -68,7 +72,7 @@ const PaidServices = () => {
           id: service.id,
           name: service.name,
           tokenPrice: service.tokensPerUnit,
-          quantity: 0, 
+          quantity: 0,
           autoRenew: false,
           monthlyFreeUnits: service.freeUnits,
 
@@ -82,22 +86,34 @@ const PaidServices = () => {
     }
   };
 
-  
   const handleAutoRenewValueChange = (index, value) => {
     const newAutoRenewValue = { ...autoRenewValue };
     newAutoRenewValue[services[index].id] = value;
     setAutoRenewValue(newAutoRenewValue);
   };
 
-  const handleSaveAutoRenewValue = (serviceId) => {
-    console.log(
-      "Saving auto-renew value for service:",
-      serviceId,
-      "Value:",
-      autoRenewValue[serviceId]
+  const handleSaveAutoRenewValue = async (serviceId) => {
+    const autoRenewUnits = autoRenewValue[serviceId] || 0;
+    const autoRenew = services.find(
+      (service) => service.id === serviceId
+    ).autoRenew;
+    const featureId = serviceId;
+    const response = await StripeService.autoRenewSubscriptions(
+      userDetails.id, // userId
+      subscriptionId,
+      featureId,
+      autoRenew,
+      autoRenewUnits
     );
-    toast(`Auto-renew value saved for ${serviceId}`);
-    // Implement the logic to save the auto-renew value in your backend
+
+    if (response.success) {
+      toast.success(
+        response.message || `Auto-renew settings saved for ${serviceId}`
+      );
+      // Update your state as needed here
+    } else {
+      toast.error(response.message || "Failed to save auto-renew settings");
+    }
   };
 
   const handleSubscribe = async (serviceId) => {
@@ -114,7 +130,6 @@ const PaidServices = () => {
       );
 
       if (response?.success) {
-        
         toast("Subscription successful", true);
         setSubscriptionStatus((prevStatus) => ({
           ...prevStatus,
@@ -136,7 +151,8 @@ const PaidServices = () => {
 
   const handleQuantityChange = (index, quantity) => {
     const numQuantity = Number(quantity); // Convert to number
-    if (!isNaN(numQuantity) && numQuantity > 0) { // Check if it's a valid number
+    if (!isNaN(numQuantity) && numQuantity > 0) {
+      // Check if it's a valid number
       const updatedServices = services.map((service, idx) => {
         if (idx === index) {
           return { ...service, quantity: numQuantity };
@@ -146,7 +162,6 @@ const PaidServices = () => {
       setServices(updatedServices);
     }
   };
-  
 
   const handleAutoRenewToggle = (index) => {
     const updatedServices = services.map((service, idx) => {
@@ -161,43 +176,49 @@ const PaidServices = () => {
   const handlePurchase = async (service) => {
     const totalAmount = service.tokenPrice * service.quantity;
     try {
-        const response = await StripeService.createTransaction(
-            userDetails.id,
-            service.id,
-            service.quantity,
-            totalAmount,
-            `Used for ${service.name}`
+      const response = await StripeService.createTransaction(
+        userDetails.id,
+        service.id,
+        service.quantity,
+        totalAmount,
+        `Used for ${service.name}`
+      );
+
+      if (response?.data?.message) {
+        // console.log("Purchase successful", response?.message);
+        setPurchaseSuccess(true);
+        // setSuccessMessage(`You have successfully purchased ${service.name}.`);
+        toast.success(`You have successfully purchased ${service.name}.`);
+      } else {
+        console.log(
+          "Purchase response received but not successful",
+          response?.data?.message
         );
-
-        if (response?.data?.message) {
-            // console.log("Purchase successful", response?.message);
-            setPurchaseSuccess(true);
-            // setSuccessMessage(`You have successfully purchased ${service.name}.`);
-            toast.success(`You have successfully purchased ${service.name}.`);
-        } else {
-            console.log("Purchase response received but not successful", response?.data?.message);
-            toast.error(`Purchase failed: ${response?.data?.message || "An unknown error occurred."}`);
-        }
+        toast.error(
+          `Purchase failed: ${
+            response?.data?.message || "An unknown error occurred."
+          }`
+        );
+      }
     } catch (error) {
-        // console.error("Error during purchase", error);
-        toast.error(`Error during purchase: ${error.message}`);
+      // console.error("Error during purchase", error);
+      toast.error(`Error during purchase: ${error.message}`);
     }
-};
-
-useEffect(() => {
-  const initializeData = async () => {
-    await fetchServices();
-    await fetchSubscriptionDetails(); 
   };
 
-  initializeData();
-}, []);
+  useEffect(() => {
+    const initializeData = async () => {
+      await fetchServices();
+      await fetchSubscriptionDetails();
+    };
 
+    initializeData();
+  }, []);
 
   return (
     <div className="paid-services">
       <h2>Services</h2>
-      
+
       {services.map((service, index) => {
         const isSubscribed =
           subscriptionStatus[service.id] ||
@@ -221,7 +242,9 @@ useEffect(() => {
                           Monthly Free Units: {service.monthlyFreeUnits}{" "}
                         </Card.Text>
                       )}
-                      <Card.Text>Remaining Paid Units:{service.remainingPaidUnits} </Card.Text>
+                      <Card.Text>
+                        Remaining Paid Units:{service.remainingPaidUnits}{" "}
+                      </Card.Text>
                       <Card.Text>
                         Remaining Free Units: {service.remainingFreeUnits}
                       </Card.Text>
@@ -292,13 +315,20 @@ useEffect(() => {
                                   label="Auto Renew"
                                   checked={service.autoRenew}
                                   onChange={() => handleAutoRenewToggle(index)}
+                                  disabled={!subscriptionStatus[service.id]} // Disable if not subscribed
                                 />
                               </Form.Group>
                               <Form.Group className="mb-2 flex-grow-1 d-flex flex-column justify-content-end">
                                 <Form.Control
                                   size="sm"
                                   type="number"
-                                  value={autoRenewValue[service.id] || ""}
+                                  value={
+                                    service.autoRenew
+                                      ? autoRenewValue[service.id] ||
+                                        service.autoRenewUnits ||
+                                        ""
+                                      : ""
+                                  }
                                   onChange={(e) =>
                                     handleAutoRenewValueChange(
                                       index,
@@ -311,15 +341,19 @@ useEffect(() => {
                                   size="sm"
                                   variant="primary"
                                   onClick={() =>
-                                    handleSaveAutoRenewValue(
-                                      service.id,
-                                      service.name
-                                    )
+                                    handleSaveAutoRenewValue(service.id)
                                   }
-                                  disabled={!service.autoRenew}
+                                  disabled={
+                                    !service.autoRenew ||
+                                    !(autoRenewValue[service.id] > 0)
+                                  }
                                   className="w-100 mt-2"
                                 >
-                                  Save
+                                  {service.autoRenew &&
+                                  (autoRenewValue[service.id] > 0 ||
+                                    service.autoRenewUnits > 0)
+                                    ? "Update"
+                                    : "Save"}
                                 </Button>
                               </Form.Group>
                             </Col>
