@@ -263,6 +263,14 @@ export const formatPrice = (price) => {
   return `${DEFAULT_CURRENCY} ${formatter.format(price)}`;
 };
 
+// Utility function to convert "yes" or "no" strings to boolean values
+export const stringToBoolean = (value) => value === "yes";
+
+// Utility function to convert boolean values back to "yes" or "no" strings for consistency
+export const booleanToString = (booleanValue) => {
+  return booleanValue ? "yes" : "no";
+};
+
 export const iconsMap = {
   "Property Type": "fas fa-building", // FontAwesome equivalent
   "Property Category Type": "fas fa-tags", // General tag icon, as specific category icon might not be available
@@ -270,7 +278,7 @@ export const iconsMap = {
   "Area": "fas fa-vector-square", // Represents area/space
   "No. of bedrooms": "fas fa-bed", // FontAwesome
   "Commercial Property Type": "fas fa-store",
-   "Residential Property Type": "fas fa-store",
+  "Residential Property Type": "fas fa-store",
   "Price Type": "fas fa-tag", // FontAwesome
   "Layout": "fas fa-object-group", // Represents layout/design
   "Conference Room": "fas fa-chalkboard-teacher", // Represents teaching/conference space
@@ -322,65 +330,300 @@ export const iconsMap = {
   "Furnished": "fas fa-couch", // Represents furniture/living space
 };
 
+export const transformMetaTagsToFrontend = (productMetaTags) => {
+  const initialState = {
+    propertyType: "",
+    propertyCategoryType: "",
+    unit: "",
+    area: "",
+    bedrooms: "",
+    propertySubType: "",
+    priceType: "",
+    layout: "",
+    conferenceRoom: false,
+    kitchen: "",
+    displayWindowArea: "",
+    displayWindow: "",
+    numberOfStores: "",
+    foodCourt: false,
+    restRoom: false,
+    pools: "",
+    poolType: "",
+    hotelRoom: "",
+    areaBar: "",
+    loungeArea: "",
+    capacityOfVip: "",
+    noOfDanceFloor: "",
+    noOfPrivateRooms: "",
+    kitchenArea: "",
+    outdoorSeating: false,
+    outdoorSeatingArea: "",
+    roomSize: "",
+    noOfBeds: "",
+    roomType: "",
+    floorLevel: "",
+    view: "",
+    balcony: false,
+    securityFeatures: false,
+    alaramCameraB: "",
+    disabilityAccess: false,
+    parkingFacility: false,
+    noOfParkings: "",
+    publicTransport: false,
+    yearBuilt: "",
+    condition: "",
+    availabilityDate: "",
+    petFreindliness: false,
+    additionalFeatures: "",
+    buildingAmenities: [],
+    fireplace: false,
+    woodBurning: "",
+    noOfFloors: "",
+    basement: false,
+    parkingType: "",
+    garageSpaces: "",
+    outdoorSpaces: [],
+    noOfBathrooms: "",
+    furnished: "",
+  };
 
-export const tagsOrder = [
-  "typeMetaTag",
-  "categoryTypeMetaTag",
-  "unitMetaTag",
-  "areaMetaTag",
-  "bedroomsMetaTag",
-  "subTypeMetaTag",
-  "priceTypeMetaTag",
-  "deedTitleMetaTag",
-  "layout",
-  "conferenceRoom",
-  "conferenceRoomCapacity",
-  "kitchen",
-  "displayWindowArea",
-  "displayWindowType",
-  "numberOfStores",
-  "foodCourt",
-  "restRooms",
-  "numberOfPools",
-  "poolTypes",
-  "numberOfRooms",
-  "barArea",
-  "loungeArea",
-  "vipSectionCapacity",
-  "numberOfDanceFloors",
-  "numberOfPrivateRooms",
-  "kitchenArea",
-  "outdoorSeating",
-  "outdoorSeatingArea",
-  "roomSize",
-  "numberOfBeds",
-  "roomType",
-  "floorLevel",
-  "view",
-  "balconyTerrace",
-  "securityFeatures",
-  "securityFeaturesValue",
-  "disabilityAccess",
-  "parkingFacility",
-  "parkingSpaces",
-  "publicTransportAccess",
-  "yearBuilt",
-  "condition",
-  "availabilityDate",
-  "petFriendliness",
-  "additionalFeatures",
-  "buildingAmenities",
-  "fireplace",
-  "fireplaceValue",
-  "numberOfFloors",
-  "basement",
-  "parking",
-  "parkingOption",
-  "garageCarportSpaces",
-  "outdoorSpaces",
-  "numberOfBathrooms",
-  "furnished",
-];
+  productMetaTags.forEach((tag) => {
+    switch (tag.label) {
+      case "Property Type":
+        initialState.propertyType = tag.value;
+        break;
+      case "Property Category Type":
+        initialState.propertyCategoryType = tag.value;
+        break;
+      case "Unit":
+        initialState.unit = tag.value;
+        break;
+      case "Area":
+        initialState.area = tag.value;
+        break;
+      case "No. of bedrooms":
+        initialState.bedrooms = tag.value;
+        break;
+      case "Residential Property Type":
+      case "Commercial Property Type":
+        initialState.propertySubType = tag.value;
+        break;
+      case "Price Type":
+        initialState.priceType = tag.value;
+        break;
+      case "Layout":
+        initialState.layout = tag.value;
+        break;
+      case "Conference Room":
+        initialState.conferenceRoom = tag.value === "yes";
+        break;
+      case "Kitchen":
+        initialState.kitchen = tag.value;
+        break;
+      case "Area of Display Window":
+        initialState.displayWindowArea = tag.value;
+        break;
+      case "Display Window Type":
+        initialState.displayWindow = tag.value;
+        break;
+      case "Number of Stores":
+        initialState.numberOfStores = tag.value;
+        break;
+      case "Food Court":
+        initialState.foodCourt = tag.value === "yes";
+        break;
+      case "Rest Rooms":
+        initialState.restRoom = tag.value === "yes";
+        break;
+      case "Number Of Pools":
+        initialState.pools = tag.value;
+        break;
+      case "Pool Types":
+        initialState.poolType = tag.value;
+        break;
+      case "Number of Rooms":
+        initialState.hotelRoom = tag.value;
+        break;
+      case "Area of Bar(m²)":
+        initialState.areaBar = tag.value;
+        break;
+      case "Area of Lounge(m²)":
+        initialState.loungeArea = tag.value;
+        break;
+      case "Capacity of VIP Section":
+        initialState.capacityOfVip = tag.value;
+        break;
+      case "Number of Dance Floors":
+        initialState.noOfDanceFloor = tag.value;
+        break;
+      case "Number of Private Rooms":
+        initialState.noOfPrivateRooms = tag.value;
+        break;
+      case "Area of Kitchen":
+        initialState.kitchenArea = tag.value;
+        break;
+      case "Outdoor Seating":
+        initialState.outdoorSeating = tag.value === "yes";
+        break;
+      case "Area of Outdoor Seating(m²)":
+        initialState.outdoorSeatingArea = tag.value;
+        break;
+      case "Room Size(m²)":
+        initialState.roomSize = tag.value;
+        break;
+      case "Number of Beds":
+        initialState.noOfBeds = tag.value;
+        break;
+      case "Room Type":
+        initialState.roomType = tag.value;
+        break;
+      case "Floor Level":
+        initialState.floorLevel = tag.value;
+        break;
+      case "View":
+        initialState.view = tag.value;
+        break;
+      case "Balcony/Terrace":
+        initialState.balcony = tag.value === "yes";
+        break;
+      case "Security Features":
+        initialState.securityFeatures = tag.value === "yes";
+        break;
+      case "Security Features Value":
+        initialState.alaramCameraB = tag.value;
+        break;
+      case "Disability Access":
+        initialState.disabilityAccess = tag.value === "yes";
+        break;
+      case "Parking Facility":
+        initialState.parkingFacility = tag.value === "yes";
+        break;
+      case "Parking Facility (Number of Spaces)":
+        initialState.noOfParkings = tag.value;
+        break;
+      case "Public Transport Access":
+        initialState.publicTransport = tag.value === "yes";
+        break;
+      case "Year Built":
+        initialState.yearBuilt = tag.value;
+        break;
+      case "Condition":
+        initialState.condition = tag.value;
+        break;
+      case "Availability Date":
+        initialState.availabilityDate = tag.value;
+        break;
+      case "Pet Friendliness":
+        initialState.petFreindliness = tag.value === "yes";
+        break;
+      case "Additional Features":
+        initialState.additionalFeatures = tag.value;
+        break;
+      case "Building Amenities":
+        initialState.buildingAmenities = tag.value.split(",");
+        break;
+      case "Fireplace":
+        initialState.fireplace = tag.value === "yes";
+        break;
+      case "Fireplace Value":
+        initialState.woodBurning = tag.value;
+        break;
+      case "Number of Floors":
+        initialState.noOfFloors = tag.value;
+        break;
+      case "Basement":
+        initialState.basement = tag.value === "yes";
+        break;
+      case "Parking Option":
+        initialState.parkingType = tag.value;
+        break;
+      case "Garage/Carport(No. of Spaces)":
+        initialState.garageSpaces = tag.value;
+        break;
+      case "Outdoor Spaces":
+        initialState.outdoorSpaces = tag.value.split(",");
+        break;
+      case "Number of Bathrooms":
+        initialState.noOfBathrooms = tag.value;
+        break;
+      case "Furnished":
+        initialState.furnished = tag.value;
+        break;
+    }
+  });
+
+  return initialState;
+};
+
+export const prepareFormDataForBackend = (formData) => {
+  const backendData = [];
+
+  // Property Type and other straightforward mappings
+  backendData.push({ label: 'Property Type', value: formData.propertyType });
+  backendData.push({ label: 'Property Category Type', value: formData.propertyCategoryType });
+  backendData.push({ label: 'Unit', value: formData.unit });
+  backendData.push({ label: 'Area', value: formData.area });
+  backendData.push({ label: 'No. of bedrooms', value: formData.bedrooms });
+  backendData.push({ label: 'Residential Property Type', value: formData.propertySubType });
+  backendData.push({ label: 'Commercial Property Type', value: formData.propertySubType });
+  backendData.push({ label: 'Price Type', value: formData.priceType });
+  backendData.push({ label: 'Layout', value: formData.layout });
+  backendData.push({ label: 'Conference Room', value: formData.conferenceRoom ? 'yes' : 'no' });
+  backendData.push({ label: 'Kitchen', value: formData.kitchen });
+  backendData.push({ label: 'Area of Display Window', value: formData.displayWindowArea });
+  backendData.push({ label: 'Display Window Type', value: formData.displayWindow });
+  backendData.push({ label: 'Number of Stores', value: formData.numberOfStores });
+  backendData.push({ label: 'Food Court', value: formData.foodCourt ? 'yes' : 'no' });
+  backendData.push({ label: 'Rest Rooms', value: formData.restRoom ? 'yes' : 'no' });
+  backendData.push({ label: 'Number Of Pools', value: formData.pools });
+  backendData.push({ label: 'Pool Types', value: formData.poolType });
+  backendData.push({ label: 'Number of Rooms', value: formData.hotelRoom });
+  backendData.push({ label: 'Area of Bar(m²)', value: formData.areaBar });
+  backendData.push({ label: 'Area of Lounge(m²)', value: formData.loungeArea });
+  backendData.push({ label: 'Capacity of VIP Section', value: formData.capacityOfVip });
+  backendData.push({ label: 'Number of Dance Floors', value: formData.noOfDanceFloor });
+  backendData.push({ label: 'Number of Private Rooms', value: formData.noOfPrivateRooms });
+  backendData.push({ label: 'Area of Kitchen', value: formData.kitchenArea });
+  backendData.push({ label: 'Outdoor Seating', value: formData.outdoorSeating ? 'yes' : 'no' });
+  backendData.push({ label: 'Area of Outdoor Seating(m²)', value: formData.outdoorSeatingArea });
+  backendData.push({ label: 'Room Size(m²)', value: formData.roomSize });
+  backendData.push({ label: 'Number of Beds', value: formData.noOfBeds });
+  backendData.push({ label: 'Room Type', value: formData.roomType });
+  backendData.push({ label: 'Floor Level', value: formData.floorLevel });
+  backendData.push({ label: 'View', value: formData.view });
+  backendData.push({ label: 'Balcony/Terrace', value: formData.balcony ? 'yes' : 'no' });
+  backendData.push({ label: 'Security Features', value: formData.securityFeatures ? 'yes' : 'no' });
+  backendData.push({ label: 'Security Features Value', value: formData.alaramCameraB });
+  backendData.push({ label: 'Disability Access', value: formData.disabilityAccess ? 'yes' : 'no' });
+  backendData.push({ label: 'Parking Facility', value: formData.parkingFacility ? 'yes' : 'no' });
+  backendData.push({ label: 'Parking Facility (Number of Spaces)', value: formData.noOfParkings });
+  backendData.push({ label: 'Public Transport Access', value: formData.publicTransport ? 'yes' : 'no' });
+  backendData.push({ label: 'Year Built', value: formData.yearBuilt });
+  backendData.push({ label: 'Condition', value: formData.condition });
+  backendData.push({ label: 'Availability Date', value: formData.availabilityDate });
+  backendData.push({ label: 'Pet Friendliness', value: formData.petFreindliness ? 'yes' : 'no' });
+  backendData.push({ label: 'Additional Features', value: formData.additionalFeatures });
+  backendData.push({ label: 'Building Amenities', value: formData.buildingAmenities.join(',') });
+  backendData.push({ label: 'Fireplace', value: formData.fireplace ? 'yes' : 'no' });
+  backendData.push({ label: 'Fireplace Value', value: formData.woodBurning });
+  backendData.push({ label: 'Number of Floors', value: formData.noOfFloors });
+  backendData.push({ label: 'Basement', value: formData.basement ? 'yes' : 'no' });
+  backendData.push({ label: 'Parking Option', value: formData.parkingType });
+  backendData.push({ label: 'Garage/Carport(No. of Spaces)', value: formData.garageSpaces });
+  backendData.push({ label: 'Outdoor Spaces', value: formData.outdoorSpaces.join(',') });
+  backendData.push({ label: 'Number of Bathrooms', value: formData.noOfBathrooms });
+  backendData.push({ label: 'Furnished', value: formData.furnished });
+
+
+  // Transform to the required backend format, e.g., FormData or JSON
+  const formdata = new FormData();
+  backendData.forEach((data) => {
+    formdata.append(data.label, data.value);
+  });
+
+  return formdata;
+};
+
 
 export const loadPropertyMetaData = (property, type) => {
   let metaData = "";

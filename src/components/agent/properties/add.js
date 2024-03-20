@@ -29,7 +29,11 @@ import {
   PARKING_OPTION_TYPES,
   FIREPLACE_VALUE_OPTIONS,
 } from "../../../constants";
-import { getUserDetailsFromJwt, setPropertyMetaData } from "../../../utils";
+import {
+  getUserDetailsFromJwt,
+  setPropertyMetaData,
+  stringToBoolean,
+} from "../../../utils";
 import UserService from "../../../services/agent/user";
 import PropertyService from "../../../services/agent/property";
 import { useStateIfMounted } from "use-state-if-mounted";
@@ -83,66 +87,69 @@ export default function Add(props) {
   const [userFullUser, setUserFullUser] = useStateIfMounted({});
 
   const [layout, setLayout] = useStateIfMounted("");
-  const [conferenceRoom, setConferenceRoom] = useStateIfMounted(false);
+  const [conferenceRoom, setConferenceRoom] = useStateIfMounted("");
   const [capacity, setCapacity] = useStateIfMounted("");
   const [kitchen, setKitchen] = useStateIfMounted("");
   const [store, setStore] = useStateIfMounted("");
-  const [foodCourt, setFoodCourt] = useStateIfMounted(false);
-  const [restRoom, setRestRoom] = useStateIfMounted(false);
+  const [foodCourt, setFoodCourt] = useStateIfMounted("");
+  const [restRoom, setRestRoom] = useStateIfMounted("");
   const [pools, setPools] = useStateIfMounted("");
   const [poolType, setPoolType] = useStateIfMounted("");
   const [hotelRoom, setHotelRoom] = useStateIfMounted("");
-  const [areaBar, setAreaBar] = useStateIfMounted(0);
-  const [loungeArea, setLoungeArea] = useStateIfMounted(0);
-  const [capacityOfVip, setCapacityOfVip] = useStateIfMounted(0);
-  const [noOfDanceFloor, setNoOfDanceFloor] = useStateIfMounted(0);
-  const [noOfPrivateRooms, setNoOfPrivateRooms] = useStateIfMounted(0);
+  const [areaBar, setAreaBar] = useStateIfMounted("");
+  const [loungeArea, setLoungeArea] = useStateIfMounted("");
+  const [capacityOfVip, setCapacityOfVip] = useStateIfMounted("");
+  const [noOfDanceFloor, setNoOfDanceFloor] = useStateIfMounted("");
+  const [noOfPrivateRooms, setNoOfPrivateRooms] = useStateIfMounted("");
 
-  const [kitchenArea, setKitchenArea] = useStateIfMounted(0);
-  const [outdoorSeating, setOutdoorSeating] = useStateIfMounted(false);
-  const [outdoorSeatingArea, setOutdoorSeatingArea] = useStateIfMounted(0);
+  const [kitchenArea, setKitchenArea] = useStateIfMounted("");
+  const [outdoorSeating, setOutdoorSeating] = useStateIfMounted("");
+  const [outdoorSeatingArea, setOutdoorSeatingArea] = useStateIfMounted("");
 
-  const [roomSize, setRoomSize] = useStateIfMounted(0);
-  const [noOfBeds, setNoOfBeds] = useStateIfMounted(0);
+  const [roomSize, setRoomSize] = useStateIfMounted("");
+  const [noOfBeds, setNoOfBeds] = useStateIfMounted("");
+  const [noOfBedRooms, setNoOfBedRooms] = useStateIfMounted("");
   const [roomType, setRoomType] = useStateIfMounted("");
-  const [floorLevel, setFloorLevel] = useStateIfMounted(0);
+  const [floorLevel, setFloorLevel] = useStateIfMounted("");
   const [view, setView] = useStateIfMounted("");
-  const [balcony, setBalcony] = useStateIfMounted(false);
+  const [balcony, setBalcony] = useStateIfMounted("");
 
-  const [displayWindowArea, setDisplayWindowArea] = useStateIfMounted(0);
+  const [displayWindowArea, setDisplayWindowArea] = useStateIfMounted("");
   const [displayWindow, setDisplayWindow] = useStateIfMounted("");
+  const [displayWindowOther, setDisplayWindowOther] = useStateIfMounted("");
 
   const [residentialFloorLevel, setResidentialFloorLevel] =
-    useStateIfMounted(0);
+    useStateIfMounted("");
   const [buildingAmenities, setBuildingAmenities] = useStateIfMounted([]);
 
-  const [fireplace, setFireplace] = useStateIfMounted(false);
-  const [woodBurning, setWoodBurning] = useStateIfMounted(false);
-  const [gas, setGas] = useStateIfMounted(false);
-  const [noOfFloors, setNoOfFloors] = useStateIfMounted(0);
-  const [basement, setBasement] = useStateIfMounted(false);
+  const [fireplace, setFireplace] = useStateIfMounted("");
+  const [woodBurning, setWoodBurning] = useStateIfMounted("");
+  const [gas, setGas] = useStateIfMounted("");
+  const [noOfFloors, setNoOfFloors] = useStateIfMounted("");
+  const [basement, setBasement] = useStateIfMounted("");
   const [residentialKitchen, setResidentialKitchen] = useStateIfMounted("");
 
   // common tags useState
-  const [securityFeatures, setSecurityFeatures] = useStateIfMounted(false);
+  const [securityFeatures, setSecurityFeatures] = useStateIfMounted("");
   const [alaramCameraB, setAlaramCameraB] = useStateIfMounted("");
-  const [disabilityAccess, setDisabilityAccess] = useStateIfMounted(false);
-  const [publicTransport, setPublicTransport] = useStateIfMounted(false);
+  const [disabilityAccess, setDisabilityAccess] = useStateIfMounted("");
+  const [publicTransport, setPublicTransport] = useStateIfMounted("");
   const [yearBuilt, setYearBuilt] = useStateIfMounted("");
   const [condition, setCondition] = useStateIfMounted("");
   const [availabilityDate, setAvailabilityDate] = useStateIfMounted("");
   const [additionalFeatures, setAdditionalFeatures] = useStateIfMounted("");
 
-  const [petFreindliness, setPetFreindliness] = useStateIfMounted(false);
-  const [commercialParking, setCommercialParking] = useStateIfMounted(false);
-  const [noOfSpacesCommercial, setNoOfSpacesCommercial] = useStateIfMounted(0);
+  const [petFreindliness, setPetFreindliness] = useStateIfMounted("");
+  const [commercialParking, setCommercialParking] = useStateIfMounted("");
+  const [noOfSpacesCommercial, setNoOfSpacesCommercial] = useStateIfMounted("");
 
   const [outdoorSpaces, setOutdoorSpaces] = useStateIfMounted([]);
-  const [noOfBathrooms, setNoOfBathrooms] = useStateIfMounted(0);
-  const [furnished, setFurnished] = useStateIfMounted(false);
-  const [parkingResidential, setParkingResidential] = useStateIfMounted(false);
+  const [noOfBathrooms, setNoOfBathrooms] = useStateIfMounted("");
+  const [furnished, setFurnished] = useStateIfMounted("");
+  const [parkingFacility, setParkingFacility] = useStateIfMounted("");
+  const [noOfParkings, setNoOfParkings] = useStateIfMounted("");
   const [parkingType, setParkingType] = useStateIfMounted("");
-  const [garageSpaces, setGarageSpaces] = useStateIfMounted(0);
+  const [garageSpaces, setGarageSpaces] = useStateIfMounted("");
 
   const history = useHistory();
 
@@ -186,8 +193,8 @@ export default function Add(props) {
     }
 
     // Setting API endpoint dynamically
-    const apiUrl = id ? "/update" : "/create";
-    const successMsg = id
+    let apiUrl = id ? "/update" : "/create";
+    let successMsg = id
       ? "Property updated successfully."
       : "Your changes are saved successfully.";
 
@@ -207,154 +214,121 @@ export default function Add(props) {
       formdata.append("permitNumber", permitNumber);
     }
 
-    if (propertyType?.value) {
-      formdata.append("metaTags[1]", propertyType.value);
-      if (propertyType.value == "commercial" && propertySubType?.value) {
-        formdata.append("metaTags[7]", propertySubType.value);
-      } else if (
-        propertyType?.value == "residential" &&
-        propertySubType?.value
-      ) {
-        formdata.append("metaTags[6]", propertySubType.value);
+    // Helper function to conditionally append meta tags
+    const appendMetaTag = (key, value) => {
+      if (Array.isArray(value)) {
+        // Join array values with a comma for array types
+        formdata.append(key, value.join(","));
+      } else if (typeof value === "string") {
+        // Trim the string before appending
+        if (value.trim() !== "") formdata.append(key, value.trim());
+      } else if (value !== null && value !== undefined) {
+        // Directly append non-string and non-null/undefined values
+        formdata.append(key, value.toString());
       }
-    }
+    };
 
-    if (propertyCategoryType) {
-      formdata.append("metaTags[2]", propertyCategoryType.value);
-      if (propertyCategoryType?.value === "rent" && priceType?.value) {
-        formdata.append("metaTags[8]", priceType.value);
-      }
-    }
+    // Conditional appending of meta tags
+    appendMetaTag("metaTags[1]", propertyType?.value); // Example for property type
+    appendMetaTag("metaTags[2]", propertyCategoryType?.value);
+    appendMetaTag("metaTags[3]", unit?.value);
+    appendMetaTag("metaTags[4]", area);
+    appendMetaTag("metaTags[5]", bedrooms?.value);
+    // ... Continue for other specific meta tags
 
-    if (unit?.value) {
-      formdata.append("metaTags[3]", unit.value);
-    }
-
-    if (area) {
-      formdata.append("metaTags[4]", area);
-    }
-
-    if (bedrooms?.value) {
-      formdata.append("metaTags[5]", bedrooms.value);
-    }
-
-    if (deedTitle) {
-      formdata.append("metaTags[9]", deedTitle);
-    }
-
-    // Append new fields with checks
-    if (propertyType?.value === "commercial") {
-      switch (propertySubType?.value) {
-        case "office":
-          formdata.append("metaTags[10]", layout);
-          formdata.append("metaTags[11]", conferenceRoom);
-          if (conferenceRoom === "yes") {
-            formdata.append("metaTags[12]", capacity);
-          }
-          formdata.append("metaTags[13]", kitchen);
-          break;
-        case "shopping_center":
-          formdata.append("metaTags[17]", store);
-          formdata.append("metaTags[18]", foodCourt);
-          formdata.append("metaTags[19]", restRoom);
-          break;
-        case "hotels":
-          formdata.append("metaTags[20]", pools);
-          formdata.append("metaTags[21]", poolType);
-          formdata.append("metaTags[22]", hotelRoom);
-          break;
-        case "club":
-          formdata.append("metaTags[23]", areaBar);
-          formdata.append("metaTags[24]", loungeArea);
-          formdata.append("metaTags[25]", capacityOfVip);
-          formdata.append("metaTags[26]", noOfDanceFloor);
-          formdata.append("metaTags[27]", noOfPrivateRooms);
-          break;
-        case "restaurant":
-          formdata.append("metaTags[28]", kitchenArea);
-          formdata.append("metaTags[29]", outdoorSeating);
-          if (outdoorSeating === "yes") {
-            formdata.append("metaTags[30]", outdoorSeatingArea);
-          }
-          break;
-        case "hotel_room":
-          formdata.append("metaTags[31]", roomSize);
-          formdata.append("metaTags[32]", noOfBeds);
-          formdata.append("metaTags[33]", roomType);
-          formdata.append("metaTags[34]", floorLevel);
-          formdata.append("metaTags[35]", view);
-          formdata.append("metaTags[36]", balcony);
-          break;
-        case "retail":
-        case "shop":
-        case "store":
-          formdata.append("metaTags[14]", displayWindowArea);
-          formdata.append("metaTags[15]", displayWindow);
-          break;
-      }
-
-      // Common commercial tags
-      formdata.append("metaTags[46]", petFreindliness);
-      formdata.append("metaTags[40]", commercialParking);
-      if (commercialParking === "yes") {
-        formdata.append("metaTags[41]", noOfSpacesCommercial);
-      }
-    }
-
+    // Example for appending meta tags based on conditionals (residential or commercial specifics)
     if (propertyType?.value === "residential") {
-      switch (propertySubType?.value) {
-        case "apartment":
-        case "studio":
-        case "room":
-          // Fields common to apartment, studio, and room
-          // formdata.append(
-          //   "metaTags[residentialFloorLevel]",
-          //   residentialFloorLevel
-          // );
-          if (buildingAmenities.length > 0) {
-            buildingAmenities.forEach((amenity, index) => {
-              formdata.append(`metaTags[48][${index}]`, amenity);
-            });
-          }
-          break;
-        case "house":
-        case "bungalow":
-        case "duplex":
-        case "triplex":
-        case "cottage":
-          // Fields specific to house, bungalow, duplex, triplex, cottage
-          formdata.append("metaTags[49]", fireplace);
-          if (fireplace === "yes") {
-            formdata.append("metaTags[50]", woodBurning);
-          }
-          formdata.append("metaTags[51]", noOfFloors);
-          formdata.append("metaTags[52]", basement);
-          formdata.append("metaTags[13]", residentialKitchen);
-          break;
-        // Add more cases for other residential subtypes as needed
+      appendMetaTag("metaTags[6]", propertySubType?.value);
+       
+      if (
+        propertySubType?.value === "apartment" ||
+        propertySubType?.value === "studio" ||
+        propertySubType?.value === "room"
+      ) {
+        appendMetaTag("metaTags[48]", buildingAmenities?.join(","));
+      }
+      else if (
+        propertySubType?.value === "house" ||
+        propertySubType?.value === "bungalow" ||
+        propertySubType?.value === "duplex" ||
+        propertySubType?.value === "triplex" ||
+        propertySubType?.value === "cottage"
+      ) {
+        appendMetaTag("metaTags[49]", fireplace);
+        appendMetaTag("metaTags[50]", woodBurning);
+        appendMetaTag("metaTags[51]", noOfFloors);
+        appendMetaTag("metaTags[52]", basement);
+        appendMetaTag("metaTags[13]", residentialKitchen);
       }
 
-      // Common residential tags
-      formdata.append("metaTags[56]", outdoorSpaces);
-      formdata.append("metaTags[57]", noOfBathrooms);
-      formdata.append("metaTags[58]", furnished);
-      formdata.append("metaTags[53]", parkingResidential);
-      if (parkingResidential === "yes") {
-        formdata.append("metaTags[54]", parkingType);
+      appendMetaTag("metaTags[53]", parkingFacility);
+      appendMetaTag("metaTags[54]", parkingType);
+      appendMetaTag("metaTags[55]", garageSpaces);
+      appendMetaTag("metaTags[56]", outdoorSpaces?.join(","));
+      appendMetaTag("metaTags[57]", noOfBathrooms);
+      appendMetaTag("metaTags[58]", furnished);
+    } else if (propertyType?.value === "commercial") {
+      appendMetaTag("metaTags[7]", propertySubType?.value); // Commercial property subtype
+      // Example for office subtype
+      if (propertySubType?.value === "office") {
+        appendMetaTag("metaTags[10]", layout);
+        appendMetaTag("metaTags[11]", conferenceRoom);
+        appendMetaTag("metaTags[12]", capacity);
+        appendMetaTag("metaTags[13]", kitchen);
+      } else if (propertySubType?.value === "shopping_center") {
+        appendMetaTag("metaTags[17]", store);
+        appendMetaTag("metaTags[18]", foodCourt);
+        appendMetaTag("metaTags[19]", restRoom);
+      } else if (propertySubType?.value === "hotels") {
+        appendMetaTag("metaTags[20]", pools);
+        appendMetaTag("metaTags[21]", poolType);
+        appendMetaTag("metaTags[22]", hotelRoom);
+      } else if (propertySubType?.value === "club") {
+        appendMetaTag("metaTags[23]", areaBar);
+        appendMetaTag("metaTags[24]", loungeArea);
+        appendMetaTag("metaTags[25]", capacityOfVip);
+        appendMetaTag("metaTags[26]", noOfDanceFloor);
+        appendMetaTag("metaTags[27]", noOfPrivateRooms);
+      } else if (propertySubType?.value === "restaurant") {
+        appendMetaTag("metaTags[28]", kitchenArea);
+        appendMetaTag("metaTags[29]", outdoorSeating);
+        appendMetaTag("metaTags[30]", outdoorSeatingArea);
+      } else if (propertySubType?.value === "hotel_room") {
+        appendMetaTag("metaTags[31]", roomSize);
+        appendMetaTag("metaTags[32]", noOfBeds);
+        appendMetaTag("metaTags[33]", roomType);
+        appendMetaTag("metaTags[34]", floorLevel);
+        appendMetaTag("metaTags[35]", view);
+        appendMetaTag("metaTags[36]", balcony);
+      } else if (
+        propertySubType?.value === "retail" ||
+        propertySubType?.value === "shop" ||
+        propertySubType?.value === "store"
+      ) {
+        appendMetaTag("metaTags[14]", displayWindowArea);
+        appendMetaTag("metaTags[15]", displayWindow);
+        appendMetaTag("metaTags[16]", displayWindowOther);
       }
+
+      appendMetaTag("metaTags[40]", commercialParking);
+      appendMetaTag("metaTags[41]", noOfSpacesCommercial); // if parkingFacility is yes
+
+      appendMetaTag("metaTags[46]", petFreindliness);
+
+      // Add conditional append for other commercial property subtypes as needed
     }
 
-    // Common fields for both types
-    formdata.append("metaTags[37]", securityFeatures);
-    if (securityFeatures === "yes") {
-      formdata.append("metaTags[38]", alaramCameraB);
-    }
-    formdata.append("metaTags[39]", disabilityAccess);
-    formdata.append("metaTags[42]", publicTransport);
-    formdata.append("metaTags[43]", yearBuilt);
-    formdata.append("metaTags[44]", condition);
-    formdata.append("metaTags[45]", availabilityDate);
-    formdata.append("metaTags[47]", additionalFeatures);
+    // Common meta tags for both residential and commercial properties
+    appendMetaTag("metaTags[37]", securityFeatures);
+    appendMetaTag("metaTags[38]", alaramCameraB);
+    appendMetaTag("metaTags[39]", disabilityAccess);
+    appendMetaTag("metaTags[42]", publicTransport);
+    appendMetaTag("metaTags[43]", yearBuilt);
+    appendMetaTag("metaTags[44]", condition);
+    appendMetaTag("metaTags[45]", availabilityDate);
+    appendMetaTag("metaTags[47]", additionalFeatures);
+
+    // Continue with other meta tags, adapting the above logic to your application's specific meta tags
 
     if (id) {
       apiUrl = "update";
@@ -416,7 +390,18 @@ export default function Add(props) {
       }
     });
   };
-  
+
+  const handleBuildingAmenitiesChange = (e) => {
+    const { checked, value } = e.target;
+    setBuildingAmenities((currentAmenities) => {
+      if (checked) {
+        return [...currentAmenities, value];
+      } else {
+        return currentAmenities.filter((amenity) => amenity !== value);
+      }
+    });
+  };
+
   const handleImageSelect = (file) => {
     setFeaturedImage(file);
   };
@@ -466,6 +451,7 @@ export default function Add(props) {
           setLatitude(response.latitude);
           setLongitude(response.longitude);
           setVirtualTourType(response.virtualTourType);
+          setPermitNumber(response.permitNumber);
           if (response?.featuredImage) {
             setFeaturedImagePreview(
               `${process.env.REACT_APP_API_URL}/${response.featuredImage}`
@@ -478,206 +464,94 @@ export default function Add(props) {
             setVirtualTourUrl(response.virtualTourUrl);
           }
 
-          if (response.productMetaTags.length > 0) {
-            response.productMetaTags.forEach((metaTag) => {
-              const fieldLabel = metaTag.categoryField.label;
-              const fieldValue = metaTag.value;
-              switch (fieldLabel) {
-                case "Year Built":
-                  setYearBuilt(fieldValue);
-                  break;
-                case "Parking Facility":
-                  setParkingResidential(fieldValue === "yes");
-                  break;
-                case "Property Category Type":
-                  setPropertyCategoryType(
-                    PROPERTY_CATEGORY_TYPES.find(
-                      (type) => type.value === fieldValue
-                    )
-                  );
-                case "Property Type":
-                  setPropertyType(
-                    PROPERTY_TYPES.find((type) => type.value === fieldValue)
-                  );
-                  break;
-                case "Commercial Property Type":
-                  setPropertySubType(
-                    COMMERCIAL_PROPERTY.find(
-                      (type) => type.value === fieldValue
-                    )
-                  );
-                  break;
-                case "Residential Property Type":
-                  setPropertySubType(
-                    RESIDENTIAL_PROPERTY.find(
-                      (type) => type.value === fieldValue
-                    )
-                  );
-                  break;
-                case "Price Type":
-                  setPriceType(
-                    PRICE_TYPE.find((type) => type.value === fieldValue)
-                  );
-                  break;
-                case "Unit":
-                  setUnit(UNITS.find((type) => type.value === fieldValue));
-                  break;
-                case "Area":
-                  setArea(fieldValue);
-                  break;
-                case "Bedrooms":
-                  setBedrooms(fieldValue);
-                  break;
-                case "No. of bedrooms":
-                  setNoOfBeds(fieldValue);
-                  break;
-                case "Deed Title":
-                  setDeedTitle(fieldValue);
-                  break;
-                case "Layout":
-                  setLayout(fieldValue);
-                  break;
-                case "Conference Room":
-                  setConferenceRoom(fieldValue);
-                  break;
-                case "Capacity":
-                  setCapacity(fieldValue);
-                  break;
-                case "Kitchen":
-                  setKitchen(fieldValue);
-                  break;
-                case "Number of Stores":
-                  setStore(fieldValue);
-                  break;
-                case "Food Court":
-                  setFoodCourt(fieldValue);
-                  break;
-                case "Rest Room":
-                  setRestRoom(fieldValue);
-                  break;
-                case "Number of Pools":
-                  setPools(fieldValue);
-                  break;
-                case "Pool Type":
-                  setPoolType(fieldValue);
-                  break;
-                case "Number of Rooms":
-                  setHotelRoom(fieldValue);
-                  break;
-                case "Area of Bar (Square Meter)":
-                  setAreaBar(fieldValue);
-                  break;
-                case "Lounge Area (Square Meter)":
-                  setLoungeArea(fieldValue);
-                  break;
-                case "Capacity of VIP":
-                  setCapacity(fieldValue);
-                  break;
-                case "Number of Dance Floor":
-                  setNoOfDanceFloor(fieldValue);
-                  break;
-                case "Number of Private Rooms":
-                  setNoOfPrivateRooms(fieldValue);
-                  break;
-                case "Outdoor Seating":
-                  setOutdoorSeating(fieldValue === "yes");
-                  break;
-                case "Area of Outdoor Seating(m²)":
-                  setOutdoorSeatingArea(fieldValue);
-                  break;
-                case "Room Size(m²)":
-                  setRoomSize(fieldValue);
-                  break;
-                case "Number of Beds":
-                  setNoOfBeds(fieldValue);
-                  break;
-                case "Room Type":
-                  setRoomType(fieldValue);
-                  break;
-                case "Floor Level":
-                  setFloorLevel(fieldValue);
-                  break;
-                case "View":
-                  setView(fieldValue);
-                  break;
-                case "Balcony/Terrace":
-                  setBalcony(fieldValue);
-                  break;
-                case "Security Features":
-                  setSecurityFeatures(fieldValue);
-                  break;
-                case "Security Features Value":
-                  setAlaramCameraB(fieldValue);
-                  break;
-                case "Disability Access":
-                  setDisabilityAccess(fieldValue);
-                  break;
-                case "Parking Facility(Number of Spaces)":
-                  setNoOfSpacesCommercial(fieldValue);
-                  break;
-                case "Public Transport Access":
-                  setPublicTransport(fieldValue);
-                  break;
-                case "Condition":
-                  setCondition(fieldValue);
-                  break;
-                case "Availability Date":
-                  setAvailabilityDate(fieldValue);
-                  break;
-                case "Pet Friendliness":
-                  setPetFreindliness(fieldValue);
-                  break;
-                case "Additional Features":
-                  setAdditionalFeatures(fieldValue);
-                  break;
-                case "Building Amenities":
-                  // Assuming building amenities is an array of selected amenities
-                  // Convert fieldValue (likely a comma-separated string) to an array and update the state
-                  setBuildingAmenities(fieldValue.split(","));
-                  break;
-                case "Parking Facility":
-                  setParkingResidential(fieldValue);
-                  // setCommercialParking(fieldValue);
-                  break;
-                case "Parking Facility":
-                  setCommercialParking(fieldValue);
-                  break;
-                case "Parking Option":
-                  setParkingType(fieldValue);
-                  break;
-                case "Number of Bathrooms":
-                  setNoOfBathrooms(fieldValue);
-                  break;
-                case "Furnished":
-                  setFurnished(fieldValue);
-                  break;
-                case "Commercial Parking":
-                  setCommercialParking(fieldValue);
-                  break;
-                case "Outdoor Spaces":
-                  setOutdoorSpaces(fieldValue);
-                  break;
-                case "Garage Spaces":
-                  setGarageSpaces(fieldValue);
-                  break;
-                case "Fireplace":
-                  setFireplace(fieldValue);
-                  break;
-                case "Conference Room Capacity":
-                  setCapacity(fieldValue);
-                  break;
-                case "Kitchen Area":
-                  setKitchenArea(fieldValue);
-                  break;
-                case "Outdoor Seating Area":
-                  setOutdoorSeatingArea(fieldValue);
-                  break;
+          const metaTagsHandlers = {
+            // Basic properties
+            "Property Type": (value) => {
+              const type = PROPERTY_TYPES.find((type) => type.value === value);
+              setPropertyType(type);
+              // Update subtypes based on property type
+              setPropertySubType(
+                type.value === "residential"
+                  ? RESIDENTIAL_PROPERTY
+                  : COMMERCIAL_PROPERTY
+              );
+            },
+            "Property Category Type": (value) =>
+              setPropertyCategoryType(
+                PROPERTY_CATEGORY_TYPES.find((type) => type.value === value)
+              ),
+            "Unit": (value) =>
+              setUnit(UNITS.find((unit) => unit.value === value)),
+            "Area": setArea,
+            "No. of bedrooms": (value) =>
+              setBedrooms(BEDROOMS.find((bedroom) => bedroom.value === value)),
+            "Price Type": (value) =>
+              setPriceType(PRICE_TYPE.find((type) => type.value === value)),
 
-                default:
-                  console.log("Unhandled meta tag:", fieldLabel);
-              }
-            });
-          }
+            // Commercial-specific properties
+            "Layout": setLayout,
+            "Conference Room": (value) =>
+              setConferenceRoom(value),
+            "Conference Room Capacity": setCapacity,
+            "Kitchen": setKitchen,
+            "Number of Stores": setStore,
+            "Food Court": (value) => setFoodCourt(value),
+            "Rest Room": (value) => setRestRoom(value),
+            "Number of Pools": setPools,
+            "Pool Type": setPoolType,
+            "Number of Rooms": setHotelRoom,
+            "Area of Bar (Square Meter)": setAreaBar,
+            "Lounge Area (Square Meter)": setLoungeArea,
+            "Capacity of VIP": setCapacityOfVip,
+            "Number of Dance Floor": setNoOfDanceFloor,
+            "Number of Private Rooms": setNoOfPrivateRooms,
+            "Kitchen Area (Square Meter)": setKitchenArea,
+            "Outdoor Seating": (value) => setOutdoorSeating(value),
+            "Outdoor Seating Area (Square Meter)": setOutdoorSeatingArea,
+            "Display Window Area": setDisplayWindowArea,
+            "Display Window Type": setDisplayWindow,
+
+            // Residential-specific properties
+            "Building Amenities": (value) =>
+              setBuildingAmenities(value.split(",")),
+            "Number of Bathrooms": setNoOfBathrooms,
+            "Furnished": setFurnished,
+            "Floor Level": setFloorLevel, // Might need to differentiate between residential and commercial
+            "Balcony/Terrace": (value) => setBalcony(value),
+            "Room Size(m²)": setRoomSize,
+            "Number of Beds": setNoOfBeds,
+            "Room Type": setRoomType,
+            "View": setView,
+
+            // Common properties across types
+            "Security Features": (value) => setSecurityFeatures(value),
+            "Security Features Value": setAlaramCameraB,
+            "Disability Access": (value) => setDisabilityAccess(value),
+            "Parking Facility": (value) => setCommercialParking(value),
+            "Parking Facility (Number of Spaces)": setNoOfParkings,
+            "Public Transport Access": (value) => setPublicTransport(value),
+            "Year Built": setYearBuilt,
+            "Condition": setCondition,
+            "Availability Date": setAvailabilityDate,
+            "Additional Features": setAdditionalFeatures,
+            "Pet Friendliness": (value) => setPetFreindliness(value),
+            "Outdoor Spaces": (value) => setOutdoorSpaces(value.split(",")),
+            "Parking": (value) => setParkingFacility(value),
+            "Parking Option": setParkingType,
+            "Garage/Carport(No. of Spaces)": setGarageSpaces,
+            "Fireplace": (value) => setFireplace(value),
+            "Fireplace Value": setWoodBurning, // Assuming wood burning is a specific type of fireplace value
+            "Number of Floors": setNoOfFloors,
+            "Basement": (value) => setBasement(value),
+            "Kitchen (Residential)": setResidentialKitchen,
+          };
+
+          response.productMetaTags.forEach((metaTag) => {
+            const handler = metaTagsHandlers[metaTag.categoryField.label];
+            if (handler) {
+              handler(metaTag.value);
+            }
+          });
 
           if (response.productImages) {
             setPropertyImages(response.productImages);
@@ -707,7 +581,7 @@ export default function Add(props) {
 
       fetchPropertyDetails();
     }
-  }, [params.id]);
+  }, [params.id, COMMERCIAL_PROPERTY, RESIDENTIAL_PROPERTY]);
 
   useEffect(() => {
     setPropertySubTypeOptions(
@@ -732,7 +606,7 @@ export default function Add(props) {
         <div className="row mb-custom">
           <div className="col-md-6">
             <div className="input-item">
-              <label>Property Type *</label>
+              <label className="h6">Property Type *</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -746,7 +620,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-6">
             <div className="input-item">
-              <label>Property Sub Type *</label>
+              <label className="h6">Property Sub Type *</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -760,7 +634,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Property Category Type *</label>
+              <label className="h6">Property Category Type *</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -774,7 +648,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>
+              <label className="h6">
                 Property Name *- First line of address (for example: 30 Johns
                 Road, SM1)
               </label>
@@ -790,7 +664,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Description*</label>
+              <label className="h6">Description*</label>
               <textarea
                 className="mb-custom"
                 value={description}
@@ -803,20 +677,19 @@ export default function Add(props) {
           {userDetail && userDetail.agent.jobTitle === "landlord" && (
             <div className="col-md-12">
               <div className="input-item">
-                <label> Deed Title *</label>
+                <label className="h6"> Deed Title *</label>
                 <input
                   type="text"
                   value={deedTitle}
                   placeholder="Deed Title"
                   onChange={(e) => setDeedTitle(e.target.value)}
-                  required
                 />
               </div>
             </div>
           )}
           <div className="col-md-12">
             <div className="input-item">
-              <label>Price *</label>
+              <label className="h6">Price *</label>
               <input
                 min="1"
                 type="number"
@@ -830,7 +703,7 @@ export default function Add(props) {
           {propertyCategoryType?.value === "rent" && (
             <div className="col-md-12">
               <div className="input-item">
-                <label>Price Type</label>
+                <label className="h6">Price Type</label>
                 <Select
                   classNamePrefix="custom-select"
                   options={PRICE_TYPE}
@@ -843,7 +716,7 @@ export default function Add(props) {
           )}
           <div className="col-md-12">
             <div className="input-item">
-              <label>No. of bedrooms</label>
+              <label className="h6">No. of bedrooms</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -856,7 +729,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-6">
             <div className="input-item">
-              <label>Area *</label>
+              <label className="h6">Area *</label>
               <input
                 type="number"
                 placeholder="0"
@@ -868,7 +741,7 @@ export default function Add(props) {
           </div>
           <div className="col-md-6">
             <div className="input-item">
-              <label>Unit *</label>
+              <label className="h6">Unit *</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -888,7 +761,7 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Layout</label>
+                  <label className="h6">Layout</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -899,48 +772,52 @@ export default function Add(props) {
                       value={LAYOUT_OPTIONS.find(
                         (option) => option.value === layout
                       )}
-                      required
                     />
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Conference Room</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setConferenceRoom(
-                          selectedOption ? selectedOption.value : ""
-                        )
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === conferenceRoom
-                      )}
-                      required
-                    />
+                  <label className="h6">Conference Room</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="conferenceRoom"
+                        value="yes"
+                        checked={conferenceRoom === "yes"}
+                        onChange={(e) => setConferenceRoom(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="conferenceRoom"
+                        value="no"
+                        checked={conferenceRoom === "no"}
+                        onChange={(e) => setConferenceRoom(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
               {conferenceRoom === "yes" && (
                 <div className="col-md-12">
                   <div className="input-item">
-                    <label>Capacity</label>
+                    <label className="h6">Capacity</label>
                     <input
                       type="number"
                       placeholder="0"
                       onChange={(e) => setCapacity(e.target.value)}
                       value={capacity}
-                      required
                     />
                   </div>
                 </div>
               )}
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Kitchen</label>
+                  <label className="h6">Kitchen</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -951,7 +828,6 @@ export default function Add(props) {
                       value={KITCHEN_OPTIONS.find(
                         (option) => option.value === kitchen
                       )}
-                      required
                     />
                   </div>
                 </div>
@@ -964,54 +840,69 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Stores</label>
+                  <label className="h6">Number of Stores</label>
                   <div className="input-item">
                     <input
                       type="number"
                       placeholder="0"
                       onChange={(e) => setStore(e.target.value)}
                       value={store}
-                      required
                     />
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Food Court</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setFoodCourt(selectedOption ? selectedOption.value : "")
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === foodCourt
-                      )}
-                      required
-                    />
+                  <label className="h6">Food Court</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="foodCourt"
+                        value="yes"
+                        checked={foodCourt === "yes"}
+                        onChange={(e) => setFoodCourt(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="foodCourt"
+                        value="no"
+                        checked={foodCourt === "no"}
+                        onChange={(e) => setFoodCourt(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Rest Room</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setRestRoom(selectedOption ? selectedOption.value : "")
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === restRoom
-                      )}
-                      required
-                    />
+                  <label className="h6">Rest Room</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="restRoom"
+                        value="yes"
+                        checked={restRoom === "yes"}
+                        onChange={(e) => setRestRoom(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="restRoom"
+                        value="no"
+                        checked={restRoom === "no"}
+                        onChange={(e) => setRestRoom(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
             </div>
           )}
 
@@ -1020,19 +911,18 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Pools</label>
+                  <label className="h6">Number of Pools</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setPools(e.target.value)}
                     value={pools}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Pool Type</label>
+                  <label className="h6">Pool Type</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1043,20 +933,18 @@ export default function Add(props) {
                       value={POOL_TYPE_OPTIONS.find(
                         (option) => option.value === poolType
                       )}
-                      required
                     />
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Rooms</label>
+                  <label className="h6">Number of Rooms</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setHotelRoom(e.target.value)}
                     value={hotelRoom}
-                    required
                   />
                 </div>
               </div>
@@ -1068,61 +956,56 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Area of Bar (Square Meter)</label>
+                  <label className="h6">Area of Bar (Square Meter)</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setAreaBar(e.target.value)}
                     value={areaBar}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Lounge Area (Square Meter)</label>
+                  <label className="h6">Lounge Area (Square Meter)</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setLoungeArea(e.target.value)}
                     value={loungeArea}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Capacity of VIP</label>
+                  <label className="h6">Capacity of VIP</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setCapacityOfVip(e.target.value)}
                     value={capacityOfVip}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Dance Floor</label>
+                  <label className="h6">Number of Dance Floor</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setNoOfDanceFloor(e.target.value)}
                     value={noOfDanceFloor}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Private Rooms</label>
+                  <label className="h6">Number of Private Rooms</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setNoOfPrivateRooms(e.target.value)}
                     value={noOfPrivateRooms}
-                    required
                   />
                 </div>
               </div>
@@ -1134,46 +1017,50 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Kitchen Area (Square Meter)</label>
+                  <label className="h6">Kitchen Area (Square Meter)</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setKitchenArea(e.target.value)}
                     value={kitchenArea}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Outdoor Seating</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setOutdoorSeating(
-                          selectedOption ? selectedOption.value : ""
-                        )
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === outdoorSeating
-                      )}
-                      required
-                    />
+                  <label className="h6">Outdoor Seating</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="outdoorSeating"
+                        value="yes"
+                        checked={outdoorSeating === "yes"}
+                        onChange={(e) => setOutdoorSeating(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="outdoorSeating"
+                        value="no"
+                        checked={outdoorSeating === "no"}
+                        onChange={(e) => setOutdoorSeating(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
               {outdoorSeating === "yes" && (
                 <div className="col-md-12">
                   <div className="input-item">
-                    <label>Outdoor Seating Area (Square Meter)</label>
+                    <label className="h6">Outdoor Seating Area (Square Meter)</label>
                     <input
                       type="number"
                       placeholder="0"
                       onChange={(e) => setOutdoorSeatingArea(e.target.value)}
                       value={outdoorSeatingArea}
-                      required
                     />
                   </div>
                 </div>
@@ -1186,31 +1073,29 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Room Size (Square Meter)</label>
+                  <label className="h6">Room Size (Square Meter)</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setRoomSize(e.target.value)}
                     value={roomSize}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Beds</label>
+                  <label className="h6">Number of Beds</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setNoOfBeds(e.target.value)}
                     value={noOfBeds}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Room Type</label>
+                  <label className="h6">Room Type</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1221,26 +1106,24 @@ export default function Add(props) {
                       value={ROOM_TYPE_OPTIONS.find(
                         (option) => option.value === roomType
                       )}
-                      required
                     />
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Floor Level</label>
+                  <label className="h6">Floor Level</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setFloorLevel(e.target.value)}
                     value={floorLevel}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>View</label>
+                  <label className="h6">View</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1251,28 +1134,36 @@ export default function Add(props) {
                       value={VIEW_OPTIONS.find(
                         (option) => option.value === view
                       )}
-                      required
                     />
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Balcony/Terrace</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setBalcony(selectedOption ? selectedOption.value : "")
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === balcony
-                      )}
-                    />
+                  <label className="h6">Balcony/Terrace</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="balconyTerrace"
+                        value="yes"
+                        checked={balcony === "yes"}
+                        onChange={(e) => setBalcony(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="balconyTerrace"
+                        value="no"
+                        checked={balcony === "no"}
+                        onChange={(e) => setBalcony(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
             </div>
           )}
 
@@ -1283,19 +1174,18 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Display Window Area (Square Meter)</label>
+                  <label className="h6">Display Window Area (Square Meter)</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setDisplayWindowArea(e.target.value)}
                     value={displayWindowArea}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Display Window</label>
+                  <label className="h6">Display Window</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1308,11 +1198,23 @@ export default function Add(props) {
                       value={DISPLAY_WINDOW_OPTIONS.find(
                         (option) => option.value === displayWindow
                       )}
-                      required
                     />
                   </div>
                 </div>
               </div>
+              {displayWindow?.value === "Other" && (
+                <div className="col-md-12">
+                  <div className="input-item">
+                    <label className="h6">Other Display Window</label>
+                    <input
+                      type="text"
+                      placeholder="Other Display Window"
+                      onChange={(e) => setDisplayWindowOther(e.target.value)}
+                      value={displayWindowOther}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -1322,36 +1224,23 @@ export default function Add(props) {
             propertySubType?.value === "studio" ||
             propertySubType?.value === "room") && (
             <div className="row">
-              {/* <div className="col-md-12">
-                <div className="input-item">
-                  <label>Floor Level</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    onChange={(e) => setResidentialFloorLevel(e.target.value)}
-                    value={residentialFloorLevel}
-                    required
-                  />
-                </div>
-              </div> */}
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Building Amenities</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      isMulti
-                      options={BUILDING_AMENITIES_OPTIONS}
-                      onChange={(selectedOptions) =>
-                        setBuildingAmenities(
-                          selectedOptions.map((option) => option.value)
-                        )
-                      }
-                      value={BUILDING_AMENITIES_OPTIONS.filter((option) =>
-                        buildingAmenities.includes(option.value)
-                      )}
-                      required
-                    />
+                  <label className="h6">Building Amenities</label>
+                  <div>
+                    {BUILDING_AMENITIES_OPTIONS.map((option) => (
+                      <div key={option.value}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={option.value}
+                            checked={buildingAmenities.includes(option.value)}
+                            onChange={(e) => handleBuildingAmenitiesChange(e)}
+                          />
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1366,26 +1255,34 @@ export default function Add(props) {
             propertySubType?.value === "cottage") && (
             <div className="row">
               <div className="col-md-12">
-                <div className="input-item">
-                  <label>Fireplace</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setFireplace(selectedOption ? selectedOption.value : "")
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === fireplace
-                      )}
-                      required
-                    />
-                  </div>
+              <div className="input-item">
+                <label className="h6">Fireplace</label>
+                <div>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="fireplace"
+                      value="yes"
+                      checked={fireplace === "yes"}
+                      onChange={(e) => setFireplace(e.target.value)}
+                    /> Yes
+                  </label>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="fireplace"
+                      value="no"
+                      checked={fireplace === "no"}
+                      onChange={(e) => setFireplace(e.target.value)}
+                    /> No
+                  </label>
                 </div>
+              </div>
+
                 {fireplace === "yes" && (
                   <div className="col-md-12">
                     <div className="input-item">
-                      <label>Wood Burning Gas</label>
+                      <label className="h6">Wood Burning Gas</label>
                       <div className="input-item">
                         <Select
                           classNamePrefix="custom-select"
@@ -1398,7 +1295,6 @@ export default function Add(props) {
                           value={FIREPLACE_VALUE_OPTIONS.find(
                             (option) => option.value === woodBurning
                           )}
-                          required
                         />
                       </div>
                     </div>
@@ -1407,37 +1303,44 @@ export default function Add(props) {
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Floors</label>
+                  <label className="h6">Number of Floors</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setNoOfFloors(e.target.value)}
                     value={noOfFloors}
-                    required
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Basement</label>
-                  <div className="input-item">
-                    <Select
-                      classNamePrefix="custom-select"
-                      options={YES_NO_OPTIONS}
-                      onChange={(selectedOption) =>
-                        setBasement(selectedOption ? selectedOption.value : "")
-                      }
-                      value={YES_NO_OPTIONS.find(
-                        (option) => option.value === basement
-                      )}
-                      required
-                    />
+                  <label className="h6">Basement</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="basement"
+                        value="yes"
+                        checked={basement === "yes"}
+                        onChange={(e) => setBasement(e.target.value)}
+                      /> Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="basement"
+                        value="no"
+                        checked={basement === "no"}
+                        onChange={(e) => setBasement(e.target.value)}
+                      /> No
+                    </label>
                   </div>
                 </div>
               </div>
+
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Kitchen</label>
+                  <label className="h6">Kitchen</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1450,7 +1353,6 @@ export default function Add(props) {
                       value={KITCHEN_OPTIONS.find(
                         (option) => option.value === residentialKitchen
                       )}
-                      required
                     />
                   </div>
                 </div>
@@ -1463,54 +1365,65 @@ export default function Add(props) {
           <div className="row">
             <div className="col-md-12">
               <div className="input-item">
-                <label>Pet Friendliness</label>
-                <div className="input-item">
-                  <Select
-                    classNamePrefix="custom-select"
-                    options={YES_NO_OPTIONS}
-                    onChange={(selectedOption) =>
-                      setPetFreindliness(
-                        selectedOption ? selectedOption.value : ""
-                      )
-                    }
-                    value={YES_NO_OPTIONS.find(
-                      (option) => option.value === petFreindliness
-                    )}
-                    required
-                  />
+                <label className="h6">Pet Friendliness</label>
+                <div>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="petFriendliness"
+                      value="yes"
+                      checked={petFreindliness === "yes"}
+                      onChange={(e) => setPetFreindliness(e.target.value)}
+                    /> Yes
+                  </label>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="petFriendliness"
+                      value="no"
+                      checked={petFreindliness === "no"}
+                      onChange={(e) => setPetFreindliness(e.target.value)}
+                    /> No
+                  </label>
                 </div>
               </div>
             </div>
+
             <div className="col-md-12">
               <div className="input-item">
-                <label>Parking Facility</label>
-                <div className="input-item">
-                  <Select
-                    classNamePrefix="custom-select"
-                    options={YES_NO_OPTIONS}
-                    onChange={(selectedOption) =>
-                      setCommercialParking(
-                        selectedOption ? selectedOption.value : ""
-                      )
-                    }
-                    value={YES_NO_OPTIONS.find(
-                      (option) => option.value === commercialParking
-                    )}
-                    required
-                  />
+                <label className="h6">Parking Facility</label>
+                <div>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="commercialParking"
+                      value="yes"
+                      checked={commercialParking === "yes"}
+                      onChange={(e) => setCommercialParking(e.target.value)}
+                    /> Yes
+                  </label>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="commercialParking"
+                      value="no"
+                      checked={commercialParking === "no"}
+                      onChange={(e) => setCommercialParking(e.target.value)}
+                    /> No
+                  </label>
                 </div>
               </div>
             </div>
+
             {commercialParking === "yes" && (
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Number of Parking</label>
+                  <label className="h6">Number of Parking</label>
                   <input
                     type="number"
                     placeholder="0"
                     onChange={(e) => setNoOfSpacesCommercial(e.target.value)}
                     value={noOfSpacesCommercial}
-                    required
                   />
                 </div>
               </div>
@@ -1523,7 +1436,7 @@ export default function Add(props) {
           <div className="row">
             <div className="col-md-12">
               <div className="input-item">
-                <label>Outdoor Spaces</label>
+                <label className="h6">Outdoor Spaces</label>
                 <div>
                   {OUTDOOR_SPACES_OPTIONS.map((option) => (
                     <div key={option.value}>
@@ -1543,19 +1456,18 @@ export default function Add(props) {
             </div>
             <div className="col-md-12">
               <div className="input-item">
-                <label>Number of Bathrooms</label>
+                <label className="h6">Number of Bathrooms</label>
                 <input
                   type="number"
                   placeholder="0"
                   onChange={(e) => setNoOfBathrooms(e.target.value)}
                   value={noOfBathrooms}
-                  required
                 />
               </div>
             </div>
             <div className="col-md-12">
               <div className="input-item">
-                <label>Furnished</label>
+                <label className="h6">Furnished</label>
                 <div className="input-item">
                   <Select
                     classNamePrefix="custom-select"
@@ -1566,35 +1478,40 @@ export default function Add(props) {
                     value={FURNISHED_OPTIONS.find(
                       (option) => option.value === furnished
                     )}
-                    required
                   />
                 </div>
               </div>
             </div>
             <div className="col-md-12">
               <div className="input-item">
-                <label>Parking</label>
-                <div className="input-item">
-                  <Select
-                    classNamePrefix="custom-select"
-                    options={YES_NO_OPTIONS}
-                    onChange={(selectedOption) =>
-                      setParkingResidential(
-                        selectedOption ? selectedOption.value : ""
-                      )
-                    }
-                    value={YES_NO_OPTIONS.find(
-                      (option) => option.value === parkingResidential
-                    )}
-                    required
-                  />
+                <label className="h6">Parking</label>
+                <div>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="parkingFacility"
+                      value="yes"
+                      checked={parkingFacility === "yes"}
+                      onChange={(e) => setParkingFacility(e.target.value)}
+                    /> Yes
+                  </label>
+                  <label className="p-2">
+                    <input
+                      type="radio"
+                      name="parkingFacility"
+                      value="no"
+                      checked={parkingFacility === "no"}
+                      onChange={(e) => setParkingFacility(e.target.value)}
+                    /> No
+                  </label>
                 </div>
               </div>
             </div>
-            {parkingResidential === "yes" && (
+
+            {parkingFacility === "yes" && (
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Parking Type</label>
+                  <label className="h6">Parking Type</label>
                   <div className="input-item">
                     <Select
                       classNamePrefix="custom-select"
@@ -1607,20 +1524,18 @@ export default function Add(props) {
                       value={PARKING_OPTION_TYPES.find(
                         (option) => option.value === parkingType
                       )}
-                      required
                     />
                   </div>
                 </div>
                 {parkingType === "Garage/Carport" && (
                   <div className="col-md-12">
                     <div className="input-item">
-                      <label>Number of Parking</label>
+                      <label className="h6">Number of Parking</label>
                       <input
                         type="number"
                         placeholder="0"
                         onChange={(e) => setGarageSpaces(e.target.value)}
                         value={garageSpaces}
-                        required
                       />
                     </div>
                   </div>
@@ -1634,28 +1549,32 @@ export default function Add(props) {
         <div className="row">
           <div className="col-md-12">
             <div className="input-item">
-              <label>Security Features</label>
-              <div className="input-item">
-                <Select
-                  classNamePrefix="custom-select"
-                  options={YES_NO_OPTIONS}
-                  onChange={(selectedOption) =>
-                    setSecurityFeatures(
-                      selectedOption ? selectedOption.value : ""
-                    )
-                  }
-                  value={YES_NO_OPTIONS.find(
-                    (option) => option.value === securityFeatures
-                  )}
-                  required
-                />
+              <label className="h6">Security Features</label>
+              <div className="input-group">
+                <label className="p-2">
+                  <input
+                    type="radio"
+                    value="yes"
+                    checked={securityFeatures === 'yes'}
+                    onChange={(e) => setSecurityFeatures(e.target.value)}
+                  /> Yes
+                </label>
+                <label className="p-2">
+                  <input
+                    type="radio"
+                    value="no"
+                    checked={securityFeatures === 'no'}
+                    onChange={(e) => setSecurityFeatures(e.target.value)}
+                  /> No
+                </label>
               </div>
             </div>
           </div>
+
           {securityFeatures === "yes" && (
             <div className="col-md-12">
               <div className="input-item">
-                <label>Alaram/Camera</label>
+                <label className="h6">Alaram/Camera</label>
                 <div className="input-item">
                   <Select
                     classNamePrefix="custom-select"
@@ -1668,7 +1587,6 @@ export default function Add(props) {
                     value={SECURITY_FEATURES_OPTIONS.find(
                       (option) => option.value === alaramCameraB
                     )}
-                    required
                   />
                 </div>
               </div>
@@ -1676,60 +1594,73 @@ export default function Add(props) {
           )}
           <div className="col-md-12">
             <div className="input-item">
-              <label>Disability Access</label>
-              <div className="input-item">
-                <Select
-                  classNamePrefix="custom-select"
-                  options={YES_NO_OPTIONS}
-                  onChange={(selectedOption) =>
-                    setDisabilityAccess(
-                      selectedOption ? selectedOption.value : ""
-                    )
-                  }
-                  value={YES_NO_OPTIONS.find(
-                    (option) => option.value === disabilityAccess
-                  )}
-                  required
-                />
+              <label className="h6">Disability Access</label>
+              <div className="input-group">
+                <div className="p-2">
+                  <input
+                    type="radio"
+                    value="yes"
+                    name="disabilityAccess"
+                    checked={disabilityAccess === "yes"}
+                    onChange={(e) => setDisabilityAccess(e.target.value)}
+                  />
+                  <label htmlFor="yes">Yes</label>
+                </div>
+
+                <div className="p-2">
+                  <input
+                    type="radio"
+                    value="no"
+                    name="disabilityAccess"
+                    checked={disabilityAccess === "no"}
+                    onChange={(e) => setDisabilityAccess(e.target.value)}
+                  />
+                  <label htmlFor="no">No</label>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="col-md-12">
             <div className="input-item">
-              <label>Public Transport</label>
-              <div className="input-item">
-                <Select
-                  classNamePrefix="custom-select"
-                  options={YES_NO_OPTIONS}
-                  onChange={(selectedOption) =>
-                    setPublicTransport(
-                      selectedOption ? selectedOption.value : ""
-                    )
-                  }
-                  value={YES_NO_OPTIONS.find(
-                    (option) => option.value === publicTransport
-                  )}
-                  required
-                />
+              <label className="h6">Public Transport</label>
+              <div>
+                <label className="p-2">
+                  <input
+                    type="radio"
+                    name="publicTransport"
+                    value="yes"
+                    checked={publicTransport === "yes"}
+                    onChange={(e) => setPublicTransport(e.target.value)}
+                  /> Yes
+                </label>
+                <label className="p-2">
+                  <input
+                    type="radio"
+                    name="publicTransport"
+                    value="no"
+                    checked={publicTransport === "no"}
+                    onChange={(e) => setPublicTransport(e.target.value)}
+                  /> No
+                </label>
               </div>
             </div>
           </div>
+
           <div className="col-md-12">
             <div className="input-item">
-              <label>Year Built</label>
+              <label className="h6">Year Built</label>
               <input
                 type="number"
                 placeholder="0"
                 onChange={(e) => setYearBuilt(e.target.value)}
                 value={yearBuilt}
-                required
               />
             </div>
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Condition</label>
+              <label className="h6">Condition</label>
               <div className="input-item">
                 <Select
                   classNamePrefix="custom-select"
@@ -1740,25 +1671,23 @@ export default function Add(props) {
                   value={CONDITION_OPTIONS.find(
                     (option) => option.value === condition
                   )}
-                  required
                 />
               </div>
             </div>
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Availability Date</label>
+              <label className="h6">Availability Date</label>
               <input
                 type="date"
                 value={availabilityDate}
                 onChange={(e) => setAvailabilityDate(e.target.value)}
-                required
               />
             </div>
           </div>
           <div className="col-md-12">
             <div className="input-item">
-              <label>Additional Features</label>
+              <label className="h6">Additional Features</label>
               <textarea
                 className="mb-custom"
                 value={additionalFeatures}
@@ -1776,7 +1705,7 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label>Permit Number *</label>
+                  <label className="h6">Permit Number *</label>
                   <input
                     type="text"
                     className="form-control" // Ensure consistent class usage for styling
@@ -1809,7 +1738,7 @@ export default function Add(props) {
           <div className="row">
             <div className="col-md-12">
               <div className="input-item">
-                <label>Allotted To</label>
+                <label className="h6">Allotted To</label>
                 <div className="input-item ltn__z-index-99">
                   <Select
                     classNamePrefix="custom-select"

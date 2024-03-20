@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import ViewOffer from "./view-offer";
 import { VIRTUAL_TOUR_TYPE } from "../../../constants";
@@ -9,18 +9,13 @@ import { formatPrice, iconsMap, setPropertyMetaData } from "../../../utils";
 export default function Details(props) {
   const [property, setProperty] = useState({});
   const [propertyCategoryType, setPropertyCategoryType] = useState();
-  const [propertyType, setPropertyType] = useState();
-  const [propertyBedrooms, setPropertyBedrooms] = useState();
-  const [propertyArea, setPropertyArea] = useState();
-  const [propertyUnit, setPropertyUnit] = useState();
+  
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
   const [propertyTags, setPropertyTags] = useState([]);
   const params = useParams();
 
-  
-
-  const loadProperty = async () => {
+  const loadProperty = useCallback(async () => {
     const response = await PropertyService.detail(params.id);
     console.log("property-details", response);
 
@@ -31,8 +26,6 @@ export default function Details(props) {
 
     setProperty(response);
 
-    
-
     // Use slice() to clone the array before reversing to avoid mutating the original array
     const reversedMetaTags = response.productMetaTags.slice().reverse();
 
@@ -42,10 +35,12 @@ export default function Details(props) {
       return acc;
     }, {});
 
-    // Now you have a dynamic map of all meta tags which can be used directly in the component
-    // Example: metaTagsMap['Parking Facility'] will give you the value of the Parking Facility tag
     setPropertyMetaData(metaTagsMap);
     setPropertyTags(metaTagsMap);
+
+    if (metaTagsMap["Property Category Type"]) {
+      setPropertyCategoryType({ label: metaTagsMap["Property Category Type"] });
+    }
 
     if (response?.productImages?.length > 0) {
       setPropertyImages(response.productImages);
@@ -54,7 +49,7 @@ export default function Details(props) {
     if (response?.productDocuments?.length > 0) {
       setPropertyDocuments(response.productDocuments);
     }
-  };
+  }, [params.id, props.responseHandler]);
 
   useEffect(() => {
     loadProperty();
@@ -88,7 +83,7 @@ export default function Details(props) {
         </div>
       </div>
       <div className="row property-details">
-        <div className="col-md-7">
+        {/* <div className="col-md-7">
           <div className="row mb-5">
             <div className="col-md-3">
               <h5>Type</h5>
@@ -111,7 +106,7 @@ export default function Details(props) {
           <div>
             <p>{property.description}</p>
           </div>
-        </div>
+        </div> */}
         <h4 className="title-2">Features</h4>
         <div className="property-detail-feature-list clearfix mb-45">
           <ul style={{ display: "flex", flexDirection: "column" }}>
@@ -152,8 +147,8 @@ export default function Details(props) {
             )}
         </div>
       </div>
-      {property?.virtualTourType &&
-        property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
+      {property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO &&
+        property?.virtualTourUrl && (
           <div className="property-detail-feature-list clearfix mb-45">
             <video width="100%" height="100%" controls>
               <source
@@ -164,6 +159,7 @@ export default function Details(props) {
             </video>
           </div>
         )}
+
       <div className="row property-details">
         <ViewOffer
           property={property}

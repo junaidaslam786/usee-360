@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import {
@@ -23,14 +23,14 @@ export default function List(props) {
   const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
-  const loadAllList = async (search = "", page = 1) => {
+  const loadAllList = useCallback(async (search = "", page = 1) => {
     const response = await PropertyService.list({ search, page });
     if (response?.data) {
       setList(response.data);
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  };
+  }, []);
 
   const handleDeleteButtonClick = (id) => {
     setPropertyIdToDelete(id);
@@ -96,7 +96,7 @@ export default function List(props) {
 
     fetchAllProperties();
     fetchRemoveReasons();
-  }, []);
+  }, [loadAllList, props]);
 
   return (
     <div className="ltn__myaccount-tab-content-inner">

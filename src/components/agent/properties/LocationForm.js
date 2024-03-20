@@ -38,7 +38,7 @@ const LocationForm = ({
   // const [addressInput, setAddressInput] = useState("");
   const [markerPosition, setMarkerPosition] = useState({ lat, lng });
   const geocoder = useRef(null);
-  const inputRef = useRef(null);
+  const autocompleteRef = useRef(null);
   const options = {};
 
   const onMapLoad = useCallback((map) => {
@@ -90,27 +90,27 @@ const LocationForm = ({
     setLongitude(place.geometry.location.lng());
   };
 
-  // const onAutocompleteLoad = useCallback((autocomplete) => {
-  //   autocompleteRef.current = autocomplete;
-  //   // autocompleteRef.current.setFields(['address_component', 'geometry', 'name']);
-  // }, []);
+  const onAutocompleteLoad = useCallback((autocomplete) => {
+    autocompleteRef.current = autocomplete;
+    // autocompleteRef.current.setFields(['address_component', 'geometry', 'name']);
+  }, []);
 
-  // const onPlaceSelected = useCallback(() => {
-  //   if (autocompleteRef.current) {
-  //     const place = autocompleteRef.current.getPlace();
-  //     if (place.geometry) {
-  //       const lat = place.geometry.location.lat();
-  //       const lng = place.geometry.location.lng();
-  //       setLatitude(lat);
-  //       setLongitude(lng);
-  //       setMarkerPosition({ lat, lng });
-  //       setAddress(place.formatted_address); // Assuming setAddress updates an internal state
-  //       setAddressFields(place); // Update additional fields based on the selected place
-  //     } else {
-  //       console.log("No details available for input: '" + place.name + "'");
-  //     }
-  //   }
-  // }, [setAddress, setLatitude, setLongitude, setAddressFields]);
+  const onPlaceSelected = useCallback(() => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace();
+      if (place.geometry) {
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setLatitude(lat);
+        setLongitude(lng);
+        setMarkerPosition({ lat, lng });
+        setAddress(place.formatted_address); // Assuming setAddress updates an internal state
+        setAddressFields(place); // Update additional fields based on the selected place
+      } else {
+        console.log("No details available for input: '" + place.name + "'");
+      }
+    }
+  }, [setAddress, setLatitude, setLongitude, setAddressFields]);
 
   const onMarkerDragEnd = useCallback((e) => {
     const newLat = e.latLng.lat();
@@ -127,6 +127,7 @@ const LocationForm = ({
           if (status === "OK") {
             if (results[0]) {
               setAddress(results[0].formatted_address);
+              setAddressFields(results[0]);
               // Optionally, update other address-related states here
             }
           } else {
@@ -147,33 +148,7 @@ const LocationForm = ({
     fetchCurrentLocation(); // Fetch the current location when the component mounts
   }, []);
 
-  useEffect(() => {
-    let autocomplete;
-    if (isLoaded && inputRef.current) {
-      // Rest of the code...
-      autocomplete = new window.google.maps.places.Autocomplete(
-        document.getElementById("autocomplete3")
-      );
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
-          setLatitude(place.geometry.location.lat());
-          setLongitude(place.geometry.location.lng());
-          setAddress(place.formatted_address);
-          setMarkerPosition({ lat, lng });
-          setAddressFields(place);
-        } else {
-          console.error("No geometry for selected place.");
-        }
-      });
-    }
-
-    return () => {
-      if (autocomplete) {
-        window.google.maps.event.clearInstanceListeners(autocomplete);
-      }
-    };
-  }, [isLoaded]);
+  
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -184,19 +159,19 @@ const LocationForm = ({
       <h6>Listing Location</h6>
       <div className="row">
         <div className="col-md-12">
-          {/* <Autocomplete
+          <Autocomplete
             onLoad={onAutocompleteLoad}
             onPlaceChanged={onPlaceSelected}
-          > */}
-          <input
-            ref={inputRef}
-            type="text"
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
-            id="autocomplete3"
-            placeholder="*Address"
-          />
-          {/* </Autocomplete> */}
+          >
+            <input
+              ref={autocompleteRef}
+              type="text"
+              value={address}
+              onChange={(event) => setAddress(event.target.value)}
+              id="autocomplete3"
+              placeholder="*Address"
+            />
+          </Autocomplete>
         </div>
         <div className="col-lg-12 mb-map">
           <div className="property-details-google-map mb-60">
@@ -235,7 +210,7 @@ const LocationForm = ({
               name="ltn__name"
               onChange={(event) => setPostalCode(event.target.value)}
               placeholder="Postal Code"
-              required
+              
             />
           </div>
         </div>
