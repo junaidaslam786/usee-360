@@ -209,9 +209,9 @@ export default function Upcoming(props) {
                       >
                         <button
                           className="joinCall"
-                          disabled={
-                            !isWithinFiveMinutes(element.appointmentTimeGmt)
-                          }
+                          // disabled={
+                          //   !isWithinFiveMinutes(element.appointmentTimeGmt)
+                          // }
                           style={{
                             backgroundColor: isWithinFiveMinutes(element.appointmentTimeGmt) ? "" : "#282B38", 
                             // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000", 
