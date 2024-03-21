@@ -193,10 +193,16 @@ export default function Add(props) {
     }
 
     // Setting API endpoint dynamically
-    let apiUrl = id ? "/update" : "/create";
-    let successMsg = id
-      ? "Property updated successfully."
-      : "Your changes are saved successfully.";
+    // const apiUrl = id ? "/update" : "/create";
+    // const successMsg = id
+    //   ? "Property updated successfully."
+    //   : "Your changes are saved successfully.";
+    // const apiUrl = (() => id ? "/update" : "/create")();
+    // const successMsg = (() => id ? "Property updated successfully." : "Your changes are saved successfully.")();
+
+    let apiUrl = "create";
+    let successMsg = "Your changes are saved successfully."
+
 
     let formdata = new FormData();
     formdata.append("title", title);
@@ -234,12 +240,15 @@ export default function Add(props) {
     appendMetaTag("metaTags[3]", unit?.value);
     appendMetaTag("metaTags[4]", area);
     appendMetaTag("metaTags[5]", bedrooms?.value);
+    appendMetaTag("metaTags[8]", priceType?.value);
+
+
     // ... Continue for other specific meta tags
 
     // Example for appending meta tags based on conditionals (residential or commercial specifics)
     if (propertyType?.value === "residential") {
       appendMetaTag("metaTags[6]", propertySubType?.value);
-       
+      
       if (
         propertySubType?.value === "apartment" ||
         propertySubType?.value === "studio" ||
@@ -346,9 +355,15 @@ export default function Add(props) {
 
     setLoading(true);
     try {
-      const formResponse = await PropertyService[
-        apiUrl === "/update" ? "update" : "add"
-      ](formdata);
+      // const formResponse = await PropertyService[
+      //   apiUrl === "/update" ? "update" : "add"
+      // ](formdata);
+
+      // const formResponse = await (apiUrl === "/update" ? PropertyService.update(formdata) : PropertyService.add(formdata));
+      const formResponse =
+      apiUrl === "update"
+        ? await PropertyService.update(formdata)
+        : await PropertyService.add(formdata);
 
       setLoading(false);
 
@@ -359,19 +374,22 @@ export default function Add(props) {
 
       if (!id && formResponse?.id) {
         // Check if creating a new property and response includes an ID
-        setId(formResponse.id); // Update the `id` state
+        // setId(formResponse.id); 
         toast.success(successMsg);
         // No need to redirect here; just update the state
-      }
-
-      // Redirect after success
-      if (id) {
+      } else if (id) {
+        toast.success(successMsg);
         setTimeout(() => {
           if (formResponse?.id) {
             history.push(`/agent/edit-property/${formResponse.id}`);
           }
         }, 2000);
       }
+
+      // Redirect after success
+      // if (id) {
+        
+      // }
     } catch (error) {
       props.responseHandler([
         "An error occurred while processing your request.",

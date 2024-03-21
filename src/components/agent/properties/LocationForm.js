@@ -145,6 +145,10 @@ const LocationForm = ({
   }, [isLoaded]);
 
   useEffect(() => {
+    setMarkerPosition({ lat: Number(latitude), lng: Number(longitude) });
+  }, [latitude, longitude]);
+
+  useEffect(() => {
     fetchCurrentLocation(); // Fetch the current location when the component mounts
   }, []);
 
