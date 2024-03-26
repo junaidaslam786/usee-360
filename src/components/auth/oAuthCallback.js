@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify"; // Ensure react-toastify is installed
 import {
@@ -7,6 +7,7 @@ import {
   setUserType,
   checkAgentDetails,
 } from "../../utils";
+import ProfileService from "../../services/profile";
 
 const OAuthCallback = () => {
   const location = useLocation();
@@ -43,11 +44,22 @@ const OAuthCallback = () => {
             agentDetails?.user?.signupStep === -1 &&
             agentDetails?.user?.active === false
               ? "/agent/register-social"
-              : `/${agentDetails.agentType}/dashboard`;
+              : '/agent/dashboard';
           history.push(redirectPath);
         })();
       } else if (userType === "customer") {
-        history.push("customer/dashboard");
+         // User is a customer
+         (async () => {
+          const profile = await ProfileService.getProfile();
+          if (profile && profile.signupStep === -1) {
+            history.push("/customer/register");
+          } else if (profile && profile.signupStep === 1) {
+            history.push("/customer/dashboard");
+          } else {
+            toast.error("Unexpected user state, redirecting to login.");
+            history.push("/login");
+          }
+        })();
       }
     } else {
       toast.error("Failed to fetch user details.");

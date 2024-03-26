@@ -16,12 +16,8 @@ import PasswordChecklist from "react-password-checklist";
 import { toast } from "react-toastify";
 import { Country, City } from "country-state-city";
 import {
-  checkAgentDetails,
   getUserDetailsFromJwt,
-  getUserDetailsFromJwt2,
   removeLoginToken,
-  setLoginToken,
-  setUserType,
 } from "../../utils";
 import UserService from "../../services/agent/user";
 
@@ -39,8 +35,8 @@ const SocialRegisterForm = (props) => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState(USER_TYPE.AGENT);
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [document, setDocument] = useState();
   const [jobTitlePlaceHolder, setJobTitlePlaceHolder] = useState(
     DEFAULT_LICENSE_NO_TEXT
@@ -157,8 +153,8 @@ const SocialRegisterForm = (props) => {
     formData.append("ornNumber", ornNumber);
     formData.append("signupStep", 2);
     formData.append("phoneNumber", phoneNumber);
-    // formData.append("password", password);
-    // formData.append("confirmPassword", confirmPassword);
+    formData.append("password", password);
+    formData.append("confirmPassword", confirmPassword);
     if (document) {
       formData.append("document", document);
     }
@@ -186,7 +182,7 @@ const SocialRegisterForm = (props) => {
         );
       }
       removeLoginToken();
-      history.push('/agent/login'); 
+      history.push("/agent/login");
     } catch (error) {
       console.error("Error during agent onboarding:", error);
       toast.error("Failed to onboard agent. Please try again.");
@@ -294,7 +290,7 @@ const SocialRegisterForm = (props) => {
                         name="traderorn"
                         placeholder="Trader ORN"
                         onChange={(e) => setShowTraderORNField(e.target.value)}
-                        // value={showTraderORNField}
+                        value={showTraderORNField}
                         required
                       />
                     </div>
@@ -358,7 +354,7 @@ const SocialRegisterForm = (props) => {
                   value={phoneNumber}
                   required
                 />
-                {/* <small>
+                <small>
                   Password must Contain 8 Characters, One Uppercase, One
                   Lowercase, One Number and One Special Case Character.
                 </small>
@@ -397,8 +393,8 @@ const SocialRegisterForm = (props) => {
                       capital: "Must contains a capital letter.",
                     }}
                   />
-                </div> */}
-                {/* <div id="recaptcha-container" className="mb-30"></div> */}
+                </div>
+                <div id="recaptcha-container" className="mb-30"></div>
 
                 <div className="btn-wrapper text-center">
                   <button

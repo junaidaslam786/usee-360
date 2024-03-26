@@ -113,7 +113,7 @@ export default function Dashboard({ type }) {
         </div>
       </div>
       <DashboardFilter type={type} />
-      <InformativeModal isOpen={showModal} onRequestClose= {() => setShowModal(false)}/>
+      
     </React.Fragment>
   );
 }

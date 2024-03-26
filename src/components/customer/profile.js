@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TimezoneDetail from "../partial/timezone-detail";
 import { USER_TYPE } from "../../constants";
 import { getUserDetailsFromJwt, setLoginToken } from "../../utils";
@@ -25,12 +25,14 @@ export default function Profile(props) {
 
   const history = useHistory();
 
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     const jsonData = await ProfileService.getProfile();
     if (jsonData?.error && jsonData?.message) {
       props.responseHandler(jsonData.message);
       return;
     }
+
+    console.log("User Profile", jsonData);
 
     setUser(jsonData);
     setFirstName(jsonData.firstName);
@@ -42,7 +44,7 @@ export default function Profile(props) {
         ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
         : ""
     );
-  };
+  }, []);
 
   const updateProfile = async (e) => {
     e.preventDefault();
