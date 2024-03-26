@@ -52,7 +52,7 @@ const OAuthCallback = () => {
          (async () => {
           const profile = await ProfileService.getProfile();
           if (profile && profile.signupStep === -1) {
-            history.push("/customer/register");
+            history.push("/customer/onboarding");
           } else if (profile && profile.signupStep === 1) {
             history.push("/customer/dashboard");
           } else {

@@ -25,6 +25,7 @@ import ResponseHandler from "../components/partial/response-handler";
 import { setResponseHandler } from "../utils";
 import PrivacyPolicy from "../components/homepage/section/privacy-policy";
 import SocialRegisterForm from "../components/auth/socialRegisterForm";
+import CustomerOnboarding from "../components/auth/customerSocialForm";
 
 export default function HomePages({ page, type, hideBookDemo }) {
   const [responseMessage, setResponseMessage] = useState();
@@ -63,6 +64,12 @@ export default function HomePages({ page, type, hideBookDemo }) {
       ComponentToRender = SocialRegisterForm; // No need for the ternary if always the same
       break;
 
+    case "customer-onboarding":
+      pageTitle = "Onboarding";
+      pageType = "register";
+      pageSubTitle = "Customer Onboarding";
+      ComponentToRender = CustomerOnboarding;
+      break;
   
 
     case "reset-password":

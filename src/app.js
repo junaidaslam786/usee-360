@@ -223,6 +223,13 @@ const App = () => {
               )}
             />
 
+            <Route 
+              path="/customer/onboarding"
+              render={(props) => (
+                <HomePages {...props} page="customer-onboarding" />
+              )}
+            />
+
             <Route path="/oauth/users" component={OAuthCallback} />
 
             {/* Agent Routes */}

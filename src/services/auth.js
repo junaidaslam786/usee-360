@@ -47,6 +47,32 @@ const AuthService = {
       return { error: true, message: "Failed to complete agent onboarding." };
     }
   },
+  customerOnboarding: async (formData) => {
+    try {
+      const response = await httpPost(
+        `${apiUrlPrefix}/customer-onboarding`,
+        formData,
+        true // Assuming this endpoint requires authentication; set to false if not
+      );
+
+      // Check for errors in the response
+      if (response?.error) {
+        // Optionally, handle specific error messages or statuses
+        console.error("Error during customer onboarding:", response.error);
+        return {
+          error: true,
+          message: response.error.message || "Error during customer onboarding.",
+        };
+      }
+
+      // If the response is successful and contains the expected data, return it
+      return { error: false, data: response.data };
+    } catch (error) {
+      console.error("Error during customer onboarding:", error);
+      // Handle any exceptions thrown during the request
+      return { error: true, message: "Failed to complete customer onboarding." };
+    }
+  },
 
 
   login: async (reqBody) => {
