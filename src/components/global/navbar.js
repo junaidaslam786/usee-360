@@ -72,15 +72,15 @@ export default function Navbar(props) {
                           <Link to="/">Home</Link>
                           {/* <div className="separator"></div> */}
                         </li>
-                        <li className="menu-icon listItems">
+                        <li className=" listItems">
                           <Link to="/services">Services</Link>
-                          <ul>
+                          {/* <ul>
                             <li>
                               <Link to="/services/properties">
                                 Usee-360 Properties
                               </Link>
                             </li>
-                          </ul>
+                          </ul> */}
                         </li>
                         <li className="menu-icon listItems">
                           <Link className="pointer_none" to="#">About</Link>
