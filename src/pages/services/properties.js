@@ -42,6 +42,10 @@ function PropertiesServicePage() {
         key={JSON.stringify(filters)}
         onFiltersChange={handleFiltersChange}
         propertyCategory={filters.propertyCategory}
+        address={filters.address}
+        lat={filters.lat}
+        lng={filters.lng}
+        priceType={filters.priceType}
       />
       <PropertyGrid filters={filters} mapProperties={propertiesFromMap} />
       <ServiceDetails />

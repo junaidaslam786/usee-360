@@ -13,16 +13,20 @@ const libraries = ["places", "drawing"];
 export default function SearchForm({
   onFiltersChange,
   propertyCategory: defaultPropertyCategory,
+  address: defaultAddress,
+  lat: defaultLat,
+  lng: defaultLng,
+  priceType: defaultPriceType,
 }) {
-  const [address, setAddress] = useStateIfMounted("");
+  const [address, setAddress] = useStateIfMounted(defaultAddress || "");
   const [propertyCategory, setPropertyCategory] = useState(
     defaultPropertyCategory || "sale"
   );
-  const [lat, setLat] = useStateIfMounted(null);
-  const [lng, setLng] = useStateIfMounted(null);
+  const [lat, setLat] = useStateIfMounted(defaultLat || null);
+  const [lng, setLng] = useStateIfMounted(defaultLng || null);
   const [showLink, setShowLink] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [priceType, setPriceType] = useState();
+  const [priceType, setPriceType] = useState(defaultPriceType);
 
   const [filters, setFilters] = useState({});
 
@@ -30,8 +34,6 @@ export default function SearchForm({
   const location = useLocation();
 
   const isMounted = useRef(false);
-
-  console.log("default propertyCategory", defaultPropertyCategory);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -64,10 +66,16 @@ export default function SearchForm({
       ...(lat != null && { lat }),
       ...(lng != null && { lng }),
       ...Object.entries(filters).reduce((acc, [key, value]) => {
-        if (value) acc[key] = value; // Adjust this logic based on how you determine a filter is 'selected'
+        if (Array.isArray(value) && value.length > 0) {
+          acc[key] = value;
+        } else if (!Array.isArray(value) && value) {
+          // For non-array values, check if they have a truthy value
+          acc[key] = value;
+        }
         return acc;
       }, {}),
     };
+    
     return selectedFilters;
   };
 
@@ -105,9 +113,44 @@ export default function SearchForm({
     setIsModalOpen(false);
   };
 
+  const reverseGeocode = (latitude, longitude) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode(
+      { location: { lat: latitude, lng: longitude } },
+      (results, status) => {
+        if (status === "OK") {
+          if (results[0]) {
+            setAddress(results[0].formatted_address);
+          } else {
+            console.log("No results found");
+          }
+        } else {
+          console.error("Geocoder failed due to: " + status);
+        }
+      }
+    );
+  };
+
   useEffect(() => {
+    // Trigger reverse geocoding if lat and lng change and are not null
+    if (lat !== null && lng !== null) {
+      reverseGeocode(lat, lng);
+    }
+  }, [lat, lng]);
+
+  useEffect(() => {
+    setAddress(defaultAddress || "");
+    setLat(defaultLat || null);
+    setLng(defaultLng || null);
+    setPriceType(defaultPriceType);
     setPropertyCategory(defaultPropertyCategory || "sale");
-  }, [defaultPropertyCategory]);
+  }, [
+    defaultAddress,
+    defaultLat,
+    defaultLng,
+    defaultPriceType,
+    defaultPropertyCategory,
+  ]);
 
   useEffect(() => {
     if (isLoaded && lat != null && lng != null) {
@@ -265,6 +308,5 @@ export default function SearchForm({
         />
       </div>
     </div>
-    
   );
 }
