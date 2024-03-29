@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Contact from "./contact";
 
 class ContactInfo extends Component {
   render() {
@@ -7,6 +8,7 @@ class ContactInfo extends Component {
     return (
       <div className="ltn__contact-address-area mb-90">
         <div className="container">
+          <Contact />
           <div className="row">
             <div className="col-lg-6">
               <div className="ltn__contact-address-item ltn__contact-address-item-3 box-shadow">

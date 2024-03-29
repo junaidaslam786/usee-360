@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useHistory } from 'react-router';
 import HomepageService from "../../../services/homepage";
 
-export default function ContactForm(props) {
+export default function Contact(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [message, setMessage] = useState("");
@@ -15,9 +16,10 @@ export default function ContactForm(props) {
     e.preventDefault();
     
     setLoading(true);
-    const formResponse = await HomepageService.bookDemo({
+    const formResponse = await HomepageService.contactUs({
       name,
       email,
+      subject,
       jobTitle,
       phoneNumber,
       message,
@@ -43,7 +45,7 @@ export default function ContactForm(props) {
         <div className="row">
           <div className="col-lg-12">
             <div className="ltn__form-box contact-form-box box-shadow white-bg">
-              <h4 className="title-2">Book a Demo</h4>
+              <h4 className="title-2">Contact with us</h4>
               <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
@@ -77,6 +79,18 @@ export default function ContactForm(props) {
                         placeholder="Enter email address"
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="input-item input-item-briefcase ltn__custom-icon">
+                      <input
+                        type="text"
+                        name="subject"
+                        placeholder="Enter the subject"
+                        onChange={(e) => setSubject(e.target.value)}
+                        value={subject}
                         required
                       />
                     </div>

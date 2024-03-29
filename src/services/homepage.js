@@ -21,6 +21,24 @@ const HomepageService = {
     return response.data;
   },
 
+  contactUs: async () => {
+    const response = await httpPost(`${apiUrlPrefix}/contact-us`);
+
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message = ["Unable to Contact Us, please try again later"];
+      }
+      
+      return response;
+    }
+
+    if (response?.status !== 200) {
+      return { error: true, message: ["Unable to Contact Us, please try again later"] };
+    }
+
+    return response.data;
+  },
+
   propertyDetail: async (id) => {
     const response = await httpGet(`${apiUrlPrefix}/property/${id}`);
 
