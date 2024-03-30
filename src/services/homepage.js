@@ -3,8 +3,8 @@ import { httpGet, httpPost, httpPut } from "../rest-api";
 const apiUrlPrefix = 'home';
 
 const HomepageService = {
-  bookDemo: async () => {
-    const response = await httpPost(`${apiUrlPrefix}/book-demo`);
+  bookDemo: async (reqBody) => {
+    const response = await httpPost(`${apiUrlPrefix}/book-demo`, reqBody);
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {
@@ -21,8 +21,8 @@ const HomepageService = {
     return response.data;
   },
 
-  contactUs: async () => {
-    const response = await httpPost(`${apiUrlPrefix}/contact-us`);
+  contactUs: async (reqBody) => {
+    const response = await httpPost(`${apiUrlPrefix}/contact-us`, reqBody);
 
     if (response?.error) {
       if (response?.error?.message && response?.error?.message.length < 0) {

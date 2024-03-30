@@ -8,8 +8,8 @@ class ContactInfo extends Component {
     return (
       <div className="ltn__contact-address-area mb-90">
         <div className="container">
-          <Contact />
           <div className="row">
+          <Contact />
             <div className="col-lg-6">
               <div className="ltn__contact-address-item ltn__contact-address-item-3 box-shadow">
                 <div className="ltn__contact-address-icon">

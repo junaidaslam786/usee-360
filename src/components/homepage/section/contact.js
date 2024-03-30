@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from 'react-router';
 import HomepageService from "../../../services/homepage";
+import { toast } from "react-toastify";
 
 export default function Contact(props) {
   const [name, setName] = useState("");
@@ -16,23 +17,25 @@ export default function Contact(props) {
     e.preventDefault();
     
     setLoading(true);
-    const formResponse = await HomepageService.contactUs({
-      name,
-      email,
-      subject,
-      jobTitle,
-      phoneNumber,
-      message,
-    });
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("subject", subject);
+    formData.append("jobTitle", jobTitle);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("message", message);
+
+    const formResponse = await HomepageService.contactUs(formData);
     setLoading(false);
 
     if (formResponse?.error && formResponse?.message) {
-      props.responseHandler(formResponse.message);
+      toast(formResponse.message);
       return;
     }
 
     if (formResponse?.message) {
-      props.responseHandler(formResponse.message, true);
+      toast(formResponse.message, true);
       setTimeout(() => {
         history.go(0);
       }, 1000);
