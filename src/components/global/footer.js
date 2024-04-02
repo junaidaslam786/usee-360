@@ -195,6 +195,21 @@ class Footer_v1 extends Component {
                         }}
                       />
                     </a>
+                    <a
+                      href="https://www.linkedin.com/company/usee-360/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faLinkedin}
+                        size="2x"
+                        style={{
+                          color: "#fff",
+                          cursor: "pointer",
+                          margin: "10px",
+                        }}
+                      />
+                    </a>
                     {/* <FontAwesomeIcon
                       icon={faLinkedin}
                       size="2x"

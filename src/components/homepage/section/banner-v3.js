@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 class BannerV3 extends Component {
   render() {
     const publicUrl = `${process.env.REACT_APP_PUBLIC_URL}/`;
+    const { history } = this.props;
 
     return (
       <div className="ltn__slider-area ltn__slider-3 section-bg-2">
@@ -16,16 +18,33 @@ class BannerV3 extends Component {
             <div className="centralization">
               <div className="right_flex">
                 <div>
-                  <p className="worry_font barlow-condensed-semibold">STOP WORRYING, START LISTING</p>
+                  <p className="worry_font barlow-condensed-semibold">
+                    STOP WORRYING, START LISTING
+                  </p>
                 </div>
                 <div>
-                  <p className="free_font barlow-condensed-semibold" style={{color: 'red'}}>FREE</p>
+                  <p
+                    className="free_font barlow-condensed-semibold"
+                    style={{ color: "red" }}
+                  >
+                    FREE
+                  </p>
                 </div>
                 <div>
-                  <p className="listing_font barlow-condensed-semibold" style={{color: '#00c800'}}>LISTINGS</p>
+                  <p
+                    className="listing_font barlow-condensed-semibold"
+                    style={{ color: "#00c800" }}
+                  >
+                    LISTINGS
+                  </p>
                 </div>
                 <div>
-                  <button className="button_register barlow-condensed-semibold">REGISTER NOW</button>
+                  <button
+                    className="button_register barlow-condensed-semibold"
+                    onClick={() => history.push('/customer/register')}
+                  >
+                    REGISTER NOW
+                  </button>
                 </div>
               </div>
             </div>
@@ -144,4 +163,4 @@ class BannerV3 extends Component {
   }
 }
 
-export default BannerV3;
+export default withRouter(BannerV3);
