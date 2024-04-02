@@ -146,7 +146,7 @@ export default function Upcoming(props) {
     const now = moment(); // Current time as a moment object
     const appointmentTime = moment.tz(appointmentTimeGmt, "HH:mm:ss", "GMT").tz(getUserTimezone());
     const timeDiff = appointmentTime.diff(now, 'minutes'); // Difference in minutes
-    return timeDiff <= 5 && timeDiff >= 0; // Check if within 5 minutes
+    return timeDiff <= 15 && timeDiff >= 0; // Check if within 5 minutes
   };
   
 
