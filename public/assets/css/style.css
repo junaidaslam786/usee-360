@@ -7684,6 +7684,9 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     height: calc(100vh - 0px);
     padding-top: 200px;
 }
+.ltn__slide-item-2_modified {
+    height: calc(100vh - 0px);
+}
 .ltn__slide-item-2 .slide-item-info {
     max-width: 650px;
 }

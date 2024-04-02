@@ -8,6 +8,7 @@ import Category from '../components/homepage/section/category-v1';
 import History from '../components/homepage/section/history';
 import CallToActionV1 from '../components/homepage/section/call-to-action-v1';
 import Footer from '../components/global/footer';
+import Video from '../components/homepage/section/video-v3';
 
 function HomePage() {
   return (
@@ -15,6 +16,7 @@ function HomePage() {
       <Navbar />
       <Banner />
       <Aboutv1 />
+      <Video />
       <Servicev1 />
       <History />
       <Category />

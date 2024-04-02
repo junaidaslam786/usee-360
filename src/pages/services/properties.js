@@ -49,7 +49,7 @@ function PropertiesServicePage() {
       />
       <PropertyGrid filters={filters} mapProperties={propertiesFromMap} />
       <ServiceDetails />
-      <Video />
+      {/* <Video /> */}
       <Service />
       <CallToActionV1 />
       <Footer />

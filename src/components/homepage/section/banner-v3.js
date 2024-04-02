@@ -6,9 +6,30 @@ class BannerV3 extends Component {
     const publicUrl = `${process.env.REACT_APP_PUBLIC_URL}/`;
 
     return (
-      <div className="ltn__slider-area ltn__slider-3  section-bg-2">
+      <div className="ltn__slider-area ltn__slider-3 section-bg-2">
         <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
           {/* ltn__slide-item */}
+          <div
+            className="ltn__slide-item ltn__slide-item-2_modified ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-60"
+            data-bs-bg={`${publicUrl}assets/img/slider/0.jpg`}
+          >
+            <div className="centralization">
+              <div className="right_flex">
+                <div>
+                  <p className="worry_font barlow-condensed-semibold">STOP WORRYING, START LISTING</p>
+                </div>
+                <div>
+                  <p className="free_font barlow-condensed-semibold" style={{color: 'red'}}>FREE</p>
+                </div>
+                <div>
+                  <p className="listing_font barlow-condensed-semibold" style={{color: '#00c800'}}>LISTINGS</p>
+                </div>
+                <div>
+                  <button className="button_register barlow-condensed-semibold">REGISTER NOW</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             className="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-60"
             data-bs-bg={`${publicUrl}assets/img/slider/1.jpg`}
