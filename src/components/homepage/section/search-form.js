@@ -41,13 +41,22 @@ export default function SearchForm({
     libraries,
   });
 
+  // const handleFiltersChange = (newFilters) => {
+  //   console.log(newFilters);
+  //   setFilters(newFilters);
+    
+  // };
   const handleFiltersChange = (newFilters) => {
-    console.log(newFilters);
-    setFilters(newFilters);
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      ...newFilters,
+    }));
   };
+  
 
   const sendFilters = () => {
     const combinedFilters = constructSelectedFilters();
+    localStorage.setItem('searchFilters', JSON.stringify(filters));
     // Check if the current page is not the properties page
     if (location.pathname !== "/services/properties") {
       history.push("/services/properties", {
@@ -89,6 +98,7 @@ export default function SearchForm({
     setFilters({});
     setLat(null);
     setLng(null);
+    localStorage.removeItem('searchFilters');
   };
 
   const handleFocus = () => {
@@ -142,7 +152,7 @@ export default function SearchForm({
     setAddress(defaultAddress || "");
     setLat(defaultLat || null);
     setLng(defaultLng || null);
-    setPriceType(defaultPriceType);
+    setPriceType(defaultPriceType || null);
     setPropertyCategory(defaultPropertyCategory || "sale");
   }, [
     defaultAddress,
@@ -161,6 +171,13 @@ export default function SearchForm({
       }));
     }
   }, [isLoaded, lat, lng]);
+
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('searchFilters');
+    if (savedFilters) {
+      setFilters(JSON.parse(savedFilters));
+    }
+  }, []);
 
   useEffect(() => {
     let autocomplete;
@@ -305,6 +322,7 @@ export default function SearchForm({
           isOpen={isModalOpen}
           onRequestClose={closeModal}
           onFiltersChange={handleFiltersChange}
+          currentFilters={filters}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import {
   BEDROOMS,
@@ -24,10 +24,11 @@ import {
 } from "../../../constants";
 import Select from "react-select";
 
-function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
+function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters }) {
+  
   // common features
+  const [propertyCategoryType, setPropertyCategoryType] = useState(currentFilters.propertyCategoryType || "");
   const [propertyType, setPropertyType] = useState("");
-  const [propertySubType, setPropertySubType] = useState("");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [unit, setUnit] = useState();
@@ -93,12 +94,12 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
 
   const handleConfirm = () => {
     const newFilters = {
+      propertyCategoryType,
       propertyType,
-      propertySubType,
       minPrice,
       maxPrice,
       area: area ? area.value : undefined,
-    unit: unit ? unit.value : undefined,
+      unit: unit ? unit.value : undefined,
       securityFeatures,
       alaramCameraB,
       disabilityAccess,
@@ -157,43 +158,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
     onRequestClose();
   };
 
-  // const handleCheckboxChange = (e) => {
-  //   const { id, checked } = e.target;
-  //   switch (id) {
-  //     case "parking":
-  //       setParkingChecked(checked);
-  //       break;
-  //     case "disability-access":
-  //       setDisabilityAccess(checked);
-  //       break;
-  //     case "internet-connectivity":
-  //       setInternetConnectivity(checked);
-  //       break;
-  //     case "alarms":
-  //       setAlarms(checked);
-  //       break;
-  //     case "cameras":
-  //       setCameras(checked);
-  //       break;
-  //     case "balcony":
-  //       setBalcony(checked);
-  //       break;
-  //     case "swimming-pool":
-  //       setSwimmingPool(checked);
-  //       break;
-  //     case "patio":
-  //       setPatio(checked);
-  //       break;
-  //     case "garden-space":
-  //       setGardenSpace(checked);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  const propertyTypeOptions =
-    propertyType === "commercial" ? COMMERCIAL_PROPERTY : RESIDENTIAL_PROPERTY;
+  const propertyCategoryTypeOptions =
+    propertyCategoryType === "commercial" ? COMMERCIAL_PROPERTY : RESIDENTIAL_PROPERTY;
 
   const handleAreaChange = (selectedOptions) => {
     setArea(selectedOptions);
@@ -222,7 +188,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
   const priceOptions = generatePriceOptions();
 
   // Lock the background scroll when the modal is open
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -234,6 +200,69 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  
+  useEffect(() => {
+    // This effect updates the component's state when the passed filters change,
+    // such as when reopening the modal with new filters.
+    setPropertyCategoryType(currentFilters.propertyCategoryType || "");
+    setPropertyType(currentFilters.propertyType || "");
+    setMinPrice(currentFilters.minPrice || "");
+    setMaxPrice(currentFilters.maxPrice || "");
+    setUnit(currentFilters.unit || "");
+    setArea(currentFilters.area || "");
+    setSecurityFeatures(currentFilters.securityFeatures || false);
+    setAlaramCameraB(currentFilters.alaramCameraB || "");
+    setDisabilityAccess(currentFilters.disabilityAccess || false);
+    setPublicTransport(currentFilters.publicTransport || false);
+    setYearBuilt(currentFilters.yearBuilt || "");
+    setCondition(currentFilters.condition || "");
+    setAvailabilityDate(currentFilters.availabilityDate || "");
+    setLayout(currentFilters.layout || "");
+    setConferenceRoom(currentFilters.conferenceRoom || false);
+    setCapacity(currentFilters.capacity || "");
+    setKitchen(currentFilters.kitchen || "");
+    setStore(currentFilters.store || "");
+    setFoodCourt(currentFilters.foodCourt || false);
+    setRestRoom(currentFilters.restRoom || false);
+    setPools(currentFilters.pools || "");
+    setPoolType(currentFilters.poolType || "");
+    setHotelRoom(currentFilters.hotelRoom || "");
+    setAreaBar(currentFilters.areaBar || 0);
+    setLoungeArea(currentFilters.loungeArea || 0);
+    setCapacityOfVip(currentFilters.capacityOfVip || 0);
+    setNoOfDanceFloor(currentFilters.noOfDanceFloor || 0);
+    setNoOfPrivateRooms(currentFilters.noOfPrivateRooms || 0);
+    setKitchenArea(currentFilters.kitchenArea || 0);
+    setOutdoorSeating(currentFilters.outdoorSeating || false);
+    setOutdoorSeatingArea(currentFilters.outdoorSeatingArea || 0);
+    setRoomSize(currentFilters.roomSize || 0);
+    setNoOfBeds(currentFilters.noOfBeds || 0);
+    setRoomType(currentFilters.roomType || "");
+    setFloorLevel(currentFilters.floorLevel || 0);
+    setView(currentFilters.view || "");
+    setBalcony(currentFilters.balcony || false);
+    setDisplayWindowArea(currentFilters.displayWindowArea || 0);
+    setDisplayWindow(currentFilters.displayWindow || "");
+    setResidentialFloorLevel(currentFilters.residentialFloorLevel || 0);
+    setBuildingAmenities(currentFilters.buildingAmenities || []);
+    setFireplace(currentFilters.fireplace || false);
+    setWoodBurning(currentFilters.woodBurning || false);
+    setBasement(currentFilters.basement || false);
+    setResidentialKitchen(currentFilters.residentialKitchen || "");
+    setPetFreindliness(currentFilters.petFreindliness || false);
+    setCommercialParking(currentFilters.commercialParking || false);
+    setNoOfSpacesCommercial(currentFilters.noOfSpacesCommercial || 0);
+    setNoOfFloors(currentFilters.noOfFloors || 0);
+    setOutdoorSpaces(currentFilters.outdoorSpaces || []);
+    setNoOfBathrooms(currentFilters.noOfBathrooms || 0);
+    setFurnished(currentFilters.furnished || false);
+    setParkingResidential(currentFilters.parkingResidential || false);
+    setParkingType(currentFilters.parkingType || "");
+    setGarageSpaces(currentFilters.garageSpaces || 0);
+    //add remaining states in this useeffect
+    // Update other states similarly...
+  }, [currentFilters]);
 
   return (
     <div>
@@ -271,10 +300,10 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     classNamePrefix={"custom-select"}
                     options={PROPERTY_TYPES}
                     value={PROPERTY_TYPES.find(
-                      (option) => option.value === propertyType
+                      (option) => option.value === propertyCategoryType
                     )}
                     onChange={(selectedOption) =>
-                      setPropertyType(selectedOption.value)
+                      setPropertyCategoryType(selectedOption.value)
                     }
                   />
                 </div>
@@ -284,12 +313,12 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   <label htmlFor="property-type">Property Sub Type:</label>
                   <Select
                     classNamePrefix={"custom-select"}
-                    options={propertyTypeOptions}
-                    value={propertyTypeOptions.find(
-                      (option) => option.value === propertySubType
+                    options={propertyCategoryTypeOptions}
+                    value={propertyCategoryTypeOptions.find(
+                      (option) => option.value === propertyType
                     )}
                     onChange={(selectedOption) =>
-                      setPropertySubType(selectedOption.value)
+                      setPropertyType(selectedOption.value)
                     }
                   />
                 </div>
@@ -462,7 +491,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   />
                 </div>
               </div>
-              {propertyType === "commercial" && (
+              {propertyCategoryType === "commercial" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -516,7 +545,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                 </>
               )}
 
-              {propertyType === "residential" && (
+              {propertyCategoryType === "residential" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -616,8 +645,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                 </>
               )}
               {/* Commercial property features */}
-              {propertyType === "commercial" &&
-                propertySubType === "office" && (
+              {propertyCategoryType === "commercial" &&
+                propertyType === "office" && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
@@ -685,8 +714,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     </div>
                   </>
                 )}
-              {propertyType === "commercial" &&
-                propertySubType === "shopping_center" && (
+              {propertyCategoryType === "commercial" &&
+                propertyType === "shopping_center" && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
@@ -735,7 +764,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     </div>
                   </>
                 )}
-              {propertyType === "commercial" && propertySubType === "hotel" && (
+              {propertyCategoryType === "commercial" && propertyType === "hotel" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -778,7 +807,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   </div>
                 </>
               )}
-              {propertyType === "commercial" && propertySubType === "club" && (
+              {propertyCategoryType === "commercial" && propertyType === "club" && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -837,8 +866,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   </div>
                 </>
               )}
-              {propertyType === "commercial" &&
-                propertySubType === "restaurant" && (
+              {propertyCategoryType === "commercial" &&
+                propertyType === "restaurant" && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
@@ -885,8 +914,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     )}
                   </>
                 )}
-              {propertyType === "commercial" &&
-                propertySubType === "hotel_room" && (
+              {propertyCategoryType === "commercial" &&
+                propertyType === "hotel_room" && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
@@ -972,10 +1001,10 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                     </div>
                   </>
                 )}
-              {((propertyType === "commercial" &&
-                propertySubType === "retail") ||
-                propertySubType === "shop" ||
-                propertySubType === "store") && (
+              {((propertyCategoryType === "commercial" &&
+                propertyType === "retail") ||
+                propertyType === "shop" ||
+                propertyType === "store") && (
                 <>
                   <div className="col-md-6">
                     <div className="input-item">
@@ -1010,10 +1039,10 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
 
               {}
 
-              {propertyType === "residential" &&
-                (propertySubType === "apartment" ||
-                  propertySubType === "studio" ||
-                  propertySubType === "room") && (
+              {propertyCategoryType === "residential" &&
+                (propertyType === "apartment" ||
+                  propertyType === "studio" ||
+                  propertyType === "room") && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
@@ -1048,12 +1077,12 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange }) {
                   </>
                 )}
 
-              {propertyType === "residential" &&
-                (propertySubType === "house" ||
-                  propertySubType === "bungalow" ||
-                  propertySubType === "duplex" ||
-                  propertySubType === "triplex" ||
-                  propertySubType === "cottage") && (
+              {propertyCategoryType === "residential" &&
+                (propertyType === "house" ||
+                  propertyType === "bungalow" ||
+                  propertyType === "duplex" ||
+                  propertyType === "triplex" ||
+                  propertyType === "cottage") && (
                   <>
                     <div className="col-md-6">
                       <div className="input-item">
