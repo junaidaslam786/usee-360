@@ -17,7 +17,7 @@ class CompanyHistory extends Component {
                   <h1 className="section-title">
                     Usee<span>-</span>360
                   </h1>
-                  <p>
+                  <p style={{textAlign: 'justify'}}>
                     The impact of COVID-19 on the real estate sector varied
                     across regions and sectors, but there were several common
                     trends and challenges observed globally. The initial phase
@@ -39,7 +39,7 @@ class CompanyHistory extends Component {
                   </p>
                 </div>
                 <div className="about-us-info-wrap-inner about-us-info-devide---">
-                  <p>
+                  <p style={{textAlign: 'justify'}}>
                     Additionally, the situation continued to evolve, and the
                     real estate sector adapted to changing circumstances over
                     time. The real estate industry demand significant changes

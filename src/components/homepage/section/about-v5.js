@@ -25,7 +25,7 @@ class AboutV5 extends Component {
                   <h1 className="section-title">
                     Usee<span>-</span>360
                   </h1>
-                  <p>
+                  <p style={{textAlign: 'justify'}}>
                     With technology and digital transformations revolutionising
                     industries, and the continued growth to use multiple formats
                     to deliver seamless personalised experiences for agents,
@@ -37,7 +37,7 @@ class AboutV5 extends Component {
                   </p>
                 </div>
                 <div className="about-us-info-wrap-inner about-us-info-devide---">
-                  <p>
+                  <p style={{textAlign: 'justify'}}>
                     Simplicity, Innovation & Collaboration are at the core of
                     our business which allows us to partner and build the very
                     best outcomes for all, whilst delivering results and
