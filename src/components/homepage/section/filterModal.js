@@ -24,7 +24,7 @@ import {
 } from "../../../constants";
 import Select from "react-select";
 
-function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters }) {
+function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, resetTrigger }) {
   
   // common features
   const [propertyCategoryType, setPropertyCategoryType] = useState(currentFilters.propertyCategoryType || "");
@@ -91,6 +91,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters }
   const [parkingResidential, setParkingResidential] = useState(false);
   const [parkingType, setParkingType] = useState("");
   const [garageSpaces, setGarageSpaces] = useState(0);
+
+  console.log(resetTrigger)
 
   const handleConfirm = () => {
     const newFilters = {
@@ -201,6 +203,65 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters }
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    setPropertyCategoryType("");
+    setPropertyType("");
+    setMinPrice();
+    setMaxPrice();
+    setUnit();
+    setArea();
+    setSecurityFeatures(false);
+    setAlaramCameraB("");
+    setDisabilityAccess(false);
+    setPublicTransport(false);
+    setYearBuilt("");
+    setCondition("");
+    setAvailabilityDate("");
+    setLayout("");
+    setConferenceRoom(false);
+    setCapacity("");
+    setKitchen("");
+    setStore("");
+    setFoodCourt(false);
+    setRestRoom(false);
+    setPools("");
+    setPoolType("");
+    setHotelRoom("");
+    setAreaBar(0);
+    setLoungeArea(0);
+    setCapacityOfVip(0);
+    setNoOfDanceFloor(0);
+    setNoOfPrivateRooms(0);
+    setKitchenArea(0);
+    setOutdoorSeating(false);
+    setOutdoorSeatingArea(0);
+    setRoomSize(0);
+    setNoOfBeds(0);
+    setRoomType("");
+    setFloorLevel(0);
+    setView("");
+    setBalcony(false);
+    setDisplayWindowArea(0);
+    setDisplayWindow("");
+    setResidentialFloorLevel(0);
+    setBuildingAmenities([]);
+    setFireplace(false);
+    setWoodBurning(false);
+    setBasement(false);
+    setResidentialKitchen("");
+    setPetFreindliness(false);
+    setCommercialParking(false);
+    setNoOfSpacesCommercial(0);
+    setNoOfFloors(0);
+    setOutdoorSpaces([]);
+    setNoOfBathrooms(0);
+    setFurnished(false);
+    setParkingResidential(false);
+    setParkingType("");
+    setGarageSpaces(0);
+
+
+  }, [resetTrigger])
   
   useEffect(() => {
     // This effect updates the component's state when the passed filters change,

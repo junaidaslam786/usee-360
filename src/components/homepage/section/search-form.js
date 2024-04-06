@@ -30,6 +30,8 @@ export default function SearchForm({
 
   const [filters, setFilters] = useState({});
 
+  const [resetTrigger, setResetTrigger] = useState(0);
+
   const history = useHistory();
   const location = useLocation();
 
@@ -99,6 +101,7 @@ export default function SearchForm({
     setLat(null);
     setLng(null);
     localStorage.removeItem('searchFilters');
+    setResetTrigger(oldTrigger => oldTrigger + 1);
   };
 
   const handleFocus = () => {
@@ -323,6 +326,7 @@ export default function SearchForm({
           onRequestClose={closeModal}
           onFiltersChange={handleFiltersChange}
           currentFilters={filters}
+          resetTrigger={resetTrigger}
         />
       </div>
     </div>
