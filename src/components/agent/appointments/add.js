@@ -33,6 +33,36 @@ export default function Add(props) {
     useStateIfMounted(false);
   const userDetail = getUserDetailsFromJwt();
 
+  // const checkAvailability = async (customerId) => {
+  //   if (!time || !date) {
+  //     return;
+  //   }
+
+  //   let customerIdRequest = customerId;
+  //   if (selectedCustomer?.value) {
+  //     customerIdRequest = selectedCustomer.value;
+  //   }
+
+  //   const response = await AppointmentService.checkAvailability({
+  //     customerId: customerIdRequest,
+  //     date,
+  //     time,
+  //   });
+
+  //   console.log(response)
+
+  //   if (response?.error && response?.message) {
+  //     props.responseHandler(response.message);
+  //     return;
+  //   }
+
+  //   if (!response) {
+  //     props.responseHandler([
+  //       "Unfortunately, this timeslot is not available. Please choose another timeslot.",
+  //     ]);
+  //   }
+  // };
+
   const checkAvailability = async (customerId) => {
     if (!time || !date) {
       return;
@@ -43,21 +73,29 @@ export default function Add(props) {
       customerIdRequest = selectedCustomer.value;
     }
 
-    const response = await AppointmentService.checkAvailability({
-      customerId: customerIdRequest,
-      date,
-      time,
-    });
+    try {
+      const response = await AppointmentService.checkAvailability({
+        customerId: customerIdRequest,
+        date,
+        time,
+      });
 
-    if (response?.error && response?.message) {
-      props.responseHandler(response.message);
-      return;
-    }
+      // Handle success
+      console.log(response);
+      // Implement any success logic here...
+    } catch (error) {
+      // Assuming error.response contains the error details
+      const errorMessage =
+        error.response?.data?.message || "This time slot is expired please choose available time.";
 
-    if (!response) {
-      props.responseHandler([
-        "Unfortunately, this timeslot is not available. Please choose another timeslot.",
-      ]);
+      // Specific handling for expired timeslot
+      if (errorMessage.includes("Timeslot is expired")) {
+        props.responseHandler(
+          "This timeslot has expired. Please select another timeslot."
+        );
+      } else {
+        props.responseHandler(errorMessage);
+      }
     }
   };
 
@@ -468,18 +506,39 @@ export default function Add(props) {
                         <div className="row">
                           {timeslots &&
                             timeslots.map((item, index) => {
+                              const isExpired = checkTimeOver(
+                                date,
+                                item.fromTime
+                              ); // Assuming checkTimeOver can be used this way
                               return (
                                 <div
-                                  className="col-4 col-sm-3 px-1 py-1"
+                                  className={`col-4 col-sm-3 px-1 py-1 ${
+                                    isExpired ? "expired-slot" : ""
+                                  }`} // Add 'expired-slot' class if expired
                                   key={index}
                                 >
                                   <div
-                                    onClick={() => setTime(item.value)}
+                                    onClick={
+                                      !isExpired
+                                        ? () => setTime(item.value)
+                                        : null
+                                    } // Disable onClick if expired
                                     className={
-                                      time === item.value
-                                        ? "bgNew"
+                                      time === item.value && !isExpired
+                                        ? "bgNew selectable-slot" // Use 'selectable-slot' for non-expired slots
                                         : "timeCards"
                                     }
+                                    style={{
+                                      pointerEvents: isExpired
+                                        ? "none"
+                                        : "auto",
+                                      opacity: isExpired ? 0.5 : 1,
+                                    }}
+                                    title={
+                                      isExpired
+                                        ? "This timeslot is expired"
+                                        : "Select this timeslot"
+                                    } // Tooltip indication
                                   >
                                     <p>
                                       {item?.fromTime
@@ -491,6 +550,7 @@ export default function Add(props) {
                               );
                             })}
                         </div>
+
                         <div className="modalBtn">
                           <button
                             type="button"

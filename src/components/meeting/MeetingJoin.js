@@ -4,10 +4,14 @@ import { useHistory } from "react-router-dom";
 import "./incall.css";
 import Slideshow from "../homepage/section/Slideshow";
 import { USER_TYPE } from "../../constants";
-import Modal from 'react-modal';
+import Modal from "react-modal";
 import StreetViewMap from "./street-view-map";
 import DocumentModal from "./document-modal";
-import { getLoginToken, removeLoginToken } from "../../utils";
+import {
+  getLoginToken,
+  getUserDetailsFromJwt,
+  removeLoginToken,
+} from "../../utils";
 import PropertyService from "../../services/agent/property";
 import AppointmentService from "../../services/agent/appointment";
 import HomepageService from "../../services/homepage";
@@ -25,12 +29,14 @@ const MeetingJoin = (props) => {
     backgroundImage,
     videoStreamingVal,
     audioStreamingVal,
-    filter
+    filter,
   } = props;
 
   const token = getLoginToken();
   const history = useHistory();
-  const redirectPath = `/${userType}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`;
+  const redirectPath = `/${userType}/login?returnUrl=${encodeURIComponent(
+    window.location.pathname
+  )}`;
 
   if (!token) {
     history.push(redirectPath);
@@ -46,15 +52,17 @@ const MeetingJoin = (props) => {
   const [videoStreaming, setVideoStreaming] = useState(videoStreamingVal);
   const [audioStreaming, setAudioStreaming] = useState(audioStreamingVal);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [publisher, setPublisher] = useState('');
-  const [screenPublisher, setScreenPublisher] = useState('');
+  const [publisher, setPublisher] = useState("");
+  const [screenPublisher, setScreenPublisher] = useState("");
   const [subscriber, setSubscriber] = useState(true);
   const [session, setSession] = useState(true);
   const [propertiesList, setPropertiesList] = useState([]);
-  const [selectedProperty, setSelectedProperty] = useState(appointment.products[0].id);
-  const [virtualTourUrl, setVirtualTourUrl] = useState('');
-  const [virtualTourVideo, setVirtualTourVideo] = useState('');
-  const [productImages, setProductImages] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState(
+    appointment.products[0].id
+  );
+  const [virtualTourUrl, setVirtualTourUrl] = useState("");
+  const [virtualTourVideo, setVirtualTourVideo] = useState("");
+  const [productImages, setProductImages] = useState("");
   const [defaultImage, setDefaultImage] = useState(true);
   const [agentJoined, setAgentJoined] = useState(false);
   const [customerJoined, setCustomerJoined] = useState(false);
@@ -65,12 +73,17 @@ const MeetingJoin = (props) => {
   const [isDocumentOpen, setIsDocumentOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [propertyDocuments, setPropertyDocuments] = useState([]);
-  const [selectedDocument, setSelectedDocument] = useState('');
+  const [selectedDocument, setSelectedDocument] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [unReadMessages, setUnReadMessages] = useState({});
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+
+  const userDetail = getUserDetailsFromJwt();
 
   useEffect(() => {
     const handleResize = () => {
@@ -87,9 +100,11 @@ const MeetingJoin = (props) => {
   const getPropertiesList = async () => {
     const propertyData = await PropertyService.toAllocate();
     if (propertyData?.length > 0) {
-      setPropertiesList(propertyData.map((property) => {
-        return { label: property.title, value: property.id };
-      }));
+      setPropertiesList(
+        propertyData.map((property) => {
+          return { label: property.title, value: property.id };
+        })
+      );
     }
   };
 
@@ -111,7 +126,7 @@ const MeetingJoin = (props) => {
         }
       }
       setPropertyDocuments(pairs);
-      
+
       if (
         propertyData.virtualTourType === "url" &&
         propertyData.virtualTourUrl
@@ -140,7 +155,7 @@ const MeetingJoin = (props) => {
 
   const extractVideoId = (url) => {
     let videoId;
-  
+
     // Extract the video ID from the YouTube URL
     if (url.indexOf("youtube.com/watch?v=") !== -1) {
       // Extract the video ID from a URL like "https://www.youtube.com/watch?v=VIDEO_ID_HERE"
@@ -155,7 +170,7 @@ const MeetingJoin = (props) => {
       // Extract the video ID from a URL like "https://www.youtube.com/v/VIDEO_ID_HERE"
       videoId = url.split("v/")[1];
     }
-  
+
     // Remove any additional parameters or fragments from the video ID
     if (videoId) {
       const ampersandPosition = videoId.indexOf("&");
@@ -166,48 +181,80 @@ const MeetingJoin = (props) => {
         videoId = videoId.substring(0, hashPosition);
       }
     }
-  
+
     return videoId;
-  }  
+  };
 
   const getSessionToken = async () => {
     const tokenData = await AppointmentService.sessionToken(appointment.id);
-    return (tokenData?.token) ? tokenData.token : "";
+    return tokenData?.token ? tokenData.token : "";
   };
 
   const addLogEntry = async (logType, reason) => {
     await AppointmentService.log({
       id: appointment.id,
       logType,
-      reason
+      reason,
     });
-  }
+  };
 
   const updateStatus = async (status) => {
     await AppointmentService.updateStatus({
       id: appointment.id,
       status,
     });
-  }
+  };
 
   const toggleVideo = () => {
     if (publisher?.publishVideo) {
       publisher.publishVideo(!videoStreaming);
       setVideoStreaming(!videoStreaming);
     }
-  }
+  };
 
   const toggleAudio = () => {
     if (publisher?.publishAudio) {
       publisher.publishAudio(!audioStreaming);
       setAudioStreaming(!audioStreaming);
     }
-  }
+  };
 
+  // const leaveSession = () => {
+  //   completeMeeting(); // This now handles both signaling and API call
+  //   sendDisconnectSignal();
+  //   if (session) {
+
+  //     session.disconnect();
+  //   }
+  // };
   const leaveSession = () => {
+    // completeMeeting(); // This now handles both signaling and API call
     sendDisconnectSignal();
+
     session.disconnect();
-  }
+  };
+
+  const submitNotes = async () => {
+    const requestData = {
+      userId: userDetail.id,
+      userType: USER_TYPE.AGENT,
+      id: appointment.id,
+      notes,
+    };
+
+    const formResponse = await AppointmentService.addNote(requestData);
+    if (formResponse?.error && formResponse?.message) {
+      props.responseHandler(formResponse.message);
+      return;
+    }
+
+    props.responseHandler("Note added successfully.", true);
+    setNotes("");
+
+    // await loadAllList();
+    setIsNotesModalOpen(false);
+    leaveSession();
+  };
 
   const toggleScreenSharing = () => {
     if (screenSharing) {
@@ -254,7 +301,7 @@ const MeetingJoin = (props) => {
       setProductImages(null);
       setDefaultImage(null);
     }
-  }
+  };
 
   const getUrl = async (event) => {
     const files = event.target.files;
@@ -280,13 +327,13 @@ const MeetingJoin = (props) => {
         }
       }
     );
-  }
+  };
 
   const sendDisconnectSignal = () => {
     session.signal(
       {
-        type: 'custom-disconnect',
-        data: 'User is disconnecting intentionally',
+        type: "custom-disconnect",
+        data: "User is disconnecting intentionally",
       },
       (error) => {
         if (error) {
@@ -312,34 +359,38 @@ const MeetingJoin = (props) => {
       );
       getPropertyDetail(event.target.value);
     }
-  }
+  };
 
   const handleCancelModalConfirm = async () => {
     // Do something when the user clicks "Yes"
     setConfirmCancelModal(false); // Close the modal
-    await updateStatus('cancelled');
+    await updateStatus("cancelled");
     leaveSession();
-  }
+  };
 
   const handleCancelModalCancel = () => {
     // Do something when the user clicks "No"
     setConfirmCancelModal(false); // Close the modal
-  }
+  };
 
   const handleEndModalConfirm = () => {
     // Do something when the user clicks "Yes"
     setConfirmEndModal(false); // Close the modal
     leaveSession();
-  }
+  };
 
   const handleEndModalCancel = () => {
     // Do something when the user clicks "No"
+    setIsNotesModalOpen(true);
+    leaveSession();
     setConfirmEndModal(false); // Close the modal
-  }
+  };
 
   const isAddedToWishlist = (propertyId) => {
-    return wishlistProperties.length < 0 ? false : wishlistProperties.find(({ productId }) => productId === propertyId);
-  }
+    return wishlistProperties.length < 0
+      ? false
+      : wishlistProperties.find(({ productId }) => productId === propertyId);
+  };
 
   const removeWishList = async (propertyId) => {
     if (!token) {
@@ -348,7 +399,7 @@ const MeetingJoin = (props) => {
 
     await WishlistService.removeFromWishlist(propertyId);
     await loadWishlistProperties();
-  }
+  };
 
   const addToWishList = async (propertyId) => {
     if (!token) {
@@ -357,7 +408,7 @@ const MeetingJoin = (props) => {
 
     await WishlistService.addToWishlist(propertyId);
     await loadWishlistProperties();
-  }
+  };
 
   const loadWishlistProperties = async () => {
     const response = await WishlistService.list();
@@ -365,7 +416,7 @@ const MeetingJoin = (props) => {
     if (response?.length > 0) {
       setWishlistProperties(response);
     }
-  }
+  };
 
   const openPropertyModal = () => {
     setIsOpen(true);
@@ -377,33 +428,77 @@ const MeetingJoin = (props) => {
 
   const closeDocumentModal = () => {
     setIsDocumentOpen(false);
-  }
+  };
 
   const closeLocationModal = () => {
     setIsLocationOpen(false);
-  }
+  };
 
   const handleDocumentModalOpen = (file) => {
     setSelectedDocument(file);
     setIsDocumentOpen(true);
-  }
+  };
 
-  const handleIncreaseUnReadMessages = (senderConnectionId, receiverConnectionId) => {
+  const handleIncreaseUnReadMessages = (
+    senderConnectionId,
+    receiverConnectionId
+  ) => {
     const slider = document.getElementById("chatArea");
-    if (senderConnectionId !== receiverConnectionId && slider.classList.contains("slide-out")) {
+    if (
+      senderConnectionId !== receiverConnectionId &&
+      slider.classList.contains("slide-out")
+    ) {
       setUnReadMessages((prevCounts) => ({
         ...prevCounts,
         [receiverConnectionId]: (prevCounts[receiverConnectionId] || 0) + 1,
       }));
     }
-  }
+  };
 
   const handleResetUnReadMessages = (receiverConnectionId) => {
     setUnReadMessages((prevCounts) => ({
       ...prevCounts,
       [receiverConnectionId]: 0,
     }));
-  }
+  };
+
+  // const completeMeeting = async () => {
+  //   // Attempt to send a disconnect signal if the session exists and is connected
+  //   if (session && typeof session.isConnected === 'function' && session.isConnected()) {
+  //     session.signal({
+  //       type: 'userDisconnected',
+  //       data: `{ "userId": "${userDetail.id}", "reason": "unexpected" }`,
+  //     }, error => {
+  //       if (error) {
+  //         console.error('Signal error:', error.message);
+  //       } else {
+  //         console.log('Signal sent');
+  //       }
+  //     });
+  //   }
+
+  //   // Make an API call to your backend to update the meeting status
+  //   // Note: Navigator.sendBeacon is used here for reliability during unload
+  //   const url = `${process.env.REACT_APP_API_URL}/meeting/complete/${appointment.id}`;
+  //   const data = new Blob([JSON.stringify({ status: "completed" })], {type : 'application/json'});
+  //   navigator.sendBeacon(url, data);
+  // };
+
+  // useEffect(() => {
+  //   const handleBeforeUnload = async (event) => {
+  //     completeMeeting();
+  //     // For `beforeunload` the custom text won't be shown in modern browsers, but it's kept for compatibility
+  //     event.returnValue = 'Are you sure you want to leave? The meeting will end.';
+  //   };
+
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //     // Perform any additional cleanup if needed
+  //     completeMeeting();
+  //   };
+  // }, [session, userDetail.id, appointment.id]); // Ensure dependencies are correctly listed
 
   useEffect(() => {
     if (token) {
@@ -431,7 +526,7 @@ const MeetingJoin = (props) => {
                   insertMode: "append",
                   nameDisplayMode: "on",
                   width: "100%",
-                  height: {height},
+                  height: { height },
                 };
                 const subscriber = session.subscribe(
                   event.stream,
@@ -447,13 +542,17 @@ const MeetingJoin = (props) => {
                   "subscriberDisconnectedNotification";
                 subscriberDisconnectedNotification.innerText =
                   "Stream has been disconnected unexpectedly. Attempting to automatically reconnect...";
-                subscriber.element.appendChild(subscriberDisconnectedNotification);
+                subscriber.element.appendChild(
+                  subscriberDisconnectedNotification
+                );
                 subscriber.on({
                   disconnected: function (event) {
-                    subscriberDisconnectedNotification.style.visibility = "visible";
+                    subscriberDisconnectedNotification.style.visibility =
+                      "visible";
                   },
                   connected: function (event) {
-                    subscriberDisconnectedNotification.style.visibility = "hidden";
+                    subscriberDisconnectedNotification.style.visibility =
+                      "hidden";
                   },
                 });
                 if (userType == USER_TYPE.CUSTOMER) {
@@ -491,24 +590,37 @@ const MeetingJoin = (props) => {
                 setDefaultImage(true);
               }
             },
-            connectionCreated: function (event) {
-              
-            },
+            connectionCreated: function (event) {},
             connectionDestroyed: function (event) {
-              if (userType === 'agent') {
-                addLogEntry('left', "Customer has left the meeting");
-              } else if (userType === 'customer') {
-                addLogEntry('left', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting`);
+              if (userType === "agent") {
+                addLogEntry("left", "Customer has left the meeting");
+              } else if (userType === "customer") {
+                addLogEntry(
+                  "left",
+                  `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting`
+                );
               }
             },
-            'signal:custom-disconnect': function (event) {
-              updateStatus('completed');
-              if (userType === 'agent') {
-                addLogEntry('left', "Customer has left the meeting by clicking on the endcall button");
-                addLogEntry('completed', "Appointment got completed as customer has ended the call");
-              } else if (userType === 'customer') {
-                addLogEntry('left', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting by clicking on the endcall button`);
-                addLogEntry('completed', "Appointment got completed as agent has ended the call");
+            "signal:custom-disconnect": function (event) {
+              updateStatus("completed");
+              if (userType === "agent") {
+                addLogEntry(
+                  "left",
+                  "Customer has left the meeting by clicking on the endcall button"
+                );
+                addLogEntry(
+                  "completed",
+                  "Appointment got completed as customer has ended the call"
+                );
+              } else if (userType === "customer") {
+                addLogEntry(
+                  "left",
+                  `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has left the meeting by clicking on the endcall button`
+                );
+                addLogEntry(
+                  "completed",
+                  "Appointment got completed as agent has ended the call"
+                );
               }
               session.disconnect();
             },
@@ -519,17 +631,21 @@ const MeetingJoin = (props) => {
                 history.push("/customer/dashboard");
               }
             },
-            sessionReconnecting: function (event) {
-            },
-            sessionReconnected: function (event) {
-            },
+            sessionReconnecting: function (event) {},
+            sessionReconnected: function (event) {},
           });
 
           const msgHistory = document.querySelector("#history");
           session.on("signal:msg", async (event) => {
-            if (userType === USER_TYPE.CUSTOMER && event.data.includes("PROPERTY_ID")) {
+            if (
+              userType === USER_TYPE.CUSTOMER &&
+              event.data.includes("PROPERTY_ID")
+            ) {
               await getPropertyDetail(event.data.split(":")[1]);
-            } else if (userType === USER_TYPE.AGENT && event.data.includes("PROPERTY_ID")) {
+            } else if (
+              userType === USER_TYPE.AGENT &&
+              event.data.includes("PROPERTY_ID")
+            ) {
             } else if (event.data.includes("::")) {
               const msg = document.createElement("p");
               const content = event.data.split("::");
@@ -545,7 +661,10 @@ const MeetingJoin = (props) => {
               msgHistory.appendChild(msg);
               msg.scrollIntoView();
 
-              handleIncreaseUnReadMessages(event.from.connectionId, session.connection.connectionId);
+              handleIncreaseUnReadMessages(
+                event.from.connectionId,
+                session.connection.connectionId
+              );
             } else {
               const msg = document.createElement("p");
               msg.textContent = `${event.data}`;
@@ -556,12 +675,15 @@ const MeetingJoin = (props) => {
               msgHistory.appendChild(msg);
               msg.scrollIntoView();
 
-              handleIncreaseUnReadMessages(event.from.connectionId, session.connection.connectionId);
+              handleIncreaseUnReadMessages(
+                event.from.connectionId,
+                session.connection.connectionId
+              );
             }
           });
 
           const screenHeight = window.innerHeight;
-                const height = screenHeight <= 690 ? "165px" : "195px";
+          const height = screenHeight <= 690 ? "165px" : "195px";
 
           // initialize the publisher
           const publisherOptions = {
@@ -576,7 +698,7 @@ const MeetingJoin = (props) => {
                 : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`,
             nameDisplayMode: "on",
             width: "100%",
-            height: {height},
+            height: { height },
           };
 
           if (audioInputDeviceId || videoDeviceId) {
@@ -618,10 +740,13 @@ const MeetingJoin = (props) => {
               session.publish(publisher, (error) => {});
               if (userType === USER_TYPE.CUSTOMER) {
                 setCustomerJoined(true);
-                addLogEntry('joined', "Customer has joined the meeting");
+                addLogEntry("joined", "Customer has joined the meeting");
               } else if (userType === USER_TYPE.AGENT) {
                 setAgentJoined(true);
-                addLogEntry('joined', `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has joined the meeting`);
+                addLogEntry(
+                  "joined",
+                  `${process.env.REACT_APP_AGENT_ENTITY_LABEL} has joined the meeting`
+                );
               }
             }
           });
@@ -636,9 +761,9 @@ const MeetingJoin = (props) => {
               event.preventDefault();
               if (msgTxt.value) {
                 const name =
-                userType === USER_TYPE.CUSTOMER
-                  ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
-                  : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
+                  userType === USER_TYPE.CUSTOMER
+                    ? `${appointment.customerUser.firstName} ${appointment.customerUser.lastName}`
+                    : `${appointment.agentUser.firstName} ${appointment.agentUser.lastName}`;
                 session.signal(
                   {
                     type: "msg",
@@ -656,7 +781,7 @@ const MeetingJoin = (props) => {
             });
           }
         }
-      }
+      };
 
       fetchData();
       return () => {};
@@ -665,9 +790,9 @@ const MeetingJoin = (props) => {
 
   useEffect(() => {
     if (agentJoined && customerJoined && userType === "agent") {
-      updateStatus('inprogress');
+      updateStatus("inprogress");
       setShowCancelBtn(false);
-    } 
+    }
   }, [agentJoined, customerJoined]);
 
   /*
@@ -708,38 +833,42 @@ const MeetingJoin = (props) => {
             <center>
               <img
                 src={`${publicUrl}assets/img/meeting-logo.png`}
-                className='w_130 custom_margin'
+                className="w_130 custom_margin"
               />
             </center>
           </div>
-          {
-            userType === USER_TYPE.AGENT && (
-              <div>
-                <select
-                  className="nice-select w-100 select-margin"
-                  value={selectedProperty}
-                  onChange={(event) => {
-                    handlePropertyChange(event);
-                  }}
-                >
-                  {propertiesList.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )
-          }
+          {userType === USER_TYPE.AGENT && (
+            <div>
+              <select
+                className="nice-select w-100 select-margin"
+                value={selectedProperty}
+                onChange={(event) => {
+                  handlePropertyChange(event);
+                }}
+              >
+                {propertiesList.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div id="publisher"></div>
           <div id="subscribers"></div>
           <div id="show-property-documents">
-            <button className="property-modal-button" onClick={openPropertyModal}>
+            <button
+              className="property-modal-button"
+              onClick={openPropertyModal}
+            >
               <i className="fa-solid fa-list"></i>
             </button>
             {isOpen && (
               <div className="property-modal-container">
-                <button className="property-close-button" onClick={closePropertyModal}>
+                <button
+                  className="property-close-button"
+                  onClick={closePropertyModal}
+                >
                   X
                 </button>
                 <div className="property-modal-content">
@@ -747,23 +876,41 @@ const MeetingJoin = (props) => {
                     <div className="" key={index}>
                       {pair.map((record, subIndex) => (
                         <div className="" key={subIndex}>
-                          <button className="options-buttons" onClick={() => handleDocumentModalOpen(record.file)}>{record.title}</button>
+                          <button
+                            className="options-buttons"
+                            onClick={() => handleDocumentModalOpen(record.file)}
+                          >
+                            {record.title}
+                          </button>
                         </div>
                       ))}
                     </div>
                   ))}
                   <div className="">
                     <div className="">
-                      <button className="options-buttons" onClick={() => setIsLocationOpen(true)}>Street View</button>
-                    </div>
-                    {userType === 'customer' && <div className="">
                       <button
                         className="options-buttons"
-                        onClick={() => { isAddedToWishlist(selectedProperty) ? removeWishList(selectedProperty) : addToWishList(selectedProperty); }}
+                        onClick={() => setIsLocationOpen(true)}
                       >
-                        { isAddedToWishlist(selectedProperty) ? "Remove from wishlist" : "Add to wishlist" }
+                        Street View
                       </button>
-                    </div>}
+                    </div>
+                    {userType === "customer" && (
+                      <div className="">
+                        <button
+                          className="options-buttons"
+                          onClick={() => {
+                            isAddedToWishlist(selectedProperty)
+                              ? removeWishList(selectedProperty)
+                              : addToWishList(selectedProperty);
+                          }}
+                        >
+                          {isAddedToWishlist(selectedProperty)
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -780,99 +927,106 @@ const MeetingJoin = (props) => {
             ),url(${publicUrl}assets/img/default-property.jpg)`,
           }}
         >
-          {
-            virtualTourUrl && (
-              <iframe
-                src={virtualTourUrl}
-                id="prop_tour_link"
-                className="w_100 h_100"
-              ></iframe>
-            )
-          }
+          {virtualTourUrl && (
+            <iframe
+              src={virtualTourUrl}
+              id="prop_tour_link"
+              className="w_100 h_100"
+            ></iframe>
+          )}
 
-          {
-            virtualTourVideo && (
-              <video width="100%" height="100%" controls>
-                <source
-                  src={`${process.env.REACT_APP_API_URL}/${virtualTourVideo}`}
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
-            )
-          }
+          {virtualTourVideo && (
+            <video width="100%" height="100%" controls>
+              <source
+                src={`${process.env.REACT_APP_API_URL}/${virtualTourVideo}`}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          )}
 
-          {
-            productImages?.length > 0 && (
-              <Slideshow fadeImages={productImages} />
-            )
-          }
+          {productImages?.length > 0 && (
+            <Slideshow fadeImages={productImages} />
+          )}
 
-          {
-            defaultImage && (
-              <img src={`${publicUrl}assets/img/default-property.jpg`} />
-            )
-          }
+          {defaultImage && (
+            <img src={`${publicUrl}assets/img/default-property.jpg`} />
+          )}
         </div>
       </div>
       <div id="chatOptions">
         <div id="toggle2">
-          {
-            showCancelBtn && userType === "agent" && 
-              <button className="call-meeting-button" onClick={() => setConfirmCancelModal(true)}>Cancel Meeting</button>
-          }
+          {showCancelBtn && userType === "agent" && (
+            <button
+              className="call-meeting-button"
+              onClick={() => {
+                setIsNotesModalOpen(false); // Close notes modal
+                setConfirmEndModal(true); // Open end call confirmation modal
+              }}
+            >
+              Cancel Meeting
+            </button>
+          )}
         </div>
 
         <div className="d-flex align-items-center">
-          {
-            videoStreaming === true && (
-              <span className="video-icon cursor_pointer" onClick={() => toggleVideo()}>
-                <i className="fa-solid fa-video"></i>
-              </span>
-            )
-          }
-          
-          {
-            videoStreaming === false && (
-              <span
-              className="video-icon cursor_pointer" onClick={() => toggleVideo()}>
-                <i className="fa-solid fa-video-slash"></i>
-              </span>
-            )
-          }
+          {videoStreaming === true && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleVideo()}
+            >
+              <i className="fa-solid fa-video"></i>
+            </span>
+          )}
 
-          {
-            audioStreaming === true && (
-              <span className="video-icon cursor_pointer" onClick={() => toggleAudio()}>
-                <i className="fa-solid fa-microphone"></i>
-              </span>
-            )
-          }
+          {videoStreaming === false && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleVideo()}
+            >
+              <i className="fa-solid fa-video-slash"></i>
+            </span>
+          )}
 
-          {
-            audioStreaming === false && (
-              <span className="video-icon cursor_pointer" onClick={() => toggleAudio()}>
-                <i className="fa-solid fa-microphone-slash"></i>
-              </span>
-            )
-          }
+          {audioStreaming === true && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleAudio()}
+            >
+              <i className="fa-solid fa-microphone"></i>
+            </span>
+          )}
 
-          {
-            screenSharing === true && userType === 'agent' && (
-              <span className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
-                <i className="fa-solid fa-laptop"></i>
-              </span>
-            )
-          }
+          {audioStreaming === false && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleAudio()}
+            >
+              <i className="fa-solid fa-microphone-slash"></i>
+            </span>
+          )}
 
-          {
-            screenSharing === false && userType === 'agent' && (
-              <span className="video-icon cursor_pointer" onClick={() => toggleScreenSharing()}>
-                <i className="fa-solid fa-laptop"></i>
-              </span>
-            )
-          }
-          <span className="video-icon end-call cursor_pointer" onClick={() => setConfirmEndModal(true)}>
+          {screenSharing === true && userType === "agent" && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleScreenSharing()}
+            >
+              <i className="fa-solid fa-laptop"></i>
+            </span>
+          )}
+
+          {screenSharing === false && userType === "agent" && (
+            <span
+              className="video-icon cursor_pointer"
+              onClick={() => toggleScreenSharing()}
+            >
+              <i className="fa-solid fa-laptop"></i>
+            </span>
+          )}
+          <span
+            className="video-icon end-call cursor_pointer"
+            onClick={() => setConfirmEndModal(true)}
+          >
             <i className="fa-solid fa-phone-slash"></i>
           </span>
         </div>
@@ -885,7 +1039,10 @@ const MeetingJoin = (props) => {
               onClick={() => {
                 let slider = document.getElementById("chatArea");
 
-                if (slider.classList.contains("slide-out") && session?.connection?.connectionId) {
+                if (
+                  slider.classList.contains("slide-out") &&
+                  session?.connection?.connectionId
+                ) {
                   handleResetUnReadMessages(session.connection.connectionId);
                 }
 
@@ -894,13 +1051,17 @@ const MeetingJoin = (props) => {
                 slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
               }}
             />
-            <span className="badge rounded-pill bg-danger meeting-badge">{session?.connection?.connectionId ? unReadMessages[session.connection.connectionId] || 0 : 0}</span>
+            <span className="badge rounded-pill bg-danger meeting-badge">
+              {session?.connection?.connectionId
+                ? unReadMessages[session.connection.connectionId] || 0
+                : 0}
+            </span>
           </span>
         </div>
       </div>
       <div id="chatArea" className={"slide-out"}>
         <div className="minimize-chat">
-          <button 
+          <button
             className="minimize-button"
             onClick={() => {
               let slider = document.getElementById("chatArea");
@@ -909,12 +1070,15 @@ const MeetingJoin = (props) => {
 
               slider.setAttribute("class", isOpen ? "slide-out" : "slide-in");
             }}
-            ><i className="fa fa-window-minimize" aria-hidden="true" /></button></div>
+          >
+            <i className="fa fa-window-minimize" aria-hidden="true" />
+          </button>
+        </div>
         <p id="history"></p>
         <form id="Chatform" encType="multipart/form-data" action="">
           <div>
             <img
-            className="chatForm_Avatar1"
+              className="chatForm_Avatar1"
               src={`${publicUrl}assets/img/icons/attach-file.png`}
             />
             <input type="file" id="file" name="file" onChange={getUrl} />
@@ -924,7 +1088,7 @@ const MeetingJoin = (props) => {
 
           <div>
             <img
-            className="chatForm_Avatar2"
+              className="chatForm_Avatar2"
               src={`${publicUrl}assets/img/icons/send-icon.png`}
             />
             <input type="submit" id="submit" name="submit" />
@@ -939,10 +1103,17 @@ const MeetingJoin = (props) => {
         ariaHideApp={false}
       >
         <h2>Complete Meeting</h2>
-        <p>Are you sure you want to end this call? You won't be able to join this appointment again.</p>
+        <p>
+          Are you sure you want to end this call? You won't be able to join this
+          appointment again.
+        </p>
         <div className="ButtonContainer">
-          <button className="btn theme-btn-1" onClick={handleEndModalConfirm}>Yes</button>
-          <button className="btn theme-btn-2" onClick={handleEndModalCancel}>No</button>
+          <button className="btn theme-btn-1" onClick={handleEndModalConfirm}>
+            Yes
+          </button>
+          <button className="btn theme-btn-2" onClick={handleEndModalCancel}>
+            No
+          </button>
         </div>
       </Modal>
 
@@ -954,14 +1125,53 @@ const MeetingJoin = (props) => {
         ariaHideApp={false}
       >
         <h2>Cancel Meeting</h2>
-        <p>Are you sure you want to cancel this appointment? You won't be able to join this appointment again.</p>
+        <p>
+          Are you sure you want to cancel this appointment? You won't be able to
+          join this appointment again.
+        </p>
         <div className="ButtonContainer">
-          <button className="btn theme-btn-1" onClick={handleCancelModalConfirm}>Yes</button>
-          <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>No</button>
+          <button
+            className="btn theme-btn-1"
+            onClick={handleCancelModalConfirm}
+          >
+            Yes
+          </button>
+          <button className="btn theme-btn-2" onClick={handleCancelModalCancel}>
+            No
+          </button>
         </div>
       </Modal>
-      <DocumentModal isOpen={isDocumentOpen} onClose={closeDocumentModal} documentUrl={`${process.env.REACT_APP_API_URL}/${selectedDocument}`} />
-      <StreetViewMap latitude={latitude} longitude={longitude} isOpen={isLocationOpen} onClose={closeLocationModal} />
+      <Modal
+        isOpen={isNotesModalOpen}
+        onRequestClose={() => setIsNotesModalOpen(false)}
+        className="MyModal"
+        overlayClassName="MyModalOverlay"
+        ariaHideApp={false}
+      >
+        <h2>Add some notes to remember</h2>
+        <label>Add Note</label>
+        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
+        <button className="btn theme-btn-1" onClick={submitNotes}>
+          Submit
+        </button>
+        <button
+          className="btn theme-btn-2"
+          onClick={() => setIsNotesModalOpen(false)}
+        >
+          Cancel
+        </button>
+      </Modal>
+      <DocumentModal
+        isOpen={isDocumentOpen}
+        onClose={closeDocumentModal}
+        documentUrl={`${process.env.REACT_APP_API_URL}/${selectedDocument}`}
+      />
+      <StreetViewMap
+        latitude={latitude}
+        longitude={longitude}
+        isOpen={isLocationOpen}
+        onClose={closeLocationModal}
+      />
     </div>
   );
 };
