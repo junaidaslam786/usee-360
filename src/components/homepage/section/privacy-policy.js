@@ -2,7 +2,7 @@ import React from "react";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="ltn__contact-address-area mb-90">
+    <div className="ltn__contact-address-area mb-90 mt-120">
       <div className="container">
         <div className="row">
           <ol>

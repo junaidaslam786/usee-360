@@ -2,7 +2,6 @@ import {
   GoogleMap,
   Marker,
   useJsApiLoader,
-  StandaloneSearchBox,
   Circle,
   DrawingManager,
   Polygon,
@@ -49,14 +48,17 @@ const GoogleMapsSearch = () => {
   const [polygons, setPolygons] = useState([]);
   const [showRadius, setShowRadius] = useState(false);
   const [map, setMap] = useState(null);
-  const [mapType, setMapType] = useState("roadmap");
   const [streetViewPosition, setStreetViewPosition] = useState(null);
   const [drawingMode, setDrawingMode] = useState(null);
 
   const history = useHistory();
 
   const searchBoxRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const [inputValue, setInputValue] = useState("");
+
   const [markers, setMarkers] = useState([]);
+  const [address, setAddress] = useState("");
 
   const onMapLoad = useCallback((map) => {
     setMap(map);
@@ -77,13 +79,11 @@ const GoogleMapsSearch = () => {
     });
     setMarkers([]);
     setProperties([]);
-
+    setAddress("")
     setShowRadius(false);
   };
 
-  const onSearchBoxLoad = (ref) => {
-    searchBoxRef.current = ref;
-  };
+  
 
   const handleGotoProperties = () => {
     history.push({
@@ -117,46 +117,25 @@ const GoogleMapsSearch = () => {
     }
   }, [currentLocation, radius]);
 
-  const onPlacesChanged = () => {
-    const places = searchBoxRef.current.getPlaces();
-    const place = places[0]; // Assuming you want the first result
-
-    if (!place.geometry) return;
-    const location = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
+  const onDragEnd = useCallback((event) => {
+    const newLocation = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
     };
-    setCurrentLocation(location);
-    setMarkers([]);
+    setCurrentLocation(newLocation);
 
-    // const radiusInMeters = radius * 1000;
-    // Perform a search within the specified radius
-    if (mapRef.current) {
-      const service = new window.google.maps.places.PlacesService(
-        mapRef.current
-      );
-      service.nearbySearch(
-        {
-          location,
-          radius: radius,
-          type: ["properties"], // Example: search for restaurants, adjust types as needed
-        },
-        (results, status) => {
-          if (
-            status === window.google.maps.places.PlacesServiceStatus.OK &&
-            results
-            // searchByCircle()
-          ) {
-            const newMarkers = results.map((result) => ({
-              lat: result.geometry.location.lat(),
-              lng: result.geometry.location.lng(),
-            }));
-            setMarkers(newMarkers);
-          }
-        }
-      );
-    }
-  };
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: newLocation }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        setAddress(results[0].formatted_address);
+        setInputValue(results[0].formatted_address); // Update input value to show new address
+      } else {
+        console.error("Cannot find address");
+      }
+    });
+  }, []);
+
+  
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -240,10 +219,70 @@ const GoogleMapsSearch = () => {
   );
 
   useEffect(() => {
+    if (!isLoaded) return; // Ensure the Google script is loaded
+
+    // Initialize Google Places Autocomplete
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      searchInputRef.current
+    );
+    autocomplete.setFields(["address_components", "geometry", "icon", "name"]); 
+
+    const handlePlaceSelect = () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) return;
+
+      // Update location and input value
+      const location = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+      setCurrentLocation(location);
+      setInputValue(place.name); 
+      setMarkers([]); 
+
+      
+      // const radiusInMeters = radius * 1000;
+      // Perform a search within the specified radius
+      if (mapRef.current) {
+        const service = new window.google.maps.places.PlacesService(
+          mapRef.current
+        );
+        service.nearbySearch(
+          {
+            location,
+            radius: radius,
+            type: ["properties"], // Example: search for restaurants, adjust types as needed
+          },
+          (results, status) => {
+            if (
+              status === window.google.maps.places.PlacesServiceStatus.OK &&
+              results
+              // searchByCircle()
+            ) {
+              const newMarkers = results.map((result) => ({
+                lat: result.geometry.location.lat(),
+                lng: result.geometry.location.lng(),
+              }));
+              setMarkers(newMarkers);
+            }
+          }
+        );
+      }
+    };
+
+    autocomplete.addListener("place_changed", handlePlaceSelect);
+
+    // Clean up
+    return () => {
+      window.google.maps.event.clearInstanceListeners(searchInputRef.current);
+    };
+  }, [isLoaded]); // Depend on the isLoaded state to re-run when Google script is loaded
+
+  useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
 
     const drawingManager = new window.google.maps.drawing.DrawingManager({
-      drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
+      drawingMode: drawingMode,
       drawingControl: true,
       drawingControlOptions: {
         position: window.google.maps.ControlPosition.LEFT_TOP,
@@ -312,6 +351,14 @@ const GoogleMapsSearch = () => {
     }
   }, [isLoaded]);
 
+  useEffect(() => {
+    if (searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current.value = address;
+      }, 100); // Adjust delay as necessary
+    }
+  }, [address]);
+
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
 
@@ -319,21 +366,20 @@ const GoogleMapsSearch = () => {
     <>
       <div>
         <div className="top-bar">
-          <StandaloneSearchBox
-            onLoad={onSearchBoxLoad}
-            onPlacesChanged={onPlacesChanged}
-          >
-            <input
-              type="text"
-              placeholder="Search for places..."
-              style={{
-                width: "100%",
-                height: "auto",
-                marginBottom: 0,
-                paddingInline: "5px",
-              }}
-            />
-          </StandaloneSearchBox>
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Search for places..."
+            style={{
+              width: "25%",
+              height: "auto",
+              marginBottom: 0,
+              paddingInline: "5px",
+            }}
+            className="search-box"
+          />
 
           <button
             onClick={() => {
@@ -395,14 +441,10 @@ const GoogleMapsSearch = () => {
             icon={{
               url: "/assets/img/icons/map-marker-2.png",
             }}
+            draggable={true}
+            onDragEnd={onDragEnd}
           />
-          <Marker
-            position={currentLocation}
-            icon={{
-              url: "/assets/img/icons/map-marker-2.png",
-              // scaledSize: new window.google.maps.Size(25, 25),
-            }}
-          />
+
           {/* Render drawn polygons */}
           {polygons.map((polygon, index) => (
             <Polygon

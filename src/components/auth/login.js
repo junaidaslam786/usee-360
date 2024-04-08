@@ -158,7 +158,7 @@ export default function Login({ type, responseHandler }) {
 
   return (
     <div>
-      <div className="ltn__login-area pb-65">
+      <div className="ltn__login-area pb-65 mt-120">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">

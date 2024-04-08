@@ -41,7 +41,7 @@ class BannerV3 extends Component {
                 <div>
                   <button
                     className="button_register barlow-condensed-semibold"
-                    onClick={() => history.push('/customer/register')}
+                    onClick={() => history.push('/agent/register')}
                   >
                     REGISTER NOW
                   </button>

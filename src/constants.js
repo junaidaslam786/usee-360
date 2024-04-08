@@ -303,6 +303,7 @@ export const APPOINTMENT_STATUS = {
   INPROGRESS: "inprogress",
   COMPLETED: "completed",
   CANCELLED: "cancelled",
+  EXPIRED: "expired",
 };
 
 export const CMS_PAGE_TYPE = {

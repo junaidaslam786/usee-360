@@ -88,7 +88,7 @@ export default function CustomerOnboarding(props) {
   };
 
   return (
-    <div className="ltn__login-area pb-80">
+    <div className="ltn__login-area pb-80 mt-120">
       <div className="container">
         <div className="row">
           <div className="col-lg-12">
