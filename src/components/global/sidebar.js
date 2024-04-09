@@ -33,22 +33,23 @@ export default function Sidebar({ type, responseHandler }) {
     history.push(`/${type}/login`);
   };
 
-  // useEffect(() => {
-  //   const fetchAlertCount = async () => {
-  //     const response = await AlertService.unReadCount();
-  //     if (response?.error && response?.message) {
-  //       responseHandler(response.message);
-  //       setTimeout(() => {
-  //         handleClick();
-  //       }, 2000);
-  //       return;
-  //     }
+  useEffect(() => {
+    const fetchAlertCount = async () => {
+      const response = await AlertService.unReadCount();
+      console.log(response);
+      if (response?.error && response?.message) {
+        responseHandler(response.message);
+        setTimeout(() => {
+          handleClick();
+        }, 2000);
+        return;
+      }
 
-  //     setCount(response);
-  //   };
+      setCount(response);
+    };
 
-  //   fetchAlertCount();
-  // }, []);
+    fetchAlertCount();
+  }, []);
 
   useEffect(() => {
     const fetchAlertCount = async () => {
