@@ -79,7 +79,7 @@ const StreetViewMap = ({ isOpen, onClose, latitude, longitude }) => {
   });
 
   useEffect(() => {
-    Modal.setAppElement('#quarter'); // Adjust as necessary to target your app's root element
+    Modal.setAppElement('#quarter'); 
   }, []);
 
   const containerStyle = {

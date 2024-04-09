@@ -1316,7 +1316,7 @@ export default function Add(props) {
                 {fireplace === "yes" && (
                   <div className="col-md-12">
                     <div className="input-item">
-                      <label className="h6">Wood Burning Gas</label>
+                      <label className="h6">Wood Burning / Gas</label>
                       <div className="input-item">
                         <Select
                           classNamePrefix="custom-select"

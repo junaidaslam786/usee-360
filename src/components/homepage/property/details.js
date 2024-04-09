@@ -18,7 +18,7 @@ import { FaPaw } from "react-icons/fa";
 export default function PropertyDetails(props) {
   const [property, setProperty] = useState({});
   const [propertyCategoryType, setPropertyCategoryType] = useState();
-  
+
   const [agentImage, setAgentImage] = useState();
   const [agentName, setAgentName] = useState();
   const [permitNumber, setPermitNumber] = useState();
@@ -41,8 +41,6 @@ export default function PropertyDetails(props) {
 
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
-
-  
 
   const postPropertyViewLog = async (propertyId) => {
     try {
@@ -72,11 +70,9 @@ export default function PropertyDetails(props) {
 
       postPropertyViewLog(params.id);
 
-
       // Use slice() to clone the array before reversing to avoid mutating the original array
-      const reversedMetaTags = response.productMetaTags.slice().reverse(); 
+      const reversedMetaTags = response.productMetaTags.slice().reverse();
 
-  
       const metaTagsMap = reversedMetaTags.reduce((acc, tag) => {
         const label = tag.categoryField.label;
         acc[label] = tag.value;
@@ -272,7 +268,7 @@ export default function PropertyDetails(props) {
               <p>{property.description}</p>
               <h4 className="title-2">Features</h4>
               <div className="property-detail-feature-list clearfix mb-45">
-                <ul style={{display: 'flex', flexDirection: 'column'}}>
+                <ul style={{ display: "flex", flexDirection: "column" }}>
                   {Object.entries(propertyTags).map(([key, value]) => (
                     <li key={key}>
                       <div className="property-detail-feature-list-item">
@@ -287,8 +283,8 @@ export default function PropertyDetails(props) {
                 </ul>
               </div>
 
-              {property?.virtualTourType &&
-                property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO && (
+              {property?.virtualTourType === VIRTUAL_TOUR_TYPE.VIDEO &&
+                property?.virtualTourUrl && (
                   <div className="property-detail-feature-list clearfix mb-45">
                     <video width="100%" height="100%" controls>
                       <source

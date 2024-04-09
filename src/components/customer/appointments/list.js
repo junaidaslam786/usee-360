@@ -2,6 +2,7 @@ import React from "react";
 import UpcomingAppointments from "./upcoming";
 import CompletedAppointments from "./completed";
 import CancelledAppointments from "./cancelled";
+import ExpiredAppointments from "./expired";
 
 export default function List(props) {
   return (
@@ -54,6 +55,20 @@ export default function List(props) {
               Cancelled
             </button>
           </li>
+          <li className="nav-item" role="presentation">
+            <button
+              className="nav-link customColor"
+              id="pills-expired-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-expired"
+              type="button"
+              role="tab"
+              aria-controls="pills-expired"
+              aria-selected="false"
+            >
+              Expired
+            </button>
+          </li>
         </ul>
         <div className="tab-content" id="pills-tabContent">
           <div
@@ -79,6 +94,14 @@ export default function List(props) {
             aria-labelledby="pills-cancelled-tab"
           >
             <CancelledAppointments responseHandler={props.responseHandler}/>
+          </div>
+          <div
+            className="tab-pane fade"
+            id="pills-expired"
+            role="tabpanel"
+            aria-labelledby="pills-expired-tab"
+          >
+            <ExpiredAppointments responseHandler={props.responseHandler} />
           </div>
         </div>
       </div>

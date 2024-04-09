@@ -35,7 +35,7 @@ export default function CustomerAlerts(props) {
         }
         break;
       case USER_ALERT_MODE.APPOINTMENT:
-        text = `Your appointment for the property ${productTitle} has been updated`;
+        text = `${agentName} made an appointment for the property ${productTitle}`;
 
         break;
       case USER_ALERT_MODE.SNAGLIST:

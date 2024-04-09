@@ -51,29 +51,58 @@ export default function Sidebar({ type, responseHandler }) {
     fetchAlertCount();
   }, []);
 
-  useEffect(() => {
-    const fetchAlertCount = async () => {
-      let response;
-      if (userDetail.userType === USER_TYPE.AGENT) {
-        response = await AlertService.unReadCount();
-      } else if (userDetail.userType === USER_TYPE.CUSTOMER) {
-        response = await CustomerAlertService.unReadCount();
-      } else {
-        return; // or handle unexpected user type
-      }
+  // useEffect(() => {
+  //   const fetchAlertCount = async () => {
+  //     let response;
+  //     if (userDetail.userType === USER_TYPE.AGENT) {
+  //       response = await AlertService.unReadCount();
+  //     } else if (userDetail.userType === USER_TYPE.CUSTOMER) {
+  //       response = await CustomerAlertService.unReadCount();
+  //     } else {
+  //       return; // or handle unexpected user type
+  //     }
 
-      if (response?.error && response?.message) {
-        responseHandler(response.message);
-        setTimeout(() => {
-          handleClick();
-        }, 2000);
-      } else {
-        setCount(response);
-      }
-    };
+  //     if (response?.error && response?.message) {
+  //       responseHandler(response.message);
+  //       setTimeout(() => {
+  //         handleClick();
+  //       }, 2000);
+  //     } else {
+  //       setCount(response);
+  //     }
+  //   };
 
-    fetchAlertCount();
-  }, [userDetail.userType]); // Depend on userType to re-fetch if it changes
+  //   fetchAlertCount();
+  // }, [userDetail.userType]); 
+  // useEffect(() => {
+  //   const fetchAlertCount = async () => {
+  //     let response;
+      
+  //     // Determine which alert service to use based on the user type
+  //     if (userDetail.userType === USER_TYPE.AGENT) {
+  //       response = await AlertService.unReadCount();
+  //     } else if (userDetail.userType === USER_TYPE.CUSTOMER) {
+  //       response = await CustomerAlertService.unReadCount();
+  //     } else {
+  //       console.log("Unexpected user type:", userDetail.userType);
+  //       return; // Exit if user type is not recognized
+  //     }
+  
+  //     // Handle response
+  //     if (response?.error && response?.message) {
+  //       responseHandler(response.message);
+  //       // Consider removing automatic logout on error unless it's specifically related to auth issues
+  //       // setTimeout(() => {
+  //       //   handleClick();
+  //       // }, 2000);
+  //     } else {
+  //       setCount(response); // Assuming response directly contains the count, adjust if it's nested within the response object
+  //     }
+  //   };
+  
+  //   fetchAlertCount();
+  // }, [userDetail.userType]); // Re-fetch alert count when user type changes
+  
 
   const isAgent = userDetail?.agent?.agentType === AGENT_TYPE.AGENT;
 

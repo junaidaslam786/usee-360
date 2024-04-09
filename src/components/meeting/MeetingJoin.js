@@ -828,6 +828,7 @@ const MeetingJoin = (props) => {
         if (!agentJoined && !customerJoined) {
           updateStatus("expired").then(() => {
             console.log("Meeting expired due to no participants joining.");
+            leaveSession();
           }).catch(console.error);
         }
       }, 30 * 60 * 1000); // 30 minutes timer
