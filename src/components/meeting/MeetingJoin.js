@@ -80,6 +80,7 @@ const MeetingJoin = (props) => {
   const [unReadMessages, setUnReadMessages] = useState({});
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
+  const [cancelMeetingNotes, setCancelMeetingNotes] = useState("");
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [notes, setNotes] = useState("");
 
@@ -228,10 +229,33 @@ const MeetingJoin = (props) => {
   //   }
   // };
   const leaveSession = () => {
-    // completeMeeting(); // This now handles both signaling and API call
     sendDisconnectSignal();
+    // If a screenPublisher exists, unpublish and destroy it
+    if (screenPublisher) {
+      session.unpublish(screenPublisher);
+      screenPublisher.destroy();
+      setScreenPublisher(null);
+    }
 
-    session.disconnect();
+    // If a publisher exists, unpublish and destroy it
+    if (publisher) {
+      session.unpublish(publisher);
+      publisher.destroy();
+      setPublisher(null);
+    }
+
+    // Disconnect from the session
+    if (session) {
+      session.disconnect();
+      setSession(null);
+    }
+
+    // Navigate to the dashboard or some other page as required
+    if (userType === USER_TYPE.AGENT) {
+      history.push("/agent/dashboard");
+    } else if (userType === USER_TYPE.CUSTOMER) {
+      history.push("/customer/dashboard");
+    }
   };
 
   const submitNotes = async () => {
@@ -239,7 +263,7 @@ const MeetingJoin = (props) => {
       userId: userDetail.id,
       userType: USER_TYPE.AGENT,
       id: appointment.id,
-      notes,
+      notes: cancelMeetingNotes,
     };
 
     const formResponse = await AppointmentService.addNote(requestData);
@@ -250,9 +274,10 @@ const MeetingJoin = (props) => {
 
     props.responseHandler("Note added successfully.", true);
     setNotes("");
+    setCancelMeetingNotes("");
 
     // await loadAllList();
-    setIsNotesModalOpen(false);
+    // setIsNotesModalOpen(false);
     leaveSession();
   };
 
@@ -363,6 +388,11 @@ const MeetingJoin = (props) => {
 
   const handleCancelModalConfirm = async () => {
     // Do something when the user clicks "Yes"
+    setNotes(cancelMeetingNotes);
+
+    // Now call submitNotes to save the cancellation notes
+    await submitNotes();
+    setCancelMeetingNotes("");
     setConfirmCancelModal(false); // Close the modal
     await updateStatus("cancelled");
     leaveSession();
@@ -381,8 +411,8 @@ const MeetingJoin = (props) => {
 
   const handleEndModalCancel = () => {
     // Do something when the user clicks "No"
-    setIsNotesModalOpen(true);
-    leaveSession();
+    // setIsNotesModalOpen(true);
+    // leaveSession();
     setConfirmEndModal(false); // Close the modal
   };
 
@@ -959,10 +989,7 @@ const MeetingJoin = (props) => {
           {showCancelBtn && userType === "agent" && (
             <button
               className="call-meeting-button"
-              onClick={() => {
-                setIsNotesModalOpen(false); // Close notes modal
-                setConfirmEndModal(true); // Open end call confirmation modal
-              }}
+              onClick={() => setConfirmCancelModal(true)}
             >
               Cancel Meeting
             </button>
@@ -1129,6 +1156,11 @@ const MeetingJoin = (props) => {
           Are you sure you want to cancel this appointment? You won't be able to
           join this appointment again.
         </p>
+        <textarea
+          placeholder="Add cancellation notes..."
+          value={cancelMeetingNotes}
+          onChange={(e) => setCancelMeetingNotes(e.target.value)}
+        />
         <div className="ButtonContainer">
           <button
             className="btn theme-btn-1"
@@ -1141,7 +1173,7 @@ const MeetingJoin = (props) => {
           </button>
         </div>
       </Modal>
-      <Modal
+      {/* <Modal
         isOpen={isNotesModalOpen}
         onRequestClose={() => setIsNotesModalOpen(false)}
         className="MyModal"
@@ -1160,7 +1192,7 @@ const MeetingJoin = (props) => {
         >
           Cancel
         </button>
-      </Modal>
+      </Modal> */}
       <DocumentModal
         isOpen={isDocumentOpen}
         onClose={closeDocumentModal}
