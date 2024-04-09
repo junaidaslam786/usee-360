@@ -227,7 +227,7 @@ export default function Upcoming(props) {
                       </button>
                     )}
                   </div>
-                  <div>
+                  {/* <div>
                     <button
                       className="status-buttons completed mt-lg-2"
                       onClick={() => handleNotesModal(element.id)}
@@ -235,7 +235,7 @@ export default function Upcoming(props) {
                       <i className="fa-solid fa-check completed-icon"></i>
                       Completed
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <div>
                   <div>
@@ -248,7 +248,7 @@ export default function Upcoming(props) {
                       <i className="fa-solid fa-eye" /> View
                     </button>
                   </div>
-                  <div>
+                  {/* <div>
                     <button
                       className="status-buttons cancelled mt-lg-2"
                       onClick={() => handleConfirm(element.id)}
@@ -256,7 +256,7 @@ export default function Upcoming(props) {
                       <i className="fa-solid fa-xmark cancelled-icon"></i>
                       Cancelled
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

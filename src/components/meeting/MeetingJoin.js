@@ -81,7 +81,8 @@ const MeetingJoin = (props) => {
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
   const [cancelMeetingNotes, setCancelMeetingNotes] = useState("");
-  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [considerForExpiration, setConsiderForExpiration] = useState(true);
+  const [expirationTimer, setExpirationTimer] = useState(null);
   const [notes, setNotes] = useState("");
 
   const userDetail = getUserDetailsFromJwt();
@@ -818,8 +819,37 @@ const MeetingJoin = (props) => {
     }
   }, [agentJoined, customerJoined]);
 
+   useEffect(() => {
+    let timerId;
+
+    if (considerForExpiration) {
+      timerId = setTimeout(() => {
+        // Check both joined states again before setting the status to 'expired'
+        if (!agentJoined && !customerJoined) {
+          updateStatus("expired").then(() => {
+            console.log("Meeting expired due to no participants joining.");
+          }).catch(console.error);
+        }
+      }, 30 * 60 * 1000); // 30 minutes timer
+    }
+
+    // Clean up the timer when the component unmounts or when the state changes
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+    };
+  }, [considerForExpiration, agentJoined, customerJoined]);
+
+  useEffect(() => {
+    if (agentJoined || customerJoined) {
+      setConsiderForExpiration(false); // Stop considering for expiration as one party has joined
+    }
+  }, [agentJoined, customerJoined]);
+
   useEffect(() => {
     if (agentJoined && customerJoined && userType === "agent") {
+      setConsiderForExpiration(false);
       updateStatus("inprogress");
       setShowCancelBtn(false);
     }
