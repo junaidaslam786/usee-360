@@ -200,9 +200,10 @@ export default function Add(props) {
     // const apiUrl = (() => id ? "/update" : "/create")();
     // const successMsg = (() => id ? "Property updated successfully." : "Your changes are saved successfully.")();
 
-    let apiUrl = "create";
-    let successMsg = "Your changes are saved successfully."
-
+    let apiUrl = id ? "update" : "create";
+    let successMsg = id
+      ? "Property updated successfully."
+      : "Your changes are saved successfully.";
 
     let formdata = new FormData();
     formdata.append("title", title);
@@ -242,21 +243,19 @@ export default function Add(props) {
     appendMetaTag("metaTags[5]", bedrooms?.value);
     appendMetaTag("metaTags[8]", priceType?.value);
 
-
     // ... Continue for other specific meta tags
 
     // Example for appending meta tags based on conditionals (residential or commercial specifics)
     if (propertyType?.value === "residential") {
       appendMetaTag("metaTags[6]", propertySubType?.value);
-      
+
       if (
         propertySubType?.value === "apartment" ||
         propertySubType?.value === "studio" ||
         propertySubType?.value === "room"
       ) {
         appendMetaTag("metaTags[48]", buildingAmenities?.join(","));
-      }
-      else if (
+      } else if (
         propertySubType?.value === "house" ||
         propertySubType?.value === "bungalow" ||
         propertySubType?.value === "duplex" ||
@@ -340,9 +339,9 @@ export default function Add(props) {
     // Continue with other meta tags, adapting the above logic to your application's specific meta tags
 
     if (id) {
-      apiUrl = "update";
+      // apiUrl = "update";
       formdata.append("productId", id);
-      successMsg = "Property updated successfully.";
+      // successMsg = "Property updated successfully.";
     }
 
     if (allotedToUsers && allotedToUsers.length > 0) {
@@ -361,9 +360,9 @@ export default function Add(props) {
 
       // const formResponse = await (apiUrl === "/update" ? PropertyService.update(formdata) : PropertyService.add(formdata));
       const formResponse =
-      apiUrl === "update"
-        ? await PropertyService.update(formdata)
-        : await PropertyService.add(formdata);
+        apiUrl === "update"
+          ? await PropertyService.update(formdata)
+          : await PropertyService.add(formdata);
 
       setLoading(false);
 
@@ -374,21 +373,25 @@ export default function Add(props) {
 
       if (!id && formResponse?.id) {
         // Check if creating a new property and response includes an ID
-        // setId(formResponse.id); 
+        setId(formResponse.id);
         toast.success(successMsg);
+        if (formResponse?.id) {
+          history.push(`/agent/edit-property/${formResponse.id}`);
+        }
         // No need to redirect here; just update the state
-      } else if (id) {
-        toast.success(successMsg);
-        setTimeout(() => {
-          if (formResponse?.id) {
-            history.push(`/agent/edit-property/${formResponse.id}`);
-          }
-        }, 2000);
       }
+      // else if (id) {
+      //   toast.success(successMsg);
+      //   setTimeout(() => {
+      //     if (formResponse?.id) {
+      //       history.push(`/agent/edit-property/${formResponse.id}`);
+      //     }
+      //   }, 2000);
+      // }
 
       // Redirect after success
       // if (id) {
-        
+
       // }
     } catch (error) {
       props.responseHandler([
@@ -498,20 +501,19 @@ export default function Add(props) {
               setPropertyCategoryType(
                 PROPERTY_CATEGORY_TYPES.find((type) => type.value === value)
               ),
-            "Unit": (value) =>
+            Unit: (value) =>
               setUnit(UNITS.find((unit) => unit.value === value)),
-            "Area": setArea,
+            Area: setArea,
             "No. of bedrooms": (value) =>
               setBedrooms(BEDROOMS.find((bedroom) => bedroom.value === value)),
             "Price Type": (value) =>
               setPriceType(PRICE_TYPE.find((type) => type.value === value)),
 
             // Commercial-specific properties
-            "Layout": setLayout,
-            "Conference Room": (value) =>
-              setConferenceRoom(value),
+            Layout: setLayout,
+            "Conference Room": (value) => setConferenceRoom(value),
             "Conference Room Capacity": setCapacity,
-            "Kitchen": setKitchen,
+            Kitchen: setKitchen,
             "Number of Stores": setStore,
             "Food Court": (value) => setFoodCourt(value),
             "Rest Room": (value) => setRestRoom(value),
@@ -533,13 +535,13 @@ export default function Add(props) {
             "Building Amenities": (value) =>
               setBuildingAmenities(value.split(",")),
             "Number of Bathrooms": setNoOfBathrooms,
-            "Furnished": setFurnished,
+            Furnished: setFurnished,
             "Floor Level": setFloorLevel, // Might need to differentiate between residential and commercial
             "Balcony/Terrace": (value) => setBalcony(value),
             "Room Size(m²)": setRoomSize,
             "Number of Beds": setNoOfBeds,
             "Room Type": setRoomType,
-            "View": setView,
+            View: setView,
 
             // Common properties across types
             "Security Features": (value) => setSecurityFeatures(value),
@@ -549,18 +551,18 @@ export default function Add(props) {
             "Parking Facility (Number of Spaces)": setNoOfParkings,
             "Public Transport Access": (value) => setPublicTransport(value),
             "Year Built": setYearBuilt,
-            "Condition": setCondition,
+            Condition: setCondition,
             "Availability Date": setAvailabilityDate,
             "Additional Features": setAdditionalFeatures,
             "Pet Friendliness": (value) => setPetFreindliness(value),
             "Outdoor Spaces": (value) => setOutdoorSpaces(value.split(",")),
-            "Parking": (value) => setParkingFacility(value),
+            Parking: (value) => setParkingFacility(value),
             "Parking Option": setParkingType,
             "Garage/Carport(No. of Spaces)": setGarageSpaces,
-            "Fireplace": (value) => setFireplace(value),
+            Fireplace: (value) => setFireplace(value),
             "Fireplace Value": setWoodBurning, // Assuming wood burning is a specific type of fireplace value
             "Number of Floors": setNoOfFloors,
-            "Basement": (value) => setBasement(value),
+            Basement: (value) => setBasement(value),
             "Kitchen (Residential)": setResidentialKitchen,
           };
 
@@ -805,7 +807,8 @@ export default function Add(props) {
                         value="yes"
                         checked={conferenceRoom === "yes"}
                         onChange={(e) => setConferenceRoom(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -814,7 +817,8 @@ export default function Add(props) {
                         value="no"
                         checked={conferenceRoom === "no"}
                         onChange={(e) => setConferenceRoom(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
@@ -880,7 +884,8 @@ export default function Add(props) {
                         value="yes"
                         checked={foodCourt === "yes"}
                         onChange={(e) => setFoodCourt(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -889,7 +894,8 @@ export default function Add(props) {
                         value="no"
                         checked={foodCourt === "no"}
                         onChange={(e) => setFoodCourt(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
@@ -906,7 +912,8 @@ export default function Add(props) {
                         value="yes"
                         checked={restRoom === "yes"}
                         onChange={(e) => setRestRoom(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -915,12 +922,12 @@ export default function Add(props) {
                         value="no"
                         checked={restRoom === "no"}
                         onChange={(e) => setRestRoom(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
               </div>
-
             </div>
           )}
 
@@ -1055,7 +1062,8 @@ export default function Add(props) {
                         value="yes"
                         checked={outdoorSeating === "yes"}
                         onChange={(e) => setOutdoorSeating(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -1064,7 +1072,8 @@ export default function Add(props) {
                         value="no"
                         checked={outdoorSeating === "no"}
                         onChange={(e) => setOutdoorSeating(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
@@ -1073,7 +1082,9 @@ export default function Add(props) {
               {outdoorSeating === "yes" && (
                 <div className="col-md-12">
                   <div className="input-item">
-                    <label className="h6">Outdoor Seating Area (Square Meter)</label>
+                    <label className="h6">
+                      Outdoor Seating Area (Square Meter)
+                    </label>
                     <input
                       type="number"
                       placeholder="0"
@@ -1167,7 +1178,8 @@ export default function Add(props) {
                         value="yes"
                         checked={balcony === "yes"}
                         onChange={(e) => setBalcony(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -1176,12 +1188,12 @@ export default function Add(props) {
                         value="no"
                         checked={balcony === "no"}
                         onChange={(e) => setBalcony(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
               </div>
-
             </div>
           )}
 
@@ -1192,7 +1204,9 @@ export default function Add(props) {
             <div className="row">
               <div className="col-md-12">
                 <div className="input-item">
-                  <label className="h6">Display Window Area (Square Meter)</label>
+                  <label className="h6">
+                    Display Window Area (Square Meter)
+                  </label>
                   <input
                     type="number"
                     placeholder="0"
@@ -1273,29 +1287,31 @@ export default function Add(props) {
             propertySubType?.value === "cottage") && (
             <div className="row">
               <div className="col-md-12">
-              <div className="input-item">
-                <label className="h6">Fireplace</label>
-                <div>
-                  <label className="p-2">
-                    <input
-                      type="radio"
-                      name="fireplace"
-                      value="yes"
-                      checked={fireplace === "yes"}
-                      onChange={(e) => setFireplace(e.target.value)}
-                    /> Yes
-                  </label>
-                  <label className="p-2">
-                    <input
-                      type="radio"
-                      name="fireplace"
-                      value="no"
-                      checked={fireplace === "no"}
-                      onChange={(e) => setFireplace(e.target.value)}
-                    /> No
-                  </label>
+                <div className="input-item">
+                  <label className="h6">Fireplace</label>
+                  <div>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="fireplace"
+                        value="yes"
+                        checked={fireplace === "yes"}
+                        onChange={(e) => setFireplace(e.target.value)}
+                      />{" "}
+                      Yes
+                    </label>
+                    <label className="p-2">
+                      <input
+                        type="radio"
+                        name="fireplace"
+                        value="no"
+                        checked={fireplace === "no"}
+                        onChange={(e) => setFireplace(e.target.value)}
+                      />{" "}
+                      No
+                    </label>
+                  </div>
                 </div>
-              </div>
 
                 {fireplace === "yes" && (
                   <div className="col-md-12">
@@ -1341,7 +1357,8 @@ export default function Add(props) {
                         value="yes"
                         checked={basement === "yes"}
                         onChange={(e) => setBasement(e.target.value)}
-                      /> Yes
+                      />{" "}
+                      Yes
                     </label>
                     <label className="p-2">
                       <input
@@ -1350,7 +1367,8 @@ export default function Add(props) {
                         value="no"
                         checked={basement === "no"}
                         onChange={(e) => setBasement(e.target.value)}
-                      /> No
+                      />{" "}
+                      No
                     </label>
                   </div>
                 </div>
@@ -1392,7 +1410,8 @@ export default function Add(props) {
                       value="yes"
                       checked={petFreindliness === "yes"}
                       onChange={(e) => setPetFreindliness(e.target.value)}
-                    /> Yes
+                    />{" "}
+                    Yes
                   </label>
                   <label className="p-2">
                     <input
@@ -1401,7 +1420,8 @@ export default function Add(props) {
                       value="no"
                       checked={petFreindliness === "no"}
                       onChange={(e) => setPetFreindliness(e.target.value)}
-                    /> No
+                    />{" "}
+                    No
                   </label>
                 </div>
               </div>
@@ -1418,7 +1438,8 @@ export default function Add(props) {
                       value="yes"
                       checked={commercialParking === "yes"}
                       onChange={(e) => setCommercialParking(e.target.value)}
-                    /> Yes
+                    />{" "}
+                    Yes
                   </label>
                   <label className="p-2">
                     <input
@@ -1427,7 +1448,8 @@ export default function Add(props) {
                       value="no"
                       checked={commercialParking === "no"}
                       onChange={(e) => setCommercialParking(e.target.value)}
-                    /> No
+                    />{" "}
+                    No
                   </label>
                 </div>
               </div>
@@ -1511,7 +1533,8 @@ export default function Add(props) {
                       value="yes"
                       checked={parkingFacility === "yes"}
                       onChange={(e) => setParkingFacility(e.target.value)}
-                    /> Yes
+                    />{" "}
+                    Yes
                   </label>
                   <label className="p-2">
                     <input
@@ -1520,7 +1543,8 @@ export default function Add(props) {
                       value="no"
                       checked={parkingFacility === "no"}
                       onChange={(e) => setParkingFacility(e.target.value)}
-                    /> No
+                    />{" "}
+                    No
                   </label>
                 </div>
               </div>
@@ -1573,17 +1597,19 @@ export default function Add(props) {
                   <input
                     type="radio"
                     value="yes"
-                    checked={securityFeatures === 'yes'}
+                    checked={securityFeatures === "yes"}
                     onChange={(e) => setSecurityFeatures(e.target.value)}
-                  /> Yes
+                  />{" "}
+                  Yes
                 </label>
                 <label className="p-2">
                   <input
                     type="radio"
                     value="no"
-                    checked={securityFeatures === 'no'}
+                    checked={securityFeatures === "no"}
                     onChange={(e) => setSecurityFeatures(e.target.value)}
-                  /> No
+                  />{" "}
+                  No
                 </label>
               </div>
             </div>
@@ -1650,7 +1676,8 @@ export default function Add(props) {
                     value="yes"
                     checked={publicTransport === "yes"}
                     onChange={(e) => setPublicTransport(e.target.value)}
-                  /> Yes
+                  />{" "}
+                  Yes
                 </label>
                 <label className="p-2">
                   <input
@@ -1659,7 +1686,8 @@ export default function Add(props) {
                     value="no"
                     checked={publicTransport === "no"}
                     onChange={(e) => setPublicTransport(e.target.value)}
-                  /> No
+                  />{" "}
+                  No
                 </label>
               </div>
             </div>
