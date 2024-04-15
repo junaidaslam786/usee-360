@@ -22,6 +22,8 @@ export default function Upcoming(props) {
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [confirmCancelModal, setConfirmCancelModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState("");
+  const [checkForExpiry, setCheckForExpiry] = useState([]);
+
   const [notes, setNotes] = useState("");
   const openViewModal = useRef(null);
   const userDetail = getUserDetailsFromJwt();
@@ -46,7 +48,7 @@ export default function Upcoming(props) {
         page,
         appendQuery,
       });
-      
+
       if (response?.data) {
         setList(response.data);
         setCurrentPage(parseInt(response.page));
@@ -144,15 +146,55 @@ export default function Upcoming(props) {
 
   const isWithinFiveMinutes = (appointmentTimeGmt) => {
     const now = moment(); // Current time as a moment object
-    const appointmentTime = moment.tz(appointmentTimeGmt, "HH:mm:ss", "GMT").tz(getUserTimezone());
-    const timeDiff = appointmentTime.diff(now, 'minutes'); // Difference in minutes
-    return timeDiff <= 15 && timeDiff >= 0; // Check if within 5 minutes
+    const appointmentTime = moment
+      .tz(appointmentTimeGmt, "HH:mm:ss", "GMT")
+      .tz(getUserTimezone());
+    const timeDiff = appointmentTime.diff(now, "minutes"); // Difference in minutes
+    return timeDiff <= 2 && timeDiff >= 0; // Check if within 5 minutes
   };
-  
+
+  const setupExpiryChecks = () => {
+    const now = moment();
+    const appointmentsToCheck = list.filter((appointment) => {
+      const startTime = moment(appointment.startTime);
+      const duration = moment.duration(now.diff(startTime));
+      return duration.asMinutes() >= 30 && appointment.status === "pending";
+    });
+
+    setCheckForExpiry(appointmentsToCheck);
+  };
+
+  const checkAppointmentsForExpiry = async () => {
+    checkForExpiry.forEach(async (appointment) => {
+      const response = await AppointmentService.detail(appointment.id);
+      console.log('details appointments', response)
+      if (response.status === "pending") {
+        const currentTime = moment();
+        const appointmentTime = moment(appointment.startTime);
+        if (currentTime.diff(appointmentTime, "minutes") >= 30) {
+          await AppointmentService.updateStatus({
+            id: appointment.id,
+            type: APPOINTMENT_STATUS.EXPIRED,
+          });
+          console.log("Appointment marked as expired:", appointment.id);
+        }
+      }
+    });
+    await loadAllList(); // Reload the list to reflect any status updates
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      checkAppointmentsForExpiry();
+    }, 5 * 60 * 1000); // Check every 5 minutes
+
+    return () => clearInterval(intervalId);
+  }, [checkForExpiry]);
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
       await loadAllList();
+      setupExpiryChecks();
     };
 
     fetchAllAppointments();
@@ -209,12 +251,16 @@ export default function Upcoming(props) {
                       >
                         <button
                           className="joinCall"
-                          // disabled={
-                          //   !isWithinFiveMinutes(element.appointmentTimeGmt)
-                          // }
+                          disabled={
+                            !isWithinFiveMinutes(element.appointmentTimeGmt)
+                          }
                           style={{
-                            backgroundColor: isWithinFiveMinutes(element.appointmentTimeGmt) ? "" : "#282B38", 
-                            // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000", 
+                            backgroundColor: isWithinFiveMinutes(
+                              element.appointmentTimeGmt
+                            )
+                              ? ""
+                              : "#282B38",
+                            // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000",
                           }}
                         >
                           Join Call
