@@ -82,7 +82,7 @@ const MeetingJoin = (props) => {
 
   const [cancelMeetingNotes, setCancelMeetingNotes] = useState("");
   const [considerForExpiration, setConsiderForExpiration] = useState(true);
-  const [expirationTimer, setExpirationTimer] = useState(null);
+  const [expirationChecked, setExpirationChecked] = useState(false);
   const [notes, setNotes] = useState("");
 
   const userDetail = getUserDetailsFromJwt();
@@ -200,12 +200,33 @@ const MeetingJoin = (props) => {
     });
   };
 
-  const updateStatus = async (status) => {
-    await AppointmentService.updateStatus({
-      id: appointment.id,
-      status,
-    });
-  };
+  const handleExpiration = async () => {
+    const currentStatus = await AppointmentService.detail(appointment.id);
+    console.log(currentStatus);
+    if (currentStatus === "pending" && !agentJoined && !customerJoined) {
+        await updateStatus("expired");
+        setExpirationChecked(true);
+        console.log("Meeting expired due to no participants joining.");
+        leaveSession();
+    }
+};
+
+const updateStatus = async (status) => {
+  try {
+      const response = await AppointmentService.updateStatus({
+          id: appointment.id,
+          status
+      });
+      if (response.success) {
+          console.log(`Status updated to ${status}`);
+      } else {
+          console.error('Failed to update status:', response.message);
+      }
+  } catch (error) {
+      console.error('Error updating status:', error);
+  }
+};
+
 
   const toggleVideo = () => {
     if (publisher?.publishVideo) {
@@ -493,43 +514,7 @@ const MeetingJoin = (props) => {
     }));
   };
 
-  // const completeMeeting = async () => {
-  //   // Attempt to send a disconnect signal if the session exists and is connected
-  //   if (session && typeof session.isConnected === 'function' && session.isConnected()) {
-  //     session.signal({
-  //       type: 'userDisconnected',
-  //       data: `{ "userId": "${userDetail.id}", "reason": "unexpected" }`,
-  //     }, error => {
-  //       if (error) {
-  //         console.error('Signal error:', error.message);
-  //       } else {
-  //         console.log('Signal sent');
-  //       }
-  //     });
-  //   }
-
-  //   // Make an API call to your backend to update the meeting status
-  //   // Note: Navigator.sendBeacon is used here for reliability during unload
-  //   const url = `${process.env.REACT_APP_API_URL}/meeting/complete/${appointment.id}`;
-  //   const data = new Blob([JSON.stringify({ status: "completed" })], {type : 'application/json'});
-  //   navigator.sendBeacon(url, data);
-  // };
-
-  // useEffect(() => {
-  //   const handleBeforeUnload = async (event) => {
-  //     completeMeeting();
-  //     // For `beforeunload` the custom text won't be shown in modern browsers, but it's kept for compatibility
-  //     event.returnValue = 'Are you sure you want to leave? The meeting will end.';
-  //   };
-
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //     // Perform any additional cleanup if needed
-  //     completeMeeting();
-  //   };
-  // }, [session, userDetail.id, appointment.id]); // Ensure dependencies are correctly listed
+ 
 
   useEffect(() => {
     if (token) {
@@ -819,28 +804,26 @@ const MeetingJoin = (props) => {
     }
   }, [agentJoined, customerJoined]);
 
-   useEffect(() => {
-    let timerId;
 
-    if (considerForExpiration) {
-      timerId = setTimeout(() => {
-        // Check both joined states again before setting the status to 'expired'
-        if (!agentJoined && !customerJoined) {
-          updateStatus("expired").then(() => {
-            console.log("Meeting expired due to no participants joining.");
-            leaveSession();
-          }).catch(console.error);
+  useEffect(() => {
+    const appointmentStartTime = new Date(appointment.startTime).getTime(); // Assuming appointment.startTime is the scheduled start time of the appointment
+    const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+    const checkExpiration = () => {
+        const currentTime = Date.now();
+        if (currentTime - appointmentStartTime > thirtyMinutes && !agentJoined && !customerJoined) {
+            updateStatus("expired").then(() => {
+                console.log("Appointment expired due to no participants joining within 30 minutes.");
+                leaveSession();
+            }).catch(console.error);
         }
-      }, 30 * 60 * 1000); // 30 minutes timer
-    }
-
-    // Clean up the timer when the component unmounts or when the state changes
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
     };
-  }, [considerForExpiration, agentJoined, customerJoined]);
+
+    const timerId = setTimeout(checkExpiration, thirtyMinutes);
+
+    return () => clearTimeout(timerId); // Cleanup the timer when component unmounts or variables change
+}, [agentJoined, customerJoined, appointment.startTime]); // Ensure dependencies are correctly listed to avoid unwanted re-triggers
+
 
   useEffect(() => {
     if (agentJoined || customerJoined) {

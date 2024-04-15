@@ -29,6 +29,7 @@ export default function Expired(props) {
       type: APPOINTMENT_STATUS.EXPIRED,
       page,
     });
+    console.log('expired appointment list',response)
     if (response?.data) {
       setList(response.data);
       setCurrentPage(parseInt(response.page));

@@ -232,6 +232,7 @@ export const removeLoginToken = () => {
   localStorage.removeItem("userToken");
   localStorage.removeItem("userTimezone");
   localStorage.removeItem("userType");
+  localStorage.removeItem("searchFilters")
   return true;
 };
 
