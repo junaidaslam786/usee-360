@@ -22,7 +22,6 @@ export default function Upcoming(props) {
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [confirmCancelModal, setConfirmCancelModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState("");
-  const [checkForExpiry, setCheckForExpiry] = useState([]);
 
   const [notes, setNotes] = useState("");
   const openViewModal = useRef(null);
@@ -150,51 +149,14 @@ export default function Upcoming(props) {
       .tz(appointmentTimeGmt, "HH:mm:ss", "GMT")
       .tz(getUserTimezone());
     const timeDiff = appointmentTime.diff(now, "minutes"); // Difference in minutes
-    return timeDiff <= 2 && timeDiff >= 0; // Check if within 5 minutes
+  
+    // Enable the button from 5 minutes before the appointment and keep it enabled thereafter
+    return timeDiff <= 5;
   };
-
-  const setupExpiryChecks = () => {
-    const now = moment();
-    const appointmentsToCheck = list.filter((appointment) => {
-      const startTime = moment(appointment.startTime);
-      const duration = moment.duration(now.diff(startTime));
-      return duration.asMinutes() >= 30 && appointment.status === "pending";
-    });
-
-    setCheckForExpiry(appointmentsToCheck);
-  };
-
-  const checkAppointmentsForExpiry = async () => {
-    checkForExpiry.forEach(async (appointment) => {
-      const response = await AppointmentService.detail(appointment.id);
-      console.log('details appointments', response)
-      if (response.status === "pending") {
-        const currentTime = moment();
-        const appointmentTime = moment(appointment.startTime);
-        if (currentTime.diff(appointmentTime, "minutes") >= 30) {
-          await AppointmentService.updateStatus({
-            id: appointment.id,
-            type: APPOINTMENT_STATUS.EXPIRED,
-          });
-          console.log("Appointment marked as expired:", appointment.id);
-        }
-      }
-    });
-    await loadAllList(); // Reload the list to reflect any status updates
-  };
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      checkAppointmentsForExpiry();
-    }, 5 * 60 * 1000); // Check every 5 minutes
-
-    return () => clearInterval(intervalId);
-  }, [checkForExpiry]);
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
       await loadAllList();
-      setupExpiryChecks();
     };
 
     fetchAllAppointments();
