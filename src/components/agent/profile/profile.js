@@ -9,7 +9,6 @@ import { useStateIfMounted } from "use-state-if-mounted";
 import AgentService from "../../../services/agent/user";
 import UserService from "../../../services/agent/user";
 import { getUserDetailsFromJwt } from "../../../utils";
-import { el } from "@fullcalendar/core/internal-common";
 import ConfirmationModal from "./confirmationModal";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";

@@ -2,7 +2,7 @@
 import "filepond/dist/filepond.min.css";
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client"
 import App from "./app";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -13,9 +13,12 @@ const stripePromise = loadStripe(
   "pk_test_51NaCXEJ6zXdtc21ylnd4a3YiKJvYLfJbVxlQrIV9wgPSvzbdxW5m3H2TNJSgSFpfb6ScQrANKmotWiPeSwQZPxCp00JUTkpLLC"
 );
 
-ReactDOM.render(
+const container = document.getElementById("quarter");
+const root = createRoot(container); // Create a root for the container
+
+// Render the Elements provider and App within it
+root.render(
   <Elements stripe={stripePromise}>
     <App />
-  </Elements>,
-  document.getElementById("quarter")
+  </Elements>
 );
