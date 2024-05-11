@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { USER_TYPE } from "../../../constants";
 import TimezoneDetail from "../../partial/timezone-detail";
 import ProfileService from "../../../services/profile";
@@ -12,6 +12,14 @@ import { getUserDetailsFromJwt } from "../../../utils";
 import ConfirmationModal from "./confirmationModal";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  Autocomplete,
+  GoogleMap,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
+
+const libraries = ["places", "drawing"];
 
 export default function Profile(props) {
   const [agentId, setAgentId] = useState();
@@ -36,11 +44,56 @@ export default function Profile(props) {
   const [callBackgroundImages, setCallBackgroundImages] = useState([]);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
+  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState({ lat: 37.7749, lng: -122.4194 }); // Default location (San Francisco)
+  const [map, setMap] = useState(null);
+
   const code = useRef();
   const userDetail = getUserDetailsFromJwt();
   const userId = userDetail?.id;
 
   const history = useHistory();
+
+  const autocompleteInputRef = useRef(null);
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
+    // googleMapsApiKey: process.env.GOOGLE_API_KEY,
+    libraries,
+  });
+
+  // const onLoad = useCallback(function callback(map) {
+  //   const bounds = new window.google.maps.LatLngBounds();
+  //   map.fitBounds(bounds);
+  //   setMap(map);
+  // }, []);
+  const onLoad = useCallback(
+    function callback(map) {
+      setMap(map);
+      // Center map on the initial location
+      if (location) {
+        map.panTo(location);
+      }
+    },
+    [location]
+  );
+
+  const onUnmount = useCallback(function callback(map) {
+    setMap(null);
+  }, []);
+
+  const onPlaceChanged = (autocomplete) => {
+    const place = autocomplete.getPlace();
+
+    if (place.geometry) {
+      setLocation(place.geometry.location);
+      setAddress(place.formatted_address);
+      map.panTo(place.geometry.location);
+    } else {
+      console.log("No details available for input: '" + place.name + "'");
+    }
+  };
 
   const updateProfile = async (e) => {
     e.preventDefault();
@@ -60,6 +113,9 @@ export default function Profile(props) {
     formdata.append("companyLogo", companyLogo);
     formdata.append("profileImage", profileImage);
 
+    formdata.append("latitude", location.lat);
+    formdata.append("longitude", location.lng);
+
     setLoading(true);
     const formResponse = await ProfileService.updateProfile(formdata);
     setLoading(false);
@@ -74,6 +130,51 @@ export default function Profile(props) {
       setLoginToken(formResponse.token);
     }
   };
+
+  // const onMarkerDragEnd = (event) => {
+  //   const newLat = event.latLng.lat();
+  //   const newLng = event.latLng.lng();
+  //   setLocation({ lat: newLat, lng: newLng });
+
+  //   // Reverse geocode to get address from lat and lng
+  //   const geocoder = new window.google.maps.Geocoder();
+  //   geocoder.geocode(
+  //     { location: { lat: newLat, lng: newLng } },
+  //     (results, status) => {
+  //       if (status === "OK") {
+  //         if (results[0]) {
+  //           setAddress(results[0].formatted_address);
+  //           if (window.autocomplete) {
+  //             window.autocomplete.set("place", results[0]);
+  //           }
+  //         } else {
+  //           console.log("No results found");
+  //         }
+  //       } else {
+  //         console.log("Geocoder failed due to: " + status);
+  //       }
+  //     }
+  //   );
+  // };
+  const onMarkerDragEnd = (event) => {
+    const newLat = event.latLng.lat();
+    const newLng = event.latLng.lng();
+    setLocation({ lat: newLat, lng: newLng });
+  
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat: newLat, lng: newLng } }, (results, status) => {
+      if (status === 'OK' && results[0]) {
+        setAddress(results[0].formatted_address);
+        // Directly set the input value
+        if (autocompleteInputRef.current) {
+          autocompleteInputRef.current.value = results[0].formatted_address;
+        }
+      } else {
+        console.log("Geocoder failed due to: " + status);
+      }
+    });
+  };
+  
 
   const onProfileImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -190,6 +291,23 @@ export default function Profile(props) {
         if (jsonData.userCallBackgroundImages) {
           setCallBackgroundImages(jsonData.userCallBackgroundImages);
         }
+        if (jsonData.agent.latitude && jsonData.agent.longitude) {
+          const initialLocation = {
+            lat: parseFloat(jsonData.agent.latitude),
+            lng: parseFloat(jsonData.agent.longitude),
+          };
+          setLocation(initialLocation);
+          // setMapLocation(initialLocation); // If you're using a separate state for the map center
+          // Fetch and set the address
+          const geocoder = new window.google.maps.Geocoder();
+          geocoder.geocode({ location: initialLocation }, (results, status) => {
+            if (status === "OK") {
+              if (results[0]) {
+                setAddress(results[0].formatted_address);
+              }
+            }
+          });
+        }
       }
     };
 
@@ -278,7 +396,7 @@ export default function Profile(props) {
                     defaultValue={companyAddress}
                   />
                 </div>
-                {city === "Dubai"  && (
+                {city === "Dubai" && (
                   <div className="col-md-6">
                     <label>ORN Number</label>
                     <input
@@ -358,6 +476,47 @@ export default function Profile(props) {
                     />
                   )}
                 </div>
+              </div>
+              <div className="row">
+                {/* Map and Autocomplete Input */}
+                <h4 className="title-2 mt-100">Update Your Location</h4>
+                {isLoaded && !loadError && (
+                  <div className="row">
+                    <div className="col-md-12">
+                      <Autocomplete
+                        onLoad={(autocomplete) => {
+                          window.autocomplete = autocomplete;
+                        }}
+                        onPlaceChanged={() =>
+                          onPlaceChanged(window.autocomplete)
+                        }
+                      >
+                        <input
+                          ref={autocompleteInputRef}
+                          type="text"
+                          className="form-control"
+                          placeholder="Search Location"
+                          style={{ margin: "10px 0", height: "40px" }}
+                        />
+                      </Autocomplete>
+                    </div>
+                    <div className="col-md-12">
+                      <GoogleMap
+                        mapContainerStyle={{ width: "100%", height: "400px" }}
+                        center={location}
+                        zoom={15}
+                        onLoad={onLoad}
+                        onUnmount={onUnmount}
+                      >
+                        <Marker
+                          position={location}
+                          draggable={true}
+                          onDragEnd={onMarkerDragEnd}
+                        />
+                      </GoogleMap>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="btn-wrapper">
                 <button

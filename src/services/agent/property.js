@@ -475,6 +475,20 @@ const PropertyService = {
 
     return response.data;
   },
+
+  carbonFootprint: async (id) => {
+    const response = await httpGet(`${apiUrlPrefix}/${id}/carbon-footprint`);
+
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message = ["Unable to list carbon footprint of the property"];
+      }
+
+      return response;
+    }
+
+    return response.data;
+  },
 };
 
 export default PropertyService;

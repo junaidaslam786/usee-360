@@ -45,6 +45,8 @@ export default function Completed(props) {
         appendQuery,
       });
 
+      console.log('appointment response', response)
+
       if (response?.data) {
         setList(response.data);
         setCurrentPage(parseInt(response.page, 10));
@@ -84,6 +86,14 @@ export default function Completed(props) {
     await loadAllList();
     setIsNotesModalOpen(false);
   };
+
+  function formatCo2Details(co2Details) {
+    if (!co2Details || co2Details === "undefined" || co2Details === "null") {
+      return "N/A"; // Return a placeholder or some default message
+    }
+    return co2Details; // Format further if needed
+  }
+  
 
   const handleNotesModalCancel = () => {
     setIsNotesModalOpen(false);
@@ -167,7 +177,7 @@ export default function Completed(props) {
                   >
                     <FaPaw style={{ fontSize: "20px", marginLeft: "25px", marginRight: "5px", color: 'green' }} />
                     <span style={{ fontSize: "12px" }}>
-                      Carbon Footprint: {carbonFootprint}
+                      Carbon Footprint: {formatCo2Details(element.co2Details)}
                     </span>
                   </div>
                 </div>
