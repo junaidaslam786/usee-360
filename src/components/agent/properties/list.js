@@ -234,21 +234,30 @@ export default function List(props) {
                         carbonFootprints[element.id].loading ? (
                           "Loading..."
                         ) : carbonFootprints[element.id].error ? (
-                          <button
+                          <span
                             onClick={() => fetchCarbonFootprint(element.id)}
+                            style={{
+                              cursor: "pointer",
+                              color: "#007bff",
+                              textDecoration: "underline",
+                            }}
                           >
                             Retry
-                          </button>
+                          </span>
                         ) : (
                           carbonFootprints[element.id].value
                         )
                       ) : (
-                        <button
+                        <span
                           onClick={() => fetchCarbonFootprint(element.id)}
-                          className="btn btn-sm btn-secondary"
+                          style={{
+                            cursor: "pointer",
+                            color: "#007bff",
+                            textDecoration: "underline",
+                          }}
                         >
                           Load Carbon Footprint
-                        </button>
+                        </span>
                       )}
                     </div>
                   </td>
