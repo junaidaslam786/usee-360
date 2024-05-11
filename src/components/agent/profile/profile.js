@@ -95,6 +95,20 @@ export default function Profile(props) {
     }
   };
 
+  const updateAutocompleteAddress = async (loc) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: loc }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+            setAddress(results[0].formatted_address);
+            if (autocompleteInputRef.current) {
+                autocompleteInputRef.current.value = results[0].formatted_address;
+            }
+        } else {
+            console.log("Failed to get address: " + status);
+        }
+    });
+};
+
   const updateProfile = async (e) => {
     e.preventDefault();
 
@@ -165,10 +179,13 @@ export default function Profile(props) {
     geocoder.geocode({ location: { lat: newLat, lng: newLng } }, (results, status) => {
       if (status === 'OK' && results[0]) {
         setAddress(results[0].formatted_address);
-        // Directly set the input value
-        if (autocompleteInputRef.current) {
-          autocompleteInputRef.current.value = results[0].formatted_address;
-        }
+            if (autocompleteInputRef.current) {
+                autocompleteInputRef.current.value = results[0].formatted_address;
+            }
+            // Ensure the map is loaded
+            if (map) {
+                map.panTo(location);
+            }
       } else {
         console.log("Geocoder failed due to: " + status);
       }
@@ -291,23 +308,14 @@ export default function Profile(props) {
         if (jsonData.userCallBackgroundImages) {
           setCallBackgroundImages(jsonData.userCallBackgroundImages);
         }
-        if (jsonData.agent.latitude && jsonData.agent.longitude) {
-          const initialLocation = {
-            lat: parseFloat(jsonData.agent.latitude),
-            lng: parseFloat(jsonData.agent.longitude),
+        if (jsonData.latitude && jsonData.longitude) {
+          const loc = {
+              lat: parseFloat(jsonData.latitude),
+              lng: parseFloat(jsonData.longitude)
           };
-          setLocation(initialLocation);
-          // setMapLocation(initialLocation); // If you're using a separate state for the map center
-          // Fetch and set the address
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ location: initialLocation }, (results, status) => {
-            if (status === "OK") {
-              if (results[0]) {
-                setAddress(results[0].formatted_address);
-              }
-            }
-          });
-        }
+          setLocation(loc);
+          updateAutocompleteAddress(loc);
+      }
       }
     };
 

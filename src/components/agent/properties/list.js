@@ -19,7 +19,7 @@ export default function List(props) {
   const [notes, setNotes] = useState("");
   const [list, setList] = useStateIfMounted([]);
   const [removeReasons, setRemoveReasons] = useStateIfMounted([]);
-  const [carbonFootprint, setCarbonFootprint] = useState("Value Here");
+  const [carbonFootprints, setCarbonFootprints] = useState({});
   const userDetail = getUserDetailsFromJwt();
   const closeModal = useRef(null);
 
@@ -31,6 +31,28 @@ export default function List(props) {
       setTotalPages(parseInt(response.totalPage));
     }
   }, []);
+
+  const fetchCarbonFootprint = async (propertyId) => {
+    if (!carbonFootprints[propertyId]) {
+      // Check if already loaded
+      setCarbonFootprints((prev) => ({
+        ...prev,
+        [propertyId]: { loading: true },
+      }));
+      const response = await PropertyService.carbonFootprint(propertyId);
+      if (response?.error) {
+        setCarbonFootprints((prev) => ({
+          ...prev,
+          [propertyId]: { error: "Failed to load carbon footprint" },
+        }));
+      } else {
+        setCarbonFootprints((prev) => ({
+          ...prev,
+          [propertyId]: { value: response.totalCo2SavedText },
+        }));
+      }
+    }
+  };
 
   const handleDeleteButtonClick = (id) => {
     setPropertyIdToDelete(id);
@@ -204,14 +226,30 @@ export default function List(props) {
                       <FaPaw
                         style={{
                           fontSize: "20px",
-                          marginLeft: "25px",
                           marginRight: "5px",
                           color: "green",
                         }}
                       />
-                      <span style={{ fontSize: "12px" }}>
-                        {carbonFootprint}
-                      </span>
+                      {carbonFootprints[element.id] ? (
+                        carbonFootprints[element.id].loading ? (
+                          "Loading..."
+                        ) : carbonFootprints[element.id].error ? (
+                          <button
+                            onClick={() => fetchCarbonFootprint(element.id)}
+                          >
+                            Retry
+                          </button>
+                        ) : (
+                          carbonFootprints[element.id].value
+                        )
+                      ) : (
+                        <button
+                          onClick={() => fetchCarbonFootprint(element.id)}
+                          className="btn btn-sm btn-secondary"
+                        >
+                          Load Carbon Footprint
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
