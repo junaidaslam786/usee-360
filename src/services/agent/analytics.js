@@ -117,9 +117,27 @@ const AgentAnalyticsService = {
       console.error("Error while fetching services data", error);
       return null;
     }
+  },
+
+  propertyCarbonData: async () => {
+    try {
+      const response = await httpPost('agent/analytics/property-carbon-footprint');
+      return response;
+    } catch (error) {
+      console.error("Error while fetching property carbon data", error);
+      return null;
+    }
+  },
+  
+  appointmentCarbonData: async () => {
+    try {
+      const response = await httpPost('agent/analytics/appointment-carbon-footprint');
+      return response;
+    } catch (error) {
+      console.error("Error while fetching appointment carbon data", error);
+      return null;
+    }
   }
-  
-  
   
  
 };
