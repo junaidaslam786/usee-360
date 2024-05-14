@@ -22,7 +22,6 @@ const AppointmentCarbonFootprint = () => {
 
   return (
     <div style={{ width: "100%", padding: "0.5rem" }}>
-      <h1>Appointment Carbon Footprint</h1>
       <div style={{ marginTop: "20px", width: "100%", height: 300 }}>
         <BarChart width={600} height={300} data={appointmentCarbonData}>
           <CartesianGrid strokeDasharray="3 3" />

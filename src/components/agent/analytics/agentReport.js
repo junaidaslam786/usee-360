@@ -10,6 +10,8 @@ import {
 } from "recharts";
 import "./agentReports.css";
 import AgentAnalyticsService from "../../../services/agent/analytics";
+import PropertyCarbonFootprint from "./propertyCarbonFootprint";
+import AppointmentCarbonFootprint from "./appointmentCarbonFootprints";
 
 const AgentReport = () => {
   const [propertyVisits, setPropertyVisits] = useState([]);
@@ -136,6 +138,16 @@ const AgentReport = () => {
           </tbody>
         </table>
       </div>
+        
+        {/* Carbon Footprints */}
+        <div className="agent-report-card">
+          <h2 className="agent-report-subtitle">Property Carbon Footprints</h2>
+          <PropertyCarbonFootprint />
+        </div>
+        <div className="agent-report-card">
+          <h2 className="agent-report-subtitle">Appointment Carbon Footprints</h2>
+          <AppointmentCarbonFootprint />
+        </div>
     </div>
   );
 };

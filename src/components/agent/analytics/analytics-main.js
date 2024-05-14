@@ -6,8 +6,7 @@ import PropertyListing from "./PropertyListing";
 import APISubscription from "./APISubscription";
 import AgentReport from "./agentReport";
 import ReportDownload from "./Reports";
-import PropertyCarbonFootprint from "./propertyCarbonFootprint";
-import AppointmentCarbonFootprint from "./appointmentCarbonFootprints";
+
 
 const AnalyticsPage = () => {
   // useEffect(() => {
@@ -29,8 +28,7 @@ const AnalyticsPage = () => {
       <APISubscription />
       <PropertyListing />
       <AgentReport />
-      <PropertyCarbonFootprint />
-      <AppointmentCarbonFootprint />
+      
 
     </div>
   );
