@@ -87,12 +87,10 @@ export default function Completed(props) {
     setIsNotesModalOpen(false);
   };
 
-  function formatCo2Details(co2Details) {
-    if (!co2Details || co2Details === "undefined" || co2Details === "null") {
-      return "N/A"; // Return a placeholder or some default message
-    }
-    return co2Details; // Format further if needed
-  }
+  const formatCo2Details = (co2Details) => {
+    if (!co2Details) return "N/A";
+    return `Total CO₂ Saved: ${co2Details.totalCo2SavedValue} metric tons`;
+  };
   
 
   const handleNotesModalCancel = () => {
@@ -177,7 +175,7 @@ export default function Completed(props) {
                   >
                     <FaPaw style={{ fontSize: "20px", marginLeft: "25px", marginRight: "5px", color: 'green' }} />
                     <span style={{ fontSize: "12px" }}>
-                      Carbon Footprint: {formatCo2Details(element.co2Details)}
+                      {formatCo2Details(element.co2Details)}
                     </span>
                   </div>
                 </div>

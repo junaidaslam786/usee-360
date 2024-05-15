@@ -11,8 +11,11 @@ import WishlistService from "../../../services/customer/wishlist";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 
-
-export default function PropertyGrid({filters, mapProperties, responseHandler}) {
+export default function PropertyGrid({
+  filters,
+  mapProperties,
+  responseHandler,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -24,7 +27,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
   const [wishlistId, setWishlistId] = useState();
   const [wishlistTitle, setWishlistTitle] = useState();
   const [wishlistImage, setWishlistImage] = useState();
-  const [carbonFootprint, setCarbonFootprint] = useState("_");
+  const [carbonFootprints, setCarbonFootprints] = useState({});
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = getLoginToken();
@@ -41,9 +44,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     libraries: ["places", "drawing"],
   });
 
-
   const loadProperties = async (page = 1) => {
-
     if (mapProperties && mapProperties.length > 0) {
       setProperties(mapProperties);
       setCurrentPage(1);
@@ -52,7 +53,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     }
 
     const filtersData = filters ? filters : {};
-    console.log('filters data from props',filtersData)
+    console.log("filters data from props", filtersData);
     let payload = {
       ...filtersData,
       page,
@@ -61,6 +62,7 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
 
     try {
       const response = await HomepageService.listProperties("", payload);
+      console.log("homepage properties", response);
       if (response.error && response.message) {
         responseHandler(response.message);
       } else {
@@ -71,6 +73,28 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
     } catch (err) {
       console.error("Error loading properties:", err);
       responseHandler("Failed to load properties. Please try again.");
+    }
+  };
+
+  const fetchCarbonFootprint = async (propertyId) => {
+    if (!carbonFootprints[propertyId]) {
+      // Check if already loaded
+      setCarbonFootprints((prev) => ({
+        ...prev,
+        [propertyId]: { loading: true },
+      }));
+      const response = await HomepageService.carbonFootprint(propertyId);
+      if (response?.error) {
+        setCarbonFootprints((prev) => ({
+          ...prev,
+          [propertyId]: { error: "Failed to load carbon footprint" },
+        }));
+      } else {
+        setCarbonFootprints((prev) => ({
+          ...prev,
+          [propertyId]: { value: response.totalCo2SavedText },
+        }));
+      }
     }
   };
 
@@ -117,7 +141,6 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
 
     responseHandler("Property removed from wishlist.", true);
   };
-
 
   useEffect(() => {
     loadProperties(currentPage);
@@ -213,7 +236,6 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                 >
                   <div className="ltn__product-tab-content-inner ltn__product-grid-view">
                     <div className="row">
-                      
                       {properties && properties.length === 0 ? (
                         <div className="col-lg-12">
                           <p>No Data!</p>
@@ -277,16 +299,55 @@ export default function PropertyGrid({filters, mapProperties, responseHandler}) 
                                       }}
                                     />
                                     <span style={{ fontSize: "12px" }}>
-                                      {carbonFootprint}
+                                      {carbonFootprints[element.id] ? (
+                                        carbonFootprints[element.id].loading ? (
+                                          "Loading..."
+                                        ) : carbonFootprints[element.id]
+                                            .error ? (
+                                          <span
+                                            onClick={() =>
+                                              fetchCarbonFootprint(element.id)
+                                            }
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "#007bff",
+                                              textDecoration: "underline",
+                                            }}
+                                          >
+                                            Retry
+                                          </span>
+                                        ) : (
+                                          carbonFootprints[element.id].value
+                                        )
+                                      ) : (
+                                        <span
+                                          onClick={() =>
+                                            fetchCarbonFootprint(element.id)
+                                          }
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "#007bff",
+                                            textDecoration: "underline",
+                                          }}
+                                        >
+                                          Load Carbon Footprint
+                                        </span>
+                                      )}
                                     </span>
                                   </div>
                                 </div>
-                                <h2 className="product-title go-top" style={{height: '100px'}}>
+                                <h2
+                                  className="product-title go-top"
+                                  style={{ height: "100px" }}
+                                >
                                   <Link to={`/property-details/${element.id}`}>
                                     {element.title}
                                   </Link>
                                 </h2>
-                                <div className="product-img-location go-top" style={{height: '80px'}}>
+                                <div
+                                  className="product-img-location go-top"
+                                  style={{ height: "80px" }}
+                                >
                                   <ul>
                                     <li>
                                       <Link to="#">
