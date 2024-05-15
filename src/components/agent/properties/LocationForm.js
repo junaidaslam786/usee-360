@@ -43,9 +43,13 @@ const LocationForm = ({
 
   const onMapLoad = useCallback((map) => {
     setMap(map);
-  }, []);
+    // Center map on the initial location
+    if (markerPosition) {
+      map.panTo(markerPosition);
+    }
+  }, [markerPosition]);
 
-  const onUnmount = useCallback(function callback(map) {
+  const onMapUnmount = useCallback(() => {
     setMap(null);
   }, []);
 
@@ -53,13 +57,14 @@ const LocationForm = ({
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setMarkerPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          // Optionally set these as well if you want to store the initial position
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
+          const newLat = position.coords.latitude;
+          const newLng = position.coords.longitude;
+          setMarkerPosition({ lat: newLat, lng: newLng });
+          setLatitude(newLat);
+          setLongitude(newLng);
+          if (map) {
+            map.panTo({ lat: newLat, lng: newLng });
+          }
         },
         () => {
           console.error("Error fetching the current location");
@@ -86,8 +91,8 @@ const LocationForm = ({
       }
     });
 
-    setLatitude(place.geometry.location.lat());
-    setLongitude(place.geometry.location.lng());
+    // setLatitude(place.geometry.location.lat());
+    // setLongitude(place.geometry.location.lng());
   };
 
   const onAutocompleteLoad = useCallback((autocomplete) => {
@@ -99,18 +104,21 @@ const LocationForm = ({
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
       if (place.geometry) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setLatitude(lat);
-        setLongitude(lng);
-        setMarkerPosition({ lat, lng });
-        setAddress(place.formatted_address); // Assuming setAddress updates an internal state
-        setAddressFields(place); // Update additional fields based on the selected place
+        const newLat = place.geometry.location.lat();
+        const newLng = place.geometry.location.lng();
+        setLatitude(newLat);
+        setLongitude(newLng);
+        setMarkerPosition({ lat: newLat, lng: newLng });
+        setAddress(place.formatted_address);
+        setAddressFields(place);
+        if (map) {
+          map.panTo({ lat: newLat, lng: newLng });
+        }
       } else {
         console.log("No details available for input: '" + place.name + "'");
       }
     }
-  }, [setAddress, setLatitude, setLongitude, setAddressFields]);
+  }, [setAddress, setLatitude, setLongitude, setAddressFields, map]);
 
   const onMarkerDragEnd = useCallback((e) => {
     const newLat = e.latLng.lat();
@@ -124,11 +132,11 @@ const LocationForm = ({
       geocoder.current.geocode(
         { location: { lat: newLat, lng: newLng } },
         (results, status) => {
-          if (status === "OK") {
-            if (results[0]) {
-              setAddress(results[0].formatted_address);
-              setAddressFields(results[0]);
-              // Optionally, update other address-related states here
+          if (status === "OK" && results[0]) {
+            setAddress(results[0].formatted_address);
+            setAddressFields(results[0]);
+            if (map) {
+              map.panTo({ lat: newLat, lng: newLng });
             }
           } else {
             console.error("Geocoder failed due to: " + status);
@@ -136,7 +144,7 @@ const LocationForm = ({
         }
       );
     }
-  }, []);
+  }, [setAddress, setLatitude, setLongitude, setAddressFields, map]);
 
   useEffect(() => {
     if (isLoaded) {
@@ -185,7 +193,7 @@ const LocationForm = ({
               center={markerPosition}
               zoom={17}
               onLoad={onMapLoad}
-              onUnmount={onUnmount}
+              onUnmount={onMapUnmount}
             >
               <Marker
                 position={markerPosition}

@@ -21,18 +21,20 @@ const path = require('path');
 module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
-      // Define `process.env` and other necessary process variables
-      webpackConfig.plugins = [
-        ...webpackConfig.plugins,
-        new webpack.ProvidePlugin({
-          process: 'process/browser', // This automatically loads when 'process' is used
-        }),
-        new webpack.DefinePlugin({
-          'process.env': JSON.stringify(process.env),
-          'process.platform': JSON.stringify('browser'),
-          'process.browser': JSON.stringify(true)
-        })
-      ];
+      // Define environment variables
+      const envVariables = {
+        'process.env': JSON.stringify(process.env),
+        'process.platform': JSON.stringify('browser'),
+        'process.browser': JSON.stringify(true)
+      };
+
+      // Add DefinePlugin only once
+      webpackConfig.plugins.push(new webpack.DefinePlugin(envVariables));
+
+      // Add ProvidePlugin for process
+      webpackConfig.plugins.push(new webpack.ProvidePlugin({
+        process: 'process/browser', // This automatically loads when 'process' is used
+      }));
 
       // Configure fallbacks for Node.js core modules and process
       webpackConfig.resolve.fallback = {
@@ -49,5 +51,6 @@ module.exports = {
     }
   }
 };
+
 
 

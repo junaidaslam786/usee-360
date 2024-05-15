@@ -96,6 +96,7 @@ export default function Profile(props) {
   };
 
   const updateAutocompleteAddress = async (loc) => {
+    if (!isLoaded) return;
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location: loc }, (results, status) => {
         if (status === 'OK' && results[0]) {
@@ -145,31 +146,7 @@ export default function Profile(props) {
     }
   };
 
-  // const onMarkerDragEnd = (event) => {
-  //   const newLat = event.latLng.lat();
-  //   const newLng = event.latLng.lng();
-  //   setLocation({ lat: newLat, lng: newLng });
-
-  //   // Reverse geocode to get address from lat and lng
-  //   const geocoder = new window.google.maps.Geocoder();
-  //   geocoder.geocode(
-  //     { location: { lat: newLat, lng: newLng } },
-  //     (results, status) => {
-  //       if (status === "OK") {
-  //         if (results[0]) {
-  //           setAddress(results[0].formatted_address);
-  //           if (window.autocomplete) {
-  //             window.autocomplete.set("place", results[0]);
-  //           }
-  //         } else {
-  //           console.log("No results found");
-  //         }
-  //       } else {
-  //         console.log("Geocoder failed due to: " + status);
-  //       }
-  //     }
-  //   );
-  // };
+ 
   const onMarkerDragEnd = (event) => {
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
