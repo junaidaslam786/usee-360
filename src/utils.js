@@ -220,13 +220,22 @@ export const setUserType = (type) => {
   localStorage.setItem("userType", JSON.stringify(type));
 };
 
-export const getLoginToken = () => {
-  return JSON.parse(localStorage.getItem("userToken"));
-};
 // export const getLoginToken = () => {
-//   // Directly return the token string from localStorage without JSON parsing
-//   return localStorage.getItem("userToken");
+//   return JSON.parse(localStorage.getItem("userToken"));
 // };
+export const getLoginToken = () => {
+  const token = localStorage.getItem("userToken");
+  if (token) {
+    try {
+      return JSON.parse(token);
+    } catch (error) {
+      console.error("Failed to parse user token:", error);
+      return null;
+    }
+  }
+  return null;
+};
+
 
 export const removeLoginToken = () => {
   localStorage.removeItem("userToken");
