@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../../components/global/navbar";
@@ -11,19 +13,30 @@ import Footer from "../../components/global/footer";
 import PropertyGrid from "../../components/homepage/property/grid";
 
 function PropertiesServicePage() {
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState(() => {
+    // Retrieve filters from localStorage if available
+    const savedFilters = localStorage.getItem("searchFilters");
+    return savedFilters ? JSON.parse(savedFilters) : {};
+  });
 
   const location = useLocation();
   const propertiesFromMap = location.state?.properties;
- 
 
- // This function handles updates to filters, including propertyCategory, from the SearchForm
- const handleFiltersChange = (newFilters) => {
-  setFilters(prevFilters => ({
-    ...prevFilters,
-    ...newFilters, // Ensures propertyCategory and other filters are updated
-  }));
-};
+  const handleFiltersChange = (newFilters) => {
+    if (Object.keys(newFilters).length === 0) {
+      // If newFilters is empty, clear localStorage and state
+      localStorage.removeItem("searchFilters");
+      setFilters({});
+    } else {
+      const updatedFilters = {
+        ...filters,
+        ...newFilters,
+      };
+      setFilters(updatedFilters);
+      // Save updated filters to localStorage
+      localStorage.setItem("searchFilters", JSON.stringify(updatedFilters));
+    }
+  };
 
   useEffect(() => {
     // If there are filters in the location state, use them; otherwise, keep the existing filters.
@@ -31,8 +44,6 @@ function PropertiesServicePage() {
       setFilters(location.state.filters);
     }
   }, [location.state?.filters]);
-
-  
 
   return (
     <div>
@@ -49,7 +60,6 @@ function PropertiesServicePage() {
       />
       <PropertyGrid filters={filters} mapProperties={propertiesFromMap} />
       <ServiceDetails />
-      {/* <Video /> */}
       <Service />
       <CallToActionV1 />
       <Footer />
@@ -58,3 +68,4 @@ function PropertiesServicePage() {
 }
 
 export default PropertiesServicePage;
+

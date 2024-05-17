@@ -63,11 +63,7 @@ export default function Profile(props) {
     libraries,
   });
 
-  // const onLoad = useCallback(function callback(map) {
-  //   const bounds = new window.google.maps.LatLngBounds();
-  //   map.fitBounds(bounds);
-  //   setMap(map);
-  // }, []);
+  
   const onLoad = useCallback(
     function callback(map) {
       setMap(map);
