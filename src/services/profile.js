@@ -145,6 +145,22 @@ const ProfileService = {
 
     return response.data;
   },
+
+  getUserBasicDetail: async (id) => {
+    const response = await httpGet(`${apiUrlPrefix}/${id}`);
+
+    if (response?.error) {
+      if (response?.error?.message && response?.error?.message.length < 0) {
+        response.error.message = [
+          "Unable to get user basic detail, please try again later",
+        ];
+      }
+
+      return response;
+    }
+
+    return response.data;
+  }
 };
 
 export default ProfileService;

@@ -9,6 +9,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import SpendingTokens from "./spendingTokens";
+import ManageBilling from "./ManageBilling";
 
 const PaymentPage = ({responseHandler}) => {
   const [showCardForm, setShowCardForm] = useState(false);
@@ -87,6 +89,24 @@ const PaymentPage = ({responseHandler}) => {
           <Wallet />
         </Card.Body>
       </Card>
+
+      {/* Manage Billing */}
+      <Card className="mb-3">
+        <Card.Body>
+          <Card.Title>Billing</Card.Title>
+          <ManageBilling />
+        </Card.Body>
+      </Card>
+      
+
+      {/* spending Card */}
+      <Card className="mb-3">
+        <Card.Body>
+          <Card.Title>Spendings</Card.Title>
+          <SpendingTokens />
+        </Card.Body>
+      </Card>
+
       </Container>
   );
 };

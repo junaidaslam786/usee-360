@@ -1,16 +1,21 @@
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { formatPrice, getLoginToken, loadPropertyMetaData } from "../../../utils";
+import {
+  formatPrice,
+  getLoginToken,
+  loadPropertyMetaData,
+} from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
-import AgentService from "../../../services/agent/user"; // Add this import
+import UserService from "../../../services/profile";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 
-export default function PropertyGrid({ filters, mapProperties, responseHandler }) {
+export default function PropertyGrid({
+  filters,
+  mapProperties,
+  responseHandler,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [properties, setProperties] = useState([]);
@@ -20,16 +25,18 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
   const [wishlistImage, setWishlistImage] = useState();
   const [carbonFootprints, setCarbonFootprints] = useState({});
   const [userDetails, setUserDetails] = useState({});
-  const [latFilter, setLatFilter] = useState(null); // Add this state
-  const [lngFilter, setLngFilter] = useState(null); // Add this state
-  const [address, setAddress] = useState(""); // Add this state
+  const [latFilter, setLatFilter] = useState(null);
+  const [lngFilter, setLngFilter] = useState(null);
+  const [address, setAddress] = useState("");
 
   const publicUrl = `${process.env.REACT_APP_API_URL}`;
   const token = getLoginToken();
   const toggleButton = useRef(null);
   const sort = useRef(null);
   const history = useHistory();
-  const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(window.location.pathname)}`;
+  const redirectPath = `/customer/login?returnUrl=${encodeURIComponent(
+    window.location.pathname
+  )}`;
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -68,18 +75,21 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
   };
 
   const fetchUserDetails = async (properties) => {
-    const userDetailsTemp = {};
-    for (const property of properties) {
-      if (!userDetails[property.userId]) {
+    const userDetailsTemp = { ...userDetails };
+    const promises = properties.map(async (property) => {
+      if (!userDetailsTemp[property.userId]) {
         try {
-          const response = await AgentService.detail(property.userId);
+          const response = await UserService.getUserBasicDetail(
+            property.userId
+          );
           userDetailsTemp[property.userId] = response;
         } catch (err) {
           console.error("Error fetching user details:", err);
         }
       }
-    }
-    setUserDetails((prev) => ({ ...prev, ...userDetailsTemp }));
+    });
+    await Promise.all(promises);
+    setUserDetails(userDetailsTemp);
   };
 
   const fetchCarbonFootprint = async (propertyId) => {
@@ -158,7 +168,9 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
     }
 
     if (isLoaded) {
-      const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById("autocomplete"));
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry) {
@@ -184,7 +196,11 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                   <li>
                     <div className="ltn__grid-list-tab-menu ">
                       <div className="nav">
-                        <a className="active show" data-bs-toggle="tab" href="#liton_product_grid">
+                        <a
+                          className="active show"
+                          data-bs-toggle="tab"
+                          href="#liton_product_grid"
+                        >
                           <i className="fas fa-th-large" />
                         </a>
                         <a data-bs-toggle="tab" href="#liton_product_list">
@@ -208,15 +224,22 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                         }}
                         defaultValue="ASC"
                       >
-                        <option value={"ASC"}>Sort by price: low to high</option>
-                        <option value={"DESC"}>Sort by price: high to low</option>
+                        <option value={"ASC"}>
+                          Sort by price: low to high
+                        </option>
+                        <option value={"DESC"}>
+                          Sort by price: high to low
+                        </option>
                       </select>
                     </div>
                   </li>
                 </ul>
               </div>
               <div className="tab-content">
-                <div className="tab-pane fade active show" id="liton_product_grid">
+                <div
+                  className="tab-pane fade active show"
+                  id="liton_product_grid"
+                >
                   <div className="ltn__product-tab-content-inner ltn__product-grid-view">
                     <div className="row">
                       {properties && properties.length === 0 ? (
@@ -229,25 +252,49 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
-                                  <img src={`${publicUrl}/${element.featuredImage}`} height="250px" width="100%" />
+                                  <img
+                                    src={`${publicUrl}/${element.featuredImage}`}
+                                    height="250px"
+                                    width="100%"
+                                  />
                                 </Link>
                               </div>
                               <div className="product-info">
                                 <div className="product-badge">
                                   <ul>
                                     <li className="sale-badg">
-                                      For {loadPropertyMetaData(element, "categoryType")}
+                                      For{" "}
+                                      {loadPropertyMetaData(
+                                        element,
+                                        "categoryType"
+                                      )}
                                     </li>
                                   </ul>
                                 </div>
-                                <div className="product-views" style={{ display: "flex" }}>
-                                  <span className="view-icon" style={{ marginRight: "5px" }}>
-                                    <i className="fas fa-eye" /> {/* Icon for views */}
+                                <div
+                                  className="product-views"
+                                  style={{ display: "flex" }}
+                                >
+                                  <span
+                                    className="view-icon"
+                                    style={{ marginRight: "5px" }}
+                                  >
+                                    <i className="fas fa-eye" />{" "}
+                                    {/* Icon for views */}
                                   </span>
                                   <span className="view-count">
-                                    {element.productViews ? element.productViews.length : 0} Views
+                                    {element.productViews
+                                      ? element.productViews.length
+                                      : 0}{" "}
+                                    Views
                                   </span>
-                                  <div style={{ display: "flex", alignItems: "center", marginLeft: "100px" }}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      marginLeft: "100px",
+                                    }}
+                                  >
                                     <FaPaw
                                       style={{
                                         fontSize: "20px",
@@ -260,9 +307,12 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                       {carbonFootprints[element.id] ? (
                                         carbonFootprints[element.id].loading ? (
                                           "Loading..."
-                                        ) : carbonFootprints[element.id].error ? (
+                                        ) : carbonFootprints[element.id]
+                                            .error ? (
                                           <span
-                                            onClick={() => fetchCarbonFootprint(element.id)}
+                                            onClick={() =>
+                                              fetchCarbonFootprint(element.id)
+                                            }
                                             style={{
                                               cursor: "pointer",
                                               color: "#007bff",
@@ -276,7 +326,9 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                         )
                                       ) : (
                                         <span
-                                          onClick={() => fetchCarbonFootprint(element.id)}
+                                          onClick={() =>
+                                            fetchCarbonFootprint(element.id)
+                                          }
                                           style={{
                                             cursor: "pointer",
                                             color: "#007bff",
@@ -289,29 +341,55 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                     </span>
                                   </div>
                                 </div>
-                                <h2 className="product-title go-top" style={{ height: "100px" }}>
-                                  <Link to={`/property-details/${element.id}`}>{element.title}</Link>
+                                <h2
+                                  className="product-title go-top"
+                                  style={{ height: "100px" }}
+                                >
+                                  <Link to={`/property-details/${element.id}`}>
+                                    {element.title}
+                                  </Link>
                                 </h2>
-                                <div className="product-img-location go-top" style={{ height: "80px" }}>
+                                <div
+                                  className="product-img-location go-top"
+                                  style={{ height: "80px" }}
+                                >
                                   <ul>
                                     <li>
                                       <Link to="#">
-                                        <i className="flaticon-pin" /> {element.address}
+                                        <i className="flaticon-pin" />{" "}
+                                        {element.address}
                                       </Link>
                                     </li>
                                   </ul>
                                 </div>
                                 <div className="product-creator">
-                                  <span>Created by: {userDetails[element.userId]?.name || "Loading..."}</span>
+                                  <span>
+                                    Created by:{" "}
+                                    {userDetails[element.userId]
+                                      ? userDetails[element.userId].companyName ||
+                                        userDetails[element.userId]?.user
+                                          ?.firstName +
+                                          " " +
+                                          userDetails[element.userId]?.user
+                                            ?.lastName
+                                      : "Loading..."}
+                                  </span>
                                 </div>
                                 {element?.productMetaTags?.length > 0 && (
                                   <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
                                     <li>
-                                      <span>{loadPropertyMetaData(element, "bedroom")} </span>
+                                      <span>
+                                        {loadPropertyMetaData(
+                                          element,
+                                          "bedroom"
+                                        )}{" "}
+                                      </span>
                                       Bed
                                     </li>
                                     <li>
-                                      <span>{loadPropertyMetaData(element, "area")} </span>
+                                      <span>
+                                        {loadPropertyMetaData(element, "area")}{" "}
+                                      </span>
                                       {loadPropertyMetaData(element, "unit")}
                                     </li>
                                   </ul>
@@ -320,7 +398,10 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                   <ul>
                                     <li
                                       className={
-                                        wishlistProperties.find(({ productId }) => productId === element.id)
+                                        wishlistProperties.find(
+                                          ({ productId }) =>
+                                            productId === element.id
+                                        )
                                           ? "wishlist-active"
                                           : null
                                       }
@@ -330,7 +411,10 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                         title="Quick View"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          wishlistProperties.find(({ productId }) => productId === element.id)
+                                          wishlistProperties.find(
+                                            ({ productId }) =>
+                                              productId === element.id
+                                          )
                                             ? removeWishList(element.id)
                                             : addToWishList(element.id);
                                         }}
@@ -367,14 +451,24 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                             <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5">
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
-                                  <img src={`${publicUrl}/${element.featuredImage}`} height="200px" width="100%" />
+                                  <img
+                                    src={`${publicUrl}/${element.featuredImage}`}
+                                    height="200px"
+                                    width="100%"
+                                  />
                                 </Link>
                               </div>
                               <div className="product-info">
                                 <div className="product-badge-price">
                                   <div className="product-badge">
                                     <ul>
-                                      <li className="sale-badg">For {loadPropertyMetaData(element, "categoryType")}</li>
+                                      <li className="sale-badg">
+                                        For{" "}
+                                        {loadPropertyMetaData(
+                                          element,
+                                          "categoryType"
+                                        )}
+                                      </li>
                                     </ul>
                                   </div>
                                   <div className="product-price">
@@ -382,27 +476,44 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                   </div>
                                 </div>
                                 <h2 className="product-title go-top">
-                                  <Link to={`/property-details/${element.id}`}>{element.title}</Link>
+                                  <Link to={`/property-details/${element.id}`}>
+                                    {element.title}
+                                  </Link>
                                 </h2>
                                 <div className="product-img-location go-top">
                                   <ul>
                                     <li>
                                       <Link to="#">
-                                        <i className="flaticon-pin" /> {element.address}
+                                        <i className="flaticon-pin" />{" "}
+                                        {element.address}
                                       </Link>
                                     </li>
                                   </ul>
                                 </div>
                                 <div className="product-creator">
-                                  <span>Created by: {userDetails[element.userId]?.name || "Loading..."}</span>
+                                  <span>
+                                    Created by:{" "}
+                                    {userDetails[element.userId]
+                                      ? userDetails[element.userId].companyName ||
+                                        userDetails[element.userId]?.user
+                                          ?.firstName +
+                                          " " +
+                                          userDetails[element.userId]?.user
+                                            ?.lastName
+                                      : "Loading..."}
+                                  </span>
                                 </div>
                                 <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
                                   <li>
-                                    <span>{loadPropertyMetaData(element, "bedroom")} </span>
+                                    <span>
+                                      {loadPropertyMetaData(element, "bedroom")}{" "}
+                                    </span>
                                     Bed
                                   </li>
                                   <li>
-                                    <span>{loadPropertyMetaData(element, "area")} </span>
+                                    <span>
+                                      {loadPropertyMetaData(element, "area")}{" "}
+                                    </span>
                                     {loadPropertyMetaData(element, "unit")}
                                   </li>
                                 </ul>
@@ -412,7 +523,10 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                   <ul>
                                     <li
                                       className={
-                                        wishlistProperties.find(({ productId }) => productId === element.id)
+                                        wishlistProperties.find(
+                                          ({ productId }) =>
+                                            productId === element.id
+                                        )
                                           ? "wishlist-active"
                                           : null
                                       }
@@ -422,7 +536,10 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                                         title="Quick View"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          wishlistProperties.find(({ productId }) => productId === element.id)
+                                          wishlistProperties.find(
+                                            ({ productId }) =>
+                                              productId === element.id
+                                          )
                                             ? removeWishList(element.id)
                                             : addToWishList(element.id);
                                         }}
@@ -458,7 +575,10 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                       </Link>
                     </li>
                     {Array.from(Array(totalPages), (e, i) => (
-                      <li key={i} className={currentPage == i + 1 ? "active" : null}>
+                      <li
+                        key={i}
+                        className={currentPage == i + 1 ? "active" : null}
+                      >
                         <Link
                           to="#"
                           onClick={(e) => {
@@ -491,14 +611,23 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
         </div>
       </div>
 
-      <a ref={toggleButton} data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal"></a>
+      <a
+        ref={toggleButton}
+        data-bs-toggle="modal"
+        data-bs-target="#liton_wishlist_modal"
+      ></a>
 
       <div className="ltn__modal-area ltn__add-to-cart-modal-area">
         <div className="modal fade" id="liton_wishlist_modal" tabIndex={-1}>
           <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
@@ -512,13 +641,19 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
                         </div>
                         <div className="modal-product-info go-top">
                           <h5>
-                            <Link to={`/property-details/${wishlistId}`}>{wishlistTitle}</Link>
+                            <Link to={`/property-details/${wishlistId}`}>
+                              {wishlistTitle}
+                            </Link>
                           </h5>
                           <p className="added-cart">
-                            <i className="fa fa-check-circle" /> Successfully added to your Wishlist
+                            <i className="fa fa-check-circle" /> Successfully
+                            added to your Wishlist
                           </p>
                           <div className="btn-wrapper">
-                            <Link to="/customer/wishlist" className="theme-btn-1 btn btn-effect-1">
+                            <Link
+                              to="/customer/wishlist"
+                              className="theme-btn-1 btn btn-effect-1"
+                            >
                               View Wishlist
                             </Link>
                           </div>
@@ -535,4 +670,3 @@ export default function PropertyGrid({ filters, mapProperties, responseHandler }
     </div>
   );
 }
-

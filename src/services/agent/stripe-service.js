@@ -316,6 +316,19 @@ const StripeService = {
     }
   },
 
+  getTokenTransactions: async (userId) => {
+    try {
+      const response = await httpGet(`agent/user/${userId}/token-transactions`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching token transactions:", error.message);
+      return {
+        error: true,
+        message: error.message || "Failed to fetch token transactions",
+      };
+    }
+  },
+
   getUserSubscriptionDetails: async (userId) => {
     try {
       
@@ -446,7 +459,27 @@ const StripeService = {
         message: "An error occurred during auto-renewal.",
       };
     }
-  }
+  },
+
+  createBilingSession: async (customerId) => {
+    try {
+      const response = await httpPost(`create-billing-session`, {
+        customerId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error creating billing session:",
+        error.response?.data || error.message
+      );
+      return {
+        error: true,
+        message:
+          error.response?.data?.error || "Failed to create billing session",
+      };
+    }
+  },
+  
 
 };
 

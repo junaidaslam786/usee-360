@@ -46,25 +46,6 @@ const Wallet = () => {
     fetchTokens();
   }, [userId]);
 
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "20px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  };
-
-  const thStyle = {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    padding: "10px 15px",
-    textAlign: "left",
-    fontSize: "16px",
-  };
-
-  const tdStyle = {
-    padding: "10px 15px",
-    borderBottom: "1px solid #ddd",
-  };
 
   return (
     <Container className="text-center mt-4">
