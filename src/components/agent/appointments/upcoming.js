@@ -12,7 +12,8 @@ import { useHistory } from "react-router";
 import AppointmentService from "../../../services/agent/appointment";
 import { APPOINTMENT_STATUS, USER_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
-import moment from "moment";
+import moment from "moment-timezone";
+
 
 export default function Upcoming(props) {
   const [currentPage, setCurrentPage] = useStateIfMounted();
@@ -143,16 +144,15 @@ export default function Upcoming(props) {
     setIsNotesModalOpen(true);
   };
 
-  const isWithinFiveMinutes = (appointmentTimeGmt) => {
-    const now = moment(); // Current time as a moment object
-    const appointmentTime = moment
-      .tz(appointmentTimeGmt, "HH:mm:ss", "GMT")
-      .tz(getUserTimezone());
-    const timeDiff = appointmentTime.diff(now, "minutes"); // Difference in minutes
+  // const isWithinFiveMinutes = (appointmentTimeGmt) => {
+  //   const now = moment(); // Current time as a moment object
+  //   const appointmentTime = moment.tz(appointmentTimeGmt, "HH:mm:ss", "GMT").tz(getUserTimezone());
+  //   const timeDiff = appointmentTime.diff(now, "minutes"); // Difference in minutes
   
-    // Enable the button from 5 minutes before the appointment and keep it enabled thereafter
-    return timeDiff <= 5;
-  };
+  //   // Enable the button from 5 minutes before the appointment and keep it enabled thereafter
+  //   return timeDiff <= 5;
+  // };
+  
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
@@ -213,17 +213,17 @@ export default function Upcoming(props) {
                       >
                         <button
                           className="joinCall"
-                          disabled={
-                            !isWithinFiveMinutes(element.appointmentTimeGmt)
-                          }
-                          style={{
-                            backgroundColor: isWithinFiveMinutes(
-                              element.appointmentTimeGmt
-                            )
-                              ? ""
-                              : "#282B38",
-                            // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000",
-                          }}
+                          // disabled={
+                          //   !isWithinFiveMinutes(element.appointmentTimeGmt)
+                          // }
+                          // style={{
+                          //   backgroundColor: isWithinFiveMinutes(
+                          //     element.appointmentTimeGmt
+                          //   )
+                          //     ? ""
+                          //     : "#282B38",
+                          //   // color: isWithinFiveMinutes(element.appointmentTimeGmt) ? "#ffffff" : "#000000",
+                          // }}
                         >
                           Join Call
                         </button>

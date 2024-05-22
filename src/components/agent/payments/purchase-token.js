@@ -111,7 +111,7 @@ const PurchaseToken = () => {
         <Form>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="4">
-            USEE Coin Quantity:
+            USEE-360 Coin Quantity:
             </Form.Label>
             <Col sm="8">
               <Form.Control
@@ -122,7 +122,7 @@ const PurchaseToken = () => {
               />
             </Col>
           </Form.Group>
-          <p>Price Per USEE Coin: AED {config?.configValue || "Loading..."}</p>
+          <p>Price Per USEE-360 Coin: <strong> AED  {config?.configValue || "Loading..."} </strong></p>
           <Row>
             <Col>
               <Button

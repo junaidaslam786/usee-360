@@ -38,7 +38,7 @@ const SpendingTokens = () => {
 
   return (
     <Container className="text-center mt-4">
-      <h3>Spending USEE Coins</h3>
+      
       {error && <Alert variant="danger">{error}</Alert>}
 
       <div style={tableWrapperStyle}>

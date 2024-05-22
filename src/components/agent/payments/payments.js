@@ -4,15 +4,16 @@ import CardForm from "./CardForm";
 import UserService from "../../../services/agent/user";
 import PurchaseToken from "./purchase-token";
 import Wallet from "./Wallet";
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 import SpendingTokens from "./spendingTokens";
 import ManageBilling from "./ManageBilling";
+// import coinImage from '/assets/img/Usee-360-coin.png'
 
-const PaymentPage = ({responseHandler}) => {
+const PaymentPage = ({ responseHandler }) => {
   const [showCardForm, setShowCardForm] = useState(false);
   const [customerId, setCustomerId] = useState(null);
 
@@ -54,17 +55,20 @@ const PaymentPage = ({responseHandler}) => {
       <Card className="mb-3">
         <Card.Body>
           <Card.Title>Stripe Connection</Card.Title>
-          {!showCardForm && (
-            customerId ? (
-              <Button disabled variant="success" style={{backgroundColor: "white", color: "green"}}>
+          {!showCardForm &&
+            (customerId ? (
+              <Button
+                disabled
+                variant="success"
+                style={{ backgroundColor: "white", color: "green" }}
+              >
                 Connected with Stripe
               </Button>
             ) : (
               <Button variant="success" onClick={handleConnectWithStripe}>
                 Connect with Stripe
               </Button>
-            )
-          )}
+            ))}
           {showCardForm && (
             <CardForm
               userDetails={userDetails}
@@ -77,7 +81,14 @@ const PaymentPage = ({responseHandler}) => {
       {/* Purchase Token Card */}
       <Card className="mb-3">
         <Card.Body>
-          <Card.Title>Purchase USEE Coins</Card.Title>
+          <Card.Title>
+            Purchase USEE-360 Coins
+            <img
+              src="/assets/img/Usee-360-coin.png"
+              alt="coins"
+              style={{ width: "35px", marginLeft: "10px" }}
+            />
+          </Card.Title>
           <PurchaseToken />
         </Card.Body>
       </Card>
@@ -93,21 +104,19 @@ const PaymentPage = ({responseHandler}) => {
       {/* Manage Billing */}
       <Card className="mb-3">
         <Card.Body>
-          <Card.Title>Billing</Card.Title>
+          <Card.Title>Payment Method & Invoices</Card.Title>
           <ManageBilling />
         </Card.Body>
       </Card>
-      
 
       {/* spending Card */}
       <Card className="mb-3">
         <Card.Body>
-          <Card.Title>Spendings</Card.Title>
+          <Card.Title>USEE-360 Coins Spendings</Card.Title>
           <SpendingTokens />
         </Card.Body>
       </Card>
-
-      </Container>
+    </Container>
   );
 };
 

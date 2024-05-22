@@ -271,9 +271,20 @@ export default function PropertyGrid({
                                     </li>
                                   </ul>
                                 </div>
+                                <h2
+                                  className="product-title go-top"
+                                  style={{ height: "100px" }}
+                                >
+                                  <Link to={`/property-details/${element.id}`}>
+                                    {element.title}
+                                  </Link>
+                                </h2>
                                 <div
                                   className="product-views"
-                                  style={{ display: "flex" }}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
                                 >
                                   <span
                                     className="view-icon"
@@ -292,7 +303,7 @@ export default function PropertyGrid({
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
-                                      marginLeft: "100px",
+                                      marginLeft: "20px",
                                     }}
                                   >
                                     <FaPaw
@@ -331,24 +342,18 @@ export default function PropertyGrid({
                                           }
                                           style={{
                                             cursor: "pointer",
-                                            color: "#007bff",
-                                            textDecoration: "underline",
+                                            color: "#00c800",
+                                            textDecoration: "none",
                                           }}
                                         >
-                                          view
+                                          View
                                         </span>
                                       )}
                                     </span>
                                   </div>
                                 </div>
-                                <h2
-                                  className="product-title go-top"
-                                  style={{ height: "100px" }}
-                                >
-                                  <Link to={`/property-details/${element.id}`}>
-                                    {element.title}
-                                  </Link>
-                                </h2>
+
+                                
                                 <div
                                   className="product-img-location go-top"
                                   style={{ height: "80px" }}
@@ -366,7 +371,8 @@ export default function PropertyGrid({
                                   <span>
                                     Created by:{" "}
                                     {userDetails[element.userId]
-                                      ? userDetails[element.userId].companyName ||
+                                      ? userDetails[element.userId]
+                                          .companyName ||
                                         userDetails[element.userId]?.user
                                           ?.firstName +
                                           " " +
@@ -493,14 +499,23 @@ export default function PropertyGrid({
                                 <div className="product-creator">
                                   <span>
                                     Created by:{" "}
-                                    {userDetails[element.userId]
-                                      ? userDetails[element.userId].companyName ||
-                                        userDetails[element.userId]?.user
-                                          ?.firstName +
-                                          " " +
-                                          userDetails[element.userId]?.user
-                                            ?.lastName
-                                      : "Loading..."}
+                                    {userDetails[element.userId] ? (
+                                      <span style={{ fontWeight: "600" }}>
+                                        {" "}
+                                        {/* Adjust the weight as needed */}
+                                        {userDetails[element.userId]
+                                          .companyName ||
+                                          `${
+                                            userDetails[element.userId]?.user
+                                              ?.firstName
+                                          } ${
+                                            userDetails[element.userId]?.user
+                                              ?.lastName
+                                          }`}
+                                      </span>
+                                    ) : (
+                                      "Loading..."
+                                    )}
                                   </span>
                                 </div>
                                 <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">

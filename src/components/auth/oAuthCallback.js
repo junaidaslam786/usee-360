@@ -53,11 +53,11 @@ const OAuthCallback = () => {
           const profile = await ProfileService.getProfile();
           if (profile && profile.signupStep === -1) {
             history.push("/customer/onboarding");
-          } else if (profile && profile.signupStep === 1) {
+          } else if (profile && profile.signupStep === 2) {
             history.push("/customer/dashboard");
           } else {
             toast.error("Unexpected user state, redirecting to login.");
-            history.push("/login");
+            history.push("/customer/login");
           }
         })();
       }

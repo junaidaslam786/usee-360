@@ -285,11 +285,11 @@ const PaidServices = () => {
                             <Col xs={12}>
                               <div className="d-flex flex-column justify-content-end">
                                 <p className="mb-2">
-                                  USEE Coins Per Unit:{" "}
+                                  USEE-360 Coins Per Unit:{" "}
                                   <strong>{service.tokenPrice}</strong>
                                 </p>
                                 <p>
-                                  Total USEE Coins:{" "}
+                                  Total USEE-360 Coins:{" "}
                                   <strong>
                                     {service.tokenPrice * service.quantity}
                                   </strong>

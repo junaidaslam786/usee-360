@@ -55,7 +55,7 @@ const ManageBilling = () => {
 
   return (
     <Container className="text-center mt-4">
-      <h3>Manage Billing</h3>
+      
       {error && <Alert variant="danger">{error}</Alert>}
       <p>
         Payment Method & Invoices The "Payment Methods & Invoices" section lets
@@ -68,7 +68,7 @@ const ManageBilling = () => {
         disabled={!billingSession}
         className="btn theme-btn-2"
       >
-        Go to Billing Portal
+        Manage
       </Button>
     </Container>
   );

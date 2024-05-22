@@ -51,7 +51,7 @@ const Wallet = () => {
     <Container className="text-center mt-4">
       {/* <img src={profileImg} alt="Profile" style={{ borderRadius: "50%" }} /> */}
       {/* <h2 className="mt-2">My Wallet</h2> */}
-      <h3>Total USEE Coins: {totalTokens}</h3>
+      <h3>Total USEE-360 Coins: {totalTokens}</h3>
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Table striped bordered hover className="mt-4">
