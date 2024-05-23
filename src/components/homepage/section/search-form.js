@@ -1,5 +1,4 @@
 
-
 // import React, { useState, useEffect, useRef } from "react";
 // import { Link, useHistory, useLocation } from "react-router-dom";
 // import { PRICE_TYPE } from "../../../constants";
@@ -26,7 +25,7 @@
 //   const [lng, setLng] = useStateIfMounted(defaultLng || null);
 //   const [showLink, setShowLink] = useState(false);
 //   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [priceType, setPriceType] = useState(defaultPriceType ? defaultPriceType.value : null);
+//   const [priceType, setPriceType] = useState(defaultPriceType ? defaultPriceType : null);
 
 //   const [filters, setFilters] = useState({});
 
@@ -64,13 +63,13 @@
 //   };
 
 //   const handlePriceTypeChange = (selectedOption) => {
-//     setPriceType(selectedOption ? selectedOption.value : null);
+//     setPriceType(selectedOption);
 //   };
 
 //   const constructSelectedFilters = () => {
 //     const selectedFilters = {
 //       ...(propertyCategory && { propertyCategory }),
-//       ...(priceType && { priceType }),
+//       ...(priceType && { priceType: priceType.value }),
 //       ...(lat != null && { lat }),
 //       ...(lng != null && { lng }),
 //       ...Object.entries(filters).reduce((acc, [key, value]) => {
@@ -138,7 +137,7 @@
 //     setAddress(defaultAddress || "");
 //     setLat(defaultLat || null);
 //     setLng(defaultLng || null);
-//     setPriceType(defaultPriceType ? defaultPriceType.value : null);
+//     setPriceType(defaultPriceType ? defaultPriceType : null);
 //     setPropertyCategory(defaultPropertyCategory || "sale");
 //   }, [defaultAddress, defaultLat, defaultLng, defaultPriceType, defaultPropertyCategory]);
 
@@ -155,7 +154,9 @@
 //   useEffect(() => {
 //     const savedFilters = localStorage.getItem("searchFilters");
 //     if (savedFilters) {
-//       setFilters(JSON.parse(savedFilters));
+//       const parsedFilters = JSON.parse(savedFilters);
+//       setFilters(parsedFilters);
+//       setPriceType(parsedFilters.priceType ? PRICE_TYPE.find(option => option.value === parsedFilters.priceType) : null);
 //     }
 //   }, []);
 
@@ -189,7 +190,7 @@
 //                               classNamePrefix="custom-select"
 //                               options={PRICE_TYPE}
 //                               onChange={handlePriceTypeChange}
-//                               value={PRICE_TYPE.find(option => option.value === priceType)}
+//                               value={priceType}
 //                             />
 //                           </div>
 //                         )}
@@ -268,6 +269,7 @@
 //     </div>
 //   );
 // }
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { PRICE_TYPE } from "../../../constants";
@@ -297,7 +299,6 @@ export default function SearchForm({
   const [priceType, setPriceType] = useState(defaultPriceType ? defaultPriceType : null);
 
   const [filters, setFilters] = useState({});
-
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const history = useHistory();
@@ -390,7 +391,7 @@ export default function SearchForm({
   };
 
   useEffect(() => {
-    if (lat !== null && lng !== null) {
+    if (isLoaded && lat !== null && lng !== null) {
       const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results[0]) {
@@ -400,7 +401,7 @@ export default function SearchForm({
         }
       });
     }
-  }, [lat, lng]);
+  }, [isLoaded, lat, lng]);
 
   useEffect(() => {
     setAddress(defaultAddress || "");

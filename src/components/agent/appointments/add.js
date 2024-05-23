@@ -33,36 +33,6 @@ export default function Add(props) {
     useStateIfMounted(false);
   const userDetail = getUserDetailsFromJwt();
 
-  // const checkAvailability = async (customerId) => {
-  //   if (!time || !date) {
-  //     return;
-  //   }
-
-  //   let customerIdRequest = customerId;
-  //   if (selectedCustomer?.value) {
-  //     customerIdRequest = selectedCustomer.value;
-  //   }
-
-  //   const response = await AppointmentService.checkAvailability({
-  //     customerId: customerIdRequest,
-  //     date,
-  //     time,
-  //   });
-
-  //   console.log(response)
-
-  //   if (response?.error && response?.message) {
-  //     props.responseHandler(response.message);
-  //     return;
-  //   }
-
-  //   if (!response) {
-  //     props.responseHandler([
-  //       "Unfortunately, this timeslot is not available. Please choose another timeslot.",
-  //     ]);
-  //   }
-  // };
-
   const checkAvailability = async (customerId) => {
     if (!time || !date) {
       return;
@@ -86,7 +56,8 @@ export default function Add(props) {
     } catch (error) {
       // Assuming error.response contains the error details
       const errorMessage =
-        error.response?.data?.message || "This time slot is expired please choose available time.";
+        error.response?.data?.message ||
+        "This time slot is expired please choose available time.";
 
       // Specific handling for expired timeslot
       if (errorMessage.includes("Timeslot is expired")) {
@@ -99,22 +70,24 @@ export default function Add(props) {
     }
   };
 
-  const loadOptions = (inputValue, callback) => {
+  const loadOptions = async (inputValue, callback) => {
     try {
-      setTimeout(async () => {
-        const response = await CustomerUserService.listCustomers(inputValue);
-        setCustomers(response);
+      const response = await CustomerUserService.listCustomers(inputValue);
+      setCustomers(response);
 
-        const options = response.map((customer) => {
-          return {
-            value: customer.id,
-            label: `${customer.firstName} ${customer.lastName}`,
-          };
-        });
+      if (Array.isArray(response)) {
+        const options = response.map((customer) => ({
+          value: customer.id,
+          label: `${customer.firstName} ${customer.lastName}`,
+        }));
         callback(options);
-      }, 1000);
+      } else {
+        console.error("Unexpected response format:", response);
+        callback([]); // Provide an empty array to the callback if the response is not an array
+      }
     } catch (error) {
-      console.log("errorInFilterCustomer", error);
+      console.error("Error loading customer options:", error);
+      callback([]); // Provide an empty array to the callback in case of error
     }
   };
 
