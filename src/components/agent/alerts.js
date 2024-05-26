@@ -24,21 +24,21 @@ export default function Alerts(props) {
     switch (alert.alertMode) {
       case USER_ALERT_MODE.WISHLIST:
         text = `${customerName} removed the property ${productTitle} from wishlist`;
-        if (alert.alertType == USER_ALERT_TYPE.WISHLIST_ADDED) {
+        if (alert.alertType === USER_ALERT_TYPE.WISHLIST_ADDED) {
           text = `${customerName} added the property ${productTitle} to wishlist`;
         }
 
         break;
       case USER_ALERT_MODE.INTEREST:
         text = `${customerName} is interested in property ${productTitle}`;
-        if (alert.alertType == USER_ALERT_TYPE.NOT_INTERESTED) {
+        if (alert.alertType === USER_ALERT_TYPE.NOT_INTERESTED) {
           text = `${customerName} is not interested in property ${productTitle}`;
         }
 
         break;
       case USER_ALERT_MODE.OFFER:
         text = `${customerName} made an offer to the property ${productTitle}`;
-        if (alert.alertType == USER_ALERT_TYPE.OFFER_DELETED) {
+        if (alert.alertType === USER_ALERT_TYPE.OFFER_DELETED) {
           text = `${customerName} has deleted the offer of the property ${productTitle}`;
         }
 
@@ -49,7 +49,7 @@ export default function Alerts(props) {
         break;
       case USER_ALERT_MODE.SNAGLIST:
         text = `${customerName} has updated the snaglist for the property ${productTitle}`;
-        if (alert.alertType == USER_ALERT_TYPE.SNAGLIST_APPROVED) {
+        if (alert.alertType === USER_ALERT_TYPE.SNAGLIST_APPROVED) {
           text = `${customerName} has approved the snaglist for the property ${productTitle}`;
         }
 
@@ -115,7 +115,7 @@ export default function Alerts(props) {
       setList(response);
     };
     fetchAllAlerts();
-  }, []);
+  }, [props, setList]);
 
   return (
     <React.Fragment>

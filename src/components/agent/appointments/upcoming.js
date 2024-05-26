@@ -4,7 +4,6 @@ import {
   getUserDetailsFromJwt,
   formatAppointmentDate,
   convertGmtToTime,
-  getUserTimezone,
 } from "../../../utils";
 import Modal from "react-modal";
 import ViewAppointment from "./view-appointment";
@@ -12,8 +11,6 @@ import { useHistory } from "react-router";
 import AppointmentService from "../../../services/agent/appointment";
 import { APPOINTMENT_STATUS, USER_TYPE } from "../../../constants";
 import { useStateIfMounted } from "use-state-if-mounted";
-import moment from "moment-timezone";
-
 
 export default function Upcoming(props) {
   const [currentPage, setCurrentPage] = useStateIfMounted();
@@ -55,7 +52,15 @@ export default function Upcoming(props) {
         setTotalPages(parseInt(response.totalPage));
       }
     },
-    [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]
+    [
+      props.selectedFilter,
+      props.startDate,
+      props.endDate,
+      props.selectedUser,
+      setList,
+      setCurrentPage,
+      setTotalPages,
+    ]
   );
 
   const handleViewAppointmentButtonClick = async (id) => {
@@ -134,25 +139,24 @@ export default function Upcoming(props) {
     setIsNotesModalOpen(false);
   };
 
-  const handleConfirm = (id) => {
-    setSelectedAppointment(id);
-    setConfirmCancelModal(true);
-  };
+  // const handleConfirm = (id) => {
+  //   setSelectedAppointment(id);
+  //   setConfirmCancelModal(true);
+  // };
 
-  const handleNotesModal = (id) => {
-    setSelectedAppointment(id);
-    setIsNotesModalOpen(true);
-  };
+  // const handleNotesModal = (id) => {
+  //   setSelectedAppointment(id);
+  //   setIsNotesModalOpen(true);
+  // };
 
   // const isWithinFiveMinutes = (appointmentTimeGmt) => {
   //   const now = moment(); // Current time as a moment object
   //   const appointmentTime = moment.tz(appointmentTimeGmt, "HH:mm:ss", "GMT").tz(getUserTimezone());
   //   const timeDiff = appointmentTime.diff(now, "minutes"); // Difference in minutes
-  
+
   //   // Enable the button from 5 minutes before the appointment and keep it enabled thereafter
   //   return timeDiff <= 5;
   // };
-  
 
   useEffect(() => {
     const fetchAllAppointments = async () => {
@@ -292,7 +296,7 @@ export default function Upcoming(props) {
                   return (
                     <li
                       key={i}
-                      className={currentPage == i + 1 ? "active" : null}
+                      className={currentPage === i + 1 ? "active" : null}
                     >
                       <Link
                         to="#"

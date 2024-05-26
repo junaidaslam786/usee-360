@@ -202,17 +202,17 @@ export const currentTimezoneBasedTime = () => {
   return moment(new Date()).format("HH:mm");
 };
 
-// export const convertGmtToTime = (time, format) => {
-//   return time
-//     ? moment
-//         .tz(time, "HH:mm:ss", "GMT")
-//         .tz(getUserTimezone())
-//         .format(format ? format : "HH:mm")
-//     : "-";
-// };
-export function convertGmtToTime(gmtTime) {
-  return moment.tz(gmtTime, "GMT").format("HH:mm:ss");
-}
+export const convertGmtToTime = (time, format) => {
+  return time
+    ? moment
+        .tz(time, "HH:mm:ss", "GMT")
+        .tz(getUserTimezone())
+        .format(format ? format : "HH:mm")
+    : "-";
+};
+// export function convertGmtToTime(gmtTime) {
+//   return moment.tz(gmtTime, "GMT").format("HH:mm:ss");
+// }
 
 export const getUserType = () => {
   return JSON.parse(localStorage.getItem("userType"));

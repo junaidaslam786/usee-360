@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
 import {
@@ -21,19 +21,17 @@ export default function Add(props) {
   const [properties, setProperties] = useStateIfMounted([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedAllocatedAgent, setSelectedAllocatedAgent] = useState("");
-  const [selectedAllocatedProperties, setSelectedAllocatedProperties] =
-    useState([]);
+  const [selectedAllocatedProperties, setSelectedAllocatedProperties] = useState([]);
   const [timeslots, setTimeslots] = useStateIfMounted([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useStateIfMounted("");
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState();
-  const [anySlotAvailableForToday, setAnySlotAvailableForToday] =
-    useStateIfMounted(false);
+  const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useStateIfMounted(false);
   const userDetail = getUserDetailsFromJwt();
 
-  const checkAvailability = async (customerId) => {
+  const checkAvailability = useCallback(async (customerId) => {
     if (!time || !date) {
       return;
     }
@@ -68,18 +66,20 @@ export default function Add(props) {
         props.responseHandler(errorMessage);
       }
     }
-  };
+  }, []);
 
   const loadOptions = async (inputValue, callback) => {
     try {
+      console.log("Fetching customers with input:", inputValue); // Debug log
       const response = await CustomerUserService.listCustomers(inputValue);
-      setCustomers(response);
-
+      console.log("Response from CustomerUserService.listCustomers:", response); // Debug log
+  
       if (Array.isArray(response)) {
         const options = response.map((customer) => ({
           value: customer.id,
           label: `${customer.firstName} ${customer.lastName}`,
         }));
+        console.log("Mapped options:", options); // Debug log
         callback(options);
       } else {
         console.error("Unexpected response format:", response);
@@ -90,6 +90,7 @@ export default function Add(props) {
       callback([]); // Provide an empty array to the callback in case of error
     }
   };
+  
 
   const selectedCustomerHandler = async (e) => {
     setSelectedCustomer(e);
@@ -103,7 +104,7 @@ export default function Add(props) {
     }
 
     const currentCustomer = customers.find(
-      (customerValue) => customerValue.id == e.value
+      (customerValue) => customerValue.id === e.value
     );
     if (currentCustomer) {
       setEmail(currentCustomer.email);
@@ -169,7 +170,7 @@ export default function Add(props) {
       props.responseHandler("Appointment created successfully", true);
       setSelectedCustomer("");
       setSelectedAllocatedAgent("");
-      setSelectedAllocatedProperties("");
+      setSelectedAllocatedProperties([]);
       setEmail("");
       setPhone("");
       setDate("");
@@ -186,17 +187,13 @@ export default function Add(props) {
     const nextSlot = selectNextSlot();
     if (!nextSlot) {
       props.responseHandler(["Slot is not available, select another slot"]);
-
       return;
     }
-
     setTime(nextSlot.value);
   };
 
   const selectNextSlot = (currentTimeSlots) => {
-    const availabilityTimeSlots = currentTimeSlots
-      ? currentTimeSlots
-      : timeslots;
+    const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
     const now = new Date();
 
     // Format the date and time values to be used as input values
@@ -227,7 +224,6 @@ export default function Add(props) {
       setAnySlotAvailableForToday(true);
       return nextSlot;
     }
-
     return false;
   };
 
@@ -239,7 +235,6 @@ export default function Add(props) {
       // Format the date and time values to be used as input values
       dateValue = now.toISOString().slice(0, 10);
     }
-
     setDate(dateValue);
   };
 
@@ -253,12 +248,10 @@ export default function Add(props) {
       }
 
       setUsers(
-        response.map((userDetail) => {
-          return {
-            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-            value: userDetail.userId,
-          };
-        })
+        response.map((userDetail) => ({
+          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+          value: userDetail.userId,
+        }))
       );
     };
 
@@ -270,12 +263,10 @@ export default function Add(props) {
       }
 
       setProperties(
-        response.map((property) => {
-          return {
-            label: property.title,
-            value: property.id,
-          };
-        })
+        response.map((property) => ({
+          label: property.title,
+          value: property.id,
+        }))
       );
     };
 
@@ -286,14 +277,12 @@ export default function Add(props) {
         return;
       }
 
-      const timeSlotsResponse = response.map((timeSlot) => {
-        return {
-          label: timeSlot.textShow,
-          value: timeSlot.id,
-          fromTime: timeSlot.fromTime,
-          toTime: timeSlot.toTime,
-        };
-      });
+      const timeSlotsResponse = response.map((timeSlot) => ({
+        label: timeSlot.textShow,
+        value: timeSlot.id,
+        fromTime: timeSlot.fromTime,
+        toTime: timeSlot.toTime,
+      }));
 
       setTimeslots(timeSlotsResponse);
       selectNextSlot(timeSlotsResponse);
@@ -302,7 +291,7 @@ export default function Add(props) {
     fetchUsersToAllocate();
     fetchPropertiesToAllocate();
     fetchAgentAvailabilitySlots();
-  }, []);
+  }, [props, selectNextSlot, setProperties, setTimeslots, setUsers]);
 
   useEffect(() => {
     if (date && time) {
@@ -312,7 +301,7 @@ export default function Add(props) {
 
       callCheckAvailability();
     }
-  }, [date, time]);
+  }, [date, time, checkAvailability]);
 
   return (
     <div>

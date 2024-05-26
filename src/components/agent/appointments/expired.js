@@ -35,7 +35,7 @@ export default function Expired(props) {
       setCurrentPage(parseInt(response.page));
       setTotalPages(parseInt(response.totalPage));
     }
-  },[props]);
+  },[props, setCurrentPage, setList, setTotalPages]);
 
   const handleViewAppointmentButtonClick = async (id) => {
     if (id) {
@@ -177,7 +177,7 @@ export default function Expired(props) {
                   return (
                     <li
                       key={i}
-                      className={currentPage == i + 1 ? "active" : null}
+                      className={currentPage === i + 1 ? "active" : null}
                     >
                       <Link
                         to="#"

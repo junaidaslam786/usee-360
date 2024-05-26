@@ -42,7 +42,7 @@ const PropertyListing = () => {
 
   useEffect(() => {
     fetchListingsData();
-  }, []);
+  }, [fetchListingsData]);
 
   return (
     <div style={{ width: "100%", padding: "0.5rem" }}>

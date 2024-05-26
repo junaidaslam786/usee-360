@@ -24,7 +24,6 @@ export default function Completed(props) {
   const [showNotesList, setShowNotesList] = useState(false);
   const [notesList, setNotesList] = useState([]);
   const openViewModal = useRef(null);
-  const [carbonFootprint, setCarbonFootprint] = useState("_");
 
   const loadAllList = useCallback(
     async (page = 1) => {
@@ -45,7 +44,7 @@ export default function Completed(props) {
         appendQuery,
       });
 
-      console.log('appointment response', response)
+      console.log("appointment response", response);
 
       if (response?.data) {
         setList(response.data);
@@ -53,7 +52,15 @@ export default function Completed(props) {
         setTotalPages(parseInt(response.totalPage, 10));
       }
     },
-    [props.selectedFilter, props.startDate, props.endDate, props.selectedUser]
+    [
+      props.selectedFilter,
+      props.startDate,
+      props.endDate,
+      props.selectedUser,
+      setCurrentPage,
+      setList,
+      setTotalPages,
+    ]
   ); // Dependencies
 
   const handleViewAppointmentButtonClick = async (id) => {
@@ -91,7 +98,6 @@ export default function Completed(props) {
     if (!co2Details) return "N/A";
     return `Total CO₂ Saved: ${co2Details.totalCo2SavedValue} metric tons`;
   };
-  
 
   const handleNotesModalCancel = () => {
     setIsNotesModalOpen(false);
@@ -173,7 +179,14 @@ export default function Completed(props) {
                       marginTop: "10px",
                     }}
                   >
-                    <FaPaw style={{ fontSize: "20px", marginLeft: "25px", marginRight: "5px", color: 'green' }} />
+                    <FaPaw
+                      style={{
+                        fontSize: "20px",
+                        marginLeft: "25px",
+                        marginRight: "5px",
+                        color: "green",
+                      }}
+                    />
                     <span style={{ fontSize: "12px" }}>
                       {formatCo2Details(element.co2Details)}
                     </span>
