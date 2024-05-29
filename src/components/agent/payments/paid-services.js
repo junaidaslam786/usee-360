@@ -126,14 +126,14 @@ const PaidServices = () => {
       const response = await StripeService.subscribeUserToFeatures(
         userDetails.id,
         "35e0b998-53bc-4777-a207-261fff3489aa",
-        [serviceId] // Assuming serviceId can be used as featureId
+        serviceId // Assuming serviceId can be used as featureId
       );
 
       if (response?.success) {
         toast("Subscription successful", true);
         setSubscriptionStatus((prevStatus) => ({
           ...prevStatus,
-          [serviceId]: true, // Update status to true for the subscribed service
+          serviceId: true, // Update status to true for the subscribed service
         }));
         // history.push('/agent/subscription')
         window.location.reload();

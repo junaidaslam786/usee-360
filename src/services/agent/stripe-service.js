@@ -405,11 +405,11 @@ const StripeService = {
     }
   },
 
-  subscribeUserToFeatures: async (userId, subscriptionId, featureIds) => {
+  subscribeUserToFeatures: async (userId, subscriptionId, featureId) => {
     try {
       const response = await httpPost(`agent/user/${userId}/subscribe`, {
         subscriptionId,
-        featureIds,
+        featureId,
       });
 
       if (response?.error) {
