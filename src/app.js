@@ -35,6 +35,7 @@ import { AGENT_TYPE, AGENT_USER_ACCESS_TYPE_VALUE } from "./constants";
 // import { loadStripe } from "@stripe/stripe-js";
 import GoogleMapsSearch from "./components/location-search/google-map";
 import OAuthCallback from "./components/auth/oAuthCallback";
+import { FiltersProvider } from "./components/context/filterContext";
 
 const userDetail = getUserDetailsFromJwt();
 
@@ -90,7 +91,7 @@ function checkIfHasRouteAccess(path) {
 function AgentRoute({ component: Component, ...restOfProps }) {
   const history = useHistory();
   const token = getLoginToken();
-  
+
   let isAuthenticated = false;
 
   if (token) {
@@ -105,7 +106,7 @@ function AgentRoute({ component: Component, ...restOfProps }) {
         history.push("/customer/dashboard");
         return null;
       }
-    
+
       if (checkIfHasRouteAccess(restOfProps?.path)) {
         history.push("/agent/dashboard");
       }
@@ -118,7 +119,11 @@ function AgentRoute({ component: Component, ...restOfProps }) {
     <Route
       {...restOfProps}
       render={(props) =>
-        isAuthenticated ? <Component {...props} /> : <Redirect to="/agent/login" />
+        isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/agent/login" />
+        )
       }
     />
   );
@@ -150,7 +155,11 @@ function CustomerRoute({ component: Component, ...restOfProps }) {
     <Route
       {...restOfProps}
       render={(props) =>
-        isAuthenticated ? <Component {...props} /> : <Redirect to="/customer/login" />
+        isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/customer/login" />
+        )
       }
     />
   );
@@ -160,8 +169,9 @@ const App = () => {
   return (
     <BrowserRouter basename="/">
       <ToastContainer />
-      <div>
-        {/* <AuthProvider> */}
+      <FiltersProvider>
+        <div>
+          {/* <AuthProvider> */}
           <Switch>
             {/* Main Routes */}
             <Route exact path="/" component={Home} />
@@ -223,7 +233,7 @@ const App = () => {
               )}
             />
 
-            <Route 
+            <Route
               path="/customer/onboarding"
               render={(props) => (
                 <HomePages {...props} page="customer-onboarding" />
@@ -454,8 +464,9 @@ const App = () => {
 
             <Route path="*" component={() => <HomePages page="error" />} />
           </Switch>
-        {/* </AuthProvider> */}
-      </div>
+          {/* </AuthProvider> */}
+        </div>
+      </FiltersProvider>
     </BrowserRouter>
   );
 };

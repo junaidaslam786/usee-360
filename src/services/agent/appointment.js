@@ -60,8 +60,8 @@ const AppointmentService = {
     const response = await httpPost(`${apiUrlPrefix}/create`, reqBody);
 
     if (response?.error) {
-      if (!response?.error?.message || response?.error?.message.length === 0) {
-        response.error.message = [
+      if (!response?.message || response?.message.length === 0) {
+        response.message = [
           "Unable to create appointment, please try again later",
         ];
       }

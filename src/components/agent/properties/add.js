@@ -43,6 +43,7 @@ import LocationForm from "./LocationForm";
 import { set } from "lodash";
 import UploadQrCode from "./upload-qrCode";
 
+
 export default function Add(props) {
   const params = useParams();
   const userDetail = getUserDetailsFromJwt();
@@ -184,27 +185,216 @@ export default function Add(props) {
     return formattedUsers;
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!title | !price | !propertyType | !propertyCategoryType) {
+  //     props.responseHandler(["Fill all required fields"]);
+  //     return;
+  //   }
+
+  //   let apiUrl = id ? "update" : "create";
+  //   let successMsg = id
+  //     ? "Property updated successfully."
+  //     : "Your changes are saved successfully.";
+
+  //   let formdata = new FormData();
+  //   formdata.append("title", title);
+  //   formdata.append("description", description);
+  //   formdata.append("price", price);
+  //   formdata.append("featuredImage", featuredImage);
+  //   formdata.append("address", address);
+  //   formdata.append("city", city);
+  //   formdata.append("postalCode", postalCode);
+  //   formdata.append("region", region);
+  //   formdata.append("latitude", latitude);
+  //   formdata.append("longitude", longitude);
+
+  //   if (permitNumber) {
+  //     formdata.append("permitNumber", permitNumber);
+  //   }
+
+  //   // Helper function to conditionally append meta tags
+  //   const appendMetaTag = (key, value) => {
+  //     if (Array.isArray(value)) {
+  //       // Join array values with a comma for array types
+  //       formdata.append(key, value.join(","));
+  //     } else if (typeof value === "string") {
+  //       // Trim the string before appending
+  //       if (value.trim() !== "") formdata.append(key, value.trim());
+  //     } else if (value !== null && value !== undefined) {
+  //       // Directly append non-string and non-null/undefined values
+  //       formdata.append(key, value.toString());
+  //     }
+  //   };
+
+  //   // Conditional appending of meta tags
+  //   appendMetaTag("metaTags[1]", propertyType?.value); // Example for property type
+  //   appendMetaTag("metaTags[2]", propertyCategoryType?.value);
+  //   appendMetaTag("metaTags[3]", unit?.value);
+  //   appendMetaTag("metaTags[4]", area);
+  //   appendMetaTag("metaTags[5]", bedrooms?.value);
+  //   appendMetaTag("metaTags[8]", priceType?.value);
+
+  //   // ... Continue for other specific meta tags
+
+  //   // Example for appending meta tags based on conditionals (residential or commercial specifics)
+  //   if (propertyType?.value === "residential") {
+  //     appendMetaTag("metaTags[6]", propertySubType?.value);
+
+  //     if (
+  //       propertySubType?.value === "apartment" ||
+  //       propertySubType?.value === "studio" ||
+  //       propertySubType?.value === "room"
+  //     ) {
+  //       appendMetaTag("metaTags[48]", buildingAmenities?.join(","));
+  //     } else if (
+  //       propertySubType?.value === "house" ||
+  //       propertySubType?.value === "bungalow" ||
+  //       propertySubType?.value === "duplex" ||
+  //       propertySubType?.value === "triplex" ||
+  //       propertySubType?.value === "cottage"
+  //     ) {
+  //       appendMetaTag("metaTags[49]", fireplace);
+  //       appendMetaTag("metaTags[50]", woodBurning);
+  //       appendMetaTag("metaTags[51]", noOfFloors);
+  //       appendMetaTag("metaTags[52]", basement);
+  //       appendMetaTag("metaTags[13]", residentialKitchen);
+  //     }
+
+  //     appendMetaTag("metaTags[53]", parkingFacility);
+  //     appendMetaTag("metaTags[54]", parkingType);
+  //     appendMetaTag("metaTags[55]", garageSpaces);
+  //     appendMetaTag("metaTags[56]", outdoorSpaces?.join(","));
+  //     appendMetaTag("metaTags[57]", noOfBathrooms);
+  //     appendMetaTag("metaTags[58]", furnished);
+  //   } else if (propertyType?.value === "commercial") {
+  //     appendMetaTag("metaTags[7]", propertySubType?.value); // Commercial property subtype
+  //     // Example for office subtype
+  //     if (propertySubType?.value === "office") {
+  //       appendMetaTag("metaTags[10]", layout);
+  //       appendMetaTag("metaTags[11]", conferenceRoom);
+  //       appendMetaTag("metaTags[12]", capacity);
+  //       appendMetaTag("metaTags[13]", kitchen);
+  //     } else if (propertySubType?.value === "shopping_center") {
+  //       appendMetaTag("metaTags[17]", store);
+  //       appendMetaTag("metaTags[18]", foodCourt);
+  //       appendMetaTag("metaTags[19]", restRoom);
+  //     } else if (propertySubType?.value === "hotels") {
+  //       appendMetaTag("metaTags[20]", pools);
+  //       appendMetaTag("metaTags[21]", poolType);
+  //       appendMetaTag("metaTags[22]", hotelRoom);
+  //     } else if (propertySubType?.value === "club") {
+  //       appendMetaTag("metaTags[23]", areaBar);
+  //       appendMetaTag("metaTags[24]", loungeArea);
+  //       appendMetaTag("metaTags[25]", capacityOfVip);
+  //       appendMetaTag("metaTags[26]", noOfDanceFloor);
+  //       appendMetaTag("metaTags[27]", noOfPrivateRooms);
+  //     } else if (propertySubType?.value === "restaurant") {
+  //       appendMetaTag("metaTags[28]", kitchenArea);
+  //       appendMetaTag("metaTags[29]", outdoorSeating);
+  //       appendMetaTag("metaTags[30]", outdoorSeatingArea);
+  //     } else if (propertySubType?.value === "hotel_room") {
+  //       appendMetaTag("metaTags[31]", roomSize);
+  //       appendMetaTag("metaTags[32]", noOfBeds);
+  //       appendMetaTag("metaTags[33]", roomType);
+  //       appendMetaTag("metaTags[34]", floorLevel);
+  //       appendMetaTag("metaTags[35]", view);
+  //       appendMetaTag("metaTags[36]", balcony);
+  //     } else if (
+  //       propertySubType?.value === "retail" ||
+  //       propertySubType?.value === "shop" ||
+  //       propertySubType?.value === "store"
+  //     ) {
+  //       appendMetaTag("metaTags[14]", displayWindowArea);
+  //       appendMetaTag("metaTags[15]", displayWindow);
+  //       appendMetaTag("metaTags[16]", displayWindowOther);
+  //     }
+
+  //     appendMetaTag("metaTags[40]", commercialParking);
+  //     appendMetaTag("metaTags[41]", noOfSpacesCommercial); // if parkingFacility is yes
+
+  //     appendMetaTag("metaTags[46]", petFreindliness);
+
+  //     // Add conditional append for other commercial property subtypes as needed
+  //   }
+
+  //   // Common meta tags for both residential and commercial properties
+  //   appendMetaTag("metaTags[37]", securityFeatures);
+  //   appendMetaTag("metaTags[38]", alaramCameraB);
+  //   appendMetaTag("metaTags[39]", disabilityAccess);
+  //   appendMetaTag("metaTags[42]", publicTransport);
+  //   appendMetaTag("metaTags[43]", yearBuilt);
+  //   appendMetaTag("metaTags[44]", condition);
+  //   appendMetaTag("metaTags[45]", availabilityDate);
+  //   appendMetaTag("metaTags[47]", additionalFeatures);
+
+  //   // Continue with other meta tags, adapting the above logic to your application's specific meta tags
+
+  //   if (id) {
+  //     // apiUrl = "update";
+  //     formdata.append("productId", id);
+  //     // successMsg = "Property updated successfully.";
+  //   }
+
+  //   if (allotedToUsers && allotedToUsers.length > 0) {
+  //     for (let i = 0; i < allotedToUsers.length; i++) {
+  //       if (allotedToUsers[i]?.value) {
+  //         formdata.append(`allocatedUser[${i}]`, allotedToUsers[i].value);
+  //       }
+  //     }
+  //   }
+
+  //   setLoading(true);
+  //   try {
+      
+  //     const formResponse =
+  //       apiUrl === "update"
+  //         ? await PropertyService.update(formdata)
+  //         : await PropertyService.add(formdata);
+
+  //     setLoading(false);
+
+  //     if (formResponse?.error) {
+  //       props.responseHandler([formResponse?.message || "An error occurred."]);
+  //       return;
+  //     }
+
+  //     if (!id && formResponse?.id) {
+  //       // Check if creating a new property and response includes an ID
+  //       setId(formResponse.id);
+  //       toast.success(successMsg);
+  //       if (formResponse?.id) {
+  //         history.push(`/agent/edit-property/${formResponse.id}`);
+  //       }
+  //       // No need to redirect here; just update the state
+  //     }
+      
+  //   } catch (error) {
+  //     setLoading(false);
+  //     const errorMessage = error.response?.data?.message || error.message || "An error occurred while creating the appointment. Please try again.";
+  //     props.responseHandler(errorMessage);
+  //   }
+  // };
+
+  
+ 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!title | !price | !propertyType | !propertyCategoryType) {
-      props.responseHandler(["Fill all required fields"]);
+  
+    if (!title || !price || !propertyType || !propertyCategoryType) {
+      const errorMsg = "Fill all required fields";
+      props.responseHandler([errorMsg]);
+      toast.error(errorMsg);
       return;
     }
-
-    // Setting API endpoint dynamically
-    // const apiUrl = id ? "/update" : "/create";
-    // const successMsg = id
-    //   ? "Property updated successfully."
-    //   : "Your changes are saved successfully.";
-    // const apiUrl = (() => id ? "/update" : "/create")();
-    // const successMsg = (() => id ? "Property updated successfully." : "Your changes are saved successfully.")();
-
+  
     let apiUrl = id ? "update" : "create";
     let successMsg = id
       ? "Property updated successfully."
       : "Your changes are saved successfully.";
-
+  
     let formdata = new FormData();
     formdata.append("title", title);
     formdata.append("description", description);
@@ -216,51 +406,36 @@ export default function Add(props) {
     formdata.append("region", region);
     formdata.append("latitude", latitude);
     formdata.append("longitude", longitude);
-
+  
     if (permitNumber) {
       formdata.append("permitNumber", permitNumber);
     }
-
-    // Helper function to conditionally append meta tags
+  
     const appendMetaTag = (key, value) => {
       if (Array.isArray(value)) {
-        // Join array values with a comma for array types
         formdata.append(key, value.join(","));
       } else if (typeof value === "string") {
-        // Trim the string before appending
         if (value.trim() !== "") formdata.append(key, value.trim());
       } else if (value !== null && value !== undefined) {
-        // Directly append non-string and non-null/undefined values
         formdata.append(key, value.toString());
       }
     };
-
-    // Conditional appending of meta tags
-    appendMetaTag("metaTags[1]", propertyType?.value); // Example for property type
+  
+    appendMetaTag("metaTags[1]", propertyType?.value);
     appendMetaTag("metaTags[2]", propertyCategoryType?.value);
     appendMetaTag("metaTags[3]", unit?.value);
     appendMetaTag("metaTags[4]", area);
     appendMetaTag("metaTags[5]", bedrooms?.value);
     appendMetaTag("metaTags[8]", priceType?.value);
-
-    // ... Continue for other specific meta tags
-
-    // Example for appending meta tags based on conditionals (residential or commercial specifics)
+  
     if (propertyType?.value === "residential") {
       appendMetaTag("metaTags[6]", propertySubType?.value);
-
-      if (
-        propertySubType?.value === "apartment" ||
-        propertySubType?.value === "studio" ||
-        propertySubType?.value === "room"
-      ) {
+      if (["apartment", "studio", "room"].includes(propertySubType?.value)) {
         appendMetaTag("metaTags[48]", buildingAmenities?.join(","));
       } else if (
-        propertySubType?.value === "house" ||
-        propertySubType?.value === "bungalow" ||
-        propertySubType?.value === "duplex" ||
-        propertySubType?.value === "triplex" ||
-        propertySubType?.value === "cottage"
+        ["house", "bungalow", "duplex", "triplex", "cottage"].includes(
+          propertySubType?.value
+        )
       ) {
         appendMetaTag("metaTags[49]", fireplace);
         appendMetaTag("metaTags[50]", woodBurning);
@@ -268,7 +443,6 @@ export default function Add(props) {
         appendMetaTag("metaTags[52]", basement);
         appendMetaTag("metaTags[13]", residentialKitchen);
       }
-
       appendMetaTag("metaTags[53]", parkingFacility);
       appendMetaTag("metaTags[54]", parkingType);
       appendMetaTag("metaTags[55]", garageSpaces);
@@ -276,8 +450,7 @@ export default function Add(props) {
       appendMetaTag("metaTags[57]", noOfBathrooms);
       appendMetaTag("metaTags[58]", furnished);
     } else if (propertyType?.value === "commercial") {
-      appendMetaTag("metaTags[7]", propertySubType?.value); // Commercial property subtype
-      // Example for office subtype
+      appendMetaTag("metaTags[7]", propertySubType?.value);
       if (propertySubType?.value === "office") {
         appendMetaTag("metaTags[10]", layout);
         appendMetaTag("metaTags[11]", conferenceRoom);
@@ -309,24 +482,17 @@ export default function Add(props) {
         appendMetaTag("metaTags[35]", view);
         appendMetaTag("metaTags[36]", balcony);
       } else if (
-        propertySubType?.value === "retail" ||
-        propertySubType?.value === "shop" ||
-        propertySubType?.value === "store"
+        ["retail", "shop", "store"].includes(propertySubType?.value)
       ) {
         appendMetaTag("metaTags[14]", displayWindowArea);
         appendMetaTag("metaTags[15]", displayWindow);
         appendMetaTag("metaTags[16]", displayWindowOther);
       }
-
       appendMetaTag("metaTags[40]", commercialParking);
-      appendMetaTag("metaTags[41]", noOfSpacesCommercial); // if parkingFacility is yes
-
+      appendMetaTag("metaTags[41]", noOfSpacesCommercial);
       appendMetaTag("metaTags[46]", petFreindliness);
-
-      // Add conditional append for other commercial property subtypes as needed
     }
-
-    // Common meta tags for both residential and commercial properties
+  
     appendMetaTag("metaTags[37]", securityFeatures);
     appendMetaTag("metaTags[38]", alaramCameraB);
     appendMetaTag("metaTags[39]", disabilityAccess);
@@ -335,15 +501,11 @@ export default function Add(props) {
     appendMetaTag("metaTags[44]", condition);
     appendMetaTag("metaTags[45]", availabilityDate);
     appendMetaTag("metaTags[47]", additionalFeatures);
-
-    // Continue with other meta tags, adapting the above logic to your application's specific meta tags
-
+  
     if (id) {
-      // apiUrl = "update";
       formdata.append("productId", id);
-      // successMsg = "Property updated successfully.";
     }
-
+  
     if (allotedToUsers && allotedToUsers.length > 0) {
       for (let i = 0; i < allotedToUsers.length; i++) {
         if (allotedToUsers[i]?.value) {
@@ -351,55 +513,41 @@ export default function Add(props) {
         }
       }
     }
-
+  
     setLoading(true);
     try {
-      // const formResponse = await PropertyService[
-      //   apiUrl === "/update" ? "update" : "add"
-      // ](formdata);
-
-      // const formResponse = await (apiUrl === "/update" ? PropertyService.update(formdata) : PropertyService.add(formdata));
       const formResponse =
         apiUrl === "update"
           ? await PropertyService.update(formdata)
           : await PropertyService.add(formdata);
-
+  
       setLoading(false);
-
-      if (formResponse?.error) {
-        props.responseHandler([formResponse?.message || "An error occurred."]);
+  
+      if (!formResponse.success) {
+        const errorMsg = formResponse.message || "An error occurred.";
+        props.responseHandler([errorMsg]);
+        toast.error(`Subscription failed: ${errorMsg}`);
         return;
       }
-
-      if (!id && formResponse?.id) {
-        // Check if creating a new property and response includes an ID
-        setId(formResponse.id);
-        toast.success(successMsg);
-        if (formResponse?.id) {
-          history.push(`/agent/edit-property/${formResponse.id}`);
-        }
-        // No need to redirect here; just update the state
+  
+      toast.success(successMsg);
+      if (!id && formResponse?.data?.id) {
+        setId(formResponse.data.id);
+        history.push(`/agent/edit-property/${formResponse.data.id}`);
+      } else {
+        window.location.reload();
       }
-      // else if (id) {
-      //   toast.success(successMsg);
-      //   setTimeout(() => {
-      //     if (formResponse?.id) {
-      //       history.push(`/agent/edit-property/${formResponse.id}`);
-      //     }
-      //   }, 2000);
-      // }
-
-      // Redirect after success
-      // if (id) {
-
-      // }
     } catch (error) {
-      props.responseHandler([
-        "An error occurred while processing your request.",
-      ]);
       setLoading(false);
+      const errorMessage = error.response?.data?.message || error.message || "An error occurred while processing your request.";
+      props.responseHandler([errorMessage]);
+      toast.error(`Error during subscription: ${errorMessage}`);
     }
   };
+  
+  
+  
+  
 
   const handleOutdoorSpacesChange = (e) => {
     const { checked, value } = e.target;

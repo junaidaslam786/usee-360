@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
@@ -14,6 +15,7 @@ import AvailabilityService from "../../../services/agent/availability";
 import PropertyService from "../../../services/agent/property";
 import AppointmentService from "../../../services/agent/appointment";
 import { useStateIfMounted } from "use-state-if-mounted";
+import { toast } from "react-toastify";
 
 export default function Add(props) {
   const [customers, setCustomers] = useState([]);
@@ -49,7 +51,7 @@ export default function Add(props) {
       });
 
       // Handle success
-      console.log(response);
+      
       // Implement any success logic here...
     } catch (error) {
       // Assuming error.response contains the error details
@@ -66,31 +68,24 @@ export default function Add(props) {
         props.responseHandler(errorMessage);
       }
     }
-  }, []);
+  }, [date, time, selectedCustomer, props]);
 
-  const loadOptions = async (inputValue, callback) => {
+  const loadOptions = (inputValue, callback) => {
     try {
-      console.log("Fetching customers with input:", inputValue); // Debug log
-      const response = await CustomerUserService.listCustomers(inputValue);
-      console.log("Response from CustomerUserService.listCustomers:", response); // Debug log
-  
-      if (Array.isArray(response)) {
+      setTimeout(async () => {
+        const response = await CustomerUserService.listCustomers(inputValue);
+        setCustomers(response);
+
         const options = response.map((customer) => ({
           value: customer.id,
           label: `${customer.firstName} ${customer.lastName}`,
         }));
-        console.log("Mapped options:", options); // Debug log
         callback(options);
-      } else {
-        console.error("Unexpected response format:", response);
-        callback([]); // Provide an empty array to the callback if the response is not an array
-      }
+      }, 1000);
     } catch (error) {
-      console.error("Error loading customer options:", error);
-      callback([]); // Provide an empty array to the callback in case of error
+      console.log("errorInFilterCustomer", error);
     }
   };
-  
 
   const selectedCustomerHandler = async (e) => {
     setSelectedCustomer(e);
@@ -116,18 +111,20 @@ export default function Add(props) {
     }
   };
 
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     let customerFirstName = "";
     let customerLastName = "";
     let customerEmail = "";
     let customerPhoneNumber = "";
     let customerId = "";
-
+  
     customerEmail = email;
     customerPhoneNumber = phone;
-
+  
     const customer = customers.find(
       (customerValue) => customerValue.id === selectedCustomer.value
     );
@@ -144,7 +141,7 @@ export default function Add(props) {
         customerLastName = customerName[1];
       }
     }
-
+  
     const formData = {
       properties: selectedAllocatedProperties.map((property) => property.value),
       appointmentDate: date,
@@ -156,34 +153,42 @@ export default function Add(props) {
       customerEmail: customerEmail,
       allotedAgent: selectedAllocatedAgent.value,
     };
-
-    setLoading(true);
-    const formResponse = await AppointmentService.add(formData);
-    setLoading(false);
-
-    if (formResponse?.error && formResponse?.message) {
-      props.responseHandler(formResponse.message);
-      return;
-    }
-
-    if (formResponse) {
-      props.responseHandler("Appointment created successfully", true);
-      setSelectedCustomer("");
-      setSelectedAllocatedAgent("");
-      setSelectedAllocatedProperties([]);
-      setEmail("");
-      setPhone("");
-      setDate("");
-      setTime("");
+  
+    try {
+      setLoading(true);
+      const formResponse = await AppointmentService.add(formData);
+      console.log(formResponse)
+      setLoading(false);
+  
+      if (formResponse?.error) {
+        props.responseHandler(formResponse.message || "An error occurred.");
+        return;
+      }
+  
+      if (formResponse) {
+        props.responseHandler("Appointment created successfully", true);
+        setSelectedCustomer("");
+        setSelectedAllocatedAgent("");
+        setSelectedAllocatedProperties([]);
+        setEmail("");
+        setPhone("");
+        setDate("");
+        setTime("");
+      }
+    } catch (error) {
+      setLoading(false);
+      const errorMessage = error.response?.data?.message || error.message || "An error occurred while creating the appointment. Please try again.";
+      props.responseHandler(errorMessage);
     }
   };
+  
 
   const printSelectedTime = () => {
     const selectedTime = timeslots.find((slot) => slot.value === time);
     return selectedTime?.fromTime ? selectedTime.fromTime : "";
   };
 
-  const handleButtonClick = (event) => {
+  const handleButtonClick = () => {
     const nextSlot = selectNextSlot();
     if (!nextSlot) {
       props.responseHandler(["Slot is not available, select another slot"]);
@@ -240,65 +245,71 @@ export default function Add(props) {
 
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
-      const response = await AgentUserService.toAllocate();
-
-      if (response?.error && response?.message) {
-        props.responseHandler(response.message);
-        return;
+      try {
+        const response = await AgentUserService.toAllocate();
+        if (response?.error && response?.message) {
+          props.responseHandler(response.message);
+          return;
+        }
+        setUsers(
+          response.map((userDetail) => ({
+            label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
+            value: userDetail.userId,
+          }))
+        );
+      } catch (error) {
+        props.responseHandler("Failed to fetch users");
       }
-
-      setUsers(
-        response.map((userDetail) => ({
-          label: `${userDetail.user.firstName} ${userDetail.user.lastName}`,
-          value: userDetail.userId,
-        }))
-      );
     };
 
     const fetchPropertiesToAllocate = async () => {
-      const response = await PropertyService.toAllocate();
-      if (response?.error && response?.message) {
-        props.responseHandler(response.message);
-        return;
+      try {
+        const response = await PropertyService.toAllocate();
+        if (response?.error && response?.message) {
+          props.responseHandler(response.message);
+          return;
+        }
+        setProperties(
+          response.map((property) => ({
+            label: property.title,
+            value: property.id,
+          }))
+        );
+      } catch (error) {
+        props.responseHandler("Failed to fetch properties");
       }
-
-      setProperties(
-        response.map((property) => ({
-          label: property.title,
-          value: property.id,
-        }))
-      );
     };
 
     const fetchAgentAvailabilitySlots = async () => {
-      const response = await AvailabilityService.listSlots();
-      if (response?.error && response?.message) {
-        props.responseHandler(response.message);
-        return;
+      try {
+        const response = await AvailabilityService.listSlots();
+        if (response?.error && response?.message) {
+          props.responseHandler(response.message);
+          return;
+        }
+        const timeSlotsResponse = response.map((timeSlot) => ({
+          label: timeSlot.textShow,
+          value: timeSlot.id,
+          fromTime: timeSlot.fromTime,
+          toTime: timeSlot.toTime,
+        }));
+        setTimeslots(timeSlotsResponse);
+        selectNextSlot(timeSlotsResponse);
+      } catch (error) {
+        props.responseHandler("Failed to fetch availability slots");
       }
-
-      const timeSlotsResponse = response.map((timeSlot) => ({
-        label: timeSlot.textShow,
-        value: timeSlot.id,
-        fromTime: timeSlot.fromTime,
-        toTime: timeSlot.toTime,
-      }));
-
-      setTimeslots(timeSlotsResponse);
-      selectNextSlot(timeSlotsResponse);
     };
 
     fetchUsersToAllocate();
     fetchPropertiesToAllocate();
     fetchAgentAvailabilitySlots();
-  }, [props, selectNextSlot, setProperties, setTimeslots, setUsers]);
+  }, [props]);
 
   useEffect(() => {
     if (date && time) {
       const callCheckAvailability = async () => {
         await checkAvailability();
       };
-
       callCheckAvailability();
     }
   }, [date, time, checkAvailability]);

@@ -38,21 +38,50 @@ const PropertyService = {
     return response.data;
   },
 
+  // add: async (reqBody) => {
+  //   const response = await httpPost(`${apiUrlPrefix}/create`, reqBody, true);
+
+  //   if (response?.error) {
+  //     if (response?.message && response?.message.length > 0) {
+  //       response.message = [
+  //         "Unable to create property, please try again later",
+  //       ];
+  //     }
+
+  //     return response;
+  //   }
+
+  //   return response.data;
+  // },
+
   add: async (reqBody) => {
-    const response = await httpPost(`${apiUrlPrefix}/create`, reqBody, true);
-
-    if (response?.error) {
-      if (response?.error?.message && response?.error?.message.length < 0) {
-        response.error.message = [
-          "Unable to create property, please try again later",
-        ];
+    try {
+      const response = await httpPost(`${apiUrlPrefix}/create`, reqBody, true);
+  
+      if (response?.error) {
+        console.error("Error in creating property:", response.message);
+        return {
+          success: false,
+          message: response.message || "Unable to create property, please try again later.",
+        };
       }
-
-      return response;
+  
+      console.log("Property created successfully:", response);
+      return {
+        success: true,
+        data: response.data,
+        message: "Property created successfully",
+      };
+    } catch (error) {
+      console.error("Error in creating property:", error);
+      return {
+        success: false,
+        message: "An error occurred while creating the property.",
+      };
     }
-
-    return response.data;
   },
+  
+  
 
   addPropertyLog: async (reqBody) => {
     const response = await httpPost(`${apiUrlPrefix}/log`, reqBody, true);
