@@ -233,20 +233,18 @@ const PaidServices = () => {
                   <Row>
                     <Col md={6}>
                       <Card.Title>{service.name}</Card.Title>
-                      {service.name === "Video Call" ? (
-                        <Card.Text>
-                          Free Units Per Property: {service.monthlyFreeUnits}
-                        </Card.Text>
-                      ) : (
-                        <Card.Text>
-                          Monthly Free Units: {service.monthlyFreeUnits}{" "}
-                        </Card.Text>
+                      {!["Video Call", "Video Call Recording"].includes(service.name) && (
+                        <>
+                          <Card.Text>
+                            Monthly Free Units: {service.monthlyFreeUnits}
+                          </Card.Text>
+                          <Card.Text>
+                            Remaining Free Units: {service.remainingFreeUnits}
+                          </Card.Text>
+                        </>
                       )}
                       <Card.Text>
-                        Remaining Paid Units:{service.remainingPaidUnits}{" "}
-                      </Card.Text>
-                      <Card.Text>
-                        Remaining Free Units: {service.remainingFreeUnits}
+                        Remaining Paid Units: {service.remainingPaidUnits}
                       </Card.Text>
                       <Button
                         variant={isSubscribed ? "secondary" : "primary"}
