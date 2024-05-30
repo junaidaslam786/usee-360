@@ -167,6 +167,11 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
     setArea(selectedOptions);
   };
 
+  const handleUnitChange = (selectedOption) => {
+    setUnit(selectedOption);
+  };
+  
+
   // Generate area options
   const generateAreaOptions = () => {
     const options = [];
@@ -436,8 +441,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
                     <Select
                       classNamePrefix="custom-select"
                       options={UNITS}
-                      onChange={(e) => setUnit(e)}
-                      value={unit}
+                      onChange={handleUnitChange}
+                      value={UNITS.find((option) => option.value === unit)}
                       required
                     />
                   </div>
