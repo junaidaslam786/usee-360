@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
@@ -29,8 +28,10 @@ export default function Add(props) {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useStateIfMounted("");
   const [time, setTime] = useState("");
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [anySlotAvailableForToday, setAnySlotAvailableForToday] = useStateIfMounted(false);
+  const [previousDate, setPreviousDate] = useState(null);
+
   const userDetail = getUserDetailsFromJwt();
 
   const checkAvailability = useCallback(async (customerId) => {
@@ -51,7 +52,6 @@ export default function Add(props) {
       });
 
       // Handle success
-      
       // Implement any success logic here...
     } catch (error) {
       // Assuming error.response contains the error details
@@ -111,20 +111,18 @@ export default function Add(props) {
     }
   };
 
-  
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     let customerFirstName = "";
     let customerLastName = "";
     let customerEmail = "";
     let customerPhoneNumber = "";
     let customerId = "";
-  
+
     customerEmail = email;
     customerPhoneNumber = phone;
-  
+
     const customer = customers.find(
       (customerValue) => customerValue.id === selectedCustomer.value
     );
@@ -141,7 +139,7 @@ export default function Add(props) {
         customerLastName = customerName[1];
       }
     }
-  
+
     const formData = {
       properties: selectedAllocatedProperties.map((property) => property.value),
       appointmentDate: date,
@@ -153,18 +151,18 @@ export default function Add(props) {
       customerEmail: customerEmail,
       allotedAgent: selectedAllocatedAgent.value,
     };
-  
+
     try {
       setLoading(true);
       const formResponse = await AppointmentService.add(formData);
       console.log(formResponse)
       setLoading(false);
-  
+
       if (formResponse?.error) {
         props.responseHandler(formResponse.message || "An error occurred.");
         return;
       }
-  
+
       if (formResponse) {
         props.responseHandler("Appointment created successfully", true);
         setSelectedCustomer("");
@@ -181,7 +179,6 @@ export default function Add(props) {
       props.responseHandler(errorMessage);
     }
   };
-  
 
   const printSelectedTime = () => {
     const selectedTime = timeslots.find((slot) => slot.value === time);
@@ -197,51 +194,123 @@ export default function Add(props) {
     setTime(nextSlot.value);
   };
 
+  // const selectNextSlot = (currentTimeSlots) => {
+  //   const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
+  //   const now = new Date();
+
+  //   // Format the date and time values to be used as input values
+  //   const dateValue = now.toISOString().slice(0, 10);
+  //   setDate(dateValue);
+
+  //   const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
+  //   if (currentSlot) {
+  //     const foundSlot = availabilityTimeSlots.find(
+  //       (time) => time.value === currentSlot.value
+  //     );
+
+  //     // check if current slot expired
+  //     const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
+
+  //     // if current slot expired, then select next slot
+  //     const nextSlot = !isTimeExpired
+  //       ? foundSlot
+  //       : availabilityTimeSlots.find(
+  //           (time) => time.value === currentSlot.value + 1
+  //         );
+
+  //     if (!nextSlot) {
+  //       setAnySlotAvailableForToday(false);
+  //       return false;
+  //     }
+
+  //     setAnySlotAvailableForToday(true);
+  //     return nextSlot;
+  //   }
+  //   return false;
+  // };
+
   const selectNextSlot = (currentTimeSlots) => {
     const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
     const now = new Date();
-
-    // Format the date and time values to be used as input values
-    const dateValue = now.toISOString().slice(0, 10);
-    setDate(dateValue);
-
+  
     const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
     if (currentSlot) {
       const foundSlot = availabilityTimeSlots.find(
         (time) => time.value === currentSlot.value
       );
-
-      // check if current slot expired
-      const isTimeExpired = checkTimeOver(dateValue, foundSlot.fromTime);
-
-      // if current slot expired, then select next slot
+  
+      const isTimeExpired = checkTimeOver(date, foundSlot.fromTime); // Use the existing date state
+  
       const nextSlot = !isTimeExpired
         ? foundSlot
         : availabilityTimeSlots.find(
             (time) => time.value === currentSlot.value + 1
           );
-
+  
       if (!nextSlot) {
         setAnySlotAvailableForToday(false);
         return false;
       }
-
+  
       setAnySlotAvailableForToday(true);
       return nextSlot;
     }
     return false;
   };
+  
+
+  // const setDateHandler = (e) => {
+  //   const selectedDate = new Date(e);
+  //   const now = new Date();
+  //   now.setHours(0, 0, 0, 0); // Set time to midnight to compare only dates
+
+  //   console.log('Selected Date:', selectedDate);
+  //   console.log('Current Date:', now);
+
+  //   if (selectedDate >= now) {
+  //     setDate(e);
+  //   } else {
+  //     toast.error("Please select a valid date (today or in the future)."); // User feedback
+  //   }
+  // };
 
   const setDateHandler = (e) => {
+    const selectedDate = new Date(e);
     const now = new Date();
-    let dateValue = e;
-
-    if (new Date(e) < now) {
-      // Format the date and time values to be used as input values
-      dateValue = now.toISOString().slice(0, 10);
+    now.setHours(0, 0, 0, 0); // Set time to midnight to compare only dates
+  
+    if (selectedDate >= now) {
+      setDate(e);
+    } else {
+      toast.error("Please select a valid date (today or in the future)."); // User feedback
     }
-    setDate(dateValue);
   };
+  
+
+  const fetchTimeSlots = useCallback(async (selectedDate) => {
+    if (selectedDate === previousDate) {
+      return;
+    }
+    
+    try {
+      const response = await AvailabilityService.listSlots();
+      if (response?.error && response?.message) {
+        props.responseHandler(response.message);
+        return;
+      }
+      const timeSlotsResponse = response.map((timeSlot) => ({
+        label: timeSlot.textShow,
+        value: timeSlot.id,
+        fromTime: timeSlot.fromTime,
+        toTime: timeSlot.toTime,
+      }));
+      setPreviousDate(selectedDate);
+      setTimeslots(timeSlotsResponse);
+      selectNextSlot(timeSlotsResponse);
+    } catch (error) {
+      props.responseHandler("Failed to fetch availability slots");
+    }
+  }, [previousDate]);
 
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
@@ -280,30 +349,15 @@ export default function Add(props) {
       }
     };
 
-    const fetchAgentAvailabilitySlots = async () => {
-      try {
-        const response = await AvailabilityService.listSlots();
-        if (response?.error && response?.message) {
-          props.responseHandler(response.message);
-          return;
-        }
-        const timeSlotsResponse = response.map((timeSlot) => ({
-          label: timeSlot.textShow,
-          value: timeSlot.id,
-          fromTime: timeSlot.fromTime,
-          toTime: timeSlot.toTime,
-        }));
-        setTimeslots(timeSlotsResponse);
-        selectNextSlot(timeSlotsResponse);
-      } catch (error) {
-        props.responseHandler("Failed to fetch availability slots");
-      }
-    };
-
     fetchUsersToAllocate();
     fetchPropertiesToAllocate();
-    fetchAgentAvailabilitySlots();
   }, [props]);
+
+  useEffect(() => {
+    if (date) {
+      fetchTimeSlots(date);
+    }
+  }, [date, fetchTimeSlots]);
 
   useEffect(() => {
     if (date && time) {
@@ -356,6 +410,7 @@ export default function Add(props) {
                     type="date"
                     onChange={(e) => setDateHandler(e.target.value)}
                     value={date}
+                    min={new Date().toISOString().slice(0, 10)} // This sets the minimum selectable date to today
                     required
                   />
                 </div>

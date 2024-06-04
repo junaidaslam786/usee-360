@@ -1,4 +1,3 @@
-
 import {
   GoogleMap,
   Marker,
@@ -208,7 +207,8 @@ const GoogleMapsSearch = () => {
             title: property.name || property.id, // Optionally set a title
           });
           marker.addListener("click", () =>
-            history.push(`/property-details/${property.id}`)
+            // history.push(`/property-details/${property.id}`)
+            window.open(`/property-details/${property.id}`, "_blank")
           );
           return marker;
         });
@@ -496,7 +496,7 @@ const GoogleMapsSearch = () => {
                   url: "/assets/img/icons/property-marker.png",
                   scaledSize: new window.google.maps.Size(38, 38),
                 }}
-                onClick={() => history.push(`/property-details/${property.id}`)}
+                onClick={() => window.open(`/property-details/${property.id}`, "_blank")}
               />
             ))}
 
