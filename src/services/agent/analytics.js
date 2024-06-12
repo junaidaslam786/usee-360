@@ -35,15 +35,15 @@ const AgentAnalyticsService = {
   //   }
   // },
 
-  getPropertyOffers: async () => {
+  getPropertyOffers: async (startDate, endDate) => {
     try {
-      // const queryParams = new URLSearchParams({
-      //   startDate,
-      //   endDate,
-      // }).toString();
+      const queryParams = new URLSearchParams({
+        startDate,
+        endDate,
+      }).toString();
 
       const response = await httpPost(
-        `agent/analytics/property-offers`
+        `agent/analytics/property-offers?${queryParams}`
       );
       return response;
     } catch (error) {
@@ -52,19 +52,36 @@ const AgentAnalyticsService = {
     }
   },
 
-  getPropertyVisits: async () => {
+  getPropertyVisits: async (startDate, endDate) => {
     try {
-      // const queryParams = new URLSearchParams({
-      //   startDate,
-      //   endDate,
-      // }).toString();
+      const queryParams = new URLSearchParams({
+        startDate,
+        endDate,
+      }).toString();
 
       const response = await httpPost(
-        `agent/analytics/property-visits`
+        `agent/analytics/property-visits?${queryParams}`
       );
       return response;
     } catch (error) {
       console.error("Error while fetching property visits", error);
+      return null;
+    }
+  },
+
+  propertiesSoldOrRented: async (startDate, endDate) => {
+    try {
+      const queryParams = new URLSearchParams({
+        startDate,
+        endDate,
+      }).toString();
+
+      const response = await httpPost(
+        `agent/analytics/properties-sold-rented?${queryParams}`
+      );
+      return response;
+    } catch (error) {
+      console.error("Error while fetching properties sold or rented", error);
       return null;
     }
   },

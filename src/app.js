@@ -37,6 +37,7 @@ import GoogleMapsSearch from "./components/location-search/google-map";
 import OAuthCallback from "./components/auth/oAuthCallback";
 import { FiltersProvider } from "./components/context/filterContext";
 
+
 const userDetail = getUserDetailsFromJwt();
 
 const userType = getUserType();

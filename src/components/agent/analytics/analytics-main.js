@@ -17,7 +17,7 @@ const AnalyticsPage = () => {
       <ReportDownload />
       <VideoCall />
       <APISubscription />
-      <PropertyListing />
+      {/* <PropertyListing /> */}
       <AgentReport />
       
 

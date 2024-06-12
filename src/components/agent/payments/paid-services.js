@@ -359,6 +359,15 @@ const PaidServices = () => {
                         </div>
                       </Form>
                     </Col>
+                          {["Video Call"].includes(service.name) && (
+                            <Row>
+                              <Col>
+                                <p className="footnote mt-2" style={{fontStyle: 'italic'}}>
+                                  To view free video call slots for each property go to <a href="/agent/properties"> My Properties</a>
+                                </p>
+                              </Col>
+                            </Row>
+                          )}
                   </Row>
                 </Card.Body>
               </Card>

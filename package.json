@@ -28,6 +28,7 @@
     "countries-list": "^3.0.6",
     "country-state-city": "^3.2.1",
     "crypto-browserify": "^3.12.0",
+    "date-fns": "^3.6.0",
     "filepond": "^4.30.6",
     "firebase": "^9.21.0",
     "google-maps-react": "^2.0.2",
