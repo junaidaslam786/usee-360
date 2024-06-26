@@ -1,0 +1,59 @@
+.fixed-card-height {
+    height: 450px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .fixed-height-title {
+    height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .fixed-height-views {
+    height: 40px;
+  }
+  
+  .fixed-height-location {
+    height: 40px;
+  }
+  
+  .product-img {
+    height: 250px;
+  }
+  
+  .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .product-info-bottom {
+    margin-top: auto;
+  }
+  
+  .view-icon {
+    margin-right: 5px;
+  }
+  
+  .carbon-footprint {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+  }
+  
+  .retry {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+  }
+  
+  .view {
+    cursor: pointer;
+    color: #00c800;
+    text-decoration: none;
+  }
+  

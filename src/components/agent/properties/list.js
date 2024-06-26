@@ -583,8 +583,8 @@ export default function List(props) {
                     </div>
                   </td>
                   <td>
-                    <div className="ltn__my-properties-info">
-                      <h6 className="mb-10 go-top">
+                    <div className="">
+                      <h6 >
                         <Link to={`/agent/property-details/${element?.id}`}>
                           {element?.title}
                         </Link>
@@ -594,10 +594,10 @@ export default function List(props) {
                       </small>
 
                       <small>
-                        <div style={{fontStyle: 'italic'}}>
+                        <div style={{ fontStyle: "italic" }}>
                           Free remaining video call slots:{" "}
-                          {element?.productSubscription?.freeRemainingUnits ||
-                            0} / {element?.productSubscription?.freeTotalUnits || 0}
+                          {element?.productSubscription?.freeRemainingUnits || 0}{" "}
+                          / {element?.productSubscription?.freeTotalUnits || 0}
                         </div>
                       </small>
                     </div>
@@ -612,10 +612,16 @@ export default function List(props) {
                       : "-"}
                   </td>
                   <td>
+                    {console.log(
+                      "User detail ID:",
+                      userDetail?.id,
+                      "Element user ID:",
+                      element?.userId,
+                      "Can edit:",
+                      canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY)
+                    )}
                     {(userDetail?.id === element?.userId ||
-                      canDoThis(
-                        AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY
-                      )) && (
+                      canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY)) && (
                       <Link to={`/agent/edit-property/${element?.id}`}>
                         Edit
                       </Link>
@@ -623,9 +629,7 @@ export default function List(props) {
                   </td>
                   <td>
                     {(userDetail?.id === element?.userId ||
-                      canDoThis(
-                        AGENT_USER_ACCESS_TYPE_VALUE.DELETE_PROPERTY
-                      )) && (
+                      canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.DELETE_PROPERTY)) && (
                       <button
                         data-bs-toggle="modal"
                         data-bs-target="#ltn_delete_property_modal"
@@ -802,3 +806,5 @@ export default function List(props) {
     </div>
   );
 }
+
+

@@ -152,6 +152,7 @@ const PropertiesSoldRented = () => {
       });
     });
 
+    console.log("Grouped Data:", grouped); // Log the grouped data
     return Object.values(grouped);
   };
 
@@ -166,7 +167,7 @@ const PropertiesSoldRented = () => {
         
         console.log("Sold Grouped by Month:", soldGroupedByMonth);
         console.log("Rented Grouped by Month:", rentedGroupedByMonth);
-  
+
         setPropertiesSoldData(soldGroupedByMonth);
         setPropertiesRentedData(rentedGroupedByMonth);
       }
@@ -174,7 +175,6 @@ const PropertiesSoldRented = () => {
       console.error("Error fetching properties data:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchPropertiesData();
@@ -207,7 +207,7 @@ const PropertiesSoldRented = () => {
           />
         </label>
       </div>
-      <div style={{ marginTop: "20px", width: "100%", height: 300 }}>
+      <div style={{ marginTop: "20px", width: "100%", height: 350 }}>
         <h2>Properties Sold</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={propertiesSoldData}>
@@ -220,7 +220,7 @@ const PropertiesSoldRented = () => {
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div style={{ marginTop: "20px", width: "100%", height: 300 }}>
+      <div style={{ marginTop: "20px", width: "100%", height: 350 }}>
         <h2>Properties Rented</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={propertiesRentedData}>
@@ -238,4 +238,5 @@ const PropertiesSoldRented = () => {
 };
 
 export default PropertiesSoldRented;
+
 

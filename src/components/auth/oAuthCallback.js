@@ -18,10 +18,19 @@ const OAuthCallback = () => {
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
     const userType = queryParams.get("userType");
+    const error = queryParams.get("error");
+
+    if (error) {
+      toast.error(error);
+      const redirectPath = userType === 'agent' ? '/agent/login' : '/customer/login';
+      history.push(redirectPath);
+      return;
+    }
 
     if (!token || !userType) {
       toast.error("Authentication error. Missing code or state.");
-      history.push("/login");
+      const redirectPath = userType === 'agent' ? '/agent/login' : '/customer/login';
+      history.push(redirectPath);
       return;
     }
 
