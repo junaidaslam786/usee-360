@@ -244,6 +244,7 @@ const AgentReport = () => {
         accepted: row.status === "accepted" ? 1 : 0,
         rejected: row.status === "rejected" ? 1 : 0,
         pending: row.status === "pending" ? 1 : 0,
+        acceptedOfferAmount: row.status === "accepted" ? parseFloat(row.amount) : 0,
       }));
       setOfferData(transformedData);
       setOfferCounts({
@@ -339,36 +340,34 @@ const AgentReport = () => {
         </div>
       </div>
 
-      {/* Property Offers Table */}
-      <div className="agent-report-card">
+     {/* Property Offers Table */}
+     <div className="agent-report-card">
         <h2 className="agent-report-subtitle">Offers Overview</h2>
         <div className="agent-report-date-range" style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap'}}>
-        <label>
-          Start Date:
-          <input
-            type="date"
-            value={offersStartDate}
-            onChange={(e) => setOffersStartDate(e.target.value)}
-            // style={{height: '30px'}}
-          />
-        </label>
-        <label>
-          End Date:
-          <input
-            type="date"
-            value={offersEndDate}
-            onChange={(e) => setOffersEndDate(e.target.value)}
-          />
-        </label>
-      </div>
+          <label>
+            Start Date:
+            <input
+              type="date"
+              value={offersStartDate}
+              onChange={(e) => setOffersStartDate(e.target.value)}
+            />
+          </label>
+          <label>
+            End Date:
+            <input
+              type="date"
+              value={offersEndDate}
+              onChange={(e) => setOffersEndDate(e.target.value)}
+            />
+          </label>
+        </div>
         <div style={{ maxHeight: "400px", overflowY: "auto" }}>
           <table className="agent-report-table">
             <thead>
               <tr>
                 <th>Property</th>
                 <th>Offers Made</th>
-                <th>Accepted</th>
-                <th>Rejected</th>
+                <th>Accepted Offer Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -376,8 +375,7 @@ const AgentReport = () => {
                 <tr key={index}>
                   <td>{data.name}</td>
                   <td>{data.offers}</td>
-                  <td>{data.accepted}</td>
-                  <td>{data.rejected}</td>
+                  <td>{data.acceptedOfferAmount > 0 ? `$${data.acceptedOfferAmount}` : "N/A"}</td>
                 </tr>
               ))}
             </tbody>

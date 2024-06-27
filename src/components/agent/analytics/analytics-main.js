@@ -15,8 +15,8 @@ const AnalyticsPage = () => {
       <h1>Analytics Page</h1>
      
       <ReportDownload />
-      <VideoCall />
-      <APISubscription />
+      {/* <VideoCall />
+      <APISubscription /> */}
       {/* <PropertyListing /> */}
       <AgentReport />
       
