@@ -850,15 +850,15 @@ const updateStatus = async (status) => {
         return;
       }
   
-      const videoCallFeature = subscriptionData.userSubscriptions.find(
+      const videoCallFeature = subscriptionData.data.userSubscriptions.find(
         (sub) => sub.feature.name === "Video Call"
       );
   
       if (videoCallFeature && !videoCallFeature.autoRenew) {
-        const thirtyMinutes = 5 * 60 * 1000;
+        const thirtyMinutes = 30 * 60 * 1000;
   
         const endCallAfterThirtyMinutes = () => {
-          updateStatus("expired");
+          updateStatus("completed");
           console.log("Call ended after 30 minutes due to no auto-renew.");
           leaveSession();
         };
