@@ -16,6 +16,9 @@ import PropertyService from "../../services/agent/property";
 import AppointmentService from "../../services/agent/appointment";
 import HomepageService from "../../services/homepage";
 import WishlistService from "../../services/customer/wishlist";
+
+import StripeService from "../../services/agent/stripe-service";
+
 const fs = require("fs");
 
 const MeetingJoin = (props) => {
@@ -838,6 +841,53 @@ const updateStatus = async (status) => {
       setShowCancelBtn(false);
     }
   }, [agentJoined, customerJoined]);
+
+  useEffect(() => {
+    const checkUserSubscription = async () => {
+      const subscriptionData = await StripeService.getUserSubscriptionDetails(userDetail.id);
+      if (subscriptionData?.error) {
+        console.error(subscriptionData.message);
+        return;
+      }
+  
+      const videoCallFeature = subscriptionData.userSubscriptions.find(
+        (sub) => sub.feature.name === "Video Call"
+      );
+  
+      if (videoCallFeature && !videoCallFeature.autoRenew) {
+        const thirtyMinutes = 5 * 60 * 1000;
+  
+        const endCallAfterThirtyMinutes = () => {
+          updateStatus("expired");
+          console.log("Call ended after 30 minutes due to no auto-renew.");
+          leaveSession();
+        };
+  
+        const timerId = setTimeout(endCallAfterThirtyMinutes, thirtyMinutes);
+  
+        return () => clearTimeout(timerId);
+      }
+    };
+  
+    if (agentJoined && customerJoined && userType === "agent") {
+      checkUserSubscription();
+    }
+  }, [agentJoined, customerJoined, userDetail.id]);
+  
+  useEffect(() => {
+    if (agentJoined || customerJoined) {
+      setConsiderForExpiration(false); // Stop considering for expiration as one party has joined
+    }
+  }, [agentJoined, customerJoined]);
+  
+  useEffect(() => {
+    if (agentJoined && customerJoined && userType === "agent") {
+      setConsiderForExpiration(false);
+      updateStatus("inprogress");
+      setShowCancelBtn(false);
+    }
+  }, [agentJoined, customerJoined]);
+  
 
   /*
   useEffect(() => {
