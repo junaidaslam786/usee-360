@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { formatAppointmentDate, convertGmtToTime, getUserDetailsFromJwt } from "../../../utils";
+import { formatAppointmentDate, convertGmtToTime } from "../../../utils";
 import { APPOINTMENT_STATUS } from "../../../constants";
 
 export default function ViewAppointment(props) {
   const [appointmentView, setAppointmentView] = useState({});
-  const userDetail = getUserDetailsFromJwt();
+  
 
   const computedAppointmentView = useMemo(() => {
     if (!props.appointment) return {};

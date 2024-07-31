@@ -5,8 +5,7 @@ import ProfileService from "../../../services/profile";
 import { setLoginToken } from "../../../utils";
 import UpdatePassword from "../../partial/update-password";
 import UploadCallBackgroundImage from "./upload-call-background-image";
-import { useStateIfMounted } from "use-state-if-mounted";
-import AgentService from "../../../services/agent/user";
+
 import UserService from "../../../services/agent/user";
 import { getUserDetailsFromJwt } from "../../../utils";
 import ConfirmationModal from "./confirmationModal";
@@ -32,7 +31,6 @@ export default function Profile(props) {
   const [companyAddress, setCompanyAddress] = useState();
   const [zipCode, setZipCode] = useState();
   const [city, setCity] = useState();
-  const [countryName, setCountryName] = useState();
   const [ORNNumber, setORNNumber] = useState();
   const [mortgageAdvisorEmail, setMortgageAdvisorEmail] = useState();
   const [companyLogo, setCompanyLogo] = useState();

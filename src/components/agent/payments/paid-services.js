@@ -3,7 +3,7 @@ import "./PaidServices.css"; // Importing the CSS file
 import StripeService from "../../../services/agent/stripe-service";
 import { getUserDetailsFromJwt } from "../../../utils";
 import { toast } from "react-toastify";
-import { Card, Button, Form, Row, Col, ToggleButton } from "react-bootstrap";
+import { Card, Button, Form, Row, Col, } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 const PaidServices = () => {
@@ -15,7 +15,6 @@ const PaidServices = () => {
   const [autoRenewValue, setAutoRenewValue] = useState({});
 
   const userDetails = getUserDetailsFromJwt();
-  const history = useHistory();
 
   const fetchSubscriptionDetails = async () => {
     try {
@@ -297,6 +296,7 @@ const PaidServices = () => {
                                   variant="success"
                                   onClick={() => handlePurchase(service)}
                                   className="w-100"
+                                  disabled={service.quantity <= 0}
                                 >
                                   Buy
                                 </Button>

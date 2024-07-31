@@ -235,6 +235,10 @@ const GoogleMapsSearch = () => {
     [searchPropertiesInPolygon, polygons] // Add dependencies to avoid rerenders
   );
 
+  const handleLogoClick = () => {
+    history.push("/services/properties");
+  };
+
   useEffect(() => {
     if (!isLoaded) return; // Ensure the Google script is loaded
 
@@ -516,6 +520,30 @@ const GoogleMapsSearch = () => {
         </GoogleMap>
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
+      <img
+          src={`${process.env.REACT_APP_PUBLIC_URL}/assets/img/logo.png`}
+          id="sideabar-logo"
+          alt="Logo"
+          height="80"
+          onClick={handleLogoClick}
+          className="cursor_pointer"
+        />
+        <p>
+          You can search the properties in a specific area by drawing shapes on
+          maps.{" "}
+        </p>
+        <br />
+        {/* <p>Move center to your desired location</p>
+        <input
+          type="text"
+          value={centerAddress}
+          name="ltn__name"
+          id="autocomplete"
+          onChange={(event) => {
+            setCenterAddress(event.target.value);
+          }}
+          placeholder="Center your location"
+        /> */}
         <div className="scrollable">
           {properties &&
             properties.length > 0 &&

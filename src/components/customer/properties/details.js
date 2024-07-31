@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import ViewOffer from "./view-offer";
-import { VIRTUAL_TOUR_TYPE, PRODUCT_LOG_TYPE } from "../../../constants";
+import { VIRTUAL_TOUR_TYPE } from "../../../constants";
 import Slideshow from "../../homepage/section/Slideshow";
 import WishlistService from "../../../services/customer/wishlist";
 import PropertyService from "../../../services/agent/property";

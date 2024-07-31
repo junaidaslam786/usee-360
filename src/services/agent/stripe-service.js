@@ -1,4 +1,4 @@
-import { httpGet, httpPost, generateStripeHeaders, httpPut } from "../../rest-api"; // Assuming rest-api is in the same directory
+import { httpGet, httpPost, httpPut } from "../../rest-api"; // Assuming rest-api is in the same directory
 
 
 const StripeService = {
@@ -81,22 +81,22 @@ const StripeService = {
   },
 
 
-  createPaymentIntent: async (data) => {
-    try {
-      const response = await httpPost("/create-payment-intent", data);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error creating payment intent:",
-        error.response?.data || error.message
-      );
-      return {
-        error: true,
-        message:
-          error.response?.data?.error || "Failed to create payment intent",
-      };
-    }
-  },
+  // createPaymentIntent: async (data) => {
+  //   try {
+  //     const response = await httpPost("/create-payment-intent", data);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error(
+  //       "Error creating payment intent:",
+  //       error.response?.data || error.message
+  //     );
+  //     return {
+  //       error: true,
+  //       message:
+  //         error.response?.data?.error || "Failed to create payment intent",
+  //     };
+  //   }
+  // },
 
   confirmPaymentIntent: async (data) => {
     try {

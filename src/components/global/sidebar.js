@@ -10,7 +10,7 @@ import {
 import AlertService from "../../services/agent/alert";
 import { useStateIfMounted } from "use-state-if-mounted";
 import Modal from "react-modal";
-import CustomerAlertService from "../../services/customer/alert";
+
 
 export default function Sidebar({ type, responseHandler }) {
   const history = useHistory();

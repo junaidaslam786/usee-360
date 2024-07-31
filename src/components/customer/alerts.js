@@ -6,16 +6,16 @@ import ViewAppointment from "./appointments/view-appointment"; // Adapt for cust
 import CustomerAlertService from "../../services/customer/alert";
 import AppointmentService from "../../services/customer/appointment";
 import { useStateIfMounted } from "use-state-if-mounted";
-import Modal from "react-modal";
+
 
 export default function CustomerAlerts(props) {
   const [list, setList] = useStateIfMounted([]);
   const [appointmentView, setAppointmentView] = useState(null);
   const [offerView, setOfferView] = useState({});
-  const [snagListView, setSnagListView] = useState(null); // Add state for snag list view
+ 
   const openViewModal = useRef(null);
   const openOfferModal = useRef(null);
-  const openSnagListModal = useRef(null); // Reference for opening the snag list modal
+
   const history = useHistory();
 
   const formatAlertText = (alert) => {
