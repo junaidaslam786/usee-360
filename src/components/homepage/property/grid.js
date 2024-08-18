@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import {
   formatPrice,
@@ -10,15 +10,19 @@ import WishlistService from "../../../services/customer/wishlist";
 import UserService from "../../../services/profile";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProperties } from "../../../store/propertySearchSlice";
 
-export default function PropertyGrid({
-  filters,
-  mapProperties,
-  responseHandler,
-}) {
+const libraries = ["places", "drawing"];
+
+function PropertyGrid() {
+
+  // const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
+
+  const { filters, properties, loading, error } = useSelector((state) => state.propertySearch);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [properties, setProperties] = useState([]);
+  // const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [wishlistId, setWishlistId] = useState();
   const [wishlistTitle, setWishlistTitle] = useState();
@@ -38,61 +42,40 @@ export default function PropertyGrid({
     window.location.pathname
   )}`;
 
+  const dispatch = useDispatch();
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyBIjbPr5V0gaRCzgQQ-oN0eW25WvGoALVY",
-    libraries: ["places", "drawing"],
+    libraries,
   });
 
-  const loadProperties = async (page = 1) => {
-    if (mapProperties && mapProperties.length > 0) {
-      setProperties(mapProperties);
-      setCurrentPage(1);
-      setTotalPages(Math.ceil(mapProperties.length / 12));
-      return;
+  
+
+  const loadProperties = useCallback(() => {
+    if (!properties || properties.length === 0) {
+      dispatch(fetchProperties({ ...filters, page: currentPage }));
     }
+  }, [dispatch, filters, currentPage, properties]);
+  
 
-    const filtersData = filters ? filters : {};
-    let payload = {
-      ...filtersData,
-      page,
-      size: 12,
-    };
+  // const fetchUserDetails = useCallback(async (properties) => {
+  //   const userDetailsTemp = { ...userDetails };
+  //   const promises = properties.map(async (property) => {
+  //     if (!userDetailsTemp[property.userId]) {
+  //       try {
+  //         const response = await UserService.getUserBasicDetail(property.userId);
+  //         userDetailsTemp[property.userId] = response;
+  //       } catch (err) {
+  //         console.error("Error fetching user details:", err);
+  //       }
+  //     }
+  //   });
+  //   await Promise.all(promises);
+  //   setUserDetails(userDetailsTemp);
+  // }, [userDetails]);
 
-    try {
-      const response = await HomepageService.listProperties("", payload);
-      if (response.error && response.message) {
-        responseHandler(response.message);
-      } else {
-        setProperties(response.data);
-        setCurrentPage(response.page);
-        setTotalPages(response.totalPage);
-        await fetchUserDetails(response.data);
-      }
-    } catch (err) {
-      responseHandler("Failed to load properties. Please try again.");
-    }
-  };
-
-  const fetchUserDetails = async (properties) => {
-    const userDetailsTemp = { ...userDetails };
-    const promises = properties.map(async (property) => {
-      if (!userDetailsTemp[property.userId]) {
-        try {
-          const response = await UserService.getUserBasicDetail(
-            property.userId
-          );
-          userDetailsTemp[property.userId] = response;
-        } catch (err) {
-          console.error("Error fetching user details:", err);
-        }
-      }
-    });
-    await Promise.all(promises);
-    setUserDetails(userDetailsTemp);
-  };
-
-  const fetchCarbonFootprint = async (propertyId) => {
+  const fetchCarbonFootprint = useCallback(async (propertyId) => {
     if (!carbonFootprints[propertyId]) {
       setCarbonFootprints((prev) => ({
         ...prev,
@@ -111,79 +94,76 @@ export default function PropertyGrid({
         }));
       }
     }
-  };
+  }, [carbonFootprints]);
 
-  const loadWishlistProperties = async () => {
-    const response = await WishlistService.list();
-    if (response?.length > 0) {
-      setWishlistProperties(response);
+   // Function to load wishlist properties only if the user is logged in
+   const loadWishlistProperties = useCallback(async () => {
+    if (!token) {
+      return; // Skip fetching wishlist if the user is not logged in
     }
-  };
 
-  const addToWishList = async (propertyId) => {
+    try {
+      const response = await WishlistService.list();
+      if (response?.length > 0) {
+        setWishlistProperties(response);
+      }
+    } catch (error) {
+      console.error("Failed to load wishlist properties:", error);
+    }
+  }, [token]);
+
+  // Function to add a property to the wishlist
+  const addToWishList = useCallback(async (propertyId) => {
     if (!token) {
       history.push(redirectPath);
       return;
     }
 
-    const response = await WishlistService.addToWishlist(propertyId);
-    if (response?.error && response?.message) {
-      responseHandler(response.message);
-      return;
+    try {
+      const response = await WishlistService.addToWishlist(propertyId);
+      if (response?.error && response?.message) {
+        console.error(response.message);
+        return;
+      }
+
+      const prop = properties.find(({ id }) => id === propertyId);
+      setWishlistId(prop.id);
+      setWishlistTitle(prop.title);
+      setWishlistImage(prop.featuredImage);
+      toggleButton.current.click();
+      await loadWishlistProperties();
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
     }
+  }, [token, properties, loadWishlistProperties, history, redirectPath]);
 
-    const prop = properties.find(({ id }) => id === propertyId);
-    setWishlistId(prop.id);
-    setWishlistTitle(prop.title);
-    setWishlistImage(prop.featuredImage);
-    toggleButton.current.click();
-    await loadWishlistProperties();
-  };
-
-  const removeWishList = async (propertyId) => {
+  // Function to remove a property from the wishlist
+  const removeWishList = useCallback(async (propertyId) => {
     if (!token) {
       history.push(redirectPath);
       return;
     }
 
-    const response = await WishlistService.removeFromWishlist(propertyId);
-    if (response?.error && response?.message) {
-      responseHandler(response.message);
-      return;
+    try {
+      const response = await WishlistService.removeFromWishlist(propertyId);
+      if (response?.error && response?.message) {
+        console.error(response.message);
+        return;
+      }
+
+      console.log("Property removed from wishlist.", true);
+    } catch (error) {
+      console.error("Failed to remove from wishlist:", error);
     }
+  }, [token, history, redirectPath]);
 
-    responseHandler("Property removed from wishlist.", true);
-  };
-
+  // Load properties and wishlist properties when component is mounted or dependencies change
   useEffect(() => {
-    loadProperties(currentPage);
-  }, [currentPage, filters]);
-
-  useEffect(() => {
-    if (token && isLoaded) {
-      const fetchAllWishlistProperties = async () => {
-        await loadWishlistProperties();
-      };
-      fetchAllWishlistProperties();
-    }
-
     if (isLoaded) {
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        document.getElementById("autocomplete")
-      );
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry) {
-          window.alert("No details available for input: '" + place.name + "'");
-          return;
-        }
-
-        setAddress(place.formatted_address);
-        setLatFilter(place.geometry.location.lat());
-        setLngFilter(place.geometry.location.lng());
-      });
+      loadProperties();
+      loadWishlistProperties(); // Will only run if the user is logged in
     }
-  }, [isLoaded, token]);
+  }, [isLoaded, loadProperties, loadWishlistProperties]);
 
   return (
     <div>
@@ -685,3 +665,5 @@ export default function PropertyGrid({
     </div>
   );
 }
+
+export default memo(PropertyGrid)

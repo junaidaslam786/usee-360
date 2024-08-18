@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DashboardCards from "./dashboard-cards";
 import DatePicker from "react-modern-calendar-datepicker";
 import {
@@ -40,7 +40,7 @@ export default function DashboardFilter(props) {
     loadDashboardData(e);
   };
 
-  const loadDashboardData = async (filter) => {
+  const loadDashboardData = useCallback(async (filter) => {
     if (!filter) {
       return;
     }
@@ -54,7 +54,7 @@ export default function DashboardFilter(props) {
     if (formResponse) {
       setDashboardData(formResponse);
     }
-  };
+  },[startDate, endDate, props.type, setDashboardData]);
 
   const computedDate = (date) => {
     return date ? `${date.year}-${date.month}-${date.day}` : "";
@@ -66,11 +66,11 @@ export default function DashboardFilter(props) {
       loadDashboardData(DASHBOARD_FILTER_VALUE.CUSTOM);
       setToggleMenu(false);
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, loadDashboardData]);
 
   useEffect(() => {
     loadDashboardData("all");
-  }, []);
+  }, [loadDashboardData]);
 
   return (
     <div>

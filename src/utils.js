@@ -238,12 +238,11 @@ export const getLoginToken = () => {
   return null;
 };
 
-
 export const removeLoginToken = () => {
   localStorage.removeItem("userToken");
   localStorage.removeItem("userTimezone");
   localStorage.removeItem("userType");
-  localStorage.removeItem("searchFilters")
+  localStorage.removeItem("searchFilters");
   return true;
 };
 
@@ -286,16 +285,16 @@ export const booleanToString = (booleanValue) => {
 export const iconsMap = {
   "Property Type": "fas fa-building", // FontAwesome equivalent
   "Property Category Type": "fas fa-tags", // General tag icon, as specific category icon might not be available
-  "Unit": "fas fa-th-large", // General representation of units
-  "Area": "fas fa-vector-square", // Represents area/space
+  Unit: "fas fa-th-large", // General representation of units
+  Area: "fas fa-vector-square", // Represents area/space
   "No. of bedrooms": "fas fa-bed", // FontAwesome
   "Commercial Property Type": "fas fa-store",
   "Residential Property Type": "fas fa-store",
   "Price Type": "fas fa-tag", // FontAwesome
-  "Layout": "fas fa-object-group", // Represents layout/design
+  Layout: "fas fa-object-group", // Represents layout/design
   "Conference Room": "fas fa-chalkboard-teacher", // Represents teaching/conference space
   "Conference Room Capacity": "fas fa-users", // Represents group/capacity
-  "Kitchen": "fas fa-utensils", // FontAwesome
+  Kitchen: "fas fa-utensils", // FontAwesome
   "Display Window Type Value(Other)": "fas fa-tv", // Represents display screens/windows
   "Display Window Type": "fas fa-window-maximize", // Represents windows
   "Number of Stores": "fas fa-shopping-cart", // General shopping/store icon
@@ -316,7 +315,7 @@ export const iconsMap = {
   "Number of Beds": "fas fa-bed", // Duplicate of No. of bedrooms
   "Room Type": "fas fa-info", // General info icon, as specific room type might not be available
   "Floor Level": "fas fa-building", // Use building icon with levels indicated
-  "View": "fas fa-eye", // Represents view/visibility
+  View: "fas fa-eye", // Represents view/visibility
   "Balcony/Terrace": "fas fa-tree", // Use nature-related icon for outdoor space
   "Security Features": "fas fa-lock", // Represents security
   "Security Features Value": "fas fa-shield-alt", // Represents protection/value
@@ -325,21 +324,21 @@ export const iconsMap = {
   "Parking Facility(Number of Spaces)": "fas fa-car", // Represents vehicles/parking
   "Public Transport Access": "fas fa-bus", // Represents public transport
   "Year Built": "fas fa-calendar-alt", // Represents date/calendar
-  "Condition": "fas fa-thermometer-half", // General condition/temperature icon
+  Condition: "fas fa-thermometer-half", // General condition/temperature icon
   "Availability Date": "fas fa-calendar-check", // Represents availability/scheduling
   "Pet Friendliness": "fas fa-paw", // Represents pets
   "Additional Features": "fas fa-plus-square", // Represents additional options/features
   "Building Amenities": "fas fa-building", // Duplicate of Property Type, as amenities icon might not be specific
-  "Fireplace": "fas fa-fire", // Represents fireplace
+  Fireplace: "fas fa-fire", // Represents fireplace
   "Fireplace Value": "fas fa-fire-alt", // Alternative fire icon for value
   "Number of Floors": "fas fa-layer-group", // Represents layers/floors
-  "Basement": "fas fa-warehouse", // Represents storage/lower levels
-  "Parking": "fas fa-parking", // Duplicate of Parking Facility
+  Basement: "fas fa-warehouse", // Represents storage/lower levels
+  Parking: "fas fa-parking", // Duplicate of Parking Facility
   "Parking Option": "fas fa-cogs", // Represents options/settings
   "Garage/Carport(No. of Spaces)": "fas fa-car", // Use car icon, as specific garage icon might not be available
   "Outdoor Spaces": "fas fa-tree", // Represents outdoor spaces/nature
   "Number of Bathrooms": "fas fa-bath", // Represents bathroom facilities
-  "Furnished": "fas fa-couch", // Represents furniture/living space
+  Furnished: "fas fa-couch", // Represents furniture/living space
 };
 
 export const transformMetaTagsToFrontend = (productMetaTags) => {
@@ -561,6 +560,9 @@ export const transformMetaTagsToFrontend = (productMetaTags) => {
       case "Furnished":
         initialState.furnished = tag.value;
         break;
+      default:
+        console.warn(`Unhandled tag label: ${tag.label}`);
+        break;
     }
   });
 
@@ -571,61 +573,150 @@ export const prepareFormDataForBackend = (formData) => {
   const backendData = [];
 
   // Property Type and other straightforward mappings
-  backendData.push({ label: 'Property Type', value: formData.propertyType });
-  backendData.push({ label: 'Property Category Type', value: formData.propertyCategoryType });
-  backendData.push({ label: 'Unit', value: formData.unit });
-  backendData.push({ label: 'Area', value: formData.area });
-  backendData.push({ label: 'No. of bedrooms', value: formData.bedrooms });
-  backendData.push({ label: 'Residential Property Type', value: formData.propertySubType });
-  backendData.push({ label: 'Commercial Property Type', value: formData.propertySubType });
-  backendData.push({ label: 'Price Type', value: formData.priceType });
-  backendData.push({ label: 'Layout', value: formData.layout });
-  backendData.push({ label: 'Conference Room', value: formData.conferenceRoom ? 'yes' : 'no' });
-  backendData.push({ label: 'Kitchen', value: formData.kitchen });
-  backendData.push({ label: 'Area of Display Window', value: formData.displayWindowArea });
-  backendData.push({ label: 'Display Window Type', value: formData.displayWindow });
-  backendData.push({ label: 'Number of Stores', value: formData.numberOfStores });
-  backendData.push({ label: 'Food Court', value: formData.foodCourt ? 'yes' : 'no' });
-  backendData.push({ label: 'Rest Rooms', value: formData.restRoom ? 'yes' : 'no' });
-  backendData.push({ label: 'Number Of Pools', value: formData.pools });
-  backendData.push({ label: 'Pool Types', value: formData.poolType });
-  backendData.push({ label: 'Number of Rooms', value: formData.hotelRoom });
-  backendData.push({ label: 'Area of Bar(m²)', value: formData.areaBar });
-  backendData.push({ label: 'Area of Lounge(m²)', value: formData.loungeArea });
-  backendData.push({ label: 'Capacity of VIP Section', value: formData.capacityOfVip });
-  backendData.push({ label: 'Number of Dance Floors', value: formData.noOfDanceFloor });
-  backendData.push({ label: 'Number of Private Rooms', value: formData.noOfPrivateRooms });
-  backendData.push({ label: 'Area of Kitchen', value: formData.kitchenArea });
-  backendData.push({ label: 'Outdoor Seating', value: formData.outdoorSeating ? 'yes' : 'no' });
-  backendData.push({ label: 'Area of Outdoor Seating(m²)', value: formData.outdoorSeatingArea });
-  backendData.push({ label: 'Room Size(m²)', value: formData.roomSize });
-  backendData.push({ label: 'Number of Beds', value: formData.noOfBeds });
-  backendData.push({ label: 'Room Type', value: formData.roomType });
-  backendData.push({ label: 'Floor Level', value: formData.floorLevel });
-  backendData.push({ label: 'View', value: formData.view });
-  backendData.push({ label: 'Balcony/Terrace', value: formData.balcony ? 'yes' : 'no' });
-  backendData.push({ label: 'Security Features', value: formData.securityFeatures ? 'yes' : 'no' });
-  backendData.push({ label: 'Security Features Value', value: formData.alaramCameraB });
-  backendData.push({ label: 'Disability Access', value: formData.disabilityAccess ? 'yes' : 'no' });
-  backendData.push({ label: 'Parking Facility', value: formData.parkingFacility ? 'yes' : 'no' });
-  backendData.push({ label: 'Parking Facility (Number of Spaces)', value: formData.noOfParkings });
-  backendData.push({ label: 'Public Transport Access', value: formData.publicTransport ? 'yes' : 'no' });
-  backendData.push({ label: 'Year Built', value: formData.yearBuilt });
-  backendData.push({ label: 'Condition', value: formData.condition });
-  backendData.push({ label: 'Availability Date', value: formData.availabilityDate });
-  backendData.push({ label: 'Pet Friendliness', value: formData.petFreindliness ? 'yes' : 'no' });
-  backendData.push({ label: 'Additional Features', value: formData.additionalFeatures });
-  backendData.push({ label: 'Building Amenities', value: formData.buildingAmenities.join(',') });
-  backendData.push({ label: 'Fireplace', value: formData.fireplace ? 'yes' : 'no' });
-  backendData.push({ label: 'Fireplace Value', value: formData.woodBurning });
-  backendData.push({ label: 'Number of Floors', value: formData.noOfFloors });
-  backendData.push({ label: 'Basement', value: formData.basement ? 'yes' : 'no' });
-  backendData.push({ label: 'Parking Option', value: formData.parkingType });
-  backendData.push({ label: 'Garage/Carport(No. of Spaces)', value: formData.garageSpaces });
-  backendData.push({ label: 'Outdoor Spaces', value: formData.outdoorSpaces.join(',') });
-  backendData.push({ label: 'Number of Bathrooms', value: formData.noOfBathrooms });
-  backendData.push({ label: 'Furnished', value: formData.furnished });
-
+  backendData.push({ label: "Property Type", value: formData.propertyType });
+  backendData.push({
+    label: "Property Category Type",
+    value: formData.propertyCategoryType,
+  });
+  backendData.push({ label: "Unit", value: formData.unit });
+  backendData.push({ label: "Area", value: formData.area });
+  backendData.push({ label: "No. of bedrooms", value: formData.bedrooms });
+  backendData.push({
+    label: "Residential Property Type",
+    value: formData.propertySubType,
+  });
+  backendData.push({
+    label: "Commercial Property Type",
+    value: formData.propertySubType,
+  });
+  backendData.push({ label: "Price Type", value: formData.priceType });
+  backendData.push({ label: "Layout", value: formData.layout });
+  backendData.push({
+    label: "Conference Room",
+    value: formData.conferenceRoom ? "yes" : "no",
+  });
+  backendData.push({ label: "Kitchen", value: formData.kitchen });
+  backendData.push({
+    label: "Area of Display Window",
+    value: formData.displayWindowArea,
+  });
+  backendData.push({
+    label: "Display Window Type",
+    value: formData.displayWindow,
+  });
+  backendData.push({
+    label: "Number of Stores",
+    value: formData.numberOfStores,
+  });
+  backendData.push({
+    label: "Food Court",
+    value: formData.foodCourt ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Rest Rooms",
+    value: formData.restRoom ? "yes" : "no",
+  });
+  backendData.push({ label: "Number Of Pools", value: formData.pools });
+  backendData.push({ label: "Pool Types", value: formData.poolType });
+  backendData.push({ label: "Number of Rooms", value: formData.hotelRoom });
+  backendData.push({ label: "Area of Bar(m²)", value: formData.areaBar });
+  backendData.push({ label: "Area of Lounge(m²)", value: formData.loungeArea });
+  backendData.push({
+    label: "Capacity of VIP Section",
+    value: formData.capacityOfVip,
+  });
+  backendData.push({
+    label: "Number of Dance Floors",
+    value: formData.noOfDanceFloor,
+  });
+  backendData.push({
+    label: "Number of Private Rooms",
+    value: formData.noOfPrivateRooms,
+  });
+  backendData.push({ label: "Area of Kitchen", value: formData.kitchenArea });
+  backendData.push({
+    label: "Outdoor Seating",
+    value: formData.outdoorSeating ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Area of Outdoor Seating(m²)",
+    value: formData.outdoorSeatingArea,
+  });
+  backendData.push({ label: "Room Size(m²)", value: formData.roomSize });
+  backendData.push({ label: "Number of Beds", value: formData.noOfBeds });
+  backendData.push({ label: "Room Type", value: formData.roomType });
+  backendData.push({ label: "Floor Level", value: formData.floorLevel });
+  backendData.push({ label: "View", value: formData.view });
+  backendData.push({
+    label: "Balcony/Terrace",
+    value: formData.balcony ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Security Features",
+    value: formData.securityFeatures ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Security Features Value",
+    value: formData.alaramCameraB,
+  });
+  backendData.push({
+    label: "Disability Access",
+    value: formData.disabilityAccess ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Parking Facility",
+    value: formData.parkingFacility ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Parking Facility (Number of Spaces)",
+    value: formData.noOfParkings,
+  });
+  backendData.push({
+    label: "Public Transport Access",
+    value: formData.publicTransport ? "yes" : "no",
+  });
+  backendData.push({ label: "Year Built", value: formData.yearBuilt });
+  backendData.push({ label: "Condition", value: formData.condition });
+  backendData.push({
+    label: "Availability Date",
+    value: formData.availabilityDate,
+  });
+  backendData.push({
+    label: "Pet Friendliness",
+    value: formData.petFreindliness ? "yes" : "no",
+  });
+  backendData.push({
+    label: "Additional Features",
+    value: formData.additionalFeatures,
+  });
+  backendData.push({
+    label: "Building Amenities",
+    value: formData.buildingAmenities.join(","),
+  });
+  backendData.push({
+    label: "Fireplace",
+    value: formData.fireplace ? "yes" : "no",
+  });
+  backendData.push({ label: "Fireplace Value", value: formData.woodBurning });
+  backendData.push({ label: "Number of Floors", value: formData.noOfFloors });
+  backendData.push({
+    label: "Basement",
+    value: formData.basement ? "yes" : "no",
+  });
+  backendData.push({ label: "Parking Option", value: formData.parkingType });
+  backendData.push({
+    label: "Garage/Carport(No. of Spaces)",
+    value: formData.garageSpaces,
+  });
+  backendData.push({
+    label: "Outdoor Spaces",
+    value: formData.outdoorSpaces.join(","),
+  });
+  backendData.push({
+    label: "Number of Bathrooms",
+    value: formData.noOfBathrooms,
+  });
+  backendData.push({ label: "Furnished", value: formData.furnished });
 
   // Transform to the required backend format, e.g., FormData or JSON
   const formdata = new FormData();
@@ -635,7 +726,6 @@ export const prepareFormDataForBackend = (formData) => {
 
   return formdata;
 };
-
 
 export const loadPropertyMetaData = (property, type) => {
   let metaData = "";
@@ -650,7 +740,7 @@ export const loadPropertyMetaData = (property, type) => {
         metaTag = productMetaTags.find((meta) => meta.categoryField.id === 2);
         if (metaTag) {
           metaData = PROPERTY_CATEGORY_TYPES.find(
-            (property) => property.value == metaTag.value
+            (property) => property.value === metaTag.value
           );
           metaData = metaData?.value === "sale" ? "Buy" : "Rent";
         } else {
@@ -662,7 +752,7 @@ export const loadPropertyMetaData = (property, type) => {
       case "unit":
         metaTag = productMetaTags.find((meta) => meta.categoryField.id === 3);
         if (metaTag) {
-          metaData = UNITS.find((property) => property.value == metaTag.value);
+          metaData = UNITS.find((property) => property.value === metaTag.value);
           metaData = metaData?.label ? metaData.label : "Square Ft";
         } else {
           metaData = "Square Ft";
@@ -678,7 +768,7 @@ export const loadPropertyMetaData = (property, type) => {
         metaTag = productMetaTags.find((meta) => meta.categoryField.id === 5);
         if (metaTag) {
           metaData = BEDROOMS.find(
-            (property) => property.value == metaTag.value
+            (property) => property.value === metaTag.value
           );
           metaData = metaData?.label ? metaData.label : "No";
         } else {
@@ -879,10 +969,10 @@ export const loadPropertyMetaData = (property, type) => {
         metaData = metaTag ? metaTag.value : "Not Specified";
         break;
 
-      case "availabilityDate":
-        metaTag = productMetaTags.find((meta) => meta.categoryField.id === 45);
-        metaData = metaTag ? metaTag.value : "Not Specified";
-        break;
+      // case "availabilityDate":
+      //   metaTag = productMetaTags.find((meta) => meta.categoryField.id === 45);
+      //   metaData = metaTag ? metaTag.value : "Not Specified";
+      //   break;
 
       case "petFriendliness":
         metaTag = productMetaTags.find((meta) => meta.categoryField.id === 46);
@@ -1353,6 +1443,12 @@ export const setPropertyMetaData = (productMetaTags) => {
           metaData.furnished =
             FURNISHED_OPTIONS.find((option) => option.value === metaTag.value)
               ?.label || "Not Specified";
+          break;
+
+        default:
+          console.warn(
+            `Unhandled categoryField ID: ${metaTag.categoryField.id}`
+          );
           break;
       }
     });

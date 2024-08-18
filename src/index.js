@@ -2,15 +2,17 @@
 import "filepond/dist/filepond.min.css";
 
 import React from "react";
-import { createRoot } from "react-dom/client"
+import { createRoot } from "react-dom/client";
 import App from "./app";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
-import Modal from 'react-modal';
+import Modal from "react-modal";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
-Modal.setAppElement('#quarter');
+Modal.setAppElement("#quarter");
 
 // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 const stripePromise = loadStripe(
@@ -23,6 +25,8 @@ const root = createRoot(container); // Create a root for the container
 // Render the Elements provider and App within it
 root.render(
   <Elements stripe={stripePromise}>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </Elements>
 );

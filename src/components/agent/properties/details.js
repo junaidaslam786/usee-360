@@ -130,7 +130,7 @@ export default function Details(props) {
                 href={`${process.env.REACT_APP_API_URL}/${element.file}`}
                 target="_blank"
                 className="btn theme-btn-1 mb-3"
-                key={index}
+                key={index} rel="noreferrer"
               >
                 View {element.title}
               </a>
@@ -140,7 +140,7 @@ export default function Details(props) {
               <a
                 href={property.virtualTourUrl}
                 target="_blank"
-                className="btn theme-btn-3 mb-3"
+                className="btn theme-btn-3 mb-3" rel="noreferrer"
               >
                 View Tour
               </a>

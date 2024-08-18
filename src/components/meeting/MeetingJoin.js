@@ -19,16 +19,12 @@ import WishlistService from "../../services/customer/wishlist";
 
 import StripeService from "../../services/agent/stripe-service";
 
-const fs = require("fs");
-
 const MeetingJoin = (props) => {
   const {
     audioInputDeviceId,
-    audioOutputDeviceId,
     videoDeviceId,
     appointment,
     userType,
-    appointmentId,
     backgroundImage,
     videoStreamingVal,
     audioStreamingVal,
@@ -203,33 +199,32 @@ const MeetingJoin = (props) => {
     });
   };
 
-  const handleExpiration = async () => {
-    const currentStatus = await AppointmentService.detail(appointment.id);
-    console.log(currentStatus);
-    if (currentStatus === "pending" && !agentJoined && !customerJoined) {
-        await updateStatus("expired");
-        setExpirationChecked(true);
-        console.log("Meeting expired due to no participants joining.");
-        leaveSession();
-    }
-};
+  // const handleExpiration = async () => {
+  //   const currentStatus = await AppointmentService.detail(appointment.id);
+  //   console.log(currentStatus);
+  //   if (currentStatus === "pending" && !agentJoined && !customerJoined) {
+  //     await updateStatus("expired");
+  //     setExpirationChecked(true);
+  //     console.log("Meeting expired due to no participants joining.");
+  //     leaveSession();
+  //   }
+  // };
 
-const updateStatus = async (status) => {
-  try {
+  const updateStatus = async (status) => {
+    try {
       const response = await AppointmentService.updateStatus({
-          id: appointment.id,
-          status
+        id: appointment.id,
+        status,
       });
       if (response.success) {
-          console.log(`Status updated to ${status}`);
+        console.log(`Status updated to ${status}`);
       } else {
-          console.error('Failed to update status:', response.message);
+        console.error("Failed to update status:", response.message);
       }
-  } catch (error) {
-      console.error('Error updating status:', error);
-  }
-};
-
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   const toggleVideo = () => {
     if (publisher?.publishVideo) {
@@ -517,8 +512,6 @@ const updateStatus = async (status) => {
     }));
   };
 
- 
-
   useEffect(() => {
     if (token) {
       const fetchData = async () => {
@@ -574,9 +567,9 @@ const updateStatus = async (status) => {
                       "hidden";
                   },
                 });
-                if (userType == USER_TYPE.CUSTOMER) {
+                if (userType === USER_TYPE.CUSTOMER) {
                   setAgentJoined(true);
-                } else if (userType == "agent") {
+                } else if (userType === "agent") {
                   setCustomerJoined(true);
                 }
               } else if (event.stream.videoType === "screen") {
@@ -805,28 +798,58 @@ const updateStatus = async (status) => {
       fetchData();
       return () => {};
     }
-  }, [agentJoined, customerJoined]);
-
+  }, [
+    agentJoined,
+    customerJoined,
+    addLogEntry,
+    appointment,
+    filter,
+    token,
+    userType,
+    videoStreamingVal,
+    audioStreamingVal,
+    audioInputDeviceId,
+    videoDeviceId,
+    backgroundImage,
+    getSessionToken,
+    getPropertyDetail,
+    history,
+    publisher,
+    updateStatus
+  ]);
 
   useEffect(() => {
     const appointmentStartTime = new Date(appointment.startTime).getTime(); // Assuming appointment.startTime is the scheduled start time of the appointment
     const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
 
     const checkExpiration = () => {
-        const currentTime = Date.now();
-        if (currentTime - appointmentStartTime > thirtyMinutes && !agentJoined && !customerJoined) {
-            updateStatus("expired").then(() => {
-                console.log("Appointment expired due to no participants joining within 30 minutes.");
-                leaveSession();
-            }).catch(console.error);
-        }
+      const currentTime = Date.now();
+      if (
+        currentTime - appointmentStartTime > thirtyMinutes &&
+        !agentJoined &&
+        !customerJoined
+      ) {
+        updateStatus("expired")
+          .then(() => {
+            console.log(
+              "Appointment expired due to no participants joining within 30 minutes."
+            );
+            leaveSession();
+          })
+          .catch(console.error);
+      }
     };
 
     const timerId = setTimeout(checkExpiration, thirtyMinutes);
 
     return () => clearTimeout(timerId); // Cleanup the timer when component unmounts or variables change
-}, [agentJoined, customerJoined, appointment.startTime]); // Ensure dependencies are correctly listed to avoid unwanted re-triggers
-
+  }, [
+    agentJoined,
+    customerJoined,
+    appointment.startTime,
+    updateStatus,
+    leaveSession,
+  ]); // Ensure dependencies are correctly listed to avoid unwanted re-triggers
 
   useEffect(() => {
     if (agentJoined || customerJoined) {
@@ -840,54 +863,62 @@ const updateStatus = async (status) => {
       updateStatus("inprogress");
       setShowCancelBtn(false);
     }
-  }, [agentJoined, customerJoined]);
+  }, [agentJoined, customerJoined, updateStatus, userType]);
 
   useEffect(() => {
     const checkUserSubscription = async () => {
-      const subscriptionData = await StripeService.getUserSubscriptionDetails(userDetail.id);
+      const subscriptionData = await StripeService.getUserSubscriptionDetails(
+        userDetail.id
+      );
       if (subscriptionData?.error) {
         console.error(subscriptionData.message);
         return;
       }
-  
+
       const videoCallFeature = subscriptionData.data.userSubscriptions.find(
         (sub) => sub.feature.name === "Video Call"
       );
-  
+
       if (videoCallFeature && !videoCallFeature.autoRenew) {
         const thirtyMinutes = 30 * 60 * 1000;
-  
+
         const endCallAfterThirtyMinutes = () => {
           updateStatus("completed");
           console.log("Call ended after 30 minutes due to no auto-renew.");
           leaveSession();
         };
-  
+
         const timerId = setTimeout(endCallAfterThirtyMinutes, thirtyMinutes);
-  
+
         return () => clearTimeout(timerId);
       }
     };
-  
+
     if (agentJoined && customerJoined && userType === "agent") {
       checkUserSubscription();
     }
-  }, [agentJoined, customerJoined, userDetail.id]);
-  
+  }, [
+    agentJoined,
+    customerJoined,
+    userDetail.id,
+    leaveSession,
+    updateStatus,
+    userType,
+  ]);
+
   useEffect(() => {
     if (agentJoined || customerJoined) {
       setConsiderForExpiration(false); // Stop considering for expiration as one party has joined
     }
   }, [agentJoined, customerJoined]);
-  
+
   useEffect(() => {
     if (agentJoined && customerJoined && userType === "agent") {
       setConsiderForExpiration(false);
       updateStatus("inprogress");
       setShowCancelBtn(false);
     }
-  }, [agentJoined, customerJoined]);
-  
+  }, [agentJoined, customerJoined, updateStatus, userType]);
 
   /*
   useEffect(() => {
@@ -926,6 +957,7 @@ const updateStatus = async (status) => {
           <div>
             <center>
               <img
+                alt=""
                 src={`${publicUrl}assets/img/meeting-logo.png`}
                 className="w_130 custom_margin"
               />
@@ -1023,6 +1055,7 @@ const updateStatus = async (status) => {
         >
           {virtualTourUrl && (
             <iframe
+              title="Virtual Tour"
               src={virtualTourUrl}
               id="prop_tour_link"
               className="w_100 h_100"
@@ -1044,7 +1077,7 @@ const updateStatus = async (status) => {
           )}
 
           {defaultImage && (
-            <img src={`${publicUrl}assets/img/default-property.jpg`} />
+            <img alt="" src={`${publicUrl}assets/img/default-property.jpg`} />
           )}
         </div>
       </div>
@@ -1125,6 +1158,7 @@ const updateStatus = async (status) => {
         <div id="toggle">
           <span className="position-relative">
             <img
+              alt="chat"
               id="ChatIcon2"
               src={`${publicUrl}assets/img/icons/chat.png`}
               onClick={() => {
@@ -1169,6 +1203,7 @@ const updateStatus = async (status) => {
         <form id="Chatform" encType="multipart/form-data" action="">
           <div>
             <img
+              alt="attachment"
               className="chatForm_Avatar1"
               src={`${publicUrl}assets/img/icons/attach-file.png`}
             />
@@ -1179,6 +1214,7 @@ const updateStatus = async (status) => {
 
           <div>
             <img
+              alt=""
               className="chatForm_Avatar2"
               src={`${publicUrl}assets/img/icons/send-icon.png`}
             />

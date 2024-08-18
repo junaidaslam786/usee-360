@@ -13,6 +13,8 @@ import { formatPrice } from "../../utils";
 import { useHistory } from "react-router-dom";
 import "./location-search.css";
 import { RADIUS_OPTIONS } from "../../constants";
+import { useDispatch, useSelector } from "react-redux";
+import { setProperties } from "../../store/propertySearchSlice";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -65,7 +67,7 @@ const GoogleMapsSearch = () => {
 
   const mapRef = useRef(null);
   const [active, setActive] = useState(false);
-  const [properties, setProperties] = useState([]);
+
   const [radius, setRadius] = useState(0);
   const [polygons, setPolygons] = useState([]);
   const [showRadius, setShowRadius] = useState(false);
@@ -73,7 +75,10 @@ const GoogleMapsSearch = () => {
   const [streetViewPosition, setStreetViewPosition] = useState(null);
   const [drawingMode, setDrawingMode] = useState(null);
 
+  const properties = useSelector((state) => state.propertySearch.properties);
+
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const searchBoxRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -83,6 +88,7 @@ const GoogleMapsSearch = () => {
   const [address, setAddress] = useState("");
 
   const onMapLoad = useCallback((map) => {
+    mapRef.current = map; // Ensure the map reference is set correctly
     setMap(map);
   }, []);
 
@@ -103,13 +109,11 @@ const GoogleMapsSearch = () => {
     setProperties([]);
     setAddress("");
     setShowRadius(false);
+    dispatch(setProperties([]));
   };
 
   const handleGotoProperties = () => {
-    history.push({
-      pathname: "/services/properties",
-      state: { properties: properties, source: "google-maps" },
-    });
+    history.push("/services/properties");
   };
 
   const searchByCircle = useCallback(async () => {
@@ -130,12 +134,12 @@ const GoogleMapsSearch = () => {
 
       console.log("propertiesWithDetails", propertiesWithDetails);
 
-      setProperties(propertiesWithDetails);
+      dispatch(setProperties(propertiesWithDetails));
     } catch (err) {
       console.log(err);
       setProperties([]);
     }
-  }, [currentLocation, radius]);
+  }, [currentLocation, radius, dispatch]);
 
   const onDragEnd = useCallback((event) => {
     const newLocation = {
@@ -192,7 +196,7 @@ const GoogleMapsSearch = () => {
           coordinates: coordinates, // This now correctly matches the backend expectation
         });
 
-        setProperties(properties || []);
+        dispatch(setProperties(properties || []));
 
         // Clear existing markers
         markers.forEach((marker) => marker.setMap(null));
@@ -216,11 +220,11 @@ const GoogleMapsSearch = () => {
         setMarkers(newMarkers); // Update state with new markers
       } catch (error) {
         console.error("Failed to search properties by polygon:", error);
-        setProperties([]);
+        dispatch(setProperties([]));
         // Handle error (e.g., show an error message)
       }
     },
-    [markers, history] // Ensure dependencies are correctly listed
+    [markers, dispatch] // Ensure dependencies are correctly listed
   );
 
   const handlePolygonComplete = useCallback(
@@ -237,6 +241,15 @@ const GoogleMapsSearch = () => {
 
   const handleLogoClick = () => {
     history.push("/services/properties");
+  };
+
+  const validLatLng = (lat, lng) => {
+    return (
+      typeof lat === "number" &&
+      !isNaN(lat) &&
+      typeof lng === "number" &&
+      !isNaN(lng)
+    );
   };
 
   useEffect(() => {
@@ -452,15 +465,17 @@ const GoogleMapsSearch = () => {
             position: window.google.maps.ControlPosition.TOP_LEFT,
           }}
         >
-          <Marker
-            position={currentLocation}
-            onClick={() => setStreetViewPosition(currentLocation)}
-            icon={{
-              url: "/assets/img/icons/map-marker-2.png",
-            }}
-            draggable={true}
-            onDragEnd={onDragEnd}
-          />
+          {validLatLng(currentLocation.lat, currentLocation.lng) && (
+            <Marker
+              position={currentLocation}
+              onClick={() => setStreetViewPosition(currentLocation)}
+              icon={{
+                url: "/assets/img/icons/map-marker-2.png",
+              }}
+              draggable={true}
+              onDragEnd={onDragEnd}
+            />
+          )}
 
           {polygons.map((polygon, index) => (
             <Polygon
@@ -500,7 +515,9 @@ const GoogleMapsSearch = () => {
                   url: "/assets/img/icons/property-marker.png",
                   scaledSize: new window.google.maps.Size(38, 38),
                 }}
-                onClick={() => window.open(`/property-details/${property.id}`, "_blank")}
+                onClick={() =>
+                  window.open(`/property-details/${property.id}`, "_blank")
+                }
               />
             ))}
 
@@ -520,7 +537,7 @@ const GoogleMapsSearch = () => {
         </GoogleMap>
       </div>
       <div className={`sidebarforsearch ${active ? "isActive" : ""}`}>
-      <img
+        <img
           src={`${process.env.REACT_APP_PUBLIC_URL}/assets/img/logo.png`}
           id="sideabar-logo"
           alt="Logo"

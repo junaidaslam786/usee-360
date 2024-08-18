@@ -24,6 +24,10 @@ import {
 } from "../../../constants";
 import Select from "react-select";
 
+import { useDispatch } from 'react-redux';
+
+import {updateFilters} from './../../../store/propertySearchSlice'
+
 function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, resetTrigger }) {
   
   // common features
@@ -73,9 +77,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
   const [commercialParking, setCommercialParking] = useState(false);
   const [noOfSpacesCommercial, setNoOfSpacesCommercial] = useState(0);
 
-  {
-    /** Residential */
-  }
+  
   const [residentialFloorLevel, setResidentialFloorLevel] = useState(0);
   const [buildingAmenities, setBuildingAmenities] = useState([]);
 
@@ -93,6 +95,8 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
   const [garageSpaces, setGarageSpaces] = useState(0);
 
   console.log(resetTrigger)
+
+  const dispatch = useDispatch();
 
   const handleConfirm = () => {
     const newFilters = {
@@ -156,7 +160,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
       garageSpaces,
     };
 
-    onFiltersChange(newFilters);
+    dispatch(updateFilters(newFilters));
     onRequestClose();
   };
 

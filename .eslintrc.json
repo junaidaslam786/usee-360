@@ -1,0 +1,14 @@
+{
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false,
+      "babelOptions": {
+        "presets": ["@babel/preset-react"]
+      }
+    },
+    "extends": ["react-app"],
+    "rules": {
+      // Add or override any ESLint rules here
+    }
+  }
+  

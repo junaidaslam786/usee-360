@@ -1,5 +1,5 @@
 import { httpGet, httpPost, httpPut, httpDelete } from "../../rest-api";
-import axios from "axios";
+
 
 const apiUrlPrefix = "property";
 
@@ -38,21 +38,7 @@ const PropertyService = {
     return response.data;
   },
 
-  // add: async (reqBody) => {
-  //   const response = await httpPost(`${apiUrlPrefix}/create`, reqBody, true);
-
-  //   if (response?.error) {
-  //     if (response?.message && response?.message.length > 0) {
-  //       response.message = [
-  //         "Unable to create property, please try again later",
-  //       ];
-  //     }
-
-  //     return response;
-  //   }
-
-  //   return response.data;
-  // },
+  
 
   add: async (reqBody) => {
     try {

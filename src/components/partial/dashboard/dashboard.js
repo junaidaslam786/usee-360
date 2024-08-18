@@ -6,7 +6,7 @@ import {
   getUserType,
   removeLoginToken,
 } from "../../../utils";
-import ProfileService from "../../../services/profile";
+
 import { AGENT_TYPE, USER_TYPE } from "../../../constants";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
