@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import RTCDetect from "rtc-detect";
 import OT from "@opentok/client";
@@ -72,9 +72,9 @@ const AccessTable = (props) => {
       url: `${publicUrl}assets/video-background/video-meeting-4.jpg`,
     },
   ]);
-  const detect = new RTCDetect();
+  const detect = useMemo(() => new RTCDetect(), []);
 
-  const getAppointmentDetail = async () => {
+  const getAppointmentDetail = useCallback(async () => {
     const appointmentData =
       userType === USER_TYPE.CUSTOMER
         ? await CustomerAppointmentService.detail(appointmentId)
@@ -93,7 +93,7 @@ const AccessTable = (props) => {
     }
 
     history.push("/");
-  };
+  }, [appointmentId, history, userType]);
 
   const getSessionToken = async (appointment) => {
     const tokenData = await AppointmentService.sessionToken(appointment.id);
@@ -167,69 +167,68 @@ const AccessTable = (props) => {
       );
       setBackgrounds(backgroundImages);
     }
-  },[]);
+  }, [backgrounds]);
 
   useEffect(() => {
-    if (token) {
-      const fetchData = async () => {
+    if (!token) return; // If no token, skip the effect
+  
+    const fetchData = async () => {
+      try {
         const appointmentDetail = await getAppointmentDetail();
         await getUser();
-
+  
         setLoading(false);
+  
         if (
           appointmentDetail?.status &&
           (appointmentDetail.status === APPOINTMENT_STATUS.PENDING ||
             appointmentDetail.status === APPOINTMENT_STATUS.INPROGRESS)
         ) {
           const tokToken = await getSessionToken(appointmentDetail);
-
+  
           if (detect.getAPISupported().isWebRTCSupported) {
             setBrowserStatus(1);
           } else {
             setBrowserStatus(2);
           }
-
-          // We are giving a hard-coded value for session id because if we use actual session id it will load
-          // the call instead of precall page
-          const session = OT.initSession(
-            "47639681",
-            "2_MX40NzYzOTY4MX5-MTcwMzE0ODczMDE1MX5OczV5cjVPMmd5NS9XV21aQXZqQTdzNmt-QX5-"
-          );
-
-          // initialize the publisher
-          const publisherOptions = {
-            insertMode: "append",
-            audioFallbackEnabled: true,
-            facingMode: "user",
-            publishVideo: true,
-            publishAudio: true,
-            nameDisplayMode: "on",
-            width: "100%",
-            height: "380px",
-          };
-
-          const publisher = OT.initPublisher(
-            "session-preview",
-            publisherOptions,
-            (error) => {}
-          );
-
-          session.connect(tokToken, (error) => {
-            if (error) {
-              if (error.name === "OT_NOT_CONNECTED") {
-                //
+  
+          // Initialize the session if it hasn't been initialized yet
+          if (!session) {
+            const newSession = OT.initSession(
+              "47639681",
+              "2_MX40NzYzOTY4MX5-MTcwMzE0ODczMDE1MX5OczV5cjVPMmd5NS9XV21aQXZqQTdzNmt-QX5-"
+            );
+  
+            const publisherOptions = {
+              insertMode: "append",
+              audioFallbackEnabled: true,
+              facingMode: "user",
+              publishVideo: true,
+              publishAudio: true,
+              nameDisplayMode: "on",
+              width: "100%",
+              height: "380px",
+            };
+  
+            const newPublisher = OT.initPublisher(
+              "session-preview",
+              publisherOptions,
+              (error) => {}
+            );
+  
+            newSession.connect(tokToken, (error) => {
+              if (error) {
+                console.error('Error connecting to session:', error);
               } else {
-                //
+                // If the connection is successful, publish the publisher to the session
+                // newSession.publish(newPublisher, (error) => {});
               }
-            } else {
-              // If the connection is successful, publish the publisher to the session
-              // session.publish(publisher, (error) => {});
-            }
-          });
-
-          setPublisher(publisher);
-          setSession(session);
-
+            });
+  
+            setPublisher(newPublisher);
+            setSession(newSession);
+          }
+  
           navigator.mediaDevices
             .getUserMedia({ audio: true, video: true })
             .then((stream) => {
@@ -240,25 +239,25 @@ const AccessTable = (props) => {
                     return { value: device.deviceId, label: device.label };
                   });
                 setAudioInputOptions(audioInputDevices);
-                setSelectedAudioInput(audioInputDevices[0].value);
+                setSelectedAudioInput(audioInputDevices[0]?.value);
                 setMicrophoneStatus(1);
-
+  
                 const videoDevices = devices
                   .filter((device) => device.kind === "videoinput")
                   .map((device) => {
                     return { value: device.deviceId, label: device.label };
                   });
                 setVideoOptions(videoDevices);
-                setSelectedVideoDevice(videoDevices[0].value);
+                setSelectedVideoDevice(videoDevices[0]?.value);
                 setCameraStatus(1);
-
+  
                 const audioOutputDevices = devices
                   .filter((device) => device.kind === "audiooutput")
                   .map((device) => {
                     return { value: device.deviceId, label: device.label };
                   });
                 setAudioOutputOptions(audioOutputDevices);
-                setSelectedAudioOutput(audioOutputDevices[0].value);
+                setSelectedAudioOutput(audioOutputDevices[0]?.value);
                 setSpeakerStatus(1);
                 setButtonDisabled(false);
               });
@@ -268,8 +267,8 @@ const AccessTable = (props) => {
               setCameraStatus(2);
               setSpeakerStatus(2);
             });
-
-          OT.checkScreenSharingCapability(function (response) {
+  
+          OT.checkScreenSharingCapability((response) => {
             if (!response.supported || response.extensionRegistered === false) {
               setScreenSharingStatus(2);
             } else if (response.extensionInstalled === false) {
@@ -279,21 +278,26 @@ const AccessTable = (props) => {
             }
           });
         }
-      };
-
-      fetchData();
-
-      return () => {
-        if (session) {
-          session.disconnect();
-        }
-
-        if (publisher) {
-          publisher.destroy();
-        }
-      };
-    }
-  }, [detect, getAppointmentDetail, getUser, publisher, session, token]);
+      } catch (error) {
+        console.error("Failed to fetch data or initialize session:", error);
+      }
+    };
+  
+    fetchData();
+  
+    return () => {
+      if (session) {
+        session.disconnect();
+        setSession(null); // Clear session after disconnecting
+      }
+  
+      if (publisher) {
+        publisher.destroy();
+        setPublisher(null); // Clear publisher after destroying
+      }
+    };
+  }, [token, getAppointmentDetail, getUser, detect, session, publisher]);
+  
 
   /*
   useEffect(() => {
@@ -517,28 +521,30 @@ const AccessTable = (props) => {
                             </td>
                           </tr>
                           <tr className="single_drow">
-                            <Link
-                              to={{
-                                pathname: `/meeting/${appointmentId}/${userType}`,
-                                state: {
-                                  audioInputDeviceId: selectedAudioInput,
-                                  audioOutputDeviceId: selectedAudioOutput,
-                                  videoDeviceId: selectedVideoDevice,
-                                  filter: selectedFilter,
-                                  backgroundImage: selectedBackground,
-                                  audioStreaming,
-                                  videoStreaming,
-                                  appointment,
-                                },
-                              }}
-                            >
-                              <button
-                                disabled={buttonDisabled}
-                                className="video-join-call"
+                            <td>
+                              <Link
+                                to={{
+                                  pathname: `/meeting/${appointmentId}/${userType}`,
+                                  state: {
+                                    audioInputDeviceId: selectedAudioInput,
+                                    audioOutputDeviceId: selectedAudioOutput,
+                                    videoDeviceId: selectedVideoDevice,
+                                    filter: selectedFilter,
+                                    backgroundImage: selectedBackground,
+                                    audioStreaming,
+                                    videoStreaming,
+                                    appointment,
+                                  },
+                                }}
                               >
-                                JOIN CALL
-                              </button>
-                            </Link>
+                                <button
+                                  disabled={buttonDisabled}
+                                  className="video-join-call"
+                                >
+                                  JOIN CALL
+                                </button>
+                              </Link>
+                            </td>
                           </tr>
                         </tbody>
                       </table>

@@ -161,6 +161,7 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
     };
 
     dispatch(updateFilters(newFilters));
+    onFiltersChange(newFilters);
     onRequestClose();
   };
 

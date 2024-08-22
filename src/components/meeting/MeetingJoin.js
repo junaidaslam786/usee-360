@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import OT from "@opentok/client";
 import { useHistory } from "react-router-dom";
 import "./incall.css";
@@ -109,7 +109,7 @@ const MeetingJoin = (props) => {
     }
   };
 
-  const getPropertyDetail = async (property) => {
+  const getPropertyDetail = useCallback(async (property) => {
     const propertyData = await PropertyService.detail(property);
     if (propertyData) {
       setVirtualTourUrl(null);
@@ -152,7 +152,7 @@ const MeetingJoin = (props) => {
         setDefaultImage(false);
       }
     }
-  };
+  }, []);
 
   const extractVideoId = (url) => {
     let videoId;
@@ -186,18 +186,18 @@ const MeetingJoin = (props) => {
     return videoId;
   };
 
-  const getSessionToken = async () => {
+  const getSessionToken = useCallback(async () => {
     const tokenData = await AppointmentService.sessionToken(appointment.id);
     return tokenData?.token ? tokenData.token : "";
-  };
+  }, [appointment.id]);
 
-  const addLogEntry = async (logType, reason) => {
+  const addLogEntry = useCallback(async (logType, reason) => {
     await AppointmentService.log({
       id: appointment.id,
       logType,
       reason,
     });
-  };
+  }, [appointment.id]);
 
   // const handleExpiration = async () => {
   //   const currentStatus = await AppointmentService.detail(appointment.id);
@@ -210,7 +210,7 @@ const MeetingJoin = (props) => {
   //   }
   // };
 
-  const updateStatus = async (status) => {
+  const updateStatus = useCallback(async (status) => {
     try {
       const response = await AppointmentService.updateStatus({
         id: appointment.id,
@@ -224,7 +224,7 @@ const MeetingJoin = (props) => {
     } catch (error) {
       console.error("Error updating status:", error);
     }
-  };
+  },[appointment.id]);
 
   const toggleVideo = () => {
     if (publisher?.publishVideo) {
@@ -240,6 +240,20 @@ const MeetingJoin = (props) => {
     }
   };
 
+  const sendDisconnectSignal = useCallback(() => {
+    session.signal(
+      {
+        type: "custom-disconnect",
+        data: "User is disconnecting intentionally",
+      },
+      (error) => {
+        if (error) {
+        } else {
+        }
+      }
+    );
+  }, [session]);
+
   // const leaveSession = () => {
   //   completeMeeting(); // This now handles both signaling and API call
   //   sendDisconnectSignal();
@@ -248,7 +262,7 @@ const MeetingJoin = (props) => {
   //     session.disconnect();
   //   }
   // };
-  const leaveSession = () => {
+  const leaveSession = useCallback(() => {
     sendDisconnectSignal();
     // If a screenPublisher exists, unpublish and destroy it
     if (screenPublisher) {
@@ -276,7 +290,7 @@ const MeetingJoin = (props) => {
     } else if (userType === USER_TYPE.CUSTOMER) {
       history.push("/customer/dashboard");
     }
-  };
+  },[history, publisher, screenPublisher, session, userType, sendDisconnectSignal]);
 
   const submitNotes = async () => {
     const requestData = {
@@ -374,19 +388,7 @@ const MeetingJoin = (props) => {
     );
   };
 
-  const sendDisconnectSignal = () => {
-    session.signal(
-      {
-        type: "custom-disconnect",
-        data: "User is disconnecting intentionally",
-      },
-      (error) => {
-        if (error) {
-        } else {
-        }
-      }
-    );
-  };
+  
 
   const handlePropertyChange = (event) => {
     setSelectedProperty(event.target.value);
@@ -920,35 +922,7 @@ const MeetingJoin = (props) => {
     }
   }, [agentJoined, customerJoined, updateStatus, userType]);
 
-  /*
-  useEffect(() => {
-    // this is removing the video stream if user click back button in call
-    return () => {
-      // Function to run when the mutation we're interested in occurs
-      const handleMutation = (mutationsList, observer) => {
-        for (let mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-            const elements = document.querySelectorAll('.OT_widget-container');
-            if (elements.length > 1) {
-              const lastElement = elements[elements.length - 1];
-              lastElement.parentNode.remove();
-              observer.disconnect();  // Stop observing once we've done the operation
-            }
-          }
-        }
-      };
-
-      // Create a new observer
-      const observer = new MutationObserver(handleMutation);
-
-      // Start observing the document with the configured parameters
-      observer.observe(document.body, { childList: true, subtree: true });
-      
-      // Clean up function
-      return () => observer.disconnect();
-    }
-  }, []);
-  */
+  
 
   return (
     <div id="meetingBody">
@@ -1273,26 +1247,7 @@ const MeetingJoin = (props) => {
           </button>
         </div>
       </Modal>
-      {/* <Modal
-        isOpen={isNotesModalOpen}
-        onRequestClose={() => setIsNotesModalOpen(false)}
-        className="MyModal"
-        overlayClassName="MyModalOverlay"
-        ariaHideApp={false}
-      >
-        <h2>Add some notes to remember</h2>
-        <label>Add Note</label>
-        <textarea onChange={(e) => setNotes(e.target.value)} value={notes} />
-        <button className="btn theme-btn-1" onClick={submitNotes}>
-          Submit
-        </button>
-        <button
-          className="btn theme-btn-2"
-          onClick={() => setIsNotesModalOpen(false)}
-        >
-          Cancel
-        </button>
-      </Modal> */}
+      
       <DocumentModal
         isOpen={isDocumentOpen}
         onClose={closeDocumentModal}
