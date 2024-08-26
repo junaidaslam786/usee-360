@@ -1,14 +1,15 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import HomepageService from './../services/homepage';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import HomepageService from "./../services/homepage";
+import ProfileService from "../services/profile";
 
 const initialState = {
   filters: {},
   selectedFilterCount: 0,
   properties: [],
+  userDetails: {},
   loading: false,
   error: null,
 };
-
 
 // Function to filter out unselected filters
 const filterOutUnselected = (filters) => {
@@ -45,10 +46,10 @@ const countSelectedFilters = (filters) => {
 };
 
 export const fetchProperties = createAsyncThunk(
-  'propertySearch/fetchProperties',
+  "propertySearch/fetchProperties",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await HomepageService.listProperties('', filters);
+      const response = await HomepageService.listProperties("", filters);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -56,8 +57,26 @@ export const fetchProperties = createAsyncThunk(
   }
 );
 
+export const fetchUserDetails = createAsyncThunk(
+  "propertySearch/fetchUserDetails",
+  async (userIds, { rejectWithValue }) => {
+    try {
+      const responses = await Promise.all(
+        userIds.map((userId) => ProfileService.getUserBasicDetail(userId))
+      );
+      const userDetails = responses.reduce((acc, response, index) => {
+        acc[userIds[index]] = response;
+        return acc;
+      }, {});
+      return userDetails;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const propertySearchSlice = createSlice({
-  name: 'propertySearch',
+  name: "propertySearch",
   initialState,
   reducers: {
     updateFilters: (state, action) => {
@@ -86,10 +105,22 @@ const propertySearchSlice = createSlice({
       .addCase(fetchProperties.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchUserDetails.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userDetails = { ...state.userDetails, ...action.payload };
+      })
+      .addCase(fetchUserDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { updateFilters, clearFilters, setProperties } = propertySearchSlice.actions;
+export const { updateFilters, clearFilters, setProperties } =
+  propertySearchSlice.actions;
 
 export default propertySearchSlice.reducer;

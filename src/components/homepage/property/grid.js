@@ -7,11 +7,11 @@ import {
 } from "../../../utils";
 import HomepageService from "../../../services/homepage";
 import WishlistService from "../../../services/customer/wishlist";
-import UserService from "../../../services/profile";
+
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProperties } from "../../../store/propertySearchSlice";
+import { fetchProperties, fetchUserDetails } from "../../../store/propertySearchSlice";
 
 const libraries = ["places", "drawing"];
 
@@ -19,7 +19,7 @@ function PropertyGrid() {
 
   // const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  const { filters, properties, loading, error } = useSelector((state) => state.propertySearch);
+  const { filters, properties, userDetails, loading, error } = useSelector((state) => state.propertySearch);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   // const [properties, setProperties] = useState([]);
@@ -28,7 +28,7 @@ function PropertyGrid() {
   const [wishlistTitle, setWishlistTitle] = useState();
   const [wishlistImage, setWishlistImage] = useState();
   const [carbonFootprints, setCarbonFootprints] = useState({});
-  const [userDetails, setUserDetails] = useState({});
+  // const [userDetails, setUserDetails] = useState({});
   const [latFilter, setLatFilter] = useState(null);
   const [lngFilter, setLngFilter] = useState(null);
   const [address, setAddress] = useState("");
@@ -50,30 +50,15 @@ function PropertyGrid() {
     libraries,
   });
 
-  
-
-  const loadProperties = useCallback(() => {
-    if (!properties || properties.length === 0) {
-      dispatch(fetchProperties({ ...filters, page: currentPage }));
+  // Load properties and user details
+  const loadProperties = useCallback(async () => {
+    const resultAction = await dispatch(fetchProperties({ ...filters, page: currentPage }));
+    if (fetchProperties.fulfilled.match(resultAction)) {
+      const userIds = resultAction.payload.map((property) => property.userId);
+      dispatch(fetchUserDetails(userIds));
     }
-  }, [dispatch, filters, currentPage, properties]);
-  
+  }, [dispatch, filters, currentPage]);
 
-  // const fetchUserDetails = useCallback(async (properties) => {
-  //   const userDetailsTemp = { ...userDetails };
-  //   const promises = properties.map(async (property) => {
-  //     if (!userDetailsTemp[property.userId]) {
-  //       try {
-  //         const response = await UserService.getUserBasicDetail(property.userId);
-  //         userDetailsTemp[property.userId] = response;
-  //       } catch (err) {
-  //         console.error("Error fetching user details:", err);
-  //       }
-  //     }
-  //   });
-  //   await Promise.all(promises);
-  //   setUserDetails(userDetailsTemp);
-  // }, [userDetails]);
 
   const fetchCarbonFootprint = useCallback(async (propertyId) => {
     if (!carbonFootprints[propertyId]) {
@@ -165,6 +150,11 @@ function PropertyGrid() {
     }
   }, [isLoaded, loadProperties, loadWishlistProperties]);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    loadProperties();
+  };
+
   return (
     <div>
       <div className="ltn__product-area ltn__product-gutter">
@@ -233,6 +223,7 @@ function PropertyGrid() {
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
                                   <img
+                                    alt=""
                                     src={`${publicUrl}/${element.featuredImage}`}
                                     height="250px"
                                     width="100%"
@@ -349,7 +340,7 @@ function PropertyGrid() {
                                 </div>
                                 <div className="product-creator">
                                   <span>
-                                    Created by:{" "}
+                                    Trader:{" "}
                                     {userDetails[element.userId]
                                       ? userDetails[element.userId]
                                           .companyName ||
@@ -438,6 +429,7 @@ function PropertyGrid() {
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
                                   <img
+                                    alt=""
                                     src={`${publicUrl}/${element.featuredImage}`}
                                     height="200px"
                                     width="100%"
@@ -561,24 +553,21 @@ function PropertyGrid() {
                         to="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (currentPage !== 1) {
-                            setCurrentPage(currentPage - 1);
+                          if (currentPage > 1) {
+                            handlePageChange(currentPage - 1);
                           }
                         }}
                       >
                         <i className="fas fa-angle-double-left" />
                       </Link>
                     </li>
-                    {Array.from(Array(totalPages), (e, i) => (
-                      <li
-                        key={i}
-                        className={currentPage == i + 1 ? "active" : null}
-                      >
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <li key={i} className={currentPage === i + 1 ? "active" : null}>
                         <Link
                           to="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            setCurrentPage(i + 1);
+                            handlePageChange(i + 1);
                           }}
                         >
                           {i + 1}
@@ -590,8 +579,8 @@ function PropertyGrid() {
                         to="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (currentPage !== totalPages) {
-                            setCurrentPage(currentPage + 1);
+                          if (currentPage < totalPages) {
+                            handlePageChange(currentPage + 1);
                           }
                         }}
                       >

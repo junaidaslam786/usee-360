@@ -112,7 +112,7 @@ export default function ViewOffer(props) {
       ) || [];
     setList(offers);
     if (offers.length > 0) {
-      handleSnagListButtonClick(offers[0].id); // Automatically select the first offer's snag list, adjust as needed
+      handleSnagListButtonClick(offers[0].id); 
     }
   }, [props.property, userDetail.id]);
 

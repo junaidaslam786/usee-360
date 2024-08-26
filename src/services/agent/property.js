@@ -375,6 +375,22 @@ const PropertyService = {
     return response.data;
   },
 
+  enableSnagList: async (productId, userSubscriptionId) => {
+    try {
+      const response = await httpPost(`${apiUrlPrefix}/agent/enable-snaglist`, {
+        productId,
+        userSubscriptionId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error enabling snag list:', error);
+      return {
+        error: true,
+        message: 'Failed to enable snag list. Please try again later.',
+      };
+    }
+  },
+
   toAllocate: async () => {
     const response = await httpGet(`${apiUrlPrefix}/to-allocate`);
 
