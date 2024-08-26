@@ -31,7 +31,7 @@ export default function List(props) {
   const loadAllList = useCallback(async (search = "", page = 1) => {
     try {
       const response = await PropertyService.list({ search, page });
-      console.log("response", response);
+      
       if (response?.data) {
         setList(response.data);
         setCurrentPage(parseInt(response.page));
@@ -45,27 +45,7 @@ export default function List(props) {
     }
   }, []);
 
-  // const fetchCarbonFootprint = async (propertyId) => {
-  //   if (!carbonFootprints[propertyId]) {
-  //     // Check if already loaded
-  //     setCarbonFootprints((prev) => ({
-  //       ...prev,
-  //       [propertyId]: { loading: true },
-  //     }));
-  //     try {
-  //       const response = await PropertyService.carbonFootprint(propertyId);
-  //       setCarbonFootprints((prev) => ({
-  //         ...prev,
-  //         [propertyId]: { value: response.totalCo2SavedText },
-  //       }));
-  //     } catch (error) {
-  //       setCarbonFootprints((prev) => ({
-  //         ...prev,
-  //         [propertyId]: { error: "Failed to load carbon footprint" },
-  //       }));
-  //     }
-  //   }
-  // };
+  
 
   const fetchCarbonFootprint = async (propertyId) => {
     if (!carbonFootprints[propertyId]) {
@@ -265,14 +245,7 @@ export default function List(props) {
                       : "-"}
                   </td>
                   <td>
-                    {console.log(
-                      "User detail ID:",
-                      userDetail?.id,
-                      "Element user ID:",
-                      element?.userId,
-                      "Can edit:",
-                      canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY)
-                    )}
+                    
                     {(userDetail?.id === element?.userId ||
                       canDoThis(AGENT_USER_ACCESS_TYPE_VALUE.EDIT_PROPERTY)) && (
                       <Link to={`/agent/edit-property/${element?.id}`}>

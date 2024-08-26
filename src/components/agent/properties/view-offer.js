@@ -526,6 +526,8 @@ export default function ViewOffer(props) {
     try {
       const response = await StripeService.getUserSubscriptionDetails(userDetail.id);
   
+      
+
       // Check if the response contains an error or lacks the required data
       if (response?.status !== 200 || !response?.data?.userSubscriptions) {
         toast.error(response?.statusText || "Failed to load subscription details.");
@@ -540,12 +542,12 @@ export default function ViewOffer(props) {
         (sub) => sub?.feature?.name === "Snag List" && sub.status === "active"
       );
   
-      console.log('snaglistsubctionsid', snagListSubscription.feature.id)
+      
 
       // If Snag List is found, update the state
       if (snagListSubscription) {
         setIsSnagListSubscribed(true);
-        setUserSubscriptionId(snagListSubscription.feature.id);
+        setUserSubscriptionId(snagListSubscription.id);
       } else {
         setIsSnagListSubscribed(false);
         toast.error("You have not subscribed to the Snag List feature.");
