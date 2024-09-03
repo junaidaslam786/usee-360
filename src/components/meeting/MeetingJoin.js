@@ -18,6 +18,7 @@ import HomepageService from "../../services/homepage";
 import WishlistService from "../../services/customer/wishlist";
 
 import StripeService from "../../services/agent/stripe-service";
+import { toast } from "react-toastify";
 
 const MeetingJoin = (props) => {
   const {
@@ -293,26 +294,38 @@ const MeetingJoin = (props) => {
   },[history, publisher, screenPublisher, session, userType, sendDisconnectSignal]);
 
   const submitNotes = async () => {
-    const requestData = {
-      userId: userDetail.id,
-      userType: USER_TYPE.AGENT,
-      id: appointment.id,
-      notes: cancelMeetingNotes,
-    };
+    try {
 
-    const formResponse = await AppointmentService.addNote(requestData);
-    if (formResponse?.error && formResponse?.message) {
-      props.responseHandler(formResponse.message);
-      return;
+      if (cancelMeetingNotes.trim() === "") {
+        // If notes are empty, show an error message and do not proceed
+        toast.error("Notes cannot be empty. Please provide a reason for canceling the meeting.");
+      }
+
+      const requestData = {
+        userId: userDetail.id,
+        userType: USER_TYPE.AGENT,
+        id: appointment.id,
+        notes: cancelMeetingNotes,
+      };
+  
+      const formResponse = await AppointmentService.addNote(requestData);
+      console.log(formResponse)
+      if (formResponse?.errors && formResponse?.message) {
+        props.responseHandler(formResponse.message);
+        return;
+      }
+  
+      props.responseHandler("Note added successfully.", true);
+      setNotes("");
+      setCancelMeetingNotes("");
+  
+      // await loadAllList();
+      // setIsNotesModalOpen(false);
+      leaveSession();
+    } catch (error) {
+      toast.error(error.message || "An error occurred while submitting notes.");
+      // console.error("Error submitting notes:", error);
     }
-
-    props.responseHandler("Note added successfully.", true);
-    setNotes("");
-    setCancelMeetingNotes("");
-
-    // await loadAllList();
-    // setIsNotesModalOpen(false);
-    leaveSession();
   };
 
   const toggleScreenSharing = () => {
@@ -408,16 +421,38 @@ const MeetingJoin = (props) => {
     }
   };
 
-  const handleCancelModalConfirm = async () => {
-    // Do something when the user clicks "Yes"
-    setNotes(cancelMeetingNotes);
+  // const handleCancelModalConfirm = async () => {
+  //   try {
+  //     // Do something when the user clicks "Yes"
+  //   // setNotes(cancelMeetingNotes);
 
-    // Now call submitNotes to save the cancellation notes
-    await submitNotes();
-    setCancelMeetingNotes("");
-    setConfirmCancelModal(false); // Close the modal
-    await updateStatus("cancelled");
-    leaveSession();
+  //   // Now call submitNotes to save the cancellation notes
+  //   await submitNotes();
+  //   // setCancelMeetingNotes("");
+  //   setConfirmCancelModal(false); // Close the modal
+  //   await updateStatus("cancelled");
+  //   leaveSession();
+  //   } catch (error) {
+  //     // toast.error(error.message || "Failed to cancel the meeting.");
+  //   }
+  // };
+  const handleCancelModalConfirm = async () => {
+    try {
+      // Check if notes are provided
+      if (cancelMeetingNotes.trim()) {
+        // If notes are provided, submit them and update the status
+        await submitNotes();
+        setConfirmCancelModal(false); // Close the modal
+        await updateStatus("cancelled"); // Update status
+        leaveSession();
+      } else {
+        // If no notes are provided, show an error message
+        toast.error("Please provide notes to cancel the meeting.");
+        // setConfirmCancelModal(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to cancel the meeting.");
+    }
   };
 
   const handleCancelModalCancel = () => {

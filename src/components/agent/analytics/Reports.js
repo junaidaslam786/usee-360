@@ -54,25 +54,41 @@ const ReportDownload = () => {
         .map((offer) => {
           return `Offer ID: ${offer.id}, Amount: ${offer.amount}, Status: ${
             offer.status
-          }, 
-                  Reject Reason: ${offer.rejectReason || "N/A"}, 
+          }, Reject Reason: ${offer.rejectReason || "N/A"}, 
                   Customer ID: ${offer.customer.id}, 
-                  Customer Name: ${offer.customer.firstName} ${
-            offer.customer.lastName
-          }, 
+                  Customer Name: ${offer.customer.firstName} ${offer.customer.lastName}, 
                   Customer Email: ${offer.customer.email}, 
                   Customer Phone: ${offer.customer.phoneNumber}`;
         })
-        .join(" | ");
-
+        .join("\n");
+  
+        const viewsCount = (property.productViews || []).length;
       // Flattening productViews
-      const views = (property.productViews || [])
+      // const views = (property.productViews || [])
+      //   .map(
+      //     (view) =>
+      //       `View ID: ${view.id}, Log Type: ${view.log_type}, Created At: ${view.createdAt}`
+      //   )
+      //   .join("\n");
+  
+      // Flattening productAllocations
+      const allocations = (property.productAllocations || [])
         .map(
-          (view) =>
-            `View ID: ${view.id}, Log Type: ${view.log_type}, Created At: ${view.createdAt}`
+          (allocation) =>
+            `Allocation ID: ${allocation.id}, User ID: ${allocation.userId}, Created At: ${allocation.createdAt}`
         )
-        .join(" | ");
-
+        .join("\n");
+  
+      // Flattening appointments
+      const appointments = (property.appointments || [])
+        .map((appointment) => {
+          return `Appointment ID: ${appointment.id}, Agent ID: ${appointment.agentId}, Customer ID: ${appointment.customerId}, Status: ${appointment.status}, 
+                  Appointment Date: ${appointment.appointmentDate}, 
+                  Start Time: ${appointment.startMeetingTime || "N/A"}, 
+                  End Time: ${appointment.endMeetingTime || "N/A"}`;
+        })
+        .join("\n");
+  
       // Return a flat object for CSV
       return {
         PropertyID: property.id,
@@ -81,17 +97,24 @@ const ReportDownload = () => {
         Description: property.description,
         Address: property.address,
         Status: property.status,
+        TotalCalls: property.total_calls || 0,
+        MissedCalls: property.missed_calls || 0,
+        UpcomingAppointments: property.upcoming_appointments || 0,
         ProductOffers: offers,
-        ProductViews: views,
-        // Add any additional fields here
+        ProductViewsCount: viewsCount,
+        // ProductViews: views,
+        ProductAllocations: allocations,
+        Appointments: appointments,
+        CreatedAt: property.createdAt,
+        UpdatedAt: property.updatedAt,
       };
     };
 
     // Transforming all properties
     return [
-      ...propertyData.listed.map(flattenProperty),
-      ...propertyData.sold.map(flattenProperty),
-      ...propertyData.unsold.map(flattenProperty),
+      ...(propertyData.listed ? propertyData.listed.map(flattenProperty) : []),
+      ...(propertyData.sold ? propertyData.sold.map(flattenProperty) : []),
+      ...(propertyData.unsold ? propertyData.unsold.map(flattenProperty) : []),
     ];
   };
 
@@ -176,6 +199,8 @@ const ReportDownload = () => {
         case "users":
           data = await AgentAnalyticsService.fetchUsersData();
   
+          
+
           if (data.error) {
             throw new Error(data.message || "Error fetching users data.");
           }
@@ -188,6 +213,8 @@ const ReportDownload = () => {
           break;
         case "properties":
           data = await AgentAnalyticsService.fetchPropertiesData();
+
+          console.log(data);
   
           if (data.error) {
             throw new Error(data.message || "Error fetching properties data.");
