@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import AgentAnalyticsService from "../../../services/agent/analytics";
+import { toast } from "react-toastify";
 
 const ReportDownload = () => {
   const [reportType, setReportType] = useState("");
@@ -124,46 +125,105 @@ const ReportDownload = () => {
     setReportData([]); // Reset report data
   };
 
+  // const downloadReport = async () => {
+  //   setIsCSVReady(false);
+  //   let data;
+  //   switch (reportType) {
+  //     case "users":
+  //       data = await AgentAnalyticsService.fetchUsersData();
+
+  //       if (data.data && data.data.userData) {
+  //         setReportData(transformUsersDataForCSV(data.data.userData));
+  //       } else {
+  //         console.error("No user data received from service");
+  //       }
+  //       break;
+  //     case "properties":
+  //       data = await AgentAnalyticsService.fetchPropertiesData();
+
+  //       if (data.data && data.data.propertyData) {
+  //         setReportData(transformPropertiesDataForCSV(data.data.propertyData));
+  //       } else {
+  //         console.error("No property data received from service");
+  //       }
+  //       break;
+  //     case "services":
+  //       data = await AgentAnalyticsService.fetchServicesData();
+
+  //       if (data.data && data.data.serviceData) {
+  //         setReportData(transformServicesDataForCSV(data.data.serviceData));
+  //       } else {
+  //         console.error("No service data received from service");
+  //       }
+  //       break;
+  //     default:
+  //       console.error("Invalid report type");
+  //       return;
+  //   }
+
+  //   // Check if data was set and then prepare the CSV file for download
+  //   if (data) {
+  //     setCsvFilename(`${reportType}-report.csv`);
+  //     setIsCSVReady(true); // Data is ready for download
+  //   }
+  // };
+
   const downloadReport = async () => {
     setIsCSVReady(false);
     let data;
-    switch (reportType) {
-      case "users":
-        data = await AgentAnalyticsService.fetchUsersData();
-
-        if (data.data && data.data.userData) {
-          setReportData(transformUsersDataForCSV(data.data.userData));
-        } else {
-          console.error("No user data received from service");
-        }
-        break;
-      case "properties":
-        data = await AgentAnalyticsService.fetchPropertiesData();
-
-        if (data.data && data.data.propertyData) {
-          setReportData(transformPropertiesDataForCSV(data.data.propertyData));
-        } else {
-          console.error("No property data received from service");
-        }
-        break;
-      case "services":
-        data = await AgentAnalyticsService.fetchServicesData();
-
-        if (data.data && data.data.serviceData) {
-          setReportData(transformServicesDataForCSV(data.data.serviceData));
-        } else {
-          console.error("No service data received from service");
-        }
-        break;
-      default:
-        console.error("Invalid report type");
-        return;
-    }
-
-    // Check if data was set and then prepare the CSV file for download
-    if (data) {
-      setCsvFilename(`${reportType}-report.csv`);
-      setIsCSVReady(true); // Data is ready for download
+    try {
+      switch (reportType) {
+        case "users":
+          data = await AgentAnalyticsService.fetchUsersData();
+  
+          if (data.error) {
+            throw new Error(data.message || "Error fetching users data.");
+          }
+  
+          if (data.data && data.data.userData) {
+            setReportData(transformUsersDataForCSV(data.data.userData));
+          } else {
+            throw new Error("No user data received from service");
+          }
+          break;
+        case "properties":
+          data = await AgentAnalyticsService.fetchPropertiesData();
+  
+          if (data.error) {
+            throw new Error(data.message || "Error fetching properties data.");
+          }
+  
+          if (data.data && data.data.propertyData) {
+            setReportData(transformPropertiesDataForCSV(data.data.propertyData));
+          } else {
+            throw new Error("No property data received from service");
+          }
+          break;
+        case "services":
+          data = await AgentAnalyticsService.fetchServicesData();
+  
+          if (data.error) {
+            throw new Error(data.message || "Error fetching services data.");
+          }
+  
+          if (data.data && data.data.serviceData) {
+            setReportData(transformServicesDataForCSV(data.data.serviceData));
+          } else {
+            throw new Error("No service data received from service");
+          }
+          break;
+        default:
+          throw new Error("Invalid report type");
+      }
+  
+      // Check if data was set and then prepare the CSV file for download
+      if (data) {
+        setCsvFilename(`${reportType}-report.csv`);
+        setIsCSVReady(true); // Data is ready for download
+      }
+    } catch (error) {
+      toast.error(error.message); // Display the error message using toast
+      console.error("Download Report Error:", error.message); // Log error to console
     }
   };
 

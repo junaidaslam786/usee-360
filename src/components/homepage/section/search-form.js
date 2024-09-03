@@ -45,8 +45,9 @@ export default function SearchForm({
   
 
   const handleFiltersChange = (newFilters) => {
-    dispatch(updateFilters(newFilters));
+    dispatch(updateFilters({ ...newFilters, propertyCategory }));
   };
+  
 
   const sendFilters = () => {
     const constructedFilters = {

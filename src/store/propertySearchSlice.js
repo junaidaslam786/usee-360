@@ -7,6 +7,7 @@ const initialState = {
   selectedFilterCount: 0,
   properties: [],
   userDetails: {},
+  totalPages: 0,
   loading: false,
   error: null,
 };
@@ -50,9 +51,9 @@ export const fetchProperties = createAsyncThunk(
   async (filters, { rejectWithValue }) => {
     try {
       const response = await HomepageService.listProperties("", filters);
-      return response.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response);
     }
   }
 );
@@ -99,8 +100,11 @@ const propertySearchSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProperties.fulfilled, (state, action) => {
+        // console.log("fetchProperties fulfilled:", action.payload);
         state.loading = false;
-        state.properties = action.payload;
+        state.properties = action.payload.data;
+        state.totalPages = action.payload.totalPage || 1;
+        // console.log("Updated state:", state);
       })
       .addCase(fetchProperties.rejected, (state, action) => {
         state.loading = false;

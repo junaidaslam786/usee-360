@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+  useMemo,
+} from "react";
 import { Link, useHistory } from "react-router-dom";
 import {
   formatPrice,
@@ -11,17 +18,20 @@ import WishlistService from "../../../services/customer/wishlist";
 import { FaPaw } from "react-icons/fa";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProperties, fetchUserDetails } from "../../../store/propertySearchSlice";
+import {
+  fetchProperties,
+  fetchUserDetails,
+} from "../../../store/propertySearchSlice";
 
 const libraries = ["places", "drawing"];
 
 function PropertyGrid() {
-
   // const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  const { filters, properties, userDetails, loading, error } = useSelector((state) => state.propertySearch);
+  const { filters, properties, userDetails, loading, error, totalPages } =
+    useSelector((state) => state.propertySearch);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  // const [totalPages, setTotalPages] = useState(0);
   // const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
   const [wishlistId, setWishlistId] = useState();
@@ -52,37 +62,45 @@ function PropertyGrid() {
 
   // Load properties and user details
   const loadProperties = useCallback(async () => {
-    const resultAction = await dispatch(fetchProperties({ ...filters, page: currentPage }));
+    const propertyCategory = filters.propertyCategory || "sale";
+    const size = 12;
+
+    const resultAction = await dispatch(
+      fetchProperties({ ...filters, propertyCategory, page: currentPage, size })
+    );
     if (fetchProperties.fulfilled.match(resultAction)) {
-      const userIds = resultAction.payload.map((property) => property.userId);
+      console.log('API Response:', resultAction.payload);
+      const userIds = resultAction.payload.data.map((property) => property.userId);
       dispatch(fetchUserDetails(userIds));
     }
   }, [dispatch, filters, currentPage]);
 
-
-  const fetchCarbonFootprint = useCallback(async (propertyId) => {
-    if (!carbonFootprints[propertyId]) {
-      setCarbonFootprints((prev) => ({
-        ...prev,
-        [propertyId]: { loading: true },
-      }));
-      const response = await HomepageService.carbonFootprint(propertyId);
-      if (response?.error) {
+  const fetchCarbonFootprint = useCallback(
+    async (propertyId) => {
+      if (!carbonFootprints[propertyId]) {
         setCarbonFootprints((prev) => ({
           ...prev,
-          [propertyId]: { error: "Failed to load carbon footprint" },
+          [propertyId]: { loading: true },
         }));
-      } else {
-        setCarbonFootprints((prev) => ({
-          ...prev,
-          [propertyId]: { value: response.totalCo2SavedText },
-        }));
+        const response = await HomepageService.carbonFootprint(propertyId);
+        if (response?.error) {
+          setCarbonFootprints((prev) => ({
+            ...prev,
+            [propertyId]: { error: "Failed to load carbon footprint" },
+          }));
+        } else {
+          setCarbonFootprints((prev) => ({
+            ...prev,
+            [propertyId]: { value: response.totalCo2SavedText },
+          }));
+        }
       }
-    }
-  }, [carbonFootprints]);
+    },
+    [carbonFootprints]
+  );
 
-   // Function to load wishlist properties only if the user is logged in
-   const loadWishlistProperties = useCallback(async () => {
+  // Function to load wishlist properties only if the user is logged in
+  const loadWishlistProperties = useCallback(async () => {
     if (!token) {
       return; // Skip fetching wishlist if the user is not logged in
     }
@@ -98,62 +116,69 @@ function PropertyGrid() {
   }, [token]);
 
   // Function to add a property to the wishlist
-  const addToWishList = useCallback(async (propertyId) => {
-    if (!token) {
-      history.push(redirectPath);
-      return;
-    }
-
-    try {
-      const response = await WishlistService.addToWishlist(propertyId);
-      if (response?.error && response?.message) {
-        console.error(response.message);
+  const addToWishList = useCallback(
+    async (propertyId) => {
+      if (!token) {
+        history.push(redirectPath);
         return;
       }
 
-      const prop = properties.find(({ id }) => id === propertyId);
-      setWishlistId(prop.id);
-      setWishlistTitle(prop.title);
-      setWishlistImage(prop.featuredImage);
-      toggleButton.current.click();
-      await loadWishlistProperties();
-    } catch (error) {
-      console.error("Failed to add to wishlist:", error);
-    }
-  }, [token, properties, loadWishlistProperties, history, redirectPath]);
+      try {
+        const response = await WishlistService.addToWishlist(propertyId);
+        if (response?.error && response?.message) {
+          console.error(response.message);
+          return;
+        }
+
+        const prop = properties.find(({ id }) => id === propertyId);
+        setWishlistId(prop.id);
+        setWishlistTitle(prop.title);
+        setWishlistImage(prop.featuredImage);
+        toggleButton.current.click();
+        await loadWishlistProperties();
+      } catch (error) {
+        console.error("Failed to add to wishlist:", error);
+      }
+    },
+    [token, properties, loadWishlistProperties, history, redirectPath]
+  );
 
   // Function to remove a property from the wishlist
-  const removeWishList = useCallback(async (propertyId) => {
-    if (!token) {
-      history.push(redirectPath);
-      return;
-    }
-
-    try {
-      const response = await WishlistService.removeFromWishlist(propertyId);
-      if (response?.error && response?.message) {
-        console.error(response.message);
+  const removeWishList = useCallback(
+    async (propertyId) => {
+      if (!token) {
+        history.push(redirectPath);
         return;
       }
 
-      console.log("Property removed from wishlist.", true);
-    } catch (error) {
-      console.error("Failed to remove from wishlist:", error);
-    }
-  }, [token, history, redirectPath]);
+      try {
+        const response = await WishlistService.removeFromWishlist(propertyId);
+        if (response?.error && response?.message) {
+          console.error(response.message);
+          return;
+        }
 
-  // Load properties and wishlist properties when component is mounted or dependencies change
-  useEffect(() => {
-    if (isLoaded) {
-      loadProperties();
-      loadWishlistProperties(); // Will only run if the user is logged in
-    }
-  }, [isLoaded, loadProperties, loadWishlistProperties]);
+        console.log("Property removed from wishlist.", true);
+      } catch (error) {
+        console.error("Failed to remove from wishlist:", error);
+      }
+    },
+    [token, history, redirectPath]
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    loadProperties();
+    // loadProperties();
   };
+  // Load properties and wishlist properties when component is mounted or dependencies change
+  useEffect(() => {
+    if (isLoaded) {
+      console.log('Current Page:', currentPage);
+      loadProperties();
+      loadWishlistProperties(); // Will only run if the user is logged in
+    }
+  }, [isLoaded, currentPage, loadProperties, loadWishlistProperties]);
+
 
   return (
     <div>
@@ -324,7 +349,6 @@ function PropertyGrid() {
                                   </div>
                                 </div>
 
-                                
                                 <div
                                   className="product-img-location go-top"
                                   style={{ height: "80px" }}
@@ -545,51 +569,56 @@ function PropertyGrid() {
                   </div>
                 </div>
               </div>
-              <div className="ltn__pagination-area text-center">
-                <div className="ltn__pagination">
-                  <ul>
-                    <li>
-                      <Link
-                        to="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (currentPage > 1) {
-                            handlePageChange(currentPage - 1);
-                          }
-                        }}
-                      >
-                        <i className="fas fa-angle-double-left" />
-                      </Link>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, i) => (
-                      <li key={i} className={currentPage === i + 1 ? "active" : null}>
+              {/* {totalPages > 1 && properties.length > 0 && ( */}
+                <div className="ltn__pagination-area text-center">
+                  <div className="ltn__pagination">
+                    <ul>
+                      <li>
                         <Link
                           to="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            handlePageChange(i + 1);
+                            if (currentPage > 1) {
+                              handlePageChange(currentPage - 1);
+                            }
                           }}
                         >
-                          {i + 1}
+                          <i className="fas fa-angle-double-left" />
                         </Link>
                       </li>
-                    ))}
-                    <li>
-                      <Link
-                        to="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (currentPage < totalPages) {
-                            handlePageChange(currentPage + 1);
-                          }
-                        }}
-                      >
-                        <i className="fas fa-angle-double-right" />
-                      </Link>
-                    </li>
-                  </ul>
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <li
+                          key={i}
+                          className={currentPage === i + 1 ? "active" : null}
+                        >
+                          <Link
+                            to="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handlePageChange(i + 1);
+                            }}
+                          >
+                            {i + 1}
+                          </Link>
+                        </li>
+                      ))}
+                      <li>
+                        <Link
+                          to="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (currentPage < totalPages) {
+                              handlePageChange(currentPage + 1);
+                            }
+                          }}
+                        >
+                          <i className="fas fa-angle-double-right" />
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              {/* )} */}
             </div>
           </div>
         </div>
@@ -655,4 +684,4 @@ function PropertyGrid() {
   );
 }
 
-export default memo(PropertyGrid)
+export default memo(PropertyGrid);
