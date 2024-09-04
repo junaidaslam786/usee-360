@@ -61,7 +61,6 @@ export default function Profile(props) {
     libraries,
   });
 
-  
   const onLoad = useCallback(
     function callback(map) {
       setMap(map);
@@ -93,16 +92,16 @@ export default function Profile(props) {
     if (!isLoaded) return;
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location: loc }, (results, status) => {
-        if (status === 'OK' && results[0]) {
-            setAddress(results[0].formatted_address);
-            if (autocompleteInputRef.current) {
-                autocompleteInputRef.current.value = results[0].formatted_address;
-            }
-        } else {
-            console.log("Failed to get address: " + status);
+      if (status === "OK" && results[0]) {
+        setAddress(results[0].formatted_address);
+        if (autocompleteInputRef.current) {
+          autocompleteInputRef.current.value = results[0].formatted_address;
         }
+      } else {
+        console.log("Failed to get address: " + status);
+      }
     });
-};
+  };
 
   const updateProfile = async (e) => {
     e.preventDefault();
@@ -140,29 +139,30 @@ export default function Profile(props) {
     }
   };
 
- 
   const onMarkerDragEnd = (event) => {
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
     setLocation({ lat: newLat, lng: newLng });
-  
+
     const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ location: { lat: newLat, lng: newLng } }, (results, status) => {
-      if (status === 'OK' && results[0]) {
-        setAddress(results[0].formatted_address);
-            if (autocompleteInputRef.current) {
-                autocompleteInputRef.current.value = results[0].formatted_address;
-            }
-            // Ensure the map is loaded
-            if (map) {
-                map.panTo(location);
-            }
-      } else {
-        console.log("Geocoder failed due to: " + status);
+    geocoder.geocode(
+      { location: { lat: newLat, lng: newLng } },
+      (results, status) => {
+        if (status === "OK" && results[0]) {
+          setAddress(results[0].formatted_address);
+          if (autocompleteInputRef.current) {
+            autocompleteInputRef.current.value = results[0].formatted_address;
+          }
+          // Ensure the map is loaded
+          if (map) {
+            map.panTo(location);
+          }
+        } else {
+          console.log("Geocoder failed due to: " + status);
+        }
       }
-    });
+    );
   };
-  
 
   const onProfileImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -226,17 +226,97 @@ export default function Profile(props) {
       });
   };
 
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const getUserProfile = async () => {
+  //     const jsonData = await ProfileService.getProfile();
+  //     if (jsonData?.error && jsonData?.message) {
+  //       props.responseHandler(jsonData.message);
+  //       return;
+  //     }
+
+  //     console.log("User Profile", jsonData);
+
+  //     if (isMounted) {
+  //       setUser(jsonData);
+  //       setAgentId(jsonData.agent.userId);
+  //       setFirstName(jsonData.firstName);
+  //       setLastName(jsonData.lastName);
+  //       setCompanyPosition(
+  //         jsonData?.agent?.companyPosition ? jsonData.agent.companyPosition : ""
+  //       );
+  //       setPhoneNumber(jsonData.phoneNumber);
+  //       setMobileNumber(
+  //         jsonData?.agent?.mobileNumber ? jsonData.agent.mobileNumber : ""
+  //       );
+  //       setCompanyName(
+  //         jsonData?.agent?.companyName ? jsonData.agent.companyName : ""
+  //       );
+  //       setCompanyAddress(
+  //         jsonData?.agent?.companyAddress ? jsonData.agent.companyAddress : ""
+  //       );
+  //       setZipCode(jsonData?.agent?.zipCode ? jsonData.agent.zipCode : "");
+  //       setCity(jsonData?.cityName ? jsonData.cityName : "");
+  //       setORNNumber(
+  //         jsonData?.agent?.ornNumber ? jsonData.agent.ornNumber : ""
+  //       );
+  //       setMortgageAdvisorEmail(
+  //         jsonData?.agent?.mortgageAdvisorEmail
+  //           ? jsonData.agent.mortgageAdvisorEmail
+  //           : ""
+  //       );
+  //       setCompanyLogoPreview(
+  //         jsonData?.agent?.companyLogo
+  //           ? `${process.env.REACT_APP_API_URL}/${jsonData.agent.companyLogo}`
+  //           : ""
+  //       );
+  //       setProfileImagePreview(
+  //         jsonData?.profileImage
+  //           ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
+  //           : ""
+  //       );
+
+  //       if (jsonData.userCallBackgroundImages) {
+  //         setCallBackgroundImages(jsonData.userCallBackgroundImages);
+  //       }
+  //       if (jsonData.latitude && jsonData.longitude) {
+  //         const loc = {
+  //           lat: parseFloat(jsonData.latitude),
+  //           lng: parseFloat(jsonData.longitude),
+  //         };
+  //         setLocation(loc);
+  //         updateAutocompleteAddress(loc);
+  //       }
+
+  //       if (jsonData.agent?.companyAddress) {
+  //         setAddress(jsonData.agent.companyAddress);
+  //         if (autocompleteInputRef.current) {
+  //           autocompleteInputRef.current.value = jsonData.agent.companyAddress;
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   getUserProfile();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
+
+
   useEffect(() => {
     let isMounted = true;
+  
     const getUserProfile = async () => {
       const jsonData = await ProfileService.getProfile();
       if (jsonData?.error && jsonData?.message) {
         props.responseHandler(jsonData.message);
         return;
       }
-
+  
       console.log("User Profile", jsonData);
-
+  
       if (isMounted) {
         setUser(jsonData);
         setAgentId(jsonData.agent.userId);
@@ -275,27 +355,47 @@ export default function Profile(props) {
             ? `${process.env.REACT_APP_API_URL}/${jsonData.profileImage}`
             : ""
         );
-
+  
         if (jsonData.userCallBackgroundImages) {
           setCallBackgroundImages(jsonData.userCallBackgroundImages);
         }
+  
         if (jsonData.latitude && jsonData.longitude) {
           const loc = {
-              lat: parseFloat(jsonData.latitude),
-              lng: parseFloat(jsonData.longitude)
+            lat: parseFloat(jsonData.latitude),
+            lng: parseFloat(jsonData.longitude),
           };
           setLocation(loc);
-          updateAutocompleteAddress(loc);
-      }
+          reverseGeocodeAddress(loc); // Perform reverse geocoding
+        }
       }
     };
-
+  
+    // Function to perform reverse geocoding
+    const reverseGeocodeAddress = (loc) => {
+      if (!isLoaded) return;
+  
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ location: loc }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const address = results[0].formatted_address;
+          setAddress(address);
+          if (autocompleteInputRef.current) {
+            autocompleteInputRef.current.value = address; // Update the input field
+          }
+        } else {
+          console.error("Geocoder failed due to: " + status);
+        }
+      });
+    };
+  
     getUserProfile();
-
+  
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isLoaded]);
+  
 
   return (
     <React.Fragment>
