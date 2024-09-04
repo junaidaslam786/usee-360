@@ -20,13 +20,29 @@ const ReportDownload = () => {
   const transformUsersDataForCSV = (userData) => {
     return userData.agents.map((agent) => {
       const user = agent.user;
+  
+      // Join the productAllocations and agentAccessLevels
       const allocations = (user.productAllocations || [])
-        .map((a) => a.id)
-        .join("; ");
+        .map((a) => a.productId)
+        .join("\n");
       const accessLevels = (user.agentAccessLevels || [])
         .map((a) => a.accessLevel)
-        .join("; ");
-
+        .join("\n");
+  
+      // Join the appointments data
+      const pendingAppointments = (agent.pendingAppointments || [])
+        .map((a) => a.id)
+        .join("\n");
+      const completedAppointments = (agent.completedAppointments || [])
+        .map((a) => a.id)
+        .join("\n");
+      const cancelledAppointments = (agent.cancelledAppointments || [])
+        .map((a) => a.id)
+        .join("\n");
+      const missedAppointments = (agent.missedAppointments || [])
+        .map((a) => a.id)
+        .join("\n");
+  
       return {
         userId: user.id,
         firstName: user.firstName,
@@ -40,10 +56,15 @@ const ReportDownload = () => {
         apiCode: agent.apiCode,
         productAllocations: allocations,
         agentAccessLevels: accessLevels,
+        pendingAppointments: pendingAppointments,
+        completedAppointments: completedAppointments,
+        cancelledAppointments: cancelledAppointments,
+        missedAppointments: missedAppointments,
         // Add other fields as needed
       };
     });
   };
+  
 
   const transformPropertiesDataForCSV = (propertyData) => {
     if (!propertyData) return [];

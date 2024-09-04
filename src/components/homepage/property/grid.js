@@ -62,7 +62,7 @@ function PropertyGrid() {
 
   // Load properties and user details
   const loadProperties = useCallback(async () => {
-    const propertyCategory = filters.propertyCategory || "sale";
+    const propertyCategory = filters.propertyCategory || "";
     const size = 12;
 
     const resultAction = await dispatch(

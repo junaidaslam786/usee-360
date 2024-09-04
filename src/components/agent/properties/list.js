@@ -47,49 +47,94 @@ export default function List(props) {
 
   
 
+  // const fetchCarbonFootprint = async (propertyId) => {
+  //   if (!carbonFootprints[propertyId]) {
+  //     try {
+  //       // Fetch user subscription details
+  //       const subscriptionDetails = await StripeService.getUserSubscriptionDetails(userDetail?.id);
+  
+  //       // Check if the subscriptionDetails and userSubscriptions are defined
+  //       if (!subscriptionDetails || !subscriptionDetails.userSubscriptions) {
+  //         toast.error("Failed to retrieve subscription details.");
+  //         return;
+  //       }
+  
+  //       // Check if the user has subscribed to the "Carbon Footprint" feature
+  //       const hasCarbonFootprintSubscription = subscriptionDetails.userSubscriptions.some(
+  //         (subscription) => subscription.feature.name === "Carbon Footprint"
+  //       );
+  
+  //       if (!hasCarbonFootprintSubscription) {
+  //         toast.error("You haven't subscribed to the Carbon Footprint feature.");
+  //         return;
+  //       }
+  
+  //       // Proceed with fetching the carbon footprint data
+  //       setCarbonFootprints((prev) => ({
+  //         ...prev,
+  //         [propertyId]: { loading: true },
+  //       }));
+  
+  //       const response = await PropertyService.carbonFootprint(propertyId);
+  //       setCarbonFootprints((prev) => ({
+  //         ...prev,
+  //         [propertyId]: { value: response.totalCo2SavedText },
+  //       }));
+        
+  //     } catch (error) {
+  //       setCarbonFootprints((prev) => ({
+  //         ...prev,
+  //         [propertyId]: { error: "Failed to load carbon footprint" },
+  //       }));
+  //       console.error("Error fetching carbon footprint:", error);
+  //     }
+  //   }
+  // };
   const fetchCarbonFootprint = async (propertyId) => {
     if (!carbonFootprints[propertyId]) {
-      try {
-        // Fetch user subscription details
-        const subscriptionDetails = await StripeService.getUserSubscriptionDetails(userDetail?.id);
-  
-        // Check if the subscriptionDetails and userSubscriptions are defined
-        if (!subscriptionDetails || !subscriptionDetails.userSubscriptions) {
-          toast.error("Failed to retrieve subscription details.");
-          return;
+        try {
+            // Fetch user subscription details
+            const subscriptionDetails = await StripeService.getUserSubscriptionDetails(userDetail?.id);
+            
+            // Check if the response contains the required data
+            if (!subscriptionDetails?.data || !subscriptionDetails.data.userSubscriptions) {
+                toast.error("Failed to retrieve subscription details.");
+                return;
+            }
+
+            // Check if the user has subscribed to the "Carbon Footprint" feature
+            const carbonFootprintSubscription = subscriptionDetails.data.userSubscriptions.find(
+                (subscription) => subscription.feature.name === "Carbon Footprint"
+            );
+
+            if (!carbonFootprintSubscription) {
+                toast.error("You haven't subscribed to the Carbon Footprint feature.");
+                return;
+            }
+
+            // Proceed with fetching the carbon footprint data
+            setCarbonFootprints((prev) => ({
+                ...prev,
+                [propertyId]: { loading: true },
+            }));
+
+            const response = await PropertyService.carbonFootprint(propertyId);
+            setCarbonFootprints((prev) => ({
+                ...prev,
+                [propertyId]: { value: response.totalCo2SavedText },
+            }));
+
+        } catch (error) {
+            setCarbonFootprints((prev) => ({
+                ...prev,
+                [propertyId]: { error: "Failed to load carbon footprint" },
+            }));
+            console.error("Error fetching carbon footprint:", error);
         }
-  
-        // Check if the user has subscribed to the "Carbon Footprint" feature
-        const hasCarbonFootprintSubscription = subscriptionDetails.userSubscriptions.some(
-          (subscription) => subscription.feature.name === "Carbon Footprint"
-        );
-  
-        if (!hasCarbonFootprintSubscription) {
-          toast.error("You haven't subscribed to the Carbon Footprint feature.");
-          return;
-        }
-  
-        // Proceed with fetching the carbon footprint data
-        setCarbonFootprints((prev) => ({
-          ...prev,
-          [propertyId]: { loading: true },
-        }));
-  
-        const response = await PropertyService.carbonFootprint(propertyId);
-        setCarbonFootprints((prev) => ({
-          ...prev,
-          [propertyId]: { value: response.totalCo2SavedText },
-        }));
-        
-      } catch (error) {
-        setCarbonFootprints((prev) => ({
-          ...prev,
-          [propertyId]: { error: "Failed to load carbon footprint" },
-        }));
-        console.error("Error fetching carbon footprint:", error);
-      }
     }
-  };
+};
+
+
 
   const handleDeleteButtonClick = (id) => {
     setPropertyIdToDelete(id);
