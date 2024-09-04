@@ -12,13 +12,15 @@ class BannerV3 extends Component {
         <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
           {/* ltn__slide-item */}
           <div
-            className="ltn__slide-item ltn__slide-item-2_modified ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-60"
+            className="ltn__slide-item ltn__slide-item-2_modified ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-40"
             data-bs-bg={`${publicUrl}assets/img/slider/0.jpg`}
           >
             <div className="centralization">
               <div className="right_flex">
                 <div>
-                  <p className="worry_font barlow-condensed-semibold">
+                  <p className="worry_font barlow-condensed-semibold"
+                  style={{ color: "#171B2A" }}
+                  >
                     STOP WORRYING, START LISTING
                   </p>
                 </div>
