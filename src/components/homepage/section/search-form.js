@@ -1,5 +1,3 @@
-
-
 // import React, { useState, useEffect, useRef } from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -13,26 +11,19 @@
 
 // const libraries = ["places", "drawing"];
 
-// export default function SearchForm({
-//   propertyCategory: defaultPropertyCategory,
-//   address: defaultAddress,
-//   lat: defaultLat,
-//   lng: defaultLng,
-//   priceType: defaultPriceType,
-  
-// }) {
+// export default function SearchForm() {
 //   const { filters, selectedFilterCount } = useSelector((state) => state.propertySearch);
 //   const dispatch = useDispatch();
-//   const [address, setAddress] = useState(defaultAddress || "");
-//   const [propertyCategory, setPropertyCategory] = useState(
-//      filters.propertyCategory || defaultPropertyCategory || ""
-//   );
-//   const [lat, setLat] = useState(defaultLat || null);
-//   const [lng, setLng] = useState(defaultLng || null);
+  
+//   // Local state management for the form fields
+//   const [address, setAddress] = useState(filters.address || "");
+//   const [propertyCategory, setPropertyCategory] = useState(filters.propertyCategory || "");
+//   const [lat, setLat] = useState(filters.lat || null);
+//   const [lng, setLng] = useState(filters.lng || null);
+//   const [priceType, setPriceType] = useState(filters.priceType ? PRICE_TYPE.find(option => option.value === filters.priceType) : null);
+
 //   const [showLink, setShowLink] = useState(false);
 //   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-//   const [priceType, setPriceType] = useState(defaultPriceType ? PRICE_TYPE.find(option => option.value === defaultPriceType) : null);
 //   const autocompleteInputRef = useRef(null);
 
 //   const history = useHistory();
@@ -46,11 +37,6 @@
 
   
 
-//   const handleFiltersChange = (newFilters) => {
-//     dispatch(updateFilters({ ...newFilters, propertyCategory }));
-//   };
-  
-
 //   const sendFilters = () => {
 //     const constructedFilters = {
 //       propertyCategory,
@@ -60,13 +46,17 @@
 //       ...filters,
 //     };
 
-//     // dispatch(updateFilters(constructedFilters));
+//     // Update the Redux store only when the user clicks "Find Now"
+//     dispatch(updateFilters(constructedFilters));
 //     dispatch(fetchProperties(constructedFilters));
-    
+
 //     if (location.pathname !== "/services/properties") {
 //       history.push("/services/properties");
-    
 //     }
+//   };
+
+//   const handleFiltersChange = (newFilters) => {
+//     dispatch(updateFilters(newFilters));
 //   };
 
 //   const handlePriceTypeChange = (selectedOption) => {
@@ -101,37 +91,12 @@
 //     setIsModalOpen(false);
 //   };
 
-//   // useEffect(() => {
-//   //   if (isLoaded && lat != null && lng != null) {
-//   //     dispatch(updateFilters({ lat, lng }));
-//   //   }
-//   // }, [isLoaded, lat, lng, dispatch]);
-
-//   // useEffect(() => {
-//   //   if (filterFromModal) {
-//   //     handleFiltersChange(filterFromModal);  // Update filters with those passed from the FilterModal
-//   //   }
-//   // }, [filterFromModal, dispatch]);
-//   // useEffect(() => {
-//   //   if (location.state?.filters && location.state.filters.propertyCategory !== propertyCategory) {
-//   //     setPropertyCategory(location.state.filters.propertyCategory || defaultPropertyCategory || "");
-//   //     setAddress(location.state.filters.address || "");
-//   //     setLat(location.state.filters.lat || null);
-//   //     setLng(location.state.filters.lng || null);
-//   //     setPriceType(
-//   //       PRICE_TYPE.find((option) => option.value === location.state.filters.priceType) || null
-//   //     );
-//   //   }
-//   // }, [location.state?.filters, defaultPropertyCategory, propertyCategory]);
-
-
 //   useEffect(() => {
 //     if (!isLoaded) return;
 
 //     const inputElement = autocompleteInputRef.current;
 //     if (inputElement && inputElement instanceof HTMLInputElement) {
 //       const autocomplete = new window.google.maps.places.Autocomplete(inputElement);
-
 //       autocomplete.setFields(["geometry", "formatted_address"]);
 
 //       const handlePlaceSelect = () => {
@@ -153,12 +118,27 @@
 //       return () => {
 //         window.google.maps.event.clearInstanceListeners(inputElement);
 //       };
-//     } else {
-//       console.error(
-//         "autocompleteInputRef is not attached to a valid HTMLInputElement"
-//       );
 //     }
 //   }, [isLoaded]);
+
+//   useEffect(() => {
+//     // If location state changes, update the form fields and the store
+//     if (location.state?.filters) {
+//       setPropertyCategory(location.state.filters.propertyCategory || "");
+//       setAddress(location.state.filters.address || "");
+//       setLat(location.state.filters.lat || null);
+//       setLng(location.state.filters.lng || null);
+//       setPriceType(
+//         PRICE_TYPE.find((option) => option.value === location.state.filters.priceType) || null
+//       );
+//       dispatch(updateFilters(location.state.filters));
+//     }
+//   }, [location.state?.filters, dispatch]);
+
+//   useEffect(() => {
+//     // Ensure that propertyCategory changes are correctly captured and dispatched
+//     dispatch(updateFilters({ propertyCategory }));
+//   }, [propertyCategory, dispatch]);
 
 //   return (
 //     <div className="ltn__car-dealer-form-area mt-120 mb-120">
@@ -167,17 +147,13 @@
 //           <div className="col-lg-12">
 //             <div className="ltn__car-dealer-form-tab">
 //               <div className="tab-content bg-white box-shadow-1 position-relative pb-10">
-//                 <div
-//                   className="tab-pane fade active show"
-//                   id="ltn__form_tab_1_1"
-//                 >
+//                 <div className="tab-pane fade active show">
 //                   <div className="car-dealer-form-inner">
 //                     <form
-//                       action="#"
 //                       className="ltn__car-dealer-form-box"
 //                       onSubmit={(e) => {
 //                         e.preventDefault();
-//                         sendFilters();
+//                         sendFilters(); // Only fetch properties when the form is submitted
 //                       }}
 //                     >
 //                       <div className="row">
@@ -186,9 +162,7 @@
 //                           <select
 //                             className="nice-select"
 //                             value={propertyCategory}
-//                             onChange={(e) =>
-//                               setPropertyCategory(e.target.value)
-//                             }
+//                             onChange={(e) => setPropertyCategory(e.target.value)}
 //                           >
 //                             <option value="">Select an option</option> 
 //                             <option value={"sale"}>Buy</option>
@@ -227,14 +201,8 @@
 //                             </Autocomplete>
 //                           )}
 //                           {showLink && (
-//                             <Link
-//                               to={{ pathname: "/map-search" }}
-//                               className="draw-on-map"
-//                             >
-//                               <i
-//                                 className="fa fa-map-marker"
-//                                 aria-hidden="true"
-//                               ></i>
+//                             <Link to="/map-search" className="draw-on-map">
+//                               <i className="fa fa-map-marker" aria-hidden="true"></i>
 //                               Search by drawing on map
 //                             </Link>
 //                           )}
@@ -251,7 +219,7 @@
 //                         <div className="col-lg-4 col-md-4">
 //                           <button
 //                             type="button"
-//                             className="btn theme-btn-2 btn-effect-1 text-uppercase "
+//                             className="btn theme-btn-2 btn-effect-1 text-uppercase"
 //                             onClick={openModal}
 //                           >
 //                            <FontAwesomeIcon icon={faFilter} /> Filters {selectedFilterCount > 0 && `(${selectedFilterCount})`}
@@ -261,7 +229,7 @@
 //                         <div className="col-lg-4 col-md-4">
 //                           <button
 //                             type="submit"
-//                             className="btn theme-btn-1 btn-effect-1 text-uppercase "
+//                             className="btn theme-btn-1 btn-effect-1 text-uppercase"
 //                           >
 //                             Find Now
 //                           </button>
@@ -269,7 +237,7 @@
 //                         <div className="col-lg-4 col-md-4">
 //                           <button
 //                             type="button"
-//                             className="btn theme-btn-2 btn-effect-2 text-uppercase "
+//                             className="btn theme-btn-2 btn-effect-2 text-uppercase"
 //                             onClick={resetFilters}
 //                           >
 //                             Clear Filters
@@ -293,8 +261,6 @@
 //     </div>
 //   );
 // }
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -332,15 +298,12 @@ export default function SearchForm() {
     libraries,
   });
 
-  
-
   const sendFilters = () => {
     const constructedFilters = {
       propertyCategory,
-      ...(priceType && { priceType: priceType.value }),
-      ...(lat != null && { lat }),
-      ...(lng != null && { lng }),
-      ...filters,
+      lat,
+      lng,
+      priceType: priceType ? priceType.value : "",
     };
 
     // Update the Redux store only when the user clicks "Find Now"
@@ -352,12 +315,23 @@ export default function SearchForm() {
     }
   };
 
-  const handleFiltersChange = (newFilters) => {
-    dispatch(updateFilters(newFilters));
-  };
+  // const handleFiltersChange = (newFilters) => {
+  //   // Update local state first, then update Redux store
+  //   setAddress(newFilters.address || "");
+  //   setPropertyCategory(newFilters.propertyCategory || "");
+  //   setLat(newFilters.lat || null);
+  //   setLng(newFilters.lng || null);
+    
+  //   // Dispatch the updated filters to Redux
+  //   dispatch(updateFilters(newFilters));
+  // };
 
   const handlePriceTypeChange = (selectedOption) => {
-    setPriceType(selectedOption);
+    setPriceType(selectedOption); // Update local state
+  };
+
+  const handlePropertyCategoryChange = (e) => {
+    setPropertyCategory(e.target.value); // Update local state
   };
 
   const resetFilters = () => {
@@ -432,11 +406,6 @@ export default function SearchForm() {
     }
   }, [location.state?.filters, dispatch]);
 
-  useEffect(() => {
-    // Ensure that propertyCategory changes are correctly captured and dispatched
-    dispatch(updateFilters({ propertyCategory }));
-  }, [propertyCategory, dispatch]);
-
   return (
     <div className="ltn__car-dealer-form-area mt-120 mb-120">
       <div className="container">
@@ -459,7 +428,7 @@ export default function SearchForm() {
                           <select
                             className="nice-select"
                             value={propertyCategory}
-                            onChange={(e) => setPropertyCategory(e.target.value)}
+                            onChange={handlePropertyCategoryChange}
                           >
                             <option value="">Select an option</option> 
                             <option value={"sale"}>Buy</option>
@@ -551,7 +520,7 @@ export default function SearchForm() {
         <FilterModal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
-          onFiltersChange={handleFiltersChange}
+          // onFiltersChange={handleFiltersChange}
           currentFilters={filters}
         />
       </div>

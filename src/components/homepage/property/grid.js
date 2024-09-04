@@ -99,49 +99,49 @@ function PropertyGrid() {
     [carbonFootprints]
   );
 
-  // Function to load wishlist properties only if the user is logged in
-  const loadWishlistProperties = useCallback(async () => {
+  // Function to load wishlist properties, only called when necessary
+const loadWishlistProperties = useCallback(async () => {
+  try {
+    const response = await WishlistService.list();
+    if (response?.length > 0) {
+      setWishlistProperties(response);
+    }
+  } catch (error) {
+    console.error("Failed to load wishlist properties:", error);
+  }
+}, []);
+
+  // Function to add a property to the wishlist
+const addToWishList = useCallback(
+  async (propertyId) => {
+    // Check if user is logged in
     if (!token) {
-      return; // Skip fetching wishlist if the user is not logged in
+      history.push(redirectPath);
+      return;
     }
 
     try {
-      const response = await WishlistService.list();
-      if (response?.length > 0) {
-        setWishlistProperties(response);
-      }
-    } catch (error) {
-      console.error("Failed to load wishlist properties:", error);
-    }
-  }, [token]);
-
-  // Function to add a property to the wishlist
-  const addToWishList = useCallback(
-    async (propertyId) => {
-      if (!token) {
-        history.push(redirectPath);
+      // Add to wishlist
+      const response = await WishlistService.addToWishlist(propertyId);
+      if (response?.error && response?.message) {
+        console.error(response.message);
         return;
       }
 
-      try {
-        const response = await WishlistService.addToWishlist(propertyId);
-        if (response?.error && response?.message) {
-          console.error(response.message);
-          return;
-        }
+      const prop = properties.find(({ id }) => id === propertyId);
+      setWishlistId(prop.id);
+      setWishlistTitle(prop.title);
+      setWishlistImage(prop.featuredImage);
+      toggleButton.current.click();
 
-        const prop = properties.find(({ id }) => id === propertyId);
-        setWishlistId(prop.id);
-        setWishlistTitle(prop.title);
-        setWishlistImage(prop.featuredImage);
-        toggleButton.current.click();
-        await loadWishlistProperties();
-      } catch (error) {
-        console.error("Failed to add to wishlist:", error);
-      }
-    },
-    [token, properties, loadWishlistProperties, history, redirectPath]
-  );
+      // Fetch wishlist properties only after successfully adding to wishlist
+      await loadWishlistProperties();
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+    }
+  },
+  [token, properties, loadWishlistProperties, history, redirectPath]
+);
 
   // Function to remove a property from the wishlist
   const removeWishList = useCallback(

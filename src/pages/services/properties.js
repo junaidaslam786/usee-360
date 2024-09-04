@@ -58,19 +58,13 @@ import PropertyGrid from "../../components/homepage/property/grid";
 import { useSelector } from "react-redux";
 
 function PropertiesServicePage() {
-  const filters = useSelector((state) => state.propertySearch.filters);
+  // const filters = useSelector((state) => state.propertySearch.filters);
 
   return (
     <div>
       <Navbar />
       <PageHeader headertitle="Homes" subheader="Service" />
-      <SearchForm
-        propertyCategory={filters.propertyCategory}
-        address={filters.address}
-        lat={filters.lat}
-        lng={filters.lng}
-        priceType={filters.priceType}
-      />
+      <SearchForm/>
       <PropertyGrid />
       <ServiceDetails />
       <Service />
