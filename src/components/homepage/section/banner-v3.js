@@ -12,45 +12,38 @@ class BannerV3 extends Component {
         <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
           {/* ltn__slide-item */}
           <div
-            className="ltn__slide-item ltn__slide-item-2_modified ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-40"
+            className="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-60"
             data-bs-bg={`${publicUrl}assets/img/slider/0.jpg`}
           >
-            <div className="centralization">
-              <div className="right_flex">
-                <div>
-                  <p className="worry_font barlow-condensed-semibold"
-                  style={{ color: "#171B2A" }}
-                  >
-                    STOP WORRYING, START LISTING
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className="free_font barlow-condensed-semibold"
-                    style={{ color: "red" }}
-                  >
-                    FREE
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className="listing_font barlow-condensed-semibold"
-                    style={{ color: "#00c800" }}
-                  >
-                    LISTINGS
-                  </p>
-                </div>
-                <div>
-                  <button
-                    className="button_register barlow-condensed-semibold"
-                    onClick={() => history.push('/agent/register')}
-                  >
-                    REGISTER NOW
-                  </button>
+            <div className="ltn__slide-item-inner text-center">
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-12 align-self-center">
+                    <div className="slide-item-info">
+                      <div className="slide-item-info-inner ltn__slide-animation">
+                        <h6 className="slide-sub-title white-color--- animated">
+                          STOP WORRYING, START LISTING 
+                        </h6>
+                        <h1 className="slide-title animated ">
+                          FREE 
+                          <br /> LISTINGS
+                        </h1>
+                        <div className="btn-wrapper animated go-top">
+                          <Link
+                            to="/agent/register"
+                            className="theme-btn-1 btn btn-effect-1"
+                          >
+                            REGISTER NOW
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          {/* ltn__slide-item */}
           <div
             className="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3-normal--- ltn__slide-item-3 bg-image bg-overlay-theme-black-60"
             data-bs-bg={`${publicUrl}assets/img/slider/1.jpg`}
