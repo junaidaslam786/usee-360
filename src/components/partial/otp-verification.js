@@ -460,10 +460,10 @@ export default function OtpVerification({
   // OTP Validation
   const validateOtp = async (e) => {
     e.preventDefault();
-
+  
     setLoading(true);
     let proceed = true;
-
+  
     if (otpType === "phoneNumber") {
       proceed = false;
       await window.confirmationResult
@@ -474,52 +474,64 @@ export default function OtpVerification({
           setLoading(false);
         });
     }
-
+  
     if (proceed) {
       const formResponse = await AuthService.validateOtp(
         { otp, type: otpType },
         token
       );
-
+  
       if (formResponse?.error) {
         responseHandler(formResponse.message);
         setLoading(false);
         return;
       }
-
-      if (formResponse?.user?.userType === "agent" && !formResponse?.user?.active) {
-        responseHandler(
-          "Your account is inactive and requires SuperAdmin approval. Please wait 24-48 hours."
-        );
-        history.push("/agent/login");
+  
+      // Add a check to ensure the user object exists
+      if (formResponse?.user) {
+        // Check if the user is an agent and if the account is inactive
+        if (formResponse.user.userType === "agent" && !formResponse.user.active) {
+          responseHandler(
+            "Your account is inactive and requires SuperAdmin approval. Please wait 24-48 hours."
+          );
+          history.push("/agent/login");
+          toast.warn("Your account is inactive and requires approval.");
+          setLoading(false);
+          return;
+        }
+  
+        onVerified && onVerified(formResponse.user, token);
+        responseHandler("Account verified successfully.", true);
+  
+        // Pass the user object to redirectUser only if it exists
+        redirectUser(formResponse.token, formResponse.user);
+      } else {
+        responseHandler("User data is missing in the response.");
         setLoading(false);
-        return;
       }
-
-      onVerified && onVerified(formResponse.user, token);
-      responseHandler("Account verified successfully.", true);
-
-      redirectUser(formResponse.token, formResponse.user);
-      toast.warn(
-        formResponse?.user?.userType === "agent"
-          ? "Your request for trader has been received. Please wait for account approval."
-          : ""
-      );
     }
   };
+  
 
   // Redirect User based on User Type
   const redirectUser = (token, user) => {
+    // Ensure user exists before accessing userType
+    if (!user) {
+      console.error("User is undefined, cannot redirect.");
+      return;
+    }
+  
     setLoginToken(token);
-
+  
     let returnUrl =
       new URLSearchParams(window.location.search).get("returnUrl") ||
-      `/${user.userType}/dashboard`;
-
+      `/${user.userType}/dashboard`; // Safely access userType
+  
     setTimeout(() => {
       window.location.href = returnUrl;
     }, 1000);
   };
+  
 
   // Countdown Timer
   useEffect(() => {
