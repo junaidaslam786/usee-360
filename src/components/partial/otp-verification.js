@@ -481,15 +481,16 @@ export default function OtpVerification({
         token
       );
   
+      console.log('API response:', formResponse); // Inspect the response
+  
       if (formResponse?.error) {
         responseHandler(formResponse.message);
         setLoading(false);
         return;
       }
   
-      // Add a check to ensure the user object exists
+      // Check if the user object is present
       if (formResponse?.user) {
-        // Check if the user is an agent and if the account is inactive
         if (formResponse.user.userType === "agent" && !formResponse.user.active) {
           responseHandler(
             "Your account is inactive and requires SuperAdmin approval. Please wait 24-48 hours."
@@ -511,6 +512,7 @@ export default function OtpVerification({
       }
     }
   };
+  
   
 
   // Redirect User based on User Type
