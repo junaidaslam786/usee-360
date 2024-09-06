@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AuthService from "../../services/auth";
-import { USER_TYPE } from "../../constants";
 import OtpVerification from "../partial/otp-verification";
 import "react-phone-number-input/style.css";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import PasswordChecklist from "react-password-checklist";
+import { getUserDetailsFromJwt, getUserDetailsFromJwt2, getUserDetailsFromJwt3 } from "../../utils"; // Utility to decode JWT and get user details
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function CustomerOnboarding(props) {
   const [firstName, setFirstName] = useState("");
@@ -19,6 +20,23 @@ export default function CustomerOnboarding(props) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
 
+
+  const history = useHistory();
+
+  // Fetch user details from the token in localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("userToken") // Assuming the token is stored under 'token'
+    console.log(token);
+    if (token) {
+      const userDetails = getUserDetailsFromJwt(); // Use decode function
+      console.log("user details", userDetails);
+      if (userDetails) {
+        setFirstName(userDetails.firstName || "");
+        setLastName(userDetails.lastName || "");
+        setEmail(userDetails.email || "");
+      }
+    }
+  }, []);
   const registerCustomer = async (e) => {
     e.preventDefault();
 
@@ -41,9 +59,7 @@ export default function CustomerOnboarding(props) {
     }
 
     setLoading(true);
-    const formResponse = await AuthService.customerOnboarding(
-      formData,
-    );
+    const formResponse = await AuthService.customerOnboarding(formData);
     setLoading(false);
 
     if (formResponse?.error && formResponse?.message) {
@@ -55,7 +71,10 @@ export default function CustomerOnboarding(props) {
       setUser(formResponse.user);
       setToken(formResponse.token);
       setLoadOTpForm(true);
+
+      // Redirect to customer/dashboard after successful registration
     }
+    history.push("/customer/dashboard");
   };
 
   const handlePassword = (e) => {
@@ -65,6 +84,7 @@ export default function CustomerOnboarding(props) {
   const handleConfirmPassword = (e) => {
     setConfirmPassword(e.target.value);
   };
+
   const setPhoneNumberHandler = async (phoneNumber) => {
     setPhoneNumber(phoneNumber);
 
@@ -207,7 +227,7 @@ export default function CustomerOnboarding(props) {
                           <div></div>
                         </div>
                       ) : (
-                        "CREATE ACCOUNT"
+                        "SUBMIT"
                       )}
                     </button>
                   </div>

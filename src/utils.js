@@ -93,6 +93,17 @@ export const checkAgentDetails = async () => {
   }
 };
 
+export const getUserDetailsFromJwt3 = (token) => {
+  try {
+    // Decode the token without verifying the signature
+    const decoded = jwt.decode(token);
+    return decoded;
+  } catch (err) {
+    console.error("Error decoding token:", err.message);
+    return null;
+  }
+};
+
 export const getUserDetailsFromJwt = (token) => {
   try {
     let tokenToDecode = token;
@@ -118,28 +129,51 @@ export const getUserDetailsFromJwt = (token) => {
 export const getUserDetailsFromJwt2 = async (token) => {
   try {
     let tokenToDecode = token;
+    
     if (!tokenToDecode) {
       // If there's no token, attempt to refresh it
       const refreshToken = localStorage.getItem("refreshToken"); // Get the stored refresh token
       if (!refreshToken) {
         throw new Error("No refresh token available");
       }
+
+      // Attempt to refresh the token
       const refreshResponse = await AuthService.refreshToken(refreshToken);
       if (refreshResponse.error) {
         throw new Error(refreshResponse.message);
       }
+
       // Store the new access token and use it to decode the user details
       localStorage.setItem("userToken", refreshResponse.accessToken);
       tokenToDecode = refreshResponse.accessToken;
     }
 
-    const decoded = jwt.verify(
-      tokenToDecode,
-      process.env.REACT_APP_JWT_SECRET_KEY
-    );
+    // Decode the token to check if it's expired
+    const decodedToken = jwt.decode(tokenToDecode);
+
+    if (decodedToken && decodedToken.exp && Date.now() >= decodedToken.exp * 1000) {
+      // If token is expired, try to refresh it
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) {
+        throw new Error("Token expired and no refresh token available");
+      }
+
+      const refreshResponse = await AuthService.refreshToken(refreshToken);
+      if (refreshResponse.error) {
+        throw new Error(refreshResponse.message);
+      }
+
+      // Store new access token and decode it
+      localStorage.setItem("userToken", refreshResponse.accessToken);
+      tokenToDecode = refreshResponse.accessToken;
+    }
+
+    // Now verify the valid token
+    const decoded = jwt.verify(tokenToDecode, process.env.REACT_APP_JWT_SECRET_KEY);
     return decoded;
+
   } catch (err) {
-    // Handle errors, including token expiration
+    // Handle token expiration or other errors
     console.error("Error getting user details:", err.message);
     return null;
   }
