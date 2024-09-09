@@ -391,6 +391,22 @@ const PropertyService = {
     }
   },
 
+  checkSnagList: async (productId, userSubscriptionId) => {
+    try {
+      const response = await httpPost(`${apiUrlPrefix}/agent/check-snaglist`, {
+        productId,
+        userSubscriptionId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error checking snag list:', error);
+      return {
+        error: true,
+        message: 'Failed to check snag list. Please try again later.',
+      };
+    }
+  },
+
   toAllocate: async () => {
     const response = await httpGet(`${apiUrlPrefix}/to-allocate`);
 

@@ -308,7 +308,7 @@ export default function SearchForm() {
 
     // Update the Redux store only when the user clicks "Find Now"
     dispatch(updateFilters(constructedFilters));
-    dispatch(fetchProperties(constructedFilters));
+    dispatch(fetchProperties({filters: constructedFilters, page: 1, size: 12}));
 
     if (location.pathname !== "/services/properties") {
       history.push("/services/properties");

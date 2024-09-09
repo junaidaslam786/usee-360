@@ -29,7 +29,6 @@ export default function ViewOffer(props) {
       const response = await StripeService.getUserSubscriptionDetails(userDetail.id);
   
       
-
       // Check if the response contains an error or lacks the required data
       if (response?.status !== 200 || !response?.data?.userSubscriptions) {
         toast.error(response?.statusText || "Failed to load subscription details.");
@@ -60,12 +59,11 @@ export default function ViewOffer(props) {
     }
   };
   
-  
-
   const enableSnagList = async () => {
     try {
       setLoading(true);
       const response = await PropertyService.enableSnagList(props.property.id, userSubscriptionId);
+      console.log('enable snaglist', response)
       setLoading(false);
       if (!response.error) {
         setIsSnagListEnabled(true);
@@ -79,6 +77,27 @@ export default function ViewOffer(props) {
       toast.error("Failed to enable snag list. Please try again later.");
     }
   };
+
+  const checkSnagList = async () => {
+    try {
+      const response = await PropertyService.checkSnagList(props.property.id, userSubscriptionId);
+      
+      console.log('check snaglist', response)
+      console.log('check snaglist', response?.success)
+
+      if (response?.success === true && response?.message === "Snag list is enabled for property.") {
+        // Snag list is enabled, update the state
+        setIsSnagListEnabled(true);
+      } else {
+        // Snag list is not enabled
+        setIsSnagListEnabled(false);
+      }
+    } catch (error) {
+      console.error("Error checking snag list:", error);
+      toast.error("Failed to check snag list. Please try again later.");
+    }
+  };
+  
 
   const updateOfferStatus = async (formData) => {
     setLoading(true);
@@ -171,6 +190,7 @@ export default function ViewOffer(props) {
       setList(props.property.productOffers);
     }
     checkSubscriptionDetails();
+    checkSnagList();
   }, [props.property]);
 
   useEffect(() => {

@@ -41,7 +41,7 @@ const OAuthCallback = () => {
       setLoginToken(token);
       setUserType(userType);
 
-      if (userType === "agent") {
+      if (userType === "agent" || userType === "11111") {
         // User is an agent
         (async () => {
           // Use an async IIFE to await isAgent
@@ -56,7 +56,7 @@ const OAuthCallback = () => {
               : '/agent/dashboard';
           history.push(redirectPath);
         })();
-      } else if (userType === "customer") {
+      } else if (userType === "customer" || userType === "00000") {
          // User is a customer
          (async () => {
           const profile = await ProfileService.getProfile();

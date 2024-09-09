@@ -21,16 +21,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProperties,
   fetchUserDetails,
+  setCurrentPage,
 } from "../../../store/propertySearchSlice";
+import { toast } from "react-toastify";
+import Pagination from "../section/pagination";
 
 const libraries = ["places", "drawing"];
 
 function PropertyGrid() {
   // const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  const { filters, properties, userDetails, loading, error, totalPages } =
+  const { filters, properties, userDetails, loading, error, totalPages, currentPage } =
     useSelector((state) => state.propertySearch);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   // const [totalPages, setTotalPages] = useState(0);
   // const [properties, setProperties] = useState([]);
   const [wishlistProperties, setWishlistProperties] = useState([]);
@@ -69,79 +72,96 @@ function PropertyGrid() {
       fetchProperties({ ...filters, propertyCategory, page: currentPage, size })
     );
     if (fetchProperties.fulfilled.match(resultAction)) {
-      console.log('API Response:', resultAction.payload);
-      const userIds = resultAction.payload.data.map((property) => property.userId);
+      console.log("API Response:", resultAction.payload);
+      const userIds = resultAction.payload.data.map(
+        (property) => property.userId
+      );
       dispatch(fetchUserDetails(userIds));
     }
   }, [dispatch, filters, currentPage]);
 
   const fetchCarbonFootprint = useCallback(
     async (propertyId) => {
+      // Check if the user is logged in
+      if (!token) {
+        toast.error("Please Login to view Carbon Footprint");
+        return;
+      }
+
+      // If the carbon footprint is already loaded, do not fetch again
       if (!carbonFootprints[propertyId]) {
         setCarbonFootprints((prev) => ({
           ...prev,
           [propertyId]: { loading: true },
         }));
-        const response = await HomepageService.carbonFootprint(propertyId);
-        if (response?.error) {
+
+        try {
+          const response = await HomepageService.carbonFootprint(propertyId);
+          if (response?.error) {
+            setCarbonFootprints((prev) => ({
+              ...prev,
+              [propertyId]: { error: "Failed to load carbon footprint" },
+            }));
+          } else {
+            setCarbonFootprints((prev) => ({
+              ...prev,
+              [propertyId]: { value: response.totalCo2SavedText },
+            }));
+          }
+        } catch (error) {
           setCarbonFootprints((prev) => ({
             ...prev,
             [propertyId]: { error: "Failed to load carbon footprint" },
           }));
-        } else {
-          setCarbonFootprints((prev) => ({
-            ...prev,
-            [propertyId]: { value: response.totalCo2SavedText },
-          }));
         }
       }
     },
-    [carbonFootprints]
+    [carbonFootprints, token] // Include token in dependencies
   );
 
   // Function to load wishlist properties, only called when necessary
-const loadWishlistProperties = useCallback(async () => {
-  try {
-    const response = await WishlistService.list();
-    if (response?.length > 0) {
-      setWishlistProperties(response);
+  const loadWishlistProperties = useCallback(async () => {
+    try {
+      const response = await WishlistService.list();
+      if (response?.length > 0) {
+        setWishlistProperties(response);
+      }
+    } catch (error) {
+      console.error("Failed to load wishlist properties:", error);
     }
-  } catch (error) {
-    console.error("Failed to load wishlist properties:", error);
-  }
-}, []);
+  }, []);
 
   // Function to add a property to the wishlist
-const addToWishList = useCallback(
-  async (propertyId) => {
-    // Check if user is logged in
-    if (!token) {
-      history.push(redirectPath);
-      return;
-    }
-
-    try {
-      // Add to wishlist
-      const response = await WishlistService.addToWishlist(propertyId);
-      if (response?.error && response?.message) {
-        console.error(response.message);
+  const addToWishList = useCallback(
+    async (propertyId) => {
+      // Check if user is logged in
+      if (!token) {
+        history.push(redirectPath);
         return;
       }
 
-      const prop = properties.find(({ id }) => id === propertyId);
-      setWishlistId(prop.id);
-      setWishlistTitle(prop.title);
-      setWishlistImage(prop.featuredImage);
-      toggleButton.current.click();
+      try {
+        // Add to wishlist
+        const response = await WishlistService.addToWishlist(propertyId);
+        if (response?.error && response?.message) {
+          console.error(response.message);
+          return;
+        }
 
-      // Fetch wishlist properties only after successfully adding to wishlist
-      await loadWishlistProperties();
-    } catch (error) {
-      console.error("Failed to add to wishlist:", error);
-    }
-  },
-  [token, properties, loadWishlistProperties, history, redirectPath]
-);
+        const prop = properties.find(({ id }) => id === propertyId);
+        setWishlistId(prop.id);
+        setWishlistTitle(prop.title);
+        setWishlistImage(prop.featuredImage);
+        toggleButton.current.click();
+
+        // Fetch wishlist properties only after successfully adding to wishlist
+        await loadWishlistProperties();
+      } catch (error) {
+        console.error("Failed to add to wishlist:", error);
+      }
+    },
+    [token, properties, loadWishlistProperties, history, redirectPath]
+  );
 
   // Function to remove a property from the wishlist
   const removeWishList = useCallback(
@@ -166,10 +186,17 @@ const addToWishList = useCallback(
     [token, history, redirectPath]
   );
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    // loadProperties();
-  };
+  // const handlePageChange = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  //   loadProperties();
+  // };
+
+  const handlePageChange = useCallback((newPage) => {
+    // loadProperties();         // Call your property loading logic
+    dispatch(fetchProperties({ filters, page: newPage, size: 12 }));
+    dispatch(setCurrentPage(newPage));  // Update current page in your state
+  }, [loadProperties]);
+
   // Load properties and wishlist properties when component is mounted or dependencies change
   useEffect(() => {
     if (isLoaded) {
@@ -177,10 +204,11 @@ const addToWishList = useCallback(
         // If there are no properties, load based on filters
         loadProperties();
       }
-      loadWishlistProperties(); // Will only run if the user is logged in
+      if (token) {
+        loadWishlistProperties(); // Only trigger this when the user is logged in
+      }
     }
-  }, [isLoaded, currentPage, loadProperties, loadWishlistProperties]);
-
+  }, [isLoaded, currentPage, loadProperties, token]);
 
   return (
     <div>
@@ -571,7 +599,7 @@ const addToWishList = useCallback(
                   </div>
                 </div>
               </div>
-              {/* {totalPages > 1 && properties.length > 0 && ( */}
+              {/* {totalPages > 1 && properties.length > 0 && (
                 <div className="ltn__pagination-area text-center">
                   <div className="ltn__pagination">
                     <ul>
@@ -620,7 +648,12 @@ const addToWishList = useCallback(
                     </ul>
                   </div>
                 </div>
-              {/* )} */}
+               )}  */}
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
+              />
             </div>
           </div>
         </div>

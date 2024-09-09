@@ -8,6 +8,7 @@ const initialState = {
   properties: [],
   userDetails: {},
   totalPages: 0,
+  currentPage: 1,
   loading: false,
   error: null,
 };
@@ -46,17 +47,30 @@ const countSelectedFilters = (filters) => {
   }, 0);
 };
 
+// export const fetchProperties = createAsyncThunk(
+//   "propertySearch/fetchProperties",
+//   async (filters, { rejectWithValue }) => {
+//     try {
+//       const response = await HomepageService.listProperties("", filters);
+//       return response;
+//     } catch (error) {
+//       return rejectWithValue(error.response);
+//     }
+//   }
+// );
+
 export const fetchProperties = createAsyncThunk(
   "propertySearch/fetchProperties",
-  async (filters, { rejectWithValue }) => {
+  async ({ filters = {}, page = 1, size = 12 }, { rejectWithValue }) => {
     try {
-      const response = await HomepageService.listProperties("", filters);
+      const response = await HomepageService.listProperties("", { ...filters, page, size });
       return response;
     } catch (error) {
       return rejectWithValue(error.response);
     }
   }
 );
+
 
 export const fetchUserDetails = createAsyncThunk(
   "propertySearch/fetchUserDetails",
@@ -84,10 +98,15 @@ const propertySearchSlice = createSlice({
       const cleanedFilters = filterOutUnselected(action.payload);
       state.filters = cleanedFilters;
       state.selectedFilterCount = countSelectedFilters(cleanedFilters);
+      state.currentPage = 1;
     },
     clearFilters: (state) => {
       state.filters = {};
       state.selectedFilterCount = 0;
+      state.currentPage = 1;
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload; // Set the current page
     },
     setProperties: (state, action) => {
       state.properties = action.payload;
@@ -124,7 +143,7 @@ const propertySearchSlice = createSlice({
   },
 });
 
-export const { updateFilters, clearFilters, setProperties } =
+export const { updateFilters, clearFilters, setProperties, setCurrentPage } =
   propertySearchSlice.actions;
 
 export default propertySearchSlice.reducer;
