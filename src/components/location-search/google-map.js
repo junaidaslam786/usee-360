@@ -321,49 +321,49 @@ const GoogleMapsSearch = () => {
     }
   }, [isLoaded]); // Depend on the isLoaded state to re-run when Google script is loaded
 
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
+  // useEffect(() => {
+  //   if (!isLoaded || !mapRef.current) return;
 
-    const drawingManager = new window.google.maps.drawing.DrawingManager({
-      drawingMode: drawingMode,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: window.google.maps.ControlPosition.LEFT_TOP,
-        drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
-      },
-      polygonOptions: {
-        fillColor: "#FFFF00",
-        fillOpacity: 0.5,
-        strokeWeight: 2,
-        clickable: true,
-        editable: true,
-        zIndex: 1,
-      },
-    });
+  //   const drawingManager = new window.google.maps.drawing.DrawingManager({
+  //     drawingMode: drawingMode,
+  //     drawingControl: true,
+  //     drawingControlOptions: {
+  //       position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
+  //       drawingModes: [window.google.maps.drawing.OverlayType.POLYGON],
+  //     },
+  //     polygonOptions: {
+  //       fillColor: "#FFFF00",
+  //       fillOpacity: 0.5,
+  //       strokeWeight: 2,
+  //       clickable: true,
+  //       editable: true,
+  //       zIndex: 1,
+  //     },
+  //   });
 
-    drawingManager.setMap(mapRef.current);
+  //   drawingManager.setMap(mapRef.current);
 
-    const overlayCompleteListener = (e) => {
-      if (e.type !== window.google.maps.drawing.OverlayType.POLYGON) return;
+  //   const overlayCompleteListener = (e) => {
+  //     if (e.type !== window.google.maps.drawing.OverlayType.POLYGON) return;
 
-      const polygon = e.overlay;
-      searchPropertiesInPolygon(polygon);
-    };
+  //     const polygon = e.overlay;
+  //     searchPropertiesInPolygon(polygon);
+  //   };
 
-    window.google.maps.event.addListener(
-      drawingManager,
-      "overlaycomplete",
-      overlayCompleteListener
-    );
+  //   window.google.maps.event.addListener(
+  //     drawingManager,
+  //     "overlaycomplete",
+  //     overlayCompleteListener
+  //   );
 
-    // Cleanup
-    return () => {
-      window.google.maps.event.clearListeners(
-        drawingManager,
-        "overlaycomplete"
-      );
-    };
-  }, [isLoaded, mapRef, searchPropertiesInPolygon]);
+  //   // Cleanup
+  //   return () => {
+  //     window.google.maps.event.clearListeners(
+  //       drawingManager,
+  //       "overlaycomplete"
+  //     );
+  //   };
+  // }, [isLoaded, mapRef, searchPropertiesInPolygon, drawingMode]);
 
   useEffect(() => {
     // Only search if showRadius is true and other conditions are met
@@ -461,9 +461,9 @@ const GoogleMapsSearch = () => {
           onLoad={onMapLoad}
           onUnmount={onUnmount}
           options={options}
-          mapTypeControlOptions={{
-            position: window.google.maps.ControlPosition.TOP_LEFT,
-          }}
+          // mapTypeControlOptions={{
+          //   position: window.google.maps.ControlPosition.TOP_LEFT,
+          // }}
         >
           {validLatLng(currentLocation.lat, currentLocation.lng) && (
             <Marker

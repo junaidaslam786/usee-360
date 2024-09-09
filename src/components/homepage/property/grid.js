@@ -173,8 +173,10 @@ const addToWishList = useCallback(
   // Load properties and wishlist properties when component is mounted or dependencies change
   useEffect(() => {
     if (isLoaded) {
-      console.log('Current Page:', currentPage);
-      loadProperties();
+      if (properties.length === 0) {
+        // If there are no properties, load based on filters
+        loadProperties();
+      }
       loadWishlistProperties(); // Will only run if the user is logged in
     }
   }, [isLoaded, currentPage, loadProperties, loadWishlistProperties]);
