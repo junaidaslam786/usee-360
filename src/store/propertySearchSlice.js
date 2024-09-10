@@ -22,7 +22,10 @@ const filterOutUnselected = (filters) => {
       value !== false &&
       value !== null &&
       !(Array.isArray(value) && value.length === 0) &&
-      !(typeof value === "number" && value === 0)
+      !(typeof value === "number" && value === 0) &&
+      !(key === 'lat' && value === null) && // Exclude null lat
+      !(key === 'lng' && value === null) && // Exclude null lng
+      !(key === 'priceType' && value === "") // Exclude empty priceType
     ) {
       acc[key] = value;
     }
@@ -30,34 +33,39 @@ const filterOutUnselected = (filters) => {
   }, {});
 };
 
+
 // Function to count selected filters
 const countSelectedFilters = (filters) => {
+  console.log("Filters before counting:", filters); // Debugging
+
   return Object.keys(filters).reduce((count, key) => {
     const value = filters[key];
+
+    // Log each filter value being counted
+    console.log(`Counting filter key: ${key}, value:`, value);
+
+    // Check if the value is undefined or an empty string, and skip counting
     if (
-      value !== "" &&
-      value !== false &&
-      value !== null &&
+      value !== "" && 
+      value !== false && 
+      value !== null && 
+      value !== undefined && // Exclude undefined values
       !(Array.isArray(value) && value.length === 0) &&
-      !(typeof value === "number" && value === 0)
+      !(typeof value === "number" && value === 0) &&
+      !(key === 'lat' && value === null) && // Exclude null lat
+      !(key === 'lng' && value === null) && // Exclude null lng
+      !(key === 'priceType' && value === "") // Exclude empty priceType
     ) {
+      console.log(`Counting ${key} as valid filter`); // Debugging
       return count + 1;
     }
     return count;
   }, 0);
 };
 
-// export const fetchProperties = createAsyncThunk(
-//   "propertySearch/fetchProperties",
-//   async (filters, { rejectWithValue }) => {
-//     try {
-//       const response = await HomepageService.listProperties("", filters);
-//       return response;
-//     } catch (error) {
-//       return rejectWithValue(error.response);
-//     }
-//   }
-// );
+
+
+
 
 export const fetchProperties = createAsyncThunk(
   "propertySearch/fetchProperties",
@@ -96,10 +104,13 @@ const propertySearchSlice = createSlice({
   reducers: {
     updateFilters: (state, action) => {
       const cleanedFilters = filterOutUnselected(action.payload);
-      state.filters = cleanedFilters;
+      console.log("Updated filters:", cleanedFilters); // Debugging
+      state.filters = { ...state.filters, ...cleanedFilters };
+      console.log("Current state filters after merging:", state.filters); // Debugging
       state.selectedFilterCount = countSelectedFilters(cleanedFilters);
       state.currentPage = 1;
     },
+    
     clearFilters: (state) => {
       state.filters = {};
       state.selectedFilterCount = 0;

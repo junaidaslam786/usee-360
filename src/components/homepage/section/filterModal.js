@@ -24,14 +24,16 @@ import {
 } from "../../../constants";
 import Select from "react-select";
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {updateFilters} from './../../../store/propertySearchSlice'
 
-function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, resetTrigger }) {
+function FilterModal({ isOpen, onRequestClose, resetTrigger }) {
+
+  const { filters } = useSelector((state) => state.propertySearch);
   
   // common features
-  const [propertyCategoryType, setPropertyCategoryType] = useState(currentFilters.propertyCategoryType || "");
+  const [propertyCategoryType, setPropertyCategoryType] = useState(filters.propertyCategoryType || "");
   const [propertyType, setPropertyType] = useState("");
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
@@ -161,8 +163,13 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
     };
 
     dispatch(updateFilters(newFilters));
-    onFiltersChange(newFilters);
     onRequestClose();
+  };
+
+
+  const handleApplyFilters = (newFilters) => {
+    dispatch(updateFilters(newFilters));
+    onRequestClose(); // Close the modal after applying the filters
   };
 
   const propertyCategoryTypeOptions =
@@ -276,64 +283,64 @@ function FilterModal({ isOpen, onRequestClose, onFiltersChange, currentFilters, 
   useEffect(() => {
     // This effect updates the component's state when the passed filters change,
     // such as when reopening the modal with new filters.
-    setPropertyCategoryType(currentFilters.propertyCategoryType || "");
-    setPropertyType(currentFilters.propertyType || "");
-    setMinPrice(currentFilters.minPrice || "");
-    setMaxPrice(currentFilters.maxPrice || "");
-    setUnit(currentFilters.unit || "");
-    setArea(currentFilters.area || "");
-    setSecurityFeatures(currentFilters.securityFeatures || false);
-    setAlaramCameraB(currentFilters.alaramCameraB || "");
-    setDisabilityAccess(currentFilters.disabilityAccess || false);
-    setPublicTransport(currentFilters.publicTransport || false);
-    setYearBuilt(currentFilters.yearBuilt || "");
-    setCondition(currentFilters.condition || "");
-    setAvailabilityDate(currentFilters.availabilityDate || "");
-    setLayout(currentFilters.layout || "");
-    setConferenceRoom(currentFilters.conferenceRoom || false);
-    setCapacity(currentFilters.capacity || "");
-    setKitchen(currentFilters.kitchen || "");
-    setStore(currentFilters.store || "");
-    setFoodCourt(currentFilters.foodCourt || false);
-    setRestRoom(currentFilters.restRoom || false);
-    setPools(currentFilters.pools || "");
-    setPoolType(currentFilters.poolType || "");
-    setHotelRoom(currentFilters.hotelRoom || "");
-    setAreaBar(currentFilters.areaBar || 0);
-    setLoungeArea(currentFilters.loungeArea || 0);
-    setCapacityOfVip(currentFilters.capacityOfVip || 0);
-    setNoOfDanceFloor(currentFilters.noOfDanceFloor || 0);
-    setNoOfPrivateRooms(currentFilters.noOfPrivateRooms || 0);
-    setKitchenArea(currentFilters.kitchenArea || 0);
-    setOutdoorSeating(currentFilters.outdoorSeating || false);
-    setOutdoorSeatingArea(currentFilters.outdoorSeatingArea || 0);
-    setRoomSize(currentFilters.roomSize || 0);
-    setNoOfBeds(currentFilters.noOfBeds || 0);
-    setRoomType(currentFilters.roomType || "");
-    setFloorLevel(currentFilters.floorLevel || 0);
-    setView(currentFilters.view || "");
-    setBalcony(currentFilters.balcony || false);
-    setDisplayWindowArea(currentFilters.displayWindowArea || 0);
-    setDisplayWindow(currentFilters.displayWindow || "");
-    setResidentialFloorLevel(currentFilters.residentialFloorLevel || 0);
-    setBuildingAmenities(currentFilters.buildingAmenities || []);
-    setFireplace(currentFilters.fireplace || false);
-    setWoodBurning(currentFilters.woodBurning || false);
-    setBasement(currentFilters.basement || false);
-    setResidentialKitchen(currentFilters.residentialKitchen || "");
-    setPetFreindliness(currentFilters.petFreindliness || false);
-    setCommercialParking(currentFilters.commercialParking || false);
-    setNoOfSpacesCommercial(currentFilters.noOfSpacesCommercial || 0);
-    setNoOfFloors(currentFilters.noOfFloors || 0);
-    setOutdoorSpaces(currentFilters.outdoorSpaces || []);
-    setNoOfBathrooms(currentFilters.noOfBathrooms || 0);
-    setFurnished(currentFilters.furnished || false);
-    setParkingResidential(currentFilters.parkingResidential || false);
-    setParkingType(currentFilters.parkingType || "");
-    setGarageSpaces(currentFilters.garageSpaces || 0);
+    setPropertyCategoryType(filters.propertyCategoryType || "");
+    setPropertyType(filters.propertyType || "");
+    setMinPrice(filters.minPrice || "");
+    setMaxPrice(filters.maxPrice || "");
+    setUnit(filters.unit || "");
+    setArea(filters.area || "");
+    setSecurityFeatures(filters.securityFeatures || false);
+    setAlaramCameraB(filters.alaramCameraB || "");
+    setDisabilityAccess(filters.disabilityAccess || false);
+    setPublicTransport(filters.publicTransport || false);
+    setYearBuilt(filters.yearBuilt || "");
+    setCondition(filters.condition || "");
+    setAvailabilityDate(filters.availabilityDate || "");
+    setLayout(filters.layout || "");
+    setConferenceRoom(filters.conferenceRoom || false);
+    setCapacity(filters.capacity || "");
+    setKitchen(filters.kitchen || "");
+    setStore(filters.store || "");
+    setFoodCourt(filters.foodCourt || false);
+    setRestRoom(filters.restRoom || false);
+    setPools(filters.pools || "");
+    setPoolType(filters.poolType || "");
+    setHotelRoom(filters.hotelRoom || "");
+    setAreaBar(filters.areaBar || 0);
+    setLoungeArea(filters.loungeArea || 0);
+    setCapacityOfVip(filters.capacityOfVip || 0);
+    setNoOfDanceFloor(filters.noOfDanceFloor || 0);
+    setNoOfPrivateRooms(filters.noOfPrivateRooms || 0);
+    setKitchenArea(filters.kitchenArea || 0);
+    setOutdoorSeating(filters.outdoorSeating || false);
+    setOutdoorSeatingArea(filters.outdoorSeatingArea || 0);
+    setRoomSize(filters.roomSize || 0);
+    setNoOfBeds(filters.noOfBeds || 0);
+    setRoomType(filters.roomType || "");
+    setFloorLevel(filters.floorLevel || 0);
+    setView(filters.view || "");
+    setBalcony(filters.balcony || false);
+    setDisplayWindowArea(filters.displayWindowArea || 0);
+    setDisplayWindow(filters.displayWindow || "");
+    setResidentialFloorLevel(filters.residentialFloorLevel || 0);
+    setBuildingAmenities(filters.buildingAmenities || []);
+    setFireplace(filters.fireplace || false);
+    setWoodBurning(filters.woodBurning || false);
+    setBasement(filters.basement || false);
+    setResidentialKitchen(filters.residentialKitchen || "");
+    setPetFreindliness(filters.petFreindliness || false);
+    setCommercialParking(filters.commercialParking || false);
+    setNoOfSpacesCommercial(filters.noOfSpacesCommercial || 0);
+    setNoOfFloors(filters.noOfFloors || 0);
+    setOutdoorSpaces(filters.outdoorSpaces || []);
+    setNoOfBathrooms(filters.noOfBathrooms || 0);
+    setFurnished(filters.furnished || false);
+    setParkingResidential(filters.parkingResidential || false);
+    setParkingType(filters.parkingType || "");
+    setGarageSpaces(filters.garageSpaces || 0);
     //add remaining states in this useeffect
     // Update other states similarly...
-  }, [currentFilters]);
+  }, [filters]);
 
   return (
     <div>
