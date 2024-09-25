@@ -31,8 +31,15 @@ const libraries = ["places", "drawing"];
 function PropertyGrid() {
   // const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
 
-  const { filters, properties, userDetails, loading, error, totalPages, currentPage } =
-    useSelector((state) => state.propertySearch);
+  const {
+    filters,
+    properties,
+    userDetails,
+    loading,
+    error,
+    totalPages,
+    currentPage,
+  } = useSelector((state) => state.propertySearch);
   // const [currentPage, setCurrentPage] = useState(1);
   // const [totalPages, setTotalPages] = useState(0);
   // const [properties, setProperties] = useState([]);
@@ -191,11 +198,14 @@ function PropertyGrid() {
   //   loadProperties();
   // };
 
-  const handlePageChange = useCallback((newPage) => {
-    // loadProperties();         // Call your property loading logic
-    dispatch(fetchProperties({ filters, page: newPage, size: 12 }));
-    dispatch(setCurrentPage(newPage));  // Update current page in your state
-  }, [loadProperties]);
+  const handlePageChange = useCallback(
+    (newPage) => {
+      // loadProperties();         // Call your property loading logic
+      dispatch(fetchProperties({ filters, page: newPage, size: 12 }));
+      dispatch(setCurrentPage(newPage)); // Update current page in your state
+    },
+    [loadProperties]
+  );
 
   // Load properties and wishlist properties when component is mounted or dependencies change
   useEffect(() => {
@@ -274,7 +284,14 @@ function PropertyGrid() {
                       ) : (
                         properties.map((element, i) => (
                           <div className="col-xl-4 col-sm-4 col-12" key={i}>
-                            <div className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center---">
+                            <div
+                              className="ltn__product-item ltn__product-item-4 ltn__product-item-5 text-center "
+                              style={{
+                                minHeight: "550px",
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
                               <div className="product-img go-top">
                                 <Link to={`/property-details/${element.id}`}>
                                   <img
@@ -285,7 +302,15 @@ function PropertyGrid() {
                                   />
                                 </Link>
                               </div>
-                              <div className="product-info">
+                              <div
+                                className="product-info"
+                                style={{
+                                  flex: 1,
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "flex-start",
+                                }}
+                              >
                                 <div className="product-badge">
                                   <ul>
                                     <li className="sale-badg">
@@ -310,37 +335,52 @@ function PropertyGrid() {
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
+                                    justifyContent: "space-between",
+                                    width: '100%',
                                   }}
                                 >
-                                  <span
-                                    className="view-icon"
-                                    style={{ marginRight: "5px" }}
-                                  >
-                                    <i className="fas fa-eye" />{" "}
-                                    {/* Icon for views */}
-                                  </span>
-                                  <span className="view-count">
-                                    {element.productViews
-                                      ? element.productViews.length
-                                      : 0}{" "}
-                                    Views
-                                  </span>
+                                  {/* Views Container */}
                                   <div
+                                    className="views-container"
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
-                                      marginLeft: "20px",
+                                    }}
+                                  >
+                                    <span className="view-icon">
+                                      <i className="fas fa-eye" />
+                                    </span>
+                                    <span
+                                      className="view-count"
+                                      style={{ marginLeft: "5px" }}
+                                    >
+                                      {element.productViews
+                                        ? element.productViews.length
+                                        : 0}{" "}
+                                      Views
+                                    </span>
+                                  </div>
+
+                                  {/* Carbon Footprint Container */}
+                                  <div
+                                    className="carbon-footprint-container"
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
                                     }}
                                   >
                                     <FaPaw
                                       style={{
                                         fontSize: "20px",
-                                        marginLeft: "25px",
-                                        marginRight: "5px",
                                         color: "green",
                                       }}
                                     />
-                                    <span style={{ fontSize: "12px" }}>
+                                    <span
+                                      style={{
+                                        fontSize: "12px",
+                                        marginLeft: "5px",
+                                      }}
+                                    >
                                       {carbonFootprints[element.id] ? (
                                         carbonFootprints[element.id].loading ? (
                                           "Loading..."
@@ -381,7 +421,7 @@ function PropertyGrid() {
 
                                 <div
                                   className="product-img-location go-top"
-                                  style={{ height: "80px" }}
+                                  style={{ height: "80px", textAlign: "left" }}
                                 >
                                   <ul>
                                     <li>
@@ -406,7 +446,7 @@ function PropertyGrid() {
                                       : "Loading..."}
                                   </span>
                                 </div>
-                                {element?.productMetaTags?.length > 0 && (
+                                {element?.productMetaTags?.length > 0 ? (
                                   <ul className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief">
                                     <li>
                                       <span>
@@ -422,6 +462,19 @@ function PropertyGrid() {
                                         {loadPropertyMetaData(element, "area")}{" "}
                                       </span>
                                       {loadPropertyMetaData(element, "unit")}
+                                    </li>
+                                  </ul>
+                                ) : (
+                                  // Render empty elements to maintain space
+                                  <ul
+                                    className="ltn__list-item-2--- ltn__list-item-2-before--- ltn__plot-brief"
+                                    style={{ visibility: "hidden" }}
+                                  >
+                                    <li>
+                                      <span>-</span> Bed
+                                    </li>
+                                    <li>
+                                      <span>-</span> {""}
                                     </li>
                                   </ul>
                                 )}
@@ -456,7 +509,10 @@ function PropertyGrid() {
                                   </ul>
                                 </div>
                               </div>
-                              <div className="product-info-bottom">
+                              <div
+                                className="product-info-bottom "
+                                style={{ marginTop: "auto" }}
+                              >
                                 <div className="product-price">
                                   <span>{formatPrice(element.price)}</span>
                                 </div>

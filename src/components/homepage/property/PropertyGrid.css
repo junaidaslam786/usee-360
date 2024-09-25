@@ -1,5 +1,5 @@
 .fixed-card-height {
-    height: 450px; /* Adjust the height as needed */
+    /* height: 450px; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -22,13 +22,14 @@
   
   .product-img {
     height: 250px;
+    overflow: hidden;
   }
   
   .product-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
   }
   
   .product-info-bottom {

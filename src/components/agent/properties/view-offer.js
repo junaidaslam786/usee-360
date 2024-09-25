@@ -98,7 +98,6 @@ export default function ViewOffer(props) {
     }
   };
   
-
   const updateOfferStatus = async (formData) => {
     setLoading(true);
     const formResponse = await PropertyService.updateOffer(formData);
@@ -184,6 +183,20 @@ export default function ViewOffer(props) {
   const handleSnagListButtonClick = (id) => {
     setSnagOfferId(id);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkSubscriptionDetails();
+  
+      // Only check snag list if the user is subscribed
+      if (userSubscriptionId) {
+        await checkSnagList();
+      }
+    };
+  
+    fetchData();
+  }, [props.property, userSubscriptionId]);
+  
 
   useEffect(() => {
     if (props?.property?.productOffers) {
