@@ -349,7 +349,7 @@ export default function ViewOffer(props) {
                                 </table>
                               </div>
                               {!isApprovedByCustomer && (
-                                <div className="btn-wrapper">
+                                <div className="btn-wrapper" style={{display: 'flex'}}>
                                   <button
                                     className="theme-btn-1 btn btn-full-width-2"
                                     type="submit"
@@ -358,7 +358,7 @@ export default function ViewOffer(props) {
                                   </button>
                                   <button
                                     onClick={handleApproval}
-                                    className="btn btn-success ml-2"
+                                    className="theme-btn-1 btn btn-full-width-2"
                                     type="button"
                                   >
                                     Approve Snag List
