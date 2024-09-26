@@ -25,6 +25,8 @@ import {
 } from "../../../store/propertySearchSlice";
 import { toast } from "react-toastify";
 import Pagination from "../section/pagination";
+import "./PropertyGrid.css"
+// import $clamp from 'clamp-js';
 
 const libraries = ["places", "drawing"];
 
@@ -324,7 +326,7 @@ function PropertyGrid() {
                                 </div>
                                 <h2
                                   className="product-title go-top"
-                                  style={{ height: "100px" }}
+                                  // style={{ height: "100px" }}
                                 >
                                   <Link to={`/property-details/${element.id}`}>
                                     {element.title}
@@ -425,7 +427,7 @@ function PropertyGrid() {
                                 >
                                   <ul>
                                     <li>
-                                      <Link to="#">
+                                      <Link to="#" className="address-text">
                                         <i className="flaticon-pin" />{" "}
                                         {element.address}
                                       </Link>

@@ -1,60 +1,32 @@
-.fixed-card-height {
-    /* height: 450px; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+/* 
+.product-title,
+.address-text {
+  position: relative;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   
-  .fixed-height-title {
-    height: 60px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+}
   
-  .fixed-height-views {
-    height: 40px;
-  }
-  
-  .fixed-height-location {
-    height: 40px;
-  }
-  
-  .product-img {
-    height: 250px;
-    overflow: hidden;
-  }
-  
-  .product-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: space-between; */
-  }
-  
-  .product-info-bottom {
-    margin-top: auto;
-  }
-  
-  .view-icon {
-    margin-right: 5px;
-  }
-  
-  .carbon-footprint {
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
-  }
-  
-  .retry {
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: underline;
-  }
-  
-  .view {
-    cursor: pointer;
-    color: #00c800;
-    text-decoration: none;
-  }
-  
+   */
+
+
+.address-text {
+  position: relative;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+}
+
+.product-title {
+  position: relative;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  height: 50px;
+  text-align: left;
+}
+
