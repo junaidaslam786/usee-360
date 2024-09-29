@@ -232,31 +232,42 @@ export default function Add(props) {
   const selectNextSlot = (currentTimeSlots) => {
     const availabilityTimeSlots = currentTimeSlots ? currentTimeSlots : timeslots;
     const now = new Date();
+    const selectedDateObj = new Date(date);
+    selectedDateObj.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
   
-    const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
-    if (currentSlot) {
-      const foundSlot = availabilityTimeSlots.find(
-        (time) => time.value === currentSlot.value
-      );
+    let nextSlot = null;
   
-      const isTimeExpired = checkTimeOver(date, foundSlot.fromTime); // Use the existing date state
+    if (selectedDateObj.getTime() === now.getTime()) {
+      // Date is today
+      const currentSlot = findCurrentTimeSlot(availabilityTimeSlots);
+      if (currentSlot) {
+        const foundSlot = availabilityTimeSlots.find(
+          (time) => time.value === currentSlot.value
+        );
   
-      const nextSlot = !isTimeExpired
-        ? foundSlot
-        : availabilityTimeSlots.find(
-            (time) => time.value === currentSlot.value + 1
-          );
+        const isTimeExpired = checkTimeOver(date, foundSlot.fromTime);
   
-      if (!nextSlot) {
-        setAnySlotAvailableForToday(false);
-        return false;
+        nextSlot = !isTimeExpired
+          ? foundSlot
+          : availabilityTimeSlots.find(
+              (time) => time.value === currentSlot.value + 1
+            );
       }
-  
-      setAnySlotAvailableForToday(true);
-      return nextSlot;
+    } else if (selectedDateObj > now) {
+      // Date is in the future
+      nextSlot = availabilityTimeSlots[0]; // Select the first slot
     }
-    return false;
+  
+    if (!nextSlot) {
+      setAnySlotAvailableForToday(false);
+      return false;
+    }
+  
+    setAnySlotAvailableForToday(true);
+    return nextSlot;
   };
+  
   
 
   // const setDateHandler = (e) => {
@@ -291,7 +302,7 @@ export default function Add(props) {
     if (selectedDate === previousDate) {
       return;
     }
-    
+  
     try {
       const response = await AvailabilityService.listSlots();
       if (response?.error && response?.message) {
@@ -310,7 +321,8 @@ export default function Add(props) {
     } catch (error) {
       props.responseHandler("Failed to fetch availability slots");
     }
-  }, [previousDate]);
+  }, [previousDate, date]);
+  
 
   useEffect(() => {
     const fetchUsersToAllocate = async () => {
