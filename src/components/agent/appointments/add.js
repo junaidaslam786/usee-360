@@ -3,6 +3,7 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import Select from "react-select";
 import {
   checkTimeOver,
+  checkTimeOver1,
   findCurrentTimeSlot,
   formatSlotFromTime,
   getUserDetailsFromJwt,
@@ -268,8 +269,6 @@ export default function Add(props) {
     return nextSlot;
   };
   
-  
-
   // const setDateHandler = (e) => {
   //   const selectedDate = new Date(e);
   //   const now = new Date();
@@ -546,7 +545,7 @@ export default function Add(props) {
                         <div className="row">
                           {timeslots &&
                             timeslots.map((item, index) => {
-                              const isExpired = checkTimeOver(
+                              const isExpired = checkTimeOver1(
                                 date,
                                 item.fromTime
                               ); // Assuming checkTimeOver can be used this way

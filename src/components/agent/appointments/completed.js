@@ -80,19 +80,24 @@ export default function Completed(props) {
       id: selectedAppointment,
       notes,
     };
-
-    const formResponse = await AppointmentService.addNote(requestData);
-    if (formResponse?.error && formResponse?.message) {
-      props.responseHandler(formResponse.message);
-      return;
+  
+    try {
+      const formResponse = await AppointmentService.addNote(requestData);
+      if (formResponse?.error && formResponse?.message) {
+        props.responseHandler(formResponse.message);
+        return;
+      }
+  
+      props.responseHandler("Note added successfully.", true);
+      await loadAllList();
+      setIsNotesModalOpen(false);
+    } catch (error) {
+      props.responseHandler("An unexpected error occurred.");
+    } finally {
+      setNotes(""); // This will always run
     }
-
-    props.responseHandler("Note added successfully.", true);
-    setNotes("");
-
-    await loadAllList();
-    setIsNotesModalOpen(false);
   };
+  
 
   const formatCo2Details = (co2Details) => {
     if (!co2Details) return "N/A";

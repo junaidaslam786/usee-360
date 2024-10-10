@@ -42,6 +42,19 @@ export const checkTimeOver = (date, time) => {
   return givenDate < currentDate;
 };
 
+export const checkTimeOver1 = (date, time) => {
+  const userTimezone = getUserTimezone();
+
+  // Parse the given date and time into a moment object in the user's timezone
+  const givenDateTime = moment.tz(`${date} ${time}`, 'YYYY-MM-DD HH:mm:ss', userTimezone);
+
+  // Get the current date and time in the user's timezone
+  const currentDateTime = moment().tz(userTimezone);
+
+  // Compare the two moments
+  return givenDateTime.isBefore(currentDateTime);
+};
+
 export const findCurrentTimeSlot = (timeslots) => {
   const currentTime = currentTimezoneBasedTime().split(":");
   const currentHours = parseInt(currentTime[0]);

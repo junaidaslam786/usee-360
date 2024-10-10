@@ -16,6 +16,7 @@ import "./dashboard-filter.css";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import DashboardService from "../../../services/dashboard";
 import { useStateIfMounted } from "use-state-if-mounted";
+import { toast } from "react-toastify";
 
 export default function DashboardFilter(props) {
   const [startDate, setStartDate] = useState("");
@@ -38,6 +39,14 @@ export default function DashboardFilter(props) {
     }
     setToggleMenu(false);
     loadDashboardData(e);
+  };
+
+  const responseHandler = (message, success = false) => {
+    if (success) {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
   };
 
   const loadDashboardData = useCallback(async (filter) => {
@@ -236,6 +245,7 @@ export default function DashboardFilter(props) {
                   selectedFilter={selectedFilter}
                   startDate={computedDate(startDate)}
                   endDate={computedDate(endDate)}
+                  responseHandler={responseHandler}
                 />
               )}
 
@@ -244,6 +254,7 @@ export default function DashboardFilter(props) {
                   selectedFilter={selectedFilter}
                   startDate={computedDate(startDate)}
                   endDate={computedDate(endDate)}
+                  responseHandler={responseHandler}
                 />
               )}
             </div>
@@ -258,6 +269,7 @@ export default function DashboardFilter(props) {
                   selectedFilter={selectedFilter}
                   startDate={computedDate(startDate)}
                   endDate={computedDate(endDate)}
+                  responseHandler={responseHandler}
                 />
               )}
 
@@ -266,6 +278,7 @@ export default function DashboardFilter(props) {
                   selectedFilter={selectedFilter}
                   startDate={computedDate(startDate)}
                   endDate={computedDate(endDate)}
+                  responseHandler={responseHandler}
                 />
               )}
             </div>

@@ -78,15 +78,22 @@ export default function Profile(props) {
 
   const onPlaceChanged = (autocomplete) => {
     const place = autocomplete.getPlace();
-
+  
     if (place.geometry) {
-      setLocation(place.geometry.location);
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      const newLocation = { lat, lng };
+  
+      setLocation(newLocation);
       setAddress(place.formatted_address);
-      map.panTo(place.geometry.location);
+      if (map) {
+        map.panTo(newLocation);
+      }
     } else {
-      console.log("No details available for input: '" + place.name + "'");
+      console.log("No geometry data available for input: '" + place.name + "'");
     }
   };
+  
 
   const updateAutocompleteAddress = async (loc) => {
     if (!isLoaded) return;
@@ -569,6 +576,10 @@ export default function Profile(props) {
                         onPlaceChanged={() =>
                           onPlaceChanged(window.autocomplete)
                         }
+
+                        // options={{
+                        //   fields: ["geometry", "formatted_address", "name"], // Specify the fields you need
+                        // }}
                       >
                         <input
                           ref={autocompleteInputRef}
