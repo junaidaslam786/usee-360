@@ -153,14 +153,16 @@ export const httpDelete = async (url, reqBody) => {
 export const generateHeaders = (token = "", isMultipart = false) => {
   let requestHeaders = {};
   let loginToken = token ? token : getLoginToken();
+  const apiCode = process.env.INTERNAL_API_CODE;
 
   if (loginToken) {
     requestHeaders['Authorization'] = `Bearer ${loginToken}`;
   }
   requestHeaders["Content-Type"] = isMultipart ? "multipart/form-data" : "application/json";
+  requestHeaders["Apicode"] = apiCode;
 
   return requestHeaders;
-}
+};
 
 // Add a new function in rest-api.js to generate headers for Stripe requests
 export const generateStripeHeaders = () => {

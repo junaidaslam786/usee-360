@@ -96,8 +96,6 @@ function FilterModal({ isOpen, onRequestClose, resetTrigger }) {
   const [parkingType, setParkingType] = useState("");
   const [garageSpaces, setGarageSpaces] = useState(0);
 
-  console.log(resetTrigger)
-
   const dispatch = useDispatch();
 
   const handleConfirm = () => {

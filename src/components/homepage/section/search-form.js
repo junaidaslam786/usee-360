@@ -119,8 +119,9 @@ export default function SearchForm() {
         };
         setLat(location.lat);
         setLng(location.lng);
-        const formattedAddress = place.formatted_address || place.name;
-        setAddress(formattedAddress);
+        // const formattedAddress = place.name || place.formatted_address;
+        // setAddress(formattedAddress);
+        setAddress(place.name);
       };
 
       autocomplete.addListener("place_changed", handlePlaceSelect);
